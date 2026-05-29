@@ -3,6 +3,12 @@
 import { useState, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import { Suspense } from "react";
+import { createClient } from "@supabase/supabase-js";
+
+const supabase = createClient(
+  "https://jsmrjonybxrvulmonjix.supabase.co",
+  "sb_publishable_iCVJMk2vntKQAWW3_V0QRQ_kbirwVAv"
+);
 
 const reportLabels: Record<string, string> = {
   voice: "Voice Report",
@@ -25,18 +31,21 @@ function ReportContent() {
       return;
     }
 
-    fetch(`/api/reports?id=${id}`)
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.error) {
-          setError(data.error);
+    supabase
+      .from("reports")
+      .select("*")
+      .eq("submission_id", id)
+      .eq("phase", 1)
+      .then(({ data, error: err }) => {
+        if (err || !data || data.length === 0) {
+          setError("Report not found.");
         } else {
-          setReports(data.reports);
+          const map: Record<string, string> = {};
+          for (const r of data) {
+            map[r.report_type] = r.content;
+          }
+          setReports(map);
         }
-        setLoading(false);
-      })
-      .catch(() => {
-        setError("Failed to load reports.");
         setLoading(false);
       });
   }, [id]);
