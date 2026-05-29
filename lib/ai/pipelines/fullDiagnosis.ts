@@ -62,13 +62,11 @@ ${manuscriptText}`,
 }
 
 export async function runFullDiagnosis(manuscriptText: string) {
-  const [voice, structure, repetition, market, surgical] = await Promise.all([
-    runCouncilPass(manuscriptText, voiceReportPrompt),
-    runCouncilPass(manuscriptText, structureReportPrompt),
-    runCouncilPass(manuscriptText, repetitionReportPrompt),
-    runCouncilPass(manuscriptText, marketReportPrompt),
-    runCouncilPass(manuscriptText, surgicalReportPrompt),
-  ]);
+  const voice = await runCouncilPass(manuscriptText, voiceReportPrompt);
+  const structure = await runCouncilPass(manuscriptText, structureReportPrompt);
+  const repetition = await runCouncilPass(manuscriptText, repetitionReportPrompt);
+  const market = await runCouncilPass(manuscriptText, marketReportPrompt);
+  const surgical = await runCouncilPass(manuscriptText, surgicalReportPrompt);
 
   const roadmap = await runAnthropicPass({
     modelRole: "opus",
