@@ -7,7 +7,7 @@ export default function Home() {
   const [manuscript, setManuscript] = useState("");
   const [loading, setLoading] = useState(false);
   const [status, setStatus] = useState("");
-  const [completedReports, setCompletedReports] = useState([]);
+  const [completedReports, setCompletedReports] = useState<string[]>([]);
   const [error, setError] = useState("");
   const router = useRouter();
 
@@ -52,7 +52,7 @@ export default function Home() {
               if (data.type === "status") {
                 setStatus(data.message);
               } else if (data.type === "report") {
-                setCompletedReports(function(prev) { return [...prev, data.reportType]; });
+                setCompletedReports(function(prev: string[]) { return [...prev, data.reportType]; });
               } else if (data.type === "complete") {
                 router.push("/view?id=" + data.submissionId);
               } else if (data.type === "error") {
@@ -97,7 +97,7 @@ export default function Home() {
         <div style={{ marginTop: "40px" }}>
           <p style={{ fontSize: "18px", color: "#c8a96e" }}>{status}</p>
           <div style={{ marginTop: "20px" }}>
-            {completedReports.map(function(r) {
+            {completedReports.map(function(r: string) {
               return (
                 <p key={r} style={{ color: "#4a7c59", margin: "8px 0" }}>
                   {"Done: " + (reportLabels[r] || r)}
