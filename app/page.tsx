@@ -6,12 +6,25 @@ import { useRouter } from "next/navigation";
 export default function Home() {
   const [manuscript, setManuscript] = useState("");
   const [loading, setLoading] = useState(false);
+  const [status, setStatus] = useState("");
+  const [completedReports, setCompletedReports] = useState<string[]>([]);
   const [error, setError] = useState("");
   const router = useRouter();
+
+  const reportLabels: Record<string, string> = {
+    voice: "Voice Report",
+    structure: "Structure Report",
+    repetition: "Repetition Report",
+    market: "Market / Reader Report",
+    surgical: "Surgical Fix Report",
+    roadmap: "Revision Roadmap",
+  };
 
   async function runDiagnosis() {
     setLoading(true);
     setError("");
+    setCompletedReports([]);
+    setStatus("Starting diagnosis...");
 
     try {
       const response = await fetch("/api/generate", {
@@ -20,13 +33,40 @@ export default function Home() {
         body: JSON.stringify({ manuscriptText: manuscript }),
       });
 
-      const data = await response.json();
+      if (!response.body) throw new Error("No response body");
 
-      if (data.submissionId) {
-        router.push(`/reports/${data.submissionId}`);
-      } else {
-        setError("Something went wrong. Please try again.");
-        setLoading(false);
+      const reader = response.body.getReader();
+      const decoder = new TextDecoder();
+      let buffer = "";
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+
+        buffer += decoder.decode(value, { stream: true });
+        const lines = buffer.split("\n");
+        buffer = lines.pop() || "";
+
+        for (const line of lines) {
+          if (line.startsWith("data: ")) {
+            try {
+              const data = JSON.parse(line.slice(6));
+
+              if (data.type === "status") {
+                setStatus(data.message);
+              } else if (data.type === "report") {
+                setCompletedReports((prev) => [...prev, data.reportType]);
+              } else if (data.type === "complete") {
+                router.push(`/reports/${data.submissionId}`);
+              } else if (data.type === "error") {
+                setError(data.message);
+                setLoading(false);
+              }
+            } catch {
+              // skip malformed lines
+            }
+          }
+        }
       }
     } catch {
       setError("Something went wrong. Please try again.");
@@ -39,37 +79,65 @@ export default function Home() {
       <h1>5 CORE — Manuscript Diagnosis</h1>
       <p>Paste manuscript text below and run the full diagnosis.</p>
 
-      <textarea
-        value={manuscript}
-        onChange={(e) => setManuscript(e.target.value)}
-        rows={15}
-        style={{ width: "100%", marginTop: "20px", padding: "10px" }}
-        placeholder="Paste your manuscript text here..."
-        disabled={loading}
-      />
+      {!loading && (
+        <>
+          <textarea
+            value={manuscript}
+            onChange={(e) => setManuscript(e.target.value)}
+            rows={15}
+            style={{ width: "100%", marginTop: "20px", padding: "10px" }}
+            placeholder="Paste your manuscript text here..."
+          />
 
-      <button
-        onClick={runDiagnosis}
-        disabled={loading || !manuscript}
-        style={{ marginTop: "20px", padding: "10px 30px", fontSize: "16px" }}
-      >
-        {loading ? "Running diagnosis — this takes a few minutes..." : "Run Full Diagnosis"}
-      </button>
+          <button
+            onClick={runDiagnosis}
+            disabled={!manuscript}
+            style={{
+              marginTop: "20px",
+              padding: "10px 30px",
+              fontSize: "16px",
+            }}
+          >
+            Run Full Diagnosis
+          </button>
+        </>
+      )}
 
       {loading && (
-        <div style={{ marginTop: "40px", color: "#888" }}>
-          <p>Reading your manuscript...</p>
-          <p>Running Voice analysis...</p>
-          <p>Checking structure...</p>
-          <p>Counting repetition...</p>
-          <p>Identifying your reader...</p>
-          <p>Building your revision plan...</p>
-          <p>Saving your reports...</p>
+        <div style={{ marginTop: "40px" }}>
+          <p style={{ fontSize: "18px", color: "#c8a96e" }}>{status}</p>
+
+          <div style={{ marginTop: "20px" }}>
+            {completedReports.map((r) => (
+              <p key={r} style={{ color: "#4a7c59", margin: "8px 0" }}>
+                ✓ {reportLabels[r] || r} complete
+              </p>
+            ))}
+          </div>
+
+          {completedReports.length > 0 && completedReports.length < 6 && (
+            <p style={{ marginTop: "15px", color: "#888", fontSize: "14px" }}>
+              {completedReports.length} of 6 reports complete...
+            </p>
+          )}
         </div>
       )}
 
       {error && (
-        <p style={{ marginTop: "20px", color: "red" }}>{error}</p>
+        <div style={{ marginTop: "20px" }}>
+          <p style={{ color: "red" }}>{error}</p>
+          <button
+            onClick={() => {
+              setLoading(false);
+              setError("");
+              setCompletedReports([]);
+              setStatus("");
+            }}
+            style={{ marginTop: "10px", padding: "8px 20px" }}
+          >
+            Try Again
+          </button>
+        </div>
       )}
     </main>
   );
