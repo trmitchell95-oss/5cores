@@ -14,8 +14,6 @@ export default function Home() {
   const reportLabels: Record<string, string> = {
     voice: "Voice Report",
     structure: "Structure Report",
-    repetition: "Repetition Report",
-    market: "Market / Reader Report",
     surgical: "Surgical Fix Report",
     roadmap: "Revision Roadmap",
   };
@@ -106,9 +104,9 @@ export default function Home() {
               </p>
             ))}
           </div>
-          {completedReports.length > 0 && completedReports.length < 6 && (
+          {completedReports.length > 0 && completedReports.length < 4 && (
             <p style={{ marginTop: "15px", color: "#888", fontSize: "14px" }}>
-              {completedReports.length} of 6 reports complete...
+              {completedReports.length} of 4 reports complete...
             </p>
           )}
         </div>

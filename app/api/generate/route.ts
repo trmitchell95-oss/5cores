@@ -5,8 +5,6 @@ import { runAnthropicPass } from "@/lib/ai/providers/anthropic";
 import { finalEditorSystemPrompt } from "@/lib/ai/personas/finalEditor";
 import { voiceReportPrompt } from "@/lib/ai/prompts/voiceReport";
 import { structureReportPrompt } from "@/lib/ai/prompts/structureReport";
-import { repetitionReportPrompt } from "@/lib/ai/prompts/repetitionReport";
-import { marketReportPrompt } from "@/lib/ai/prompts/marketReport";
 import { surgicalReportPrompt } from "@/lib/ai/prompts/surgicalReport";
 import { revisionRoadmapPrompt } from "@/lib/ai/prompts/revisionRoadmap";
 import { createClient } from "@supabase/supabase-js";
@@ -14,8 +12,6 @@ import { createClient } from "@supabase/supabase-js";
 const steps = [
   { key: "voice", prompt: voiceReportPrompt, status: "Running Voice analysis..." },
   { key: "structure", prompt: structureReportPrompt, status: "Checking structure..." },
-  { key: "repetition", prompt: repetitionReportPrompt, status: "Counting repetition..." },
-  { key: "market", prompt: marketReportPrompt, status: "Identifying your reader..." },
   { key: "surgical", prompt: surgicalReportPrompt, status: "Building your surgical fix plan..." },
   { key: "roadmap", prompt: revisionRoadmapPrompt, status: "Generating your revision roadmap..." },
 ];
@@ -92,8 +88,6 @@ export async function POST(req: NextRequest) {
           }
 
           send({ type: "complete", submissionId: submission.id });
-        } else {
-          send({ type: "done", reports });
         }
 
       } catch (error) {
