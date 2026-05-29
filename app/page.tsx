@@ -1,77 +1,84 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { useSearchParams } from "next/navigation";
-import { Suspense } from "react";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 
-const reportLabels: Record<string, string> = {
-  voice: "Voice Report",
-  structure: "Structure Report",
-  surgical: "Surgical Fix Report",
-  roadmap: "Revision Roadmap",
-};
-
-function ReportContent() {
-  const searchParams = useSearchParams();
-  const id = searchParams.get("id");
-  const [reports, setReports] = useState<Record<string, string>>({});
-  const [loading, setLoading] = useState(true);
+export default function Home() {
+  const [manuscript, setManuscript] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [status, setStatus] = useState("");
+  const [completedReports, setCompletedReports] = useState<string[]>([]);
   const [error, setError] = useState("");
+  const router = useRouter();
 
-  useEffect(() => {
-    if (!id) {
-      setError("No report ID provided.");
-      setLoading(false);
-      return;
-    }
+  const reportLabels: Record<string, string> = {
+    voice: "Voice Report",
+    structure: "Structure Report",
+    surgical: "Surgical Fix Report",
+    roadmap: "Revision Roadmap",
+  };
 
-    fetch(`/api/reports?id=${id}`)
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.error) {
-          setError(data.error);
-        } else {
-          setReports(data.reports);
-        }
-        setLoading(false);
-      })
-      .catch(() => {
-        setError("Failed to load reports.");
-        setLoading(false);
+  async function runDiagnosis() {
+    setLoading(true);
+    setError("");
+    setCompletedReports([]);
+    setStatus("Starting diagnosis...");
+
+    try {
+      const response = await fetch("/api/generate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ manuscriptText: manuscript }),
       });
-  }, [id]);
 
-  if (loading) return <p>Loading your reports...</p>;
-  if (error) return <p style={{ color: "red" }}>{error}</p>;
+      if (!response.body) throw new Error("No response body");
 
-  return (
-    <div>
-      <p style={{ color: "#888", fontSize: "14px" }}>
-        Bookmark this page to return to your reports any time.
-      </p>
-      <div style={{ marginTop: "40px" }}>
-        {Object.entries(reportLabels).map(([key, label]) => (
-          <div key={key} style={{ marginBottom: "60px" }}>
-            <h2 style={{ borderBottom: "1px solid #333", paddingBottom: "10px" }}>
-              {label}
-            </h2>
-            <div style={{ whiteSpace: "pre-wrap", lineHeight: "1.7", marginTop: "20px" }}>
-              {reports[key] || "Report not available."}
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}
+      const reader = response.body.getReader();
+      const decoder = new TextDecoder();
+      let buffer = "";
 
-export default function ViewPage() {
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+
+        buffer += decoder.decode(value, { stream: true });
+        const lines = buffer.split("\n");
+        buffer = lines.pop() || "";
+
+        for (const line of lines) {
+          if (line.startsWith("data: ")) {
+            try {
+              const data = JSON.parse(line.slice(6));
+
+              if (data.type === "status") {
+                setStatus(data.message);
+              } else if (data.type === "report") {
+                setCompletedReports((prev) => [...prev, data.reportType]);
+              } else if (data.type === "complete") {
+                router.push("/view?id=" + data.submissionId);
+              } else if (data.type === "error") {
+                setError(data.message);
+                setLoading(false);
+              }
+            } catch {}
+          }
+        }
+      }
+    } catch {
+      setError("Connection failed. Please try again.");
+      setLoading(false);
+    }
+  }
+
   return (
     <main style={{ padding: "40px", maxWidth: "900px", margin: "0 auto" }}>
-      <h1>5 CORE — Your Diagnosis</h1>
-      <Suspense fallback={<p>Loading...</p>}>
-        <ReportContent />
-      </Suspense>
-    </main>
-  );
-}
+      <h1>5 CORE — Manuscript Diagnosis</h1>
+      <p>Paste manuscript text below and run the full diagnosis.</p>
+
+      {!loading && !error && (
+        <div>
+          <textarea
+            value={manuscript}
+            onChange={(e) => setManuscript(e.target.value)}
+            rows={12}
+            styl
