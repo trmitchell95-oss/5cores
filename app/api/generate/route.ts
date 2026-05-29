@@ -1,7 +1,7 @@
 export const maxDuration = 300;
 
 import { runFullDiagnosis } from "@/lib/ai/pipelines/fullDiagnosis";
-import { saveFullDiagnosis } from "@/lib/workspace/saveReports";
+import { saveFullDiagnosis } from "@/lib/saveReports";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {

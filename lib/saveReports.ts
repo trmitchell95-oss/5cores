@@ -1,4 +1,4 @@
-import { supabaseAdmin } from "./supabase";
+import { createClient } from "@supabase/supabase-js";
 
 export async function saveFullDiagnosis(
   manuscriptText: string,
@@ -11,7 +11,11 @@ export async function saveFullDiagnosis(
     roadmap: string;
   }
 ) {
-  // Create a submission record
+  const supabaseAdmin = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
+  );
+
   const { data: submission, error: submissionError } = await supabaseAdmin
     .from("submissions")
     .insert({
@@ -26,7 +30,6 @@ export async function saveFullDiagnosis(
     throw new Error("Failed to save submission");
   }
 
-  // Create a draft version record
   const { data: draft, error: draftError } = await supabaseAdmin
     .from("draft_versions")
     .insert({
@@ -43,15 +46,13 @@ export async function saveFullDiagnosis(
     throw new Error("Failed to save draft");
   }
 
-  // Update submission with active draft
   await supabaseAdmin
     .from("submissions")
     .update({ active_draft_id: draft.id })
     .eq("id", submission.id);
 
-  // Save all six reports
   const reportTypes = ["voice", "structure", "repetition", "market", "surgical", "roadmap"];
-  
+
   for (const reportType of reportTypes) {
     await supabaseAdmin.from("reports").insert({
       submission_id: submission.id,
