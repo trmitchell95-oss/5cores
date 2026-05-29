@@ -1,5 +1,5 @@
 export const CLAUDE_MODELS = {
-  opus: process.env.CLAUDE_OPUS_MODEL || "claude-opus-4-6",
+  opus: process.env.CLAUDE_OPUS_MODEL || "claude-sonnet-4-6",
   sonnet: process.env.CLAUDE_SONNET_MODEL || "claude-sonnet-4-6",
   haiku: process.env.CLAUDE_HAIKU_MODEL || "claude-haiku-4-5-20251001",
 };
