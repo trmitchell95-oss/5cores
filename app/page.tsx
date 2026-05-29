@@ -1,133 +1,59 @@
-"use client";
+import { createClient } from "@supabase/supabase-js";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+const reportTabs = [
+  { key: "voice", label: "Voice Report" },
+  { key: "structure", label: "Structure Report" },
+  { key: "surgical", label: "Surgical Fix Report" },
+  { key: "roadmap", label: "Revision Roadmap" },
+];
 
-export default function Home() {
-  const [manuscript, setManuscript] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [status, setStatus] = useState("");
-  const [completedReports, setCompletedReports] = useState<string[]>([]);
-  const [error, setError] = useState("");
-  const router = useRouter();
+export default async function ReportPage(props: { params: Promise<{ id: string }> }) {
+  const { id } = await props.params;
 
-  const reportLabels: Record<string, string> = {
-    voice: "Voice Report",
-    structure: "Structure Report",
-    surgical: "Surgical Fix Report",
-    roadmap: "Revision Roadmap",
-  };
+  const supabase = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
+  );
 
-  async function runDiagnosis() {
-    setLoading(true);
-    setError("");
-    setCompletedReports([]);
-    setStatus("Starting diagnosis...");
+  const { data: reports } = await supabase
+    .from("reports")
+    .select("*")
+    .eq("submission_id", id)
+    .eq("phase", 1);
 
-    try {
-      const response = await fetch("/api/generate", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ manuscriptText: manuscript }),
-      });
+  if (!reports || reports.length === 0) {
+    return (
+      <main style={{ padding: "40px", maxWidth: "900px", margin: "0 auto" }}>
+        <h1>Report not found</h1>
+        <p>This report may have been deleted or the ID is incorrect.</p>
+      </main>
+    );
+  }
 
-      if (!response.body) throw new Error("No response body");
-
-      const reader = response.body.getReader();
-      const decoder = new TextDecoder();
-      let buffer = "";
-
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
-
-        buffer += decoder.decode(value, { stream: true });
-        const lines = buffer.split("\n");
-        buffer = lines.pop() || "";
-
-        for (const line of lines) {
-          if (line.startsWith("data: ")) {
-            try {
-              const data = JSON.parse(line.slice(6));
-
-              if (data.type === "status") {
-                setStatus(data.message);
-              } else if (data.type === "report") {
-                setCompletedReports((prev) => [...prev, data.reportType]);
-              } else if (data.type === "complete") {
-                router.push(`/reports/${data.submissionId}`);
-              } else if (data.type === "error") {
-                setError(data.message);
-                setLoading(false);
-              }
-            } catch {}
-          }
-        }
-      }
-    } catch {
-      setError("Connection failed. Please try again.");
-      setLoading(false);
-    }
+  const reportMap: Record<string, string> = {};
+  for (const report of reports) {
+    reportMap[report.report_type] = report.content;
   }
 
   return (
     <main style={{ padding: "40px", maxWidth: "900px", margin: "0 auto" }}>
-      <h1>5 CORE — Manuscript Diagnosis</h1>
-      <p>Paste manuscript text below and run the full diagnosis.</p>
+      <h1>5 CORE — Your Diagnosis</h1>
+      <p style={{ color: "#888", fontSize: "14px" }}>
+        Bookmark this page to return to your reports any time.
+      </p>
 
-      {!loading && !error && (
-        <>
-          <textarea
-            value={manuscript}
-            onChange={(e) => setManuscript(e.target.value)}
-            rows={12}
-            style={{ width: "100%", marginTop: "20px", padding: "10px" }}
-            placeholder="Paste your manuscript text here..."
-          />
-          <button
-            onClick={runDiagnosis}
-            disabled={!manuscript}
-            style={{ marginTop: "20px", padding: "10px 30px", fontSize: "16px" }}
-          >
-            Run Full Diagnosis
-          </button>
-        </>
-      )}
-
-      {loading && (
-        <div style={{ marginTop: "40px" }}>
-          <p style={{ fontSize: "18px", color: "#c8a96e" }}>{status}</p>
-          <div style={{ marginTop: "20px" }}>
-            {completedReports.map((r) => (
-              <p key={r} style={{ color: "#4a7c59", margin: "8px 0" }}>
-                ✓ {reportLabels[r] || r} complete
-              </p>
-            ))}
+      <div style={{ marginTop: "40px" }}>
+        {reportTabs.map((tab) => (
+          <div key={tab.key} style={{ marginBottom: "60px" }}>
+            <h2 style={{ borderBottom: "1px solid #333", paddingBottom: "10px" }}>
+              {tab.label}
+            </h2>
+            <div style={{ whiteSpace: "pre-wrap", lineHeight: "1.7", marginTop: "20px" }}>
+              {reportMap[tab.key] || "Report not available."}
+            </div>
           </div>
-          {completedReports.length > 0 && completedReports.length < 4 && (
-            <p style={{ marginTop: "15px", color: "#888", fontSize: "14px" }}>
-              {completedReports.length} of 4 reports complete...
-            </p>
-          )}
-        </div>
-      )}
-
-      {error && (
-        <div style={{ marginTop: "20px" }}>
-          <p style={{ color: "red" }}>{error}</p>
-          <button
-            onClick={() => {
-              setLoading(false);
-              setError("");
-              setCompletedReports([]);
-              setStatus("");
-            }}
-            style={{ marginTop: "10px", padding: "8px 20px" }}
-          >
-            Try Again
-          </button>
-        </div>
-      )}
+        ))}
+      </div>
     </main>
   );
 }
