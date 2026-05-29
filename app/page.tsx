@@ -181,13 +181,22 @@ export default function Home() {
                       {submissionId}
                     </code>
 
-                    <button
-                      type="button"
-                      onClick={copySubmissionId}
-                      className="rounded-lg border border-neutral-700 px-4 py-2 text-sm font-bold text-neutral-100 transition hover:border-white"
-                    >
-                      {copied ? "Copied" : "Copy ID"}
-                    </button>
+                    <div className="flex flex-wrap gap-3">
+                      <button
+                        type="button"
+                        onClick={copySubmissionId}
+                        className="rounded-lg border border-neutral-700 px-4 py-2 text-sm font-bold text-neutral-100 transition hover:border-white"
+                      >
+                        {copied ? "Copied" : "Copy ID"}
+                      </button>
+
+                      <a
+                        href={`/view/${submissionId}`}
+                        className="rounded-lg bg-white px-4 py-2 text-sm font-bold text-black transition hover:bg-neutral-200"
+                      >
+                        View Saved Report
+                      </a>
+                    </div>
                   </div>
                 </div>
               )}
