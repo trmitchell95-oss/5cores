@@ -1,4 +1,6 @@
-import { runVoiceCouncil } from "@/lib/ai/pipelines/voiceCouncil";
+export const maxDuration = 300;
+
+import { runFullDiagnosis } from "@/lib/ai/pipelines/fullDiagnosis";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {
@@ -12,9 +14,9 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const report = await runVoiceCouncil(manuscriptText);
+    const reports = await runFullDiagnosis(manuscriptText);
 
-    return NextResponse.json({ report });
+    return NextResponse.json({ reports });
   } catch (error) {
     console.error("Generation error:", error);
     return NextResponse.json(
