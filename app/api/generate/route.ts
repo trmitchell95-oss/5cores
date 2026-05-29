@@ -1,115 +1,151 @@
-export const maxDuration = 300;
+import { NextResponse } from "next/server";
 
-import { NextRequest } from "next/server";
-import { runAnthropicPass } from "@/lib/ai/providers/anthropic";
-import { finalEditorSystemPrompt } from "@/lib/ai/personas/finalEditor";
-import { voiceReportPrompt } from "@/lib/ai/prompts/voiceReport";
-import { structureReportPrompt } from "@/lib/ai/prompts/structureReport";
-import { surgicalReportPrompt } from "@/lib/ai/prompts/surgicalReport";
-import { revisionRoadmapPrompt } from "@/lib/ai/prompts/revisionRoadmap";
-import { createClient } from "@supabase/supabase-js";
+export const runtime = "nodejs";
+export const maxDuration = 60;
 
-const steps = [
-  { key: "voice", prompt: voiceReportPrompt, status: "Running Voice analysis..." },
-  { key: "structure", prompt: structureReportPrompt, status: "Checking structure..." },
-  { key: "surgical", prompt: surgicalReportPrompt, status: "Building your surgical fix plan..." },
-  { key: "roadmap", prompt: revisionRoadmapPrompt, status: "Generating your revision roadmap..." },
-];
+export async function POST(req: Request) {
+  try {
+    const body = await req.json().catch(() => ({}));
 
-export async function POST(req: NextRequest) {
-  const body = await req.json();
-  const manuscriptText = body.manuscriptText;
+    const manuscript = body.manuscript || body.text || "";
 
-  if (!manuscriptText) {
-    return new Response(JSON.stringify({ error: "No manuscript text" }), { status: 400 });
+    if (!manuscript || manuscript.trim().length === 0) {
+      return NextResponse.json(
+        { error: "No manuscript text was provided." },
+        { status: 400 }
+      );
+    }
+
+    const apiKey = process.env.ANTHROPIC_API_KEY;
+
+    if (!apiKey) {
+      return NextResponse.json(
+        {
+          error:
+            "Missing ANTHROPIC_API_KEY. Check your .env.local file and your Vercel environment variables.",
+        },
+        { status: 500 }
+      );
+    }
+
+    const systemPrompt = `
+You are THE HOVEL EDITOR.
+
+You produce a sharp, honest editorial diagnosis for literary manuscript excerpts.
+
+Your job is not to flatter. Your job is to identify what is working, what is weakening the piece, where the voice is strongest, where the prose is over-explaining, and what the writer should do next.
+
+Write in a direct, intelligent, human editorial voice.
+
+Do not sound like generic AI feedback.
+Do not give empty praise.
+Do not use vague workshop language.
+Do not rewrite the whole manuscript unless specifically asked.
+Do not be cruel, but be honest.
+
+Return the report in this structure:
+
+# VOICE REPORT
+
+## 1. Executive Voice Verdict
+Give a clear overall verdict on the voice, authority, tone, and emotional power of the manuscript.
+
+## 2. Voice Scorecard
+Score these from 1 to 5 and briefly explain each:
+- Distinctiveness
+- Authority
+- Emotional Control
+- Image Discipline
+- Sentence Rhythm
+- Trust in the Reader
+
+## 3. What Is Working
+Identify the strongest elements.
+
+## 4. What Is Weakening the Piece
+Identify the main problems, especially repetition, over-explaining, tonal inflation, unclear movement, or places where the writing tries too hard.
+
+## 5. Most Powerful Lines or Moments
+Call out the best moments and explain why they work.
+
+## 6. Lines or Moves That Need Attention
+Identify weak spots, soft spots, overwriting, cliché, or places that should be cut or sharpened.
+
+## 7. Surgical Revision Plan
+Give a practical list of changes the writer should make next.
+
+## 8. Final Editorial Verdict
+End with a blunt but useful final assessment.
+`;
+
+    const response = await fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "x-api-key": apiKey,
+        "anthropic-version": "2023-06-01",
+      },
+      body: JSON.stringify({
+        model: process.env.ANTHROPIC_MODEL || "claude-sonnet-4-5",
+        max_tokens: 4000,
+        temperature: 0.4,
+        system: systemPrompt,
+        messages: [
+          {
+            role: "user",
+            content: `Run a Voice Report on this manuscript:\n\n${manuscript}`,
+          },
+        ],
+      }),
+    });
+
+    const rawText = await response.text();
+
+    let data: any = {};
+    try {
+      data = JSON.parse(rawText);
+    } catch {
+      return NextResponse.json(
+        {
+          error: "Anthropic returned a non-JSON response.",
+          details: rawText,
+        },
+        { status: 500 }
+      );
+    }
+
+    if (!response.ok) {
+      return NextResponse.json(
+        {
+          error:
+            data?.error?.message ||
+            data?.message ||
+            "Anthropic API request failed.",
+          details: data,
+        },
+        { status: response.status }
+      );
+    }
+
+    const report =
+      data?.content?.[0]?.text ||
+      data?.content?.map((item: any) => item.text).join("\n\n") ||
+      "";
+
+    if (!report) {
+      return NextResponse.json(
+        { error: "The AI response came back empty.", details: data },
+        { status: 500 }
+      );
+    }
+
+    return NextResponse.json({ report });
+  } catch (err: any) {
+    return NextResponse.json(
+      {
+        error: err?.message || "Unknown server error.",
+      },
+      { status: 500 }
+    );
   }
-
-  const encoder = new TextEncoder();
-
-  const stream = new ReadableStream({
-    async start(controller) {
-      const send = function(data: object) {
-        controller.enqueue(encoder.encode("data: " + JSON.stringify(data) + "\n\n"));
-      };
-
-      try {
-        const reports: Record<string, string> = {};
-
-        for (const step of steps) {
-          send({ type: "status", message: step.status });
-          reports[step.key] = await runAnthropicPass({
-            modelRole: "sonnet",
-            systemPrompt: finalEditorSystemPrompt,
-            userPrompt: step.prompt + "\n\nManuscript:\n" + manuscriptText,
-          });
-          send({ type: "report", reportType: step.key });
-        }
-
-        send({ type: "status", message: "Saving your reports..." });
-
-        const supabase = createClient(
-          process.env.NEXT_PUBLIC_SUPABASE_URL || "",
-          process.env.SUPABASE_SERVICE_ROLE_KEY || ""
-        );
-
-        const result = await supabase
-          .from("submissions")
-          .insert({ status: "diagnosed", product_type: "full" })
-          .select()
-          .single();
-
-        const submission = result.data;
-
-        if (submission) {
-          const draftResult = await supabase
-            .from("draft_versions")
-            .insert({
-              submission_id: submission.id,
-              version_number: 1,
-              extracted_text: manuscriptText,
-              extraction_status: "complete",
-              word_count: manuscriptText.split(/\s+/).length,
-            })
-            .select()
-            .single();
-
-          const draft = draftResult.data;
-
-          if (draft) {
-            await supabase
-              .from("submissions")
-              .update({ active_draft_id: draft.id })
-              .eq("id", submission.id);
-
-            var keys = Object.keys(reports);
-            for (var i = 0; i < keys.length; i++) {
-              await supabase.from("reports").insert({
-                submission_id: submission.id,
-                draft_version_id: draft.id,
-                report_type: keys[i],
-                phase: 1,
-                content: reports[keys[i]],
-              });
-            }
-          }
-
-          send({ type: "complete", submissionId: submission.id });
-        }
-
-      } catch (error) {
-        console.error("Generation error:", error);
-        send({ type: "error", message: "Something went wrong: " + String(error) });
-      }
-
-      controller.close();
-    },
-  });
-
-  return new Response(stream, {
-    headers: {
-      "Content-Type": "text/event-stream",
-      "Cache-Control": "no-cache",
-      "Connection": "keep-alive",
-    },
-  });
 }

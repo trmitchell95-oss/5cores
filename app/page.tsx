@@ -1,129 +1,143 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 
 export default function Home() {
   const [manuscript, setManuscript] = useState("");
+  const [report, setReport] = useState("");
   const [loading, setLoading] = useState(false);
-  const [status, setStatus] = useState("");
-  const [completedReports, setCompletedReports] = useState<string[]>([]);
   const [error, setError] = useState("");
-  const router = useRouter();
 
-  const reportLabels = {
-    voice: "Voice Report",
-    structure: "Structure Report",
-    surgical: "Surgical Fix Report",
-    roadmap: "Revision Roadmap",
-  };
-
-  async function runDiagnosis() {
+  async function runReport() {
     setLoading(true);
     setError("");
-    setCompletedReports([]);
-    setStatus("Starting diagnosis...");
+    setReport("");
 
     try {
       const response = await fetch("/api/generate", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ manuscriptText: manuscript }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          manuscript,
+          text: manuscript,
+        }),
       });
 
-      if (!response.body) throw new Error("No response body");
+      const rawText = await response.text();
 
-      const reader = response.body.getReader();
-      const decoder = new TextDecoder();
-      let buffer = "";
+      let data: any = {};
 
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
-
-        buffer += decoder.decode(value, { stream: true });
-        const lines = buffer.split("\n");
-        buffer = lines.pop() || "";
-
-        for (const line of lines) {
-          if (line.startsWith("data: ")) {
-            try {
-              const data = JSON.parse(line.slice(6));
-              if (data.type === "status") {
-                setStatus(data.message);
-              } else if (data.type === "report") {
-                setCompletedReports(function(prev: string[]) { return [...prev, data.reportType]; });
-              } else if (data.type === "complete") {
-                router.push("/view?id=" + data.submissionId);
-              } else if (data.type === "error") {
-                setError(data.message);
-                setLoading(false);
-              }
-            } catch (e) {}
-          }
+      try {
+        data = JSON.parse(rawText);
+      } catch {
+        if (rawText.includes("<!DOCTYPE html>")) {
+          throw new Error(
+            "The app reached a webpage instead of the report API. The frontend is probably pointing at the wrong API route."
+          );
         }
+
+        data = { report: rawText };
       }
-    } catch (e) {
-      setError("Connection failed. Please try again.");
+
+      if (!response.ok) {
+        throw new Error(
+          data?.error ||
+            data?.message ||
+            data?.details ||
+            rawText ||
+            "Something went wrong while generating the report."
+        );
+      }
+
+      const finalReport =
+        data?.report ||
+        data?.completedReport ||
+        data?.voiceReport ||
+        data?.result ||
+        data?.output ||
+        data?.content ||
+        data?.message ||
+        rawText;
+
+      if (!finalReport) {
+        throw new Error("The report came back empty.");
+      }
+
+      setReport(finalReport);
+    } catch (err: any) {
+      setError(err?.message || "Unknown error.");
+    } finally {
       setLoading(false);
     }
   }
 
   return (
-    <main style={{ padding: "40px", maxWidth: "900px", margin: "0 auto" }}>
-      <h1>5 CORE Manuscript Diagnosis</h1>
-      <p>Paste manuscript text below and run the full diagnosis.</p>
+    <main className="min-h-screen bg-black text-white">
+      <div className="mx-auto max-w-5xl px-6 py-10">
+        <header className="mb-8">
+          <p className="mb-2 text-sm font-semibold uppercase tracking-[0.3em] text-neutral-500">
+            The Hovel Editor
+          </p>
 
-      {!loading && !error && (
-        <div>
+          <h1 className="text-5xl font-black tracking-tight">5 CORE</h1>
+
+          <p className="mt-4 max-w-2xl text-lg leading-8 text-neutral-400">
+            Paste manuscript text below and run the diagnosis.
+          </p>
+        </header>
+
+        <section className="rounded-2xl border border-neutral-800 bg-neutral-950 p-6 shadow-2xl">
+          <label
+            htmlFor="manuscript"
+            className="mb-3 block text-sm font-bold uppercase tracking-wide text-neutral-300"
+          >
+            Manuscript Text
+          </label>
+
           <textarea
+            id="manuscript"
             value={manuscript}
-            onChange={function(e) { setManuscript(e.target.value); }}
-            rows={12}
-            style={{ width: "100%", marginTop: "20px", padding: "10px" }}
+            onChange={(e) => setManuscript(e.target.value)}
+            rows={16}
             placeholder="Paste your manuscript text here..."
+            className="w-full resize-y rounded-xl border border-neutral-700 bg-black p-4 text-base leading-7 text-neutral-100 outline-none transition focus:border-white"
           />
-          <button
-            onClick={runDiagnosis}
-            disabled={!manuscript}
-            style={{ marginTop: "20px", padding: "10px 30px", fontSize: "16px" }}
-          >
-            Run Full Diagnosis
-          </button>
-        </div>
-      )}
 
-      {loading && (
-        <div style={{ marginTop: "40px" }}>
-          <p style={{ fontSize: "18px", color: "#c8a96e" }}>{status}</p>
-          <div style={{ marginTop: "20px" }}>
-            {completedReports.map(function(r: string) {
-              return (
-                <p key={r} style={{ color: "#4a7c59", margin: "8px 0" }}>
-                  {"Done: " + (reportLabels[r] || r)}
-                </p>
-              );
-            })}
+          <div className="mt-5 flex flex-wrap items-center gap-4">
+            <button
+              type="button"
+              onClick={runReport}
+              disabled={loading || manuscript.trim().length === 0}
+              className="rounded-xl bg-white px-6 py-3 font-bold text-black transition hover:bg-neutral-200 disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              {loading ? "Running Report..." : "Run Voice Report"}
+            </button>
+
+            <p className="text-sm text-neutral-500">
+              Characters: {manuscript.length}
+            </p>
           </div>
-        </div>
-      )}
+        </section>
 
-      {error && (
-        <div style={{ marginTop: "20px" }}>
-          <p style={{ color: "red" }}>{error}</p>
-          <button
-            onClick={function() {
-              setLoading(false);
-              setError("");
-              setCompletedReports([]);
-              setStatus("");
-            }}
-            style={{ marginTop: "10px", padding: "8px 20px" }}
-          >
-            Try Again
-          </button>
-        </div>
-      )}
+        {error && (
+          <section className="mt-8 rounded-2xl border border-red-800 bg-red-950/40 p-6 text-red-100">
+            <h2 className="mb-3 text-2xl font-black">Error</h2>
+            <p className="whitespace-pre-wrap leading-7">{error}</p>
+          </section>
+        )}
+
+        {report && (
+          <section className="mt-8 rounded-2xl border border-neutral-800 bg-neutral-950 p-6 shadow-2xl">
+            <h2 className="mb-4 text-3xl font-black">Your Report</h2>
+
+            <article className="whitespace-pre-wrap text-base leading-8 text-neutral-100">
+              {report}
+            </article>
+          </section>
+        )}
+      </div>
     </main>
   );
 }
