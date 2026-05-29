@@ -1,30 +1,19 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 
 export default function Home() {
   const [manuscript, setManuscript] = useState("");
   const [loading, setLoading] = useState(false);
   const [status, setStatus] = useState("");
-  const [completedReports, setCompletedReports] = useState<string[]>([]);
+  const [report, setReport] = useState("");
   const [error, setError] = useState("");
-  const router = useRouter();
-
-  const reportLabels: Record<string, string> = {
-    voice: "Voice Report",
-    structure: "Structure Report",
-    repetition: "Repetition Report",
-    market: "Market / Reader Report",
-    surgical: "Surgical Fix Report",
-    roadmap: "Revision Roadmap",
-  };
 
   async function runDiagnosis() {
     setLoading(true);
     setError("");
-    setCompletedReports([]);
-    setStatus("Starting diagnosis...");
+    setReport("");
+    setStatus("Starting...");
 
     try {
       const response = await fetch("/api/generate", {
@@ -51,91 +40,63 @@ export default function Home() {
           if (line.startsWith("data: ")) {
             try {
               const data = JSON.parse(line.slice(6));
-
-              if (data.type === "status") {
-                setStatus(data.message);
-              } else if (data.type === "report") {
-                setCompletedReports((prev) => [...prev, data.reportType]);
-              } else if (data.type === "complete") {
-                router.push(`/reports/${data.submissionId}`);
-              } else if (data.type === "error") {
+              if (data.type === "status") setStatus(data.message);
+              if (data.type === "done") {
+                setReport(data.report);
+                setLoading(false);
+              }
+              if (data.type === "error") {
                 setError(data.message);
                 setLoading(false);
               }
-            } catch {
-              // skip malformed lines
-            }
+            } catch {}
           }
         }
       }
     } catch {
-      setError("Something went wrong. Please try again.");
+      setError("Connection failed. Please try again.");
       setLoading(false);
     }
   }
 
   return (
     <main style={{ padding: "40px", maxWidth: "900px", margin: "0 auto" }}>
-      <h1>5 CORE — Manuscript Diagnosis</h1>
-      <p>Paste manuscript text below and run the full diagnosis.</p>
+      <h1>5 CORE — Voice Report Test</h1>
 
-      {!loading && (
+      {!report && (
         <>
           <textarea
             value={manuscript}
             onChange={(e) => setManuscript(e.target.value)}
-            rows={15}
+            rows={10}
             style={{ width: "100%", marginTop: "20px", padding: "10px" }}
-            placeholder="Paste your manuscript text here..."
+            placeholder="Paste a few paragraphs here..."
+            disabled={loading}
           />
-
           <button
             onClick={runDiagnosis}
-            disabled={!manuscript}
-            style={{
-              marginTop: "20px",
-              padding: "10px 30px",
-              fontSize: "16px",
-            }}
+            disabled={loading || !manuscript}
+            style={{ marginTop: "20px", padding: "10px 30px", fontSize: "16px" }}
           >
-            Run Full Diagnosis
+            {loading ? "Running..." : "Run Voice Report"}
           </button>
         </>
       )}
 
-      {loading && (
-        <div style={{ marginTop: "40px" }}>
-          <p style={{ fontSize: "18px", color: "#c8a96e" }}>{status}</p>
+      {loading && <p style={{ marginTop: "20px", color: "#c8a96e" }}>{status}</p>}
+      {error && <p style={{ marginTop: "20px", color: "red" }}>{error}</p>}
 
-          <div style={{ marginTop: "20px" }}>
-            {completedReports.map((r) => (
-              <p key={r} style={{ color: "#4a7c59", margin: "8px 0" }}>
-                ✓ {reportLabels[r] || r} complete
-              </p>
-            ))}
+      {report && (
+        <div style={{ marginTop: "30px" }}>
+          <h2>Your Voice Report</h2>
+          <div style={{ whiteSpace: "pre-wrap", lineHeight: "1.7", marginTop: "15px" }}>
+            {report}
           </div>
-
-          {completedReports.length > 0 && completedReports.length < 6 && (
-            <p style={{ marginTop: "15px", color: "#888", fontSize: "14px" }}>
-              {completedReports.length} of 6 reports complete...
-            </p>
-          )}
-        </div>
-      )}
-
-      {error && (
-        <div style={{ marginTop: "20px" }}>
-          <p style={{ color: "red" }}>{error}</p>
           <button
-            onClick={() => {
-              setLoading(false);
-              setError("");
-              setCompletedReports([]);
-              setStatus("");
-            }}
-            style={{ marginTop: "10px", padding: "8px 20px" }}
+            onClick={() => { setReport(""); setManuscript(""); }}
+            style={{ marginTop: "30px", padding: "10px 20px" }}
           >
-            Try Again
+            Run Another
           </button>
         </div>
       )}

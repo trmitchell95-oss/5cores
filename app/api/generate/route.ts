@@ -4,7 +4,6 @@ import { NextRequest } from "next/server";
 import { runAnthropicPass } from "@/lib/ai/providers/anthropic";
 import { finalEditorSystemPrompt } from "@/lib/ai/personas/finalEditor";
 import { voiceReportPrompt } from "@/lib/ai/prompts/voiceReport";
-import { saveFullDiagnosis } from "@/lib/saveReports";
 
 export async function POST(req: NextRequest) {
   const { manuscriptText } = await req.json();
@@ -28,19 +27,8 @@ export async function POST(req: NextRequest) {
           systemPrompt: finalEditorSystemPrompt,
           userPrompt: `${voiceReportPrompt}\n\nManuscript:\n${manuscriptText}`,
         });
-        send({ type: "report", reportType: "voice" });
 
-        send({ type: "status", message: "Saving..." });
-        const submissionId = await saveFullDiagnosis(manuscriptText, {
-          voice,
-          structure: "",
-          repetition: "",
-          market: "",
-          surgical: "",
-          roadmap: "",
-        });
-
-        send({ type: "complete", submissionId });
+        send({ type: "done", report: voice });
 
       } catch (error) {
         console.error("Generation error:", error);
