@@ -4,17 +4,7 @@ import { NextRequest } from "next/server";
 import { runAnthropicPass } from "@/lib/ai/providers/anthropic";
 import { finalEditorSystemPrompt } from "@/lib/ai/personas/finalEditor";
 import { voiceReportPrompt } from "@/lib/ai/prompts/voiceReport";
-import { surgicalReportPrompt } from "@/lib/ai/prompts/surgicalReport";
-import { revisionRoadmapPrompt } from "@/lib/ai/prompts/revisionRoadmap";
 import { saveFullDiagnosis } from "@/lib/saveReports";
-
-async function runSinglePass(manuscriptText: string, reportPrompt: string) {
-  return await runAnthropicPass({
-    modelRole: "sonnet",
-    systemPrompt: finalEditorSystemPrompt,
-    userPrompt: `${reportPrompt}\n\nManuscript:\n${manuscriptText}`,
-  });
-}
 
 export async function POST(req: NextRequest) {
   const { manuscriptText } = await req.json();
@@ -33,32 +23,28 @@ export async function POST(req: NextRequest) {
 
       try {
         send({ type: "status", message: "Running Voice analysis..." });
-        const voice = await runSinglePass(manuscriptText, voiceReportPrompt);
+        const voice = await runAnthropicPass({
+          modelRole: "sonnet",
+          systemPrompt: finalEditorSystemPrompt,
+          userPrompt: `${voiceReportPrompt}\n\nManuscript:\n${manuscriptText}`,
+        });
         send({ type: "report", reportType: "voice" });
 
-        send({ type: "status", message: "Building your surgical fix plan..." });
-        const surgical = await runSinglePass(manuscriptText, surgicalReportPrompt);
-        send({ type: "report", reportType: "surgical" });
-
-        send({ type: "status", message: "Generating your revision roadmap..." });
-        const roadmap = await runSinglePass(manuscriptText, revisionRoadmapPrompt);
-        send({ type: "report", reportType: "roadmap" });
-
-        send({ type: "status", message: "Saving your reports..." });
+        send({ type: "status", message: "Saving..." });
         const submissionId = await saveFullDiagnosis(manuscriptText, {
           voice,
           structure: "",
           repetition: "",
           market: "",
-          surgical,
-          roadmap,
+          surgical: "",
+          roadmap: "",
         });
 
         send({ type: "complete", submissionId });
 
       } catch (error) {
         console.error("Generation error:", error);
-        send({ type: "error", message: "Something went wrong. Please try again." });
+        send({ type: "error", message: "Something went wrong: " + String(error) });
       }
 
       controller.close();
