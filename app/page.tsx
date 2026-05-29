@@ -1,59 +1,77 @@
-import { createClient } from "@supabase/supabase-js";
+"use client";
 
-const reportTabs = [
-  { key: "voice", label: "Voice Report" },
-  { key: "structure", label: "Structure Report" },
-  { key: "surgical", label: "Surgical Fix Report" },
-  { key: "roadmap", label: "Revision Roadmap" },
-];
+import { useState, useEffect } from "react";
+import { useSearchParams } from "next/navigation";
+import { Suspense } from "react";
 
-export default async function ReportPage(props: { params: Promise<{ id: string }> }) {
-  const { id } = await props.params;
+const reportLabels: Record<string, string> = {
+  voice: "Voice Report",
+  structure: "Structure Report",
+  surgical: "Surgical Fix Report",
+  roadmap: "Revision Roadmap",
+};
 
-  const supabase = createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!
-  );
+function ReportContent() {
+  const searchParams = useSearchParams();
+  const id = searchParams.get("id");
+  const [reports, setReports] = useState<Record<string, string>>({});
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
-  const { data: reports } = await supabase
-    .from("reports")
-    .select("*")
-    .eq("submission_id", id)
-    .eq("phase", 1);
+  useEffect(() => {
+    if (!id) {
+      setError("No report ID provided.");
+      setLoading(false);
+      return;
+    }
 
-  if (!reports || reports.length === 0) {
-    return (
-      <main style={{ padding: "40px", maxWidth: "900px", margin: "0 auto" }}>
-        <h1>Report not found</h1>
-        <p>This report may have been deleted or the ID is incorrect.</p>
-      </main>
-    );
-  }
+    fetch(`/api/reports?id=${id}`)
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.error) {
+          setError(data.error);
+        } else {
+          setReports(data.reports);
+        }
+        setLoading(false);
+      })
+      .catch(() => {
+        setError("Failed to load reports.");
+        setLoading(false);
+      });
+  }, [id]);
 
-  const reportMap: Record<string, string> = {};
-  for (const report of reports) {
-    reportMap[report.report_type] = report.content;
-  }
+  if (loading) return <p>Loading your reports...</p>;
+  if (error) return <p style={{ color: "red" }}>{error}</p>;
 
   return (
-    <main style={{ padding: "40px", maxWidth: "900px", margin: "0 auto" }}>
-      <h1>5 CORE — Your Diagnosis</h1>
+    <div>
       <p style={{ color: "#888", fontSize: "14px" }}>
         Bookmark this page to return to your reports any time.
       </p>
-
       <div style={{ marginTop: "40px" }}>
-        {reportTabs.map((tab) => (
-          <div key={tab.key} style={{ marginBottom: "60px" }}>
+        {Object.entries(reportLabels).map(([key, label]) => (
+          <div key={key} style={{ marginBottom: "60px" }}>
             <h2 style={{ borderBottom: "1px solid #333", paddingBottom: "10px" }}>
-              {tab.label}
+              {label}
             </h2>
             <div style={{ whiteSpace: "pre-wrap", lineHeight: "1.7", marginTop: "20px" }}>
-              {reportMap[tab.key] || "Report not available."}
+              {reports[key] || "Report not available."}
             </div>
           </div>
         ))}
       </div>
+    </div>
+  );
+}
+
+export default function ViewPage() {
+  return (
+    <main style={{ padding: "40px", maxWidth: "900px", margin: "0 auto" }}>
+      <h1>5 CORE — Your Diagnosis</h1>
+      <Suspense fallback={<p>Loading...</p>}>
+        <ReportContent />
+      </Suspense>
     </main>
   );
 }
