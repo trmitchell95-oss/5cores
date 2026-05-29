@@ -4,9 +4,6 @@ import { NextRequest } from "next/server";
 import { runAnthropicPass } from "@/lib/ai/providers/anthropic";
 import { finalEditorSystemPrompt } from "@/lib/ai/personas/finalEditor";
 import { voiceReportPrompt } from "@/lib/ai/prompts/voiceReport";
-import { structureReportPrompt } from "@/lib/ai/prompts/structureReport";
-import { repetitionReportPrompt } from "@/lib/ai/prompts/repetitionReport";
-import { marketReportPrompt } from "@/lib/ai/prompts/marketReport";
 import { surgicalReportPrompt } from "@/lib/ai/prompts/surgicalReport";
 import { revisionRoadmapPrompt } from "@/lib/ai/prompts/revisionRoadmap";
 import { saveFullDiagnosis } from "@/lib/saveReports";
@@ -35,40 +32,26 @@ export async function POST(req: NextRequest) {
       };
 
       try {
-        const reports: Record<string, string> = {};
-
         send({ type: "status", message: "Running Voice analysis..." });
-        reports.voice = await runSinglePass(manuscriptText, voiceReportPrompt);
+        const voice = await runSinglePass(manuscriptText, voiceReportPrompt);
         send({ type: "report", reportType: "voice" });
 
-        send({ type: "status", message: "Checking structure..." });
-        reports.structure = await runSinglePass(manuscriptText, structureReportPrompt);
-        send({ type: "report", reportType: "structure" });
-
-        send({ type: "status", message: "Counting repetition..." });
-        reports.repetition = await runSinglePass(manuscriptText, repetitionReportPrompt);
-        send({ type: "report", reportType: "repetition" });
-
-        send({ type: "status", message: "Identifying your reader..." });
-        reports.market = await runSinglePass(manuscriptText, marketReportPrompt);
-        send({ type: "report", reportType: "market" });
-
         send({ type: "status", message: "Building your surgical fix plan..." });
-        reports.surgical = await runSinglePass(manuscriptText, surgicalReportPrompt);
+        const surgical = await runSinglePass(manuscriptText, surgicalReportPrompt);
         send({ type: "report", reportType: "surgical" });
 
         send({ type: "status", message: "Generating your revision roadmap..." });
-        reports.roadmap = await runSinglePass(manuscriptText, revisionRoadmapPrompt);
+        const roadmap = await runSinglePass(manuscriptText, revisionRoadmapPrompt);
         send({ type: "report", reportType: "roadmap" });
 
         send({ type: "status", message: "Saving your reports..." });
         const submissionId = await saveFullDiagnosis(manuscriptText, {
-          voice: reports.voice,
-          structure: reports.structure,
-          repetition: reports.repetition,
-          market: reports.market,
-          surgical: reports.surgical,
-          roadmap: reports.roadmap,
+          voice,
+          structure: "",
+          repetition: "",
+          market: "",
+          surgical,
+          roadmap,
         });
 
         send({ type: "complete", submissionId });
