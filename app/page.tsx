@@ -5,6 +5,9 @@ import { useState } from "react";
 export default function Home() {
   const [manuscript, setManuscript] = useState("");
   const [report, setReport] = useState("");
+  const [submissionId, setSubmissionId] = useState("");
+  const [saved, setSaved] = useState(false);
+  const [copied, setCopied] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -12,6 +15,9 @@ export default function Home() {
     setLoading(true);
     setError("");
     setReport("");
+    setSubmissionId("");
+    setSaved(false);
+    setCopied(false);
 
     try {
       const response = await fetch("/api/generate", {
@@ -66,10 +72,33 @@ export default function Home() {
       }
 
       setReport(finalReport);
+
+      if (data?.submissionId) {
+        setSubmissionId(data.submissionId);
+      }
+
+      if (data?.saved === true) {
+        setSaved(true);
+      }
     } catch (err: any) {
       setError(err?.message || "Unknown error.");
     } finally {
       setLoading(false);
+    }
+  }
+
+  async function copySubmissionId() {
+    if (!submissionId) return;
+
+    try {
+      await navigator.clipboard.writeText(submissionId);
+      setCopied(true);
+
+      setTimeout(() => {
+        setCopied(false);
+      }, 1500);
+    } catch {
+      setCopied(false);
     }
   }
 
@@ -130,7 +159,39 @@ export default function Home() {
 
         {report && (
           <section className="mt-8 rounded-2xl border border-neutral-800 bg-neutral-950 p-6 shadow-2xl">
-            <h2 className="mb-4 text-3xl font-black">Your Report</h2>
+            <div className="mb-6 flex flex-col gap-4 border-b border-neutral-800 pb-5">
+              <div>
+                <h2 className="text-3xl font-black">Your Report</h2>
+
+                {saved && (
+                  <p className="mt-2 text-sm font-semibold text-green-400">
+                    Saved to Supabase.
+                  </p>
+                )}
+              </div>
+
+              {submissionId && (
+                <div className="rounded-xl border border-neutral-800 bg-black p-4">
+                  <p className="mb-2 text-xs font-bold uppercase tracking-wide text-neutral-500">
+                    Saved Submission ID
+                  </p>
+
+                  <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                    <code className="break-all text-sm text-neutral-200">
+                      {submissionId}
+                    </code>
+
+                    <button
+                      type="button"
+                      onClick={copySubmissionId}
+                      className="rounded-lg border border-neutral-700 px-4 py-2 text-sm font-bold text-neutral-100 transition hover:border-white"
+                    >
+                      {copied ? "Copied" : "Copy ID"}
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
 
             <article className="whitespace-pre-wrap text-base leading-8 text-neutral-100">
               {report}
