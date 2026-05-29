@@ -12,29 +12,28 @@ import { surgicalReportPrompt } from "../prompts/surgicalReport";
 import { revisionRoadmapPrompt } from "../prompts/revisionRoadmap";
 
 async function runCouncilPass(manuscriptText: string, reportPrompt: string) {
-  const bradNotes = await runAnthropicPass({
-    modelRole: "sonnet",
-    systemPrompt: bradSystemPrompt,
-    userPrompt: `Read this manuscript and give your diagnostic notes:\n\n${manuscriptText}`,
-  });
-
-  const gregNotes = await runAnthropicPass({
-    modelRole: "sonnet",
-    systemPrompt: gregSystemPrompt,
-    userPrompt: `Read this manuscript and give your diagnostic notes:\n\n${manuscriptText}`,
-  });
-
-  const vonNotes = await runAnthropicPass({
-    modelRole: "sonnet",
-    systemPrompt: vonClaudeSystemPrompt,
-    userPrompt: `Read this manuscript and give your diagnostic notes:\n\n${manuscriptText}`,
-  });
-
-  const juniperNotes = await runAnthropicPass({
-    modelRole: "haiku",
-    systemPrompt: juniperSystemPrompt,
-    userPrompt: `Read this manuscript and give your diagnostic notes:\n\n${manuscriptText}`,
-  });
+  const [bradNotes, gregNotes, vonNotes, juniperNotes] = await Promise.all([
+    runAnthropicPass({
+      modelRole: "sonnet",
+      systemPrompt: bradSystemPrompt,
+      userPrompt: `Read this manuscript and give your diagnostic notes:\n\n${manuscriptText}`,
+    }),
+    runAnthropicPass({
+      modelRole: "sonnet",
+      systemPrompt: gregSystemPrompt,
+      userPrompt: `Read this manuscript and give your diagnostic notes:\n\n${manuscriptText}`,
+    }),
+    runAnthropicPass({
+      modelRole: "sonnet",
+      systemPrompt: vonClaudeSystemPrompt,
+      userPrompt: `Read this manuscript and give your diagnostic notes:\n\n${manuscriptText}`,
+    }),
+    runAnthropicPass({
+      modelRole: "haiku",
+      systemPrompt: juniperSystemPrompt,
+      userPrompt: `Read this manuscript and give your diagnostic notes:\n\n${manuscriptText}`,
+    }),
+  ]);
 
   const finalReport = await runAnthropicPass({
     modelRole: "opus",
