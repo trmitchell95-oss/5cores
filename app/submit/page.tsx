@@ -85,6 +85,7 @@ function renderMarkdown(text: string): string {
 
 export default function SubmitPage() {
   const [manuscript, setManuscript] = useState("");
+  const [title, setTitle] = useState("");
   const [reports, setReports] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(false);
   const [activeTab, setActiveTab] = useState("brad");
@@ -92,6 +93,7 @@ export default function SubmitPage() {
   const [hasRun, setHasRun] = useState(false);
   const [error, setError] = useState("");
   const [submissionId, setSubmissionId] = useState("");
+  const [userId, setUserId] = useState<string | null>(null);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   useEffect(() => {
@@ -99,6 +101,8 @@ export default function SubmitPage() {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) {
         window.location.href = "/login";
+      } else {
+        setUserId(session.user.id);
       }
     }
     checkAuth();
@@ -120,10 +124,14 @@ export default function SubmitPage() {
     }, 3500);
 
     try {
-      const response = await fetch("/api/generate", {
+      const response = await fetch("/api/generate/reports", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ manuscriptText: manuscript }),
+        body: JSON.stringify({
+          manuscriptText: manuscript,
+          userId,
+          title: title.trim() || "Untitled",
+        }),
       });
 
       const data = await response.json();
@@ -147,6 +155,7 @@ export default function SubmitPage() {
 
   function reset() {
     setManuscript("");
+    setTitle("");
     setReports({});
     setHasRun(false);
     setActiveTab("brad");
@@ -169,6 +178,9 @@ export default function SubmitPage() {
         .subtitle { font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 300; color: #9a9186; margin-top: 12px; }
         .back-link { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #5a5448; text-decoration: none; letter-spacing: 0.1em; display: inline-block; margin-bottom: 32px; }
         .back-link:hover { color: #9a9186; }
+        .title-input { width: 100%; background: #161410; border: 1px solid #2a2520; color: #f0ece4; font-family: 'Cormorant Garamond', serif; font-size: 22px; padding: 14px 20px; outline: none; margin-bottom: 12px; transition: border-color 0.2s; }
+        .title-input:focus { border-color: #c8935a; }
+        .title-input::placeholder { color: #5a5448; }
         .textarea { width: 100%; background: #161410; border: 1px solid #2a2520; color: #f0ece4; font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 300; padding: 20px; resize: vertical; outline: none; min-height: 220px; line-height: 1.7; transition: border-color 0.2s; }
         .textarea:focus { border-color: #c8935a; }
         .textarea::placeholder { color: #5a5448; }
@@ -211,6 +223,8 @@ export default function SubmitPage() {
         .error-msg { margin-top: 20px; padding: 16px 20px; background: #2a1010; border-left: 2px solid #b84040; font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #b84040; }
         .saved-link { margin-top: 20px; padding: 14px 20px; background: #0a1a0e; border-left: 2px solid #4a9c6a; font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #4a9c6a; }
         .saved-link a { color: #4a9c6a; }
+        .dashboard-btn { display: inline-block; margin-top: 12px; padding: 12px 24px; background: transparent; color: #5a5448; font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; border: 1px solid #2a2520; text-decoration: none; }
+        .dashboard-btn:hover { border-color: #5a5448; color: #9a9186; }
       `}</style>
 
       <div className="app-wrap">
@@ -224,6 +238,14 @@ export default function SubmitPage() {
 
         {!hasRun && (
           <div>
+            <input
+              className="title-input"
+              type="text"
+              placeholder="Manuscript title (optional)"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              disabled={loading}
+            />
             <textarea
               className="textarea"
               placeholder="Paste your manuscript excerpt here. A few paragraphs to a few pages. The council will read it completely before delivering any verdict."
@@ -275,7 +297,9 @@ export default function SubmitPage() {
 
             {submissionId && (
               <div className="saved-link">
-                ✓ Report saved — bookmark this link to return anytime: <a href={`/view/${submissionId}`}>{`5scores.vercel.app/view/${submissionId}`}</a>
+                ✓ Report saved — <a href={`/view/${submissionId}`}>View full report</a>
+                <br/>
+                <a className="dashboard-btn" href="/dashboard">← Back to Dashboard</a>
               </div>
             )}
 
