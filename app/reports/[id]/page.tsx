@@ -182,6 +182,7 @@ export default function ReportPage() {
         .from("reports")
         .select("*")
         .eq("id", reportId)
+        .eq("user_id", session.user.id)
         .single();
 
       if (error) {
@@ -349,3 +350,4 @@ export default function ReportPage() {
     </div>
   );
 }
+

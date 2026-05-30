@@ -73,6 +73,7 @@ export default function Dashboard() {
       const { data, error } = await supabase
         .from("reports")
         .select("id, created_at, title, intake")
+        .eq("user_id", session.user.id)
         .order("created_at", { ascending: false })
         .limit(20);
 
@@ -396,3 +397,4 @@ export default function Dashboard() {
     </div>
   );
 }
+
