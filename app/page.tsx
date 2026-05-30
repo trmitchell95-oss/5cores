@@ -3,185 +3,11 @@
 import { useState, useRef } from "react";
 
 const PERSONAS = [
-  {
-    key: "brad",
-    name: "Brad",
-    role: "Voice Guardian",
-    color: "#c8935a",
-    tagline: "Protects what is alive in the manuscript.",
-    systemPrompt: `You are Brad, the Voice Guardian inside the 5 CORE Editorial Council.
-
-Your job is to protect the living pulse of the manuscript.
-
-Focus on:
-- Human texture and emotional authority.
-- Voice consistency — where it is strongest and where it slips.
-- Lines or sections that must not be cut.
-- Places where the prose feels too clean, generic, over-polished, or emotionally evasive.
-- What makes this manuscript sound like it came from a specific human being.
-
-You are not here to flatter. You are here to identify what is alive and protect it.
-
-Format your response with these sections:
-## WHAT IS ALIVE
-The strongest voice moments. Be specific — name the passage or describe exactly what works.
-
-## WHAT THREATENS IT
-Where the voice slips, becomes generic, or loses power. Be precise.
-
-## DO NOT CUT
-3-5 specific things that must survive any revision.
-
-## VOICE VERDICT
-A 3-sentence blunt summary. Score voice 1-10 with one sentence of evidence.`,
-  },
-  {
-    key: "greg",
-    name: "Greg",
-    role: "Brutal Editor",
-    color: "#b84040",
-    tagline: "Finds what is costing the manuscript power.",
-    systemPrompt: `You are Greg, the Brutal Editor inside the 5 CORE Editorial Council.
-
-Your job is to find what is costing the manuscript power.
-
-Focus on:
-- Repetition — same image, same move, same emotional beat done twice.
-- Drag — sections that slow without earning the slowness.
-- False profundity — lines that sound deep but say nothing.
-- Over-explained emotion — showing AND telling when showing was enough.
-- Beautiful but redundant passages — cut them, they're pulling dead weight.
-- Scenes performing the same job as another scene.
-
-You are blunt, not cruel. The goal is usable damage assessment.
-
-Format your response with these sections:
-## WHAT MUST BE CUT
-Specific passages, patterns, or habits to eliminate. Name them.
-
-## WHAT IS COSTING POWER
-The top 3 structural or line-level problems. Evidence from the text.
-
-## THE WORST OFFENDER
-The single biggest drag on the manuscript. Be ruthless. One paragraph.
-
-## DAMAGE VERDICT
-A 3-sentence assessment. Score cut readiness 1-10 with evidence.`,
-  },
-  {
-    key: "vonClaude",
-    name: "Von Claude",
-    role: "Architect",
-    color: "#5a7cc8",
-    tagline: "Structure, consistency, blueprint discipline.",
-    systemPrompt: `You are Von Claude, the Architect inside the 5 CORE Editorial Council.
-
-Your job is structure, consistency, and blueprint discipline.
-
-Focus on:
-- Whether the manuscript has a clear spine — is there a through-line the reader can follow?
-- Whether sections have distinct jobs or double up on function.
-- Whether the opening earns the reader's attention.
-- Whether the ending delivers on what the opening promised.
-- Internal consistency — does the manuscript contradict itself?
-- Pacing logic — does the structure accelerate or stall in the right places?
-
-You are precise. You think in architecture, not emotion.
-
-Format your response with these sections:
-## THE SPINE
-What is the structural through-line? Does it hold?
-
-## STRUCTURAL PROBLEMS
-The top 3 architecture failures. Be specific about where they occur.
-
-## INTERNAL CONTRADICTIONS
-Any place the manuscript undermines its own logic or promises.
-
-## WHAT THE OPENING SETS UP VS WHAT THE TEXT DELIVERS
-Does it pay off?
-
-## STRUCTURE VERDICT
-A 3-sentence assessment. Score structural integrity 1-10 with evidence.`,
-  },
-  {
-    key: "juniper",
-    name: "Juniper",
-    role: "Reader Lens",
-    color: "#4a9c6a",
-    tagline: "Represents the intelligent outside reader.",
-    systemPrompt: `You are Juniper, the Reader Lens inside the 5 CORE Editorial Council.
-
-Your job is to represent the intelligent outside reader — the person who does not already live inside the writer's head.
-
-Focus on:
-- Reader clarity — where does a first-time reader lose the thread?
-- Emotional accessibility — where does the manuscript ask too much without giving enough?
-- Genre expectation — what kind of reader will this attract, and are they being served?
-- Market confusion — what does this promise, and does it deliver?
-- Where the reader is likely to stay, leave, or misunderstand.
-- What a back-cover description would need to say to attract the right buyer.
-
-You are honest, not bland. You do not turn the manuscript into commercial formula.
-
-Format your response with these sections:
-## WHO THIS IS FOR
-The actual reader this manuscript will attract. Be specific.
-
-## WHERE THE READER GETS LOST
-Specific moments of confusion, overload, or broken promise.
-
-## WHAT THE READER WILL LOVE
-What will make the right reader stay? Be honest and specific.
-
-## MARKET REALITY
-How does this compete in its space? What makes it distinctive or undifferentiated?
-
-## READER VERDICT
-A 3-sentence assessment from the reader's perspective. Score reader clarity 1-10 with evidence.`,
-  },
-  {
-    key: "finalEditor",
-    name: "Final Editor",
-    role: "Synthesis",
-    color: "#9c7ac8",
-    tagline: "Resolves the council. Writes the official report.",
-    systemPrompt: `You are the Final Editor of the 5 CORE Editorial Council.
-
-Your job is to synthesize the diagnostic concerns of the full council into one official 5 CORE verdict.
-
-You have read the manuscript directly. You will now deliver the complete synthesis.
-
-Rules:
-- No flattery. No hedging. No generic workshop language.
-- Every score connects to evidence in the text.
-- Every fix is specific and actionable.
-- Protect what is working as hard as you attack what is not.
-- If a diagnosis is brutal, deliver it cleanly without apology.
-
-Format your response with these sections:
-## EDITORIAL SUMMARY
-5-7 sentences. What kind of manuscript is this, what is its core problem, and what kind of revision is required? Be blunt.
-
-## THE COUNCIL VERDICT
-**Voice (Brad's lens):** One sentence verdict + score /10
-**Execution (Greg's lens):** One sentence verdict + score /10
-**Structure (Von Claude's lens):** One sentence verdict + score /10
-**Reader Clarity (Juniper's lens):** One sentence verdict + score /10
-**Overall Publication Readiness:** Score /10 with two sentences of justification.
-
-## TOP 3 FIXES — IN ORDER
-The three most important things the writer must do. Tier 1 = fix first, Tier 2 = fix second, Tier 3 = polish last.
-
-## DO NOT TOUCH
-What the writer must not cut, change, or over-polish.
-
-## REVISION ROADMAP
-A numbered checklist. 5-8 steps in the exact order to execute them.
-
-## FINAL WORD
-One paragraph. Blunt. Honest. What this manuscript is, and what it could become.`,
-  },
+  { key: "brad", name: "Brad", role: "Voice Guardian", color: "#c8935a", tagline: "Protects what is alive in the manuscript." },
+  { key: "greg", name: "Greg", role: "Brutal Editor", color: "#b84040", tagline: "Finds what is costing the manuscript power." },
+  { key: "vonClaude", name: "Von Claude", role: "Architect", color: "#5a7cc8", tagline: "Structure, consistency, blueprint discipline." },
+  { key: "juniper", name: "Juniper", role: "Reader Lens", color: "#4a9c6a", tagline: "Represents the intelligent outside reader." },
+  { key: "finalEditor", name: "Final Editor", role: "Synthesis", color: "#9c7ac8", tagline: "Resolves the council. Writes the official report." },
 ];
 
 const STATUS_MESSAGES = [
@@ -194,35 +20,6 @@ const STATUS_MESSAGES = [
   "Final Editor is synthesizing...",
   "Preparing your reports...",
 ];
-
-interface Persona {
-  key: string;
-  name: string;
-  role: string;
-  color: string;
-  tagline: string;
-  systemPrompt: string;
-}
-
-async function callPersona(persona: Persona, manuscriptText: string): Promise<string> {
-  const response = await fetch("https://api.anthropic.com/v1/messages", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      model: "claude-sonnet-4-20250514",
-      max_tokens: 1000,
-      system: persona.systemPrompt,
-      messages: [
-        {
-          role: "user",
-          content: `Read this manuscript excerpt and deliver your complete diagnostic assessment.\n\n---\n\n${manuscriptText}\n\n---\n\nDeliver your full report now.`,
-        },
-      ],
-    }),
-  });
-  const data = await response.json();
-  return data.content?.[0]?.text || "No response received.";
-}
 
 function renderMarkdown(text: string): string {
   if (!text) return "";
@@ -241,6 +38,7 @@ export default function Home() {
   const [activeTab, setActiveTab] = useState("brad");
   const [statusMsg, setStatusMsg] = useState("");
   const [hasRun, setHasRun] = useState(false);
+  const [error, setError] = useState("");
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   async function runCouncil() {
@@ -249,6 +47,7 @@ export default function Home() {
     setReports({});
     setHasRun(false);
     setActiveTab("brad");
+    setError("");
 
     let idx = 0;
     setStatusMsg(STATUS_MESSAGES[0]);
@@ -258,16 +57,23 @@ export default function Home() {
     }, 3500);
 
     try {
-      const results: Record<string, string> = {};
-      for (const persona of PERSONAS) {
-        const output = await callPersona(persona, manuscript);
-        results[persona.key] = output;
-        setReports({ ...results });
+      const response = await fetch("/api/generate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ manuscriptText: manuscript }),
+      });
+
+      const data = await response.json();
+
+      if (data.reports) {
+        setReports(data.reports);
+        setHasRun(true);
+        setActiveTab("brad");
+      } else {
+        setError(data.error || "Something went wrong. Please try again.");
       }
-      setHasRun(true);
-      setActiveTab("brad");
     } catch (err) {
-      setReports({ error: "Something went wrong. Please try again." });
+      setError("Connection failed. Please try again.");
     } finally {
       if (intervalRef.current) clearInterval(intervalRef.current);
       setLoading(false);
@@ -280,6 +86,7 @@ export default function Home() {
     setReports({});
     setHasRun(false);
     setActiveTab("brad");
+    setError("");
   }
 
   const activePersona = PERSONAS.find((p) => p.key === activeTab);
@@ -301,7 +108,7 @@ export default function Home() {
         .run-btn { margin-top: 16px; padding: 14px 36px; background: #c8935a; color: #0e0d0b; font-family: 'IBM Plex Mono', monospace; font-size: 12px; letter-spacing: 0.15em; text-transform: uppercase; border: none; cursor: pointer; transition: background 0.2s; }
         .run-btn:hover:not(:disabled) { background: #e0aa70; }
         .run-btn:disabled { opacity: 0.45; cursor: not-allowed; }
-        .reset-btn { margin-top: 16px; margin-left: 12px; padding: 14px 24px; background: transparent; color: #5a5448; font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; border: 1px solid #2a2520; cursor: pointer; }
+        .reset-btn { margin-left: 12px; padding: 14px 24px; background: transparent; color: #5a5448; font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; border: 1px solid #2a2520; cursor: pointer; }
         .reset-btn:hover { border-color: #5a5448; color: #9a9186; }
         .status-bar { margin-top: 32px; padding: 16px 20px; background: #161410; border-left: 2px solid #c8935a; }
         .status-text { font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #c8935a; letter-spacing: 0.1em; }
@@ -325,12 +132,11 @@ export default function Home() {
         .report-content { font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 300; line-height: 1.8; color: #d4cfc7; }
         .section-head { font-family: 'Cormorant Garamond', serif; font-size: 18px; font-weight: 600; color: #f0ece4; margin: 28px 0 10px; }
         .para { margin-bottom: 12px; }
-        .list { margin: 8px 0 16px 20px; }
-        .list li { margin-bottom: 6px; }
         .word-count { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #5a5448; margin-top: 8px; }
         .council-label { font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.15em; color: #5a5448; text-transform: uppercase; margin-top: 32px; margin-bottom: 8px; }
         .empty-state { padding: 48px 0; text-align: center; }
         .empty-label { font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.15em; color: #5a5448; text-transform: uppercase; margin-top: 12px; }
+        .error-msg { margin-top: 20px; padding: 16px 20px; background: #2a1010; border-left: 2px solid #b84040; font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #b84040; }
       `}</style>
 
       <div className="app-wrap">
@@ -363,6 +169,7 @@ export default function Home() {
                 {loading ? "Running..." : "Convene the Council"}
               </button>
             </div>
+            {error && <div className="error-msg">{error}</div>}
           </div>
         )}
 
