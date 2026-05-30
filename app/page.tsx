@@ -195,7 +195,16 @@ const STATUS_MESSAGES = [
   "Preparing your reports...",
 ];
 
-async function callPersona(persona, manuscriptText) {
+interface Persona {
+  key: string;
+  name: string;
+  role: string;
+  color: string;
+  tagline: string;
+  systemPrompt: string;
+}
+
+async function callPersona(persona: Persona, manuscriptText: string): Promise<string> {
   const response = await fetch("https://api.anthropic.com/v1/messages", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -215,7 +224,7 @@ async function callPersona(persona, manuscriptText) {
   return data.content?.[0]?.text || "No response received.";
 }
 
-function renderMarkdown(text) {
+function renderMarkdown(text: string): string {
   if (!text) return "";
   return text
     .replace(/^## (.+)$/gm, '<h3 class="section-head">$1</h3>')
@@ -228,12 +237,12 @@ function renderMarkdown(text) {
 
 export default function Home() {
   const [manuscript, setManuscript] = useState("");
-  const [reports, setReports] = useState({});
+  const [reports, setReports] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(false);
   const [activeTab, setActiveTab] = useState("brad");
   const [statusMsg, setStatusMsg] = useState("");
   const [hasRun, setHasRun] = useState(false);
-  const intervalRef = useRef(null);
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   async function runCouncil() {
     if (!manuscript.trim()) return;
@@ -250,7 +259,7 @@ export default function Home() {
     }, 3500);
 
     try {
-      const results = {};
+      const results: Record<string, string> = {};
       for (const persona of PERSONAS) {
         const output = await callPersona(persona, manuscript);
         results[persona.key] = output;
@@ -261,7 +270,7 @@ export default function Home() {
     } catch (err) {
       setReports({ error: "Something went wrong. Please try again." });
     } finally {
-      clearInterval(intervalRef.current);
+      if (intervalRef.current) clearInterval(intervalRef.current);
       setLoading(false);
       setStatusMsg("");
     }
@@ -387,7 +396,7 @@ export default function Home() {
                 <button
                   key={p.key}
                   className={`tab-btn ${activeTab === p.key ? "active" : ""} ${!reports[p.key] ? "locked" : ""}`}
-                  style={{ "--tab-color": p.color }}
+                  style={{ "--tab-color": p.color } as React.CSSProperties}
                   onClick={() => reports[p.key] && setActiveTab(p.key)}
                 >
                   {p.name}{p.key === "finalEditor" ? " ★" : ""}
