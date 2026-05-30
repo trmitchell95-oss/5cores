@@ -1,311 +1,152 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useEffect, useState } from "react";
+import { createClient } from "@supabase/supabase-js";
 
-const PERSONAS = [
-  { key: "brad", name: "Brad", role: "Voice Guardian", color: "#c8935a", tagline: "Protects what is alive in the manuscript." },
-  { key: "greg", name: "Greg", role: "Brutal Editor", color: "#b84040", tagline: "Finds what is costing the manuscript power." },
-  { key: "vonClaude", name: "Von Claude", role: "Architect", color: "#5a7cc8", tagline: "Structure, consistency, blueprint discipline." },
-  { key: "juniper", name: "Juniper", role: "Reader Lens", color: "#4a9c6a", tagline: "Represents the intelligent outside reader." },
-  { key: "finalEditor", name: "Final Editor", role: "Synthesis", color: "#9c7ac8", tagline: "Resolves the council. Writes the official report." },
-];
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+);
 
-const STATUS_MESSAGES = [
-  "Reading your manuscript...",
-  "Calling the council...",
-  "Brad is protecting the voice...",
-  "Greg is finding the drag...",
-  "Von Claude is checking structure...",
-  "Juniper is reading as a reader...",
-  "Final Editor is synthesizing...",
-  "Preparing your reports...",
-];
+export default function LandingPage() {
+  const [checking, setChecking] = useState(true);
 
-function renderMarkdown(text: string): string {
-  if (!text) return "";
-
-  const lines = text.split("\n");
-  const html: string[] = [];
-  let inList = false;
-
-  for (const rawLine of lines) {
-    let line = rawLine;
-
-    line = line.replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>");
-    line = line.replace(/\*([^*\s][^*]*[^*\s]|[^*\s])\*/g, "<em>$1</em>");
-
-    if (/^# /.test(line)) {
-      if (inList) { html.push("</ul>"); inList = false; }
-      html.push(`<h1 class="report-title">${line.replace(/^# /, "")}</h1>`);
-      continue;
-    }
-    if (/^## /.test(line)) {
-      if (inList) { html.push("</ul>"); inList = false; }
-      html.push(`<h2 class="section-head">${line.replace(/^## /, "")}</h2>`);
-      continue;
-    }
-    if (/^### /.test(line)) {
-      if (inList) { html.push("</ul>"); inList = false; }
-      html.push(`<h3 class="section-subhead">${line.replace(/^### /, "")}</h3>`);
-      continue;
-    }
-
-    if (/^---+$/.test(line.trim())) {
-      if (inList) { html.push("</ul>"); inList = false; }
-      html.push(`<hr class="report-divider"/>`);
-      continue;
-    }
-
-    if (/^[-•] /.test(line)) {
-      if (!inList) { html.push("<ul class='report-list'>"); inList = true; }
-      html.push(`<li>${line.replace(/^[-•] /, "")}</li>`);
-      continue;
-    }
-
-    if (inList) { html.push("</ul>"); inList = false; }
-
-    if (line.trim() === "") {
-      html.push("<br/>");
-      continue;
-    }
-
-    html.push(`<p class="para">${line}</p>`);
-  }
-
-  if (inList) html.push("</ul>");
-
-  return html.join("\n");
-}
-
-export default function Home() {
-  const [manuscript, setManuscript] = useState("");
-  const [reports, setReports] = useState<Record<string, string>>({});
-  const [loading, setLoading] = useState(false);
-  const [activeTab, setActiveTab] = useState("brad");
-  const [statusMsg, setStatusMsg] = useState("");
-  const [hasRun, setHasRun] = useState(false);
-  const [error, setError] = useState("");
-  const [submissionId, setSubmissionId] = useState("");
-  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
-
-  async function runCouncil() {
-    if (!manuscript.trim()) return;
-    setLoading(true);
-    setReports({});
-    setHasRun(false);
-    setActiveTab("brad");
-    setError("");
-
-    let idx = 0;
-    setStatusMsg(STATUS_MESSAGES[0]);
-    intervalRef.current = setInterval(() => {
-      idx = Math.min(idx + 1, STATUS_MESSAGES.length - 1);
-      setStatusMsg(STATUS_MESSAGES[idx]);
-    }, 3500);
-
-    try {
-      const response = await fetch("/api/generate", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ manuscriptText: manuscript }),
-      });
-
-      const data = await response.json();
-
-      if (data.reports) {
-        setReports(data.reports);
-        setHasRun(true);
-        setActiveTab("brad");
-        if (data.submissionId) setSubmissionId(data.submissionId);
+  useEffect(() => {
+    async function check() {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session) {
+        window.location.href = "/dashboard";
       } else {
-        setError(data.error || "Something went wrong. Please try again.");
+        setChecking(false);
       }
-    } catch {
-      setError("Connection failed. Please try again.");
-    } finally {
-      if (intervalRef.current) clearInterval(intervalRef.current);
-      setLoading(false);
-      setStatusMsg("");
     }
-  }
+    check();
+  }, []);
 
-  function reset() {
-    setManuscript("");
-    setReports({});
-    setHasRun(false);
-    setActiveTab("brad");
-    setError("");
-    setSubmissionId("");
-  }
-
-  const activePersona = PERSONAS.find((p) => p.key === activeTab);
-  const activeReport = reports[activeTab];
+  if (checking) return null;
 
   return (
     <div style={{ minHeight: "100vh", background: "#0e0d0b", color: "#f0ece4", fontFamily: "Georgia, serif" }}>
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@300;400;500&family=IBM+Plex+Mono:wght@400;500&display=swap');
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        .app-wrap { max-width: 960px; margin: 0 auto; padding: 48px 32px 100px; }
-        .masthead { border-bottom: 1px solid #2a2520; padding-bottom: 32px; margin-bottom: 48px; }
-        .eyebrow { font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.2em; color: #c8935a; text-transform: uppercase; margin-bottom: 12px; }
-        .title { font-family: 'Cormorant Garamond', serif; font-size: clamp(40px, 7vw, 72px); font-weight: 700; line-height: 1; color: #f0ece4; }
-        .subtitle { font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 300; color: #9a9186; margin-top: 12px; }
-        .textarea { width: 100%; background: #161410; border: 1px solid #2a2520; color: #f0ece4; font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 300; padding: 20px; resize: vertical; outline: none; min-height: 220px; line-height: 1.7; transition: border-color 0.2s; }
-        .textarea:focus { border-color: #c8935a; }
-        .textarea::placeholder { color: #5a5448; }
-        .run-btn { margin-top: 16px; padding: 14px 36px; background: #c8935a; color: #0e0d0b; font-family: 'IBM Plex Mono', monospace; font-size: 12px; letter-spacing: 0.15em; text-transform: uppercase; border: none; cursor: pointer; transition: background 0.2s; }
-        .run-btn:hover:not(:disabled) { background: #e0aa70; }
-        .run-btn:disabled { opacity: 0.45; cursor: not-allowed; }
-        .reset-btn { margin-left: 12px; padding: 14px 24px; background: transparent; color: #5a5448; font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; border: 1px solid #2a2520; cursor: pointer; }
-        .reset-btn:hover { border-color: #5a5448; color: #9a9186; }
-        .status-bar { margin-top: 32px; padding: 16px 20px; background: #161410; border-left: 2px solid #c8935a; }
-        .status-text { font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #c8935a; letter-spacing: 0.1em; }
-        .council-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 0; margin-top: 16px; border: 1px solid #2a2520; }
-        .persona-progress { padding: 12px 8px; text-align: center; border-right: 1px solid #2a2520; }
-        .persona-progress:last-child { border-right: none; }
-        .persona-progress.done { background: #161410; }
-        .persona-progress.pending { opacity: 0.35; }
-        .persona-dot { width: 6px; height: 6px; border-radius: 50%; margin: 0 auto 6px; }
-        .persona-name-sm { font-family: 'IBM Plex Mono', monospace; font-size: 9px; letter-spacing: 0.1em; color: #9a9186; text-transform: uppercase; }
-        .tabs-wrap { display: flex; border-bottom: 1px solid #2a2520; margin-top: 48px; overflow-x: auto; }
-        .tab-btn { padding: 14px 20px; font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; background: none; border: none; border-bottom: 2px solid transparent; cursor: pointer; white-space: nowrap; transition: all 0.2s; color: #5a5448; }
-        .tab-btn.active { border-bottom-color: var(--tab-color); color: var(--tab-color); }
-        .tab-btn:hover:not(.active):not(.locked) { color: #9a9186; }
-        .tab-btn.locked { opacity: 0.3; cursor: default; }
-        .persona-header { padding: 28px 0 20px; border-bottom: 1px solid #2a2520; margin-bottom: 28px; display: flex; align-items: flex-start; gap: 20px; }
-        .persona-badge { width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: 'Cormorant Garamond', serif; font-size: 20px; font-weight: 700; flex-shrink: 0; border: 1px solid var(--badge-border); }
-        .persona-name { font-family: 'Cormorant Garamond', serif; font-size: 26px; font-weight: 700; line-height: 1; }
-        .persona-role { font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; margin-top: 4px; }
-        .persona-tagline { font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 300; color: #9a9186; margin-top: 8px; }
-        .report-content { font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 300; line-height: 1.8; color: #d4cfc7; }
-        .report-title { font-family: 'Cormorant Garamond', serif; font-size: 28px; font-weight: 700; color: #f0ece4; margin: 24px 0 8px; line-height: 1.2; }
-        .section-head { font-family: 'Cormorant Garamond', serif; font-size: 20px; font-weight: 600; color: #f0ece4; margin: 32px 0 10px; letter-spacing: 0.05em; }
-        .section-subhead { font-family: 'Cormorant Garamond', serif; font-size: 16px; font-weight: 600; color: #9a9186; margin: 20px 0 8px; }
-        .report-divider { border: none; border-top: 1px solid #2a2520; margin: 28px 0; }
-        .report-list { padding-left: 20px; margin: 12px 0; }
-        .report-list li { margin-bottom: 8px; line-height: 1.7; }
-        .para { margin-bottom: 12px; }
-        .word-count { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #5a5448; margin-top: 8px; }
-        .council-label { font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.15em; color: #5a5448; text-transform: uppercase; margin-top: 32px; margin-bottom: 8px; }
-        .empty-state { padding: 48px 0; text-align: center; }
-        .empty-label { font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.15em; color: #5a5448; text-transform: uppercase; margin-top: 12px; }
-        .error-msg { margin-top: 20px; padding: 16px 20px; background: #2a1010; border-left: 2px solid #b84040; font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #b84040; }
-        .saved-link { margin-top: 20px; padding: 14px 20px; background: #0a1a0e; border-left: 2px solid #4a9c6a; font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #4a9c6a; }
-        .saved-link a { color: #4a9c6a; }
+        .wrap { max-width: 960px; margin: 0 auto; padding: 48px 32px 100px; }
+        .nav { display: flex; align-items: center; justify-content: space-between; margin-bottom: 80px; }
+        .nav-logo { font-family: 'Cormorant Garamond', serif; font-size: 24px; font-weight: 700; color: #f0ece4; }
+        .nav-link { font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; color: #9a9186; text-decoration: none; }
+        .nav-link:hover { color: #f0ece4; }
+        .hero { max-width: 720px; margin-bottom: 80px; }
+        .eyebrow { font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.2em; color: #c8935a; text-transform: uppercase; margin-bottom: 24px; }
+        .headline { font-family: 'Cormorant Garamond', serif; font-size: clamp(40px, 7vw, 72px); font-weight: 700; line-height: 1.05; color: #f0ece4; margin-bottom: 24px; }
+        .subhead { font-family: 'DM Sans', sans-serif; font-size: 18px; font-weight: 300; color: #9a9186; line-height: 1.6; margin-bottom: 40px; max-width: 560px; }
+        .cta-btn { display: inline-block; padding: 16px 40px; background: #c8935a; color: #0e0d0b; font-family: 'IBM Plex Mono', monospace; font-size: 12px; letter-spacing: 0.15em; text-transform: uppercase; text-decoration: none; transition: background 0.2s; }
+        .cta-btn:hover { background: #e0aa70; }
+        .divider { border: none; border-top: 1px solid #2a2520; margin: 80px 0; }
+        .section-label { font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.2em; color: #5a5448; text-transform: uppercase; margin-bottom: 32px; }
+        .problem-block { margin-bottom: 80px; }
+        .problem-text { font-family: 'Cormorant Garamond', serif; font-size: clamp(24px, 4vw, 36px); font-weight: 400; line-height: 1.4; color: #f0ece4; max-width: 680px; }
+        .council-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1px; background: #2a2520; margin-bottom: 80px; }
+        .council-card { background: #0e0d0b; padding: 32px; }
+        .card-initial { font-family: 'Cormorant Garamond', serif; font-size: 32px; font-weight: 700; margin-bottom: 12px; }
+        .card-name { font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 8px; }
+        .card-desc { font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 300; color: #9a9186; line-height: 1.6; }
+        .how-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 40px; margin-bottom: 80px; }
+        .how-step { }
+        .step-num { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #c8935a; letter-spacing: 0.1em; margin-bottom: 12px; }
+        .step-title { font-family: 'Cormorant Garamond', serif; font-size: 22px; font-weight: 600; color: #f0ece4; margin-bottom: 8px; }
+        .step-desc { font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 300; color: #9a9186; line-height: 1.6; }
+        .price-block { background: #161410; border: 1px solid #2a2520; padding: 48px; margin-bottom: 80px; display: flex; align-items: center; justify-content: space-between; flex-wrap: gap; gap: 32px; }
+        .price-left { }
+        .price-label { font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.2em; color: #5a5448; text-transform: uppercase; margin-bottom: 12px; }
+        .price-amount { font-family: 'Cormorant Garamond', serif; font-size: 56px; font-weight: 700; color: #f0ece4; line-height: 1; }
+        .price-desc { font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 300; color: #9a9186; margin-top: 8px; }
+        .footer { border-top: 1px solid #2a2520; padding-top: 32px; font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #5a5448; letter-spacing: 0.1em; }
       `}</style>
 
-      <div className="app-wrap">
-        <div className="masthead">
-          <div className="eyebrow">Editorial Council — Phase 1 Prototype</div>
-          <div className="title">5 CORE</div>
-          <div className="subtitle">Five editorial minds. One blunt verdict. No bullshit.</div>
+      <div className="wrap">
+        <nav className="nav">
+          <div className="nav-logo">5 CORE</div>
+          <a className="nav-link" href="/login">Sign In</a>
+        </nav>
+
+        <div className="hero">
+          <div className="eyebrow">Editorial Council — Beta</div>
+          <h1 className="headline">Your manuscript deserves a real diagnosis.</h1>
+          <p className="subhead">Five distinct editorial minds read your work and tell you exactly what is working, what is costing you power, and what to fix first. No flattery. No hedging. No bullshit.</p>
+          <a className="cta-btn" href="/login">Request Beta Access</a>
         </div>
 
-        {!hasRun && (
-          <div>
-            <textarea
-              className="textarea"
-              placeholder="Paste your manuscript excerpt here. A few paragraphs to a few pages. The council will read it completely before delivering any verdict."
-              value={manuscript}
-              onChange={(e) => setManuscript(e.target.value)}
-              disabled={loading}
-            />
-            {manuscript.length > 0 && (
-              <div className="word-count">
-                {manuscript.trim().split(/\s+/).filter(Boolean).length} words
-              </div>
-            )}
-            <div>
-              <button
-                className="run-btn"
-                onClick={runCouncil}
-                disabled={loading || manuscript.trim().length < 50}
-              >
-                {loading ? "Running..." : "Convene the Council"}
-              </button>
-            </div>
-            {error && <div className="error-msg">{error}</div>}
+        <hr className="divider" />
+
+        <div className="problem-block">
+          <div className="section-label">The Problem</div>
+          <p className="problem-text">You are too close to your own work. Professional editing is expensive. Generic AI feedback is useless. You need something that actually reads your manuscript like an editor would — and tells you the truth.</p>
+        </div>
+
+        <div className="section-label">The Editorial Council</div>
+        <div className="council-grid">
+          <div className="council-card">
+            <div className="card-initial" style={{ color: "#c8935a" }}>B</div>
+            <div className="card-name" style={{ color: "#c8935a" }}>Brad — Voice Guardian</div>
+            <div className="card-desc">Protects what is alive in the manuscript. Finds the pulse and makes sure no one cuts it.</div>
           </div>
-        )}
-
-        {loading && (
-          <div>
-            <div className="status-bar">
-              <div className="status-text">{statusMsg}</div>
-            </div>
-            <div className="council-label">Council Status</div>
-            <div className="council-grid">
-              {PERSONAS.map((p) => (
-                <div key={p.key} className={`persona-progress ${reports[p.key] ? "done" : "pending"}`}>
-                  <div className="persona-dot" style={{ background: reports[p.key] ? p.color : "#2a2520" }} />
-                  <div className="persona-name-sm">{p.name}</div>
-                </div>
-              ))}
-            </div>
+          <div className="council-card">
+            <div className="card-initial" style={{ color: "#b84040" }}>G</div>
+            <div className="card-name" style={{ color: "#b84040" }}>Greg — Brutal Editor</div>
+            <div className="card-desc">Finds what is costing the manuscript power. Cuts without mercy. Explains why.</div>
           </div>
-        )}
-
-        {hasRun && !loading && (
-          <div>
-            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginTop: "12px" }}>
-              <div className="eyebrow" style={{ marginBottom: 0 }}>Council Reports</div>
-              <button className="reset-btn" onClick={reset}>New Manuscript</button>
-            </div>
-
-            {submissionId && (
-              <div className="saved-link">
-                ✓ Report saved — bookmark this link to return anytime: <a href={`/view/${submissionId}`}>{`5scores.vercel.app/view/${submissionId}`}</a>
-              </div>
-            )}
-
-            <div className="tabs-wrap">
-              {PERSONAS.map((p) => (
-                <button
-                  key={p.key}
-                  className={`tab-btn ${activeTab === p.key ? "active" : ""} ${!reports[p.key] ? "locked" : ""}`}
-                  style={{ "--tab-color": p.color } as React.CSSProperties}
-                  onClick={() => reports[p.key] && setActiveTab(p.key)}
-                >
-                  {p.name}{p.key === "finalEditor" ? " ★" : ""}
-                </button>
-              ))}
-            </div>
-
-            {activePersona && (
-              <div>
-                <div className="persona-header">
-                  <div
-                    className="persona-badge"
-                    style={{
-                      background: activePersona.color + "22",
-                      color: activePersona.color,
-                      "--badge-border": activePersona.color + "55",
-                    } as React.CSSProperties}
-                  >
-                    {activePersona.name[0]}
-                  </div>
-                  <div>
-                    <div className="persona-name" style={{ color: activePersona.color }}>{activePersona.name}</div>
-                    <div className="persona-role" style={{ color: activePersona.color + "99" }}>{activePersona.role}</div>
-                    <div className="persona-tagline">{activePersona.tagline}</div>
-                  </div>
-                </div>
-
-                {activeReport ? (
-                  <div
-                    className="report-content"
-                    dangerouslySetInnerHTML={{ __html: renderMarkdown(activeReport) }}
-                  />
-                ) : (
-                  <div className="empty-state">
-                    <div className="empty-label">Loading...</div>
-                  </div>
-                )}
-              </div>
-            )}
+          <div className="council-card">
+            <div className="card-initial" style={{ color: "#5a7cc8" }}>V</div>
+            <div className="card-name" style={{ color: "#5a7cc8" }}>Von Claude — Architect</div>
+            <div className="card-desc">Structure, consistency, blueprint discipline. Whether the spine holds or collapses.</div>
           </div>
-        )}
+          <div className="council-card">
+            <div className="card-initial" style={{ color: "#4a9c6a" }}>J</div>
+            <div className="card-name" style={{ color: "#4a9c6a" }}>Juniper — Reader Lens</div>
+            <div className="card-desc">Represents the intelligent outside reader. Where they stay. Where they leave. Why.</div>
+          </div>
+          <div className="council-card">
+            <div className="card-initial" style={{ color: "#9c7ac8" }}>★</div>
+            <div className="card-name" style={{ color: "#9c7ac8" }}>Final Editor — Synthesis</div>
+            <div className="card-desc">Resolves the council into one official verdict. Scores. Fixes. Roadmap. No hedging.</div>
+          </div>
+        </div>
+
+        <hr className="divider" />
+
+        <div className="section-label">How It Works</div>
+        <div className="how-grid">
+          <div className="how-step">
+            <div className="step-num">01</div>
+            <div className="step-title">Paste Your Manuscript</div>
+            <div className="step-desc">A few paragraphs to a few pages. The council reads everything before delivering any verdict.</div>
+          </div>
+          <div className="how-step">
+            <div className="step-num">02</div>
+            <div className="step-title">The Council Convenes</div>
+            <div className="step-desc">Five editorial minds read your work simultaneously. Each from a different angle. Each with a different job.</div>
+          </div>
+          <div className="how-step">
+            <div className="step-num">03</div>
+            <div className="step-title">You Get the Truth</div>
+            <div className="step-desc">Five complete reports. Scores with evidence. A revision roadmap. A shareable permalink to return anytime.</div>
+          </div>
+        </div>
+
+        <hr className="divider" />
+
+        <div className="price-block">
+          <div className="price-left">
+            <div className="price-label">Beta Access</div>
+            <div className="price-amount">Free</div>
+            <div className="price-desc">During beta. Five full reports per submission. No bullshit.</div>
+          </div>
+          <a className="cta-btn" href="/login">Request Beta Access</a>
+        </div>
+
+        <div className="footer">
+          5 CORE Editorial Council — Built for independent writers.
+        </div>
       </div>
     </div>
   );
