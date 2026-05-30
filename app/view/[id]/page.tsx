@@ -19,12 +19,64 @@ const PERSONAS = [
 
 function renderMarkdown(text: string): string {
   if (!text) return "";
-  return text
-    .replace(/## (.+)/g, '<h3 class="section-head">$1</h3>')
-    .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
-    .replace(/\n\n/g, '</p><p class="para">')
-    .replace(/\n- (.+)/g, "<li>$1</li>")
-    .replace(/\n/g, "<br/>");
+
+  const lines = text.split("\n");
+  const html: string[] = [];
+  let inList = false;
+
+  for (const rawLine of lines) {
+    let line = rawLine;
+
+    // Inline: bold before italic so ** is handled first
+    line = line.replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>");
+    line = line.replace(/\*([^*\s][^*]*[^*\s]|[^*\s])\*/g, "<em>$1</em>");
+
+    // Headings
+    if (/^# /.test(line)) {
+      if (inList) { html.push("</ul>"); inList = false; }
+      html.push(`<h1 class="report-title">${line.replace(/^# /, "")}</h1>`);
+      continue;
+    }
+    if (/^## /.test(line)) {
+      if (inList) { html.push("</ul>"); inList = false; }
+      html.push(`<h2 class="section-head">${line.replace(/^## /, "")}</h2>`);
+      continue;
+    }
+    if (/^### /.test(line)) {
+      if (inList) { html.push("</ul>"); inList = false; }
+      html.push(`<h3 class="section-subhead">${line.replace(/^### /, "")}</h3>`);
+      continue;
+    }
+
+    // Divider
+    if (/^---+$/.test(line.trim())) {
+      if (inList) { html.push("</ul>"); inList = false; }
+      html.push(`<hr class="report-divider"/>`);
+      continue;
+    }
+
+    // List items
+    if (/^[-•] /.test(line)) {
+      if (!inList) { html.push("<ul class='report-list'>"); inList = true; }
+      html.push(`<li>${line.replace(/^[-•] /, "")}</li>`);
+      continue;
+    }
+
+    // Close list if open
+    if (inList) { html.push("</ul>"); inList = false; }
+
+    // Empty line = paragraph break
+    if (line.trim() === "") {
+      html.push("<br/>");
+      continue;
+    }
+
+    html.push(`<p class="para">${line}</p>`);
+  }
+
+  if (inList) html.push("</ul>");
+
+  return html.join("\n");
 }
 
 export default function ViewReport() {
@@ -84,12 +136,17 @@ export default function ViewReport() {
         .tab-btn.active { border-bottom-color: var(--tab-color); color: var(--tab-color); }
         .tab-btn:hover:not(.active) { color: #9a9186; }
         .persona-header { padding: 28px 0 20px; border-bottom: 1px solid #2a2520; margin-bottom: 28px; display: flex; align-items: flex-start; gap: 20px; }
-        .persona-badge { width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: 'Cormorant Garamond', serif; font-size: 18px; font-weight: 700; flex-shrink: 0; }
+        .persona-badge { width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: 'Cormorant Garamond', serif; font-size: 20px; font-weight: 700; flex-shrink: 0; border: 1px solid var(--badge-border); }
         .persona-name { font-family: 'Cormorant Garamond', serif; font-size: 26px; font-weight: 700; line-height: 1; }
         .persona-role { font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; margin-top: 4px; }
         .persona-tagline { font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 300; color: #9a9186; margin-top: 8px; }
         .report-content { font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 300; line-height: 1.8; color: #d4cfc7; }
-        .section-head { font-family: 'Cormorant Garamond', serif; font-size: 18px; font-weight: 600; color: #f0ece4; margin: 28px 0 10px; }
+        .report-title { font-family: 'Cormorant Garamond', serif; font-size: 28px; font-weight: 700; color: #f0ece4; margin: 24px 0 8px; line-height: 1.2; }
+        .section-head { font-family: 'Cormorant Garamond', serif; font-size: 20px; font-weight: 600; color: #f0ece4; margin: 32px 0 10px; letter-spacing: 0.05em; }
+        .section-subhead { font-family: 'Cormorant Garamond', serif; font-size: 16px; font-weight: 600; color: #9a9186; margin: 20px 0 8px; }
+        .report-divider { border: none; border-top: 1px solid #2a2520; margin: 28px 0; }
+        .report-list { padding-left: 20px; margin: 12px 0; }
+        .report-list li { margin-bottom: 8px; line-height: 1.7; }
         .para { margin-bottom: 12px; }
         .loading-msg { font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #5a5448; letter-spacing: 0.1em; }
         .error-box { padding: 24px; background: #2a1010; border-left: 2px solid #b84040; font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #b84040; }
@@ -126,7 +183,11 @@ export default function ViewReport() {
                 <div className="persona-header">
                   <div
                     className="persona-badge"
-                    style={{ background: activePersona.color + "22", color: activePersona.color }}
+                    style={{
+                      background: activePersona.color + "22",
+                      color: activePersona.color,
+                      "--badge-border": activePersona.color + "55",
+                    } as React.CSSProperties}
                   >
                     {activePersona.name[0]}
                   </div>
@@ -140,7 +201,7 @@ export default function ViewReport() {
                 {activeReport ? (
                   <div
                     className="report-content"
-                    dangerouslySetInnerHTML={{ __html: "<p class='para'>" + renderMarkdown(activeReport) + "</p>" }}
+                    dangerouslySetInnerHTML={{ __html: renderMarkdown(activeReport) }}
                   />
                 ) : (
                   <div className="loading-msg">No report found for this editor.</div>
