@@ -18,7 +18,7 @@ const STATUS_MESSAGES = [
   "Von Claude is checking structure...",
   "Juniper is reading as a reader...",
   "Final Editor is synthesizing...",
-  "Preparing your reports...",
+  "Saving your reports...",
 ];
 
 function renderMarkdown(text: string): string {
@@ -39,6 +39,7 @@ export default function Home() {
   const [statusMsg, setStatusMsg] = useState("");
   const [hasRun, setHasRun] = useState(false);
   const [error, setError] = useState("");
+  const [savedId, setSavedId] = useState("");
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   async function runCouncil() {
@@ -48,6 +49,7 @@ export default function Home() {
     setHasRun(false);
     setActiveTab("brad");
     setError("");
+    setSavedId("");
 
     let idx = 0;
     setStatusMsg(STATUS_MESSAGES[0]);
@@ -69,10 +71,13 @@ export default function Home() {
         setReports(data.reports);
         setHasRun(true);
         setActiveTab("brad");
+        if (data.submissionId) {
+          setSavedId(data.submissionId);
+        }
       } else {
         setError(data.error || "Something went wrong. Please try again.");
       }
-    } catch (err) {
+    } catch {
       setError("Connection failed. Please try again.");
     } finally {
       if (intervalRef.current) clearInterval(intervalRef.current);
@@ -87,6 +92,7 @@ export default function Home() {
     setHasRun(false);
     setActiveTab("brad");
     setError("");
+    setSavedId("");
   }
 
   const activePersona = PERSONAS.find((p) => p.key === activeTab);
@@ -134,9 +140,11 @@ export default function Home() {
         .para { margin-bottom: 12px; }
         .word-count { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #5a5448; margin-top: 8px; }
         .council-label { font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.15em; color: #5a5448; text-transform: uppercase; margin-top: 32px; margin-bottom: 8px; }
+        .saved-bar { margin-top: 24px; padding: 16px 20px; background: #0e1a10; border-left: 2px solid #4a9c6a; font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #4a9c6a; letter-spacing: 0.08em; }
+        .saved-link { color: #4a9c6a; text-decoration: underline; word-break: break-all; }
+        .error-msg { margin-top: 20px; padding: 16px 20px; background: #2a1010; border-left: 2px solid #b84040; font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #b84040; }
         .empty-state { padding: 48px 0; text-align: center; }
         .empty-label { font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.15em; color: #5a5448; text-transform: uppercase; margin-top: 12px; }
-        .error-msg { margin-top: 20px; padding: 16px 20px; background: #2a1010; border-left: 2px solid #b84040; font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #b84040; }
       `}</style>
 
       <div className="app-wrap">
@@ -196,6 +204,15 @@ export default function Home() {
               <div className="eyebrow" style={{ marginBottom: 0 }}>Council Reports</div>
               <button className="reset-btn" onClick={reset}>New Manuscript</button>
             </div>
+
+            {savedId && (
+              <div className="saved-bar">
+                ✓ Report saved — bookmark this link to return anytime:&nbsp;
+                <a className="saved-link" href={`${window.location.origin}/view/${savedId}`}>
+                  {window.location.origin}/view/{savedId}
+                </a>
+              </div>
+            )}
 
             <div className="tabs-wrap">
               {PERSONAS.map((p) => (
