@@ -21,22 +21,28 @@ export default function Dashboard() {
 
   useEffect(() => {
     async function load() {
-      const { data: { session } } = await supabase.auth.getSession();
-
-      if (!session) {
-        window.location.href = "/login";
-        return;
+      // Handle implicit flow - session comes from URL hash
+      const { data: { session: hashSession } } = await supabase.auth.getSession();
+      
+      if (!hashSession) {
+        // Try to get session from URL hash
+        const { data, error } = await supabase.auth.getUser();
+        if (error || !data.user) {
+          window.location.href = "/login";
+          return;
+        }
+        setUser(data.user);
+      } else {
+        setUser(hashSession.user);
       }
 
-      setUser(session.user);
-
-      const { data } = await supabase
+      const { data: reportsData } = await supabase
         .from("reports")
         .select("id, created_at, report_type")
         .order("created_at", { ascending: false })
         .limit(20);
 
-      if (data) setReports(data);
+      if (reportsData) setReports(reportsData);
       setLoading(false);
     }
 
