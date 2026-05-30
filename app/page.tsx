@@ -227,11 +227,10 @@ async function callPersona(persona: Persona, manuscriptText: string): Promise<st
 function renderMarkdown(text: string): string {
   if (!text) return "";
   return text
-    .replace(/^## (.+)$/gm, '<h3 class="section-head">$1</h3>')
+    .replace(/## (.+)/g, '<h3 class="section-head">$1</h3>')
     .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
     .replace(/\n\n/g, '</p><p class="para">')
-    .replace(/^- (.+)$/gm, "<li>$1</li>")
-    .replace(/(<li>.*<\/li>)/gs, '<ul class="list">$1</ul>')
+    .replace(/\n- (.+)/g, "<li>$1</li>")
     .replace(/\n/g, "<br/>");
 }
 
