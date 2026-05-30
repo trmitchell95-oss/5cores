@@ -9,7 +9,7 @@ const supabase = createClient(
 );
 
 export default function LoginPage() {
-  const [mode, setMode] = useState<"signin" | "signup">("signin");
+  const [mode, setMode] = useState<"signin" | "signup" | "forgot">("signin");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -37,19 +37,41 @@ export default function LoginPage() {
     setError("");
     setMessage("");
 
-    if (!email.trim() || !password.trim()) {
-      setError("Enter an email and password.");
-      setLoading(false);
-      return;
-    }
-
-    if (password.length < 6) {
-      setError("Password must be at least 6 characters.");
+    if (!email.trim()) {
+      setError("Enter your email address.");
       setLoading(false);
       return;
     }
 
     try {
+      if (mode === "forgot") {
+        const { error } = await supabase.auth.resetPasswordForEmail(email.trim(), {
+          redirectTo: `${window.location.origin}/reset-password`,
+        });
+
+        if (error) {
+          setError(error.message);
+          setLoading(false);
+          return;
+        }
+
+        setMessage("Password reset email sent. Check your inbox and follow the link.");
+        setLoading(false);
+        return;
+      }
+
+      if (!password.trim()) {
+        setError("Enter your password.");
+        setLoading(false);
+        return;
+      }
+
+      if (password.length < 6) {
+        setError("Password must be at least 6 characters.");
+        setLoading(false);
+        return;
+      }
+
       if (mode === "signin") {
         const { error } = await supabase.auth.signInWithPassword({
           email: email.trim(),
@@ -84,6 +106,13 @@ export default function LoginPage() {
       setError("Something went wrong. Try again.");
       setLoading(false);
     }
+  }
+
+  function switchMode(nextMode: "signin" | "signup" | "forgot") {
+    setMode(nextMode);
+    setError("");
+    setMessage("");
+    setPassword("");
   }
 
   return (
@@ -228,6 +257,30 @@ export default function LoginPage() {
           cursor: not-allowed;
         }
 
+        .link-row {
+          margin-top: 18px;
+          display: flex;
+          justify-content: space-between;
+          gap: 14px;
+          flex-wrap: wrap;
+        }
+
+        .text-link {
+          border: none;
+          background: none;
+          color: #6b6560;
+          font-family: 'IBM Plex Mono', monospace;
+          font-size: 10px;
+          letter-spacing: 0.1em;
+          text-transform: uppercase;
+          cursor: pointer;
+          padding: 0;
+        }
+
+        .text-link:hover {
+          color: #c8935a;
+        }
+
         .error,
         .message {
           margin-top: 18px;
@@ -263,36 +316,36 @@ export default function LoginPage() {
           <a className="back-link" href="/">Back to Home</a>
 
           <div className="eyebrow">5 CORE Beta Access</div>
-          <div className="title">{mode === "signin" ? "Sign In" : "Create Account"}</div>
+
+          <div className="title">
+            {mode === "signin" ? "Sign In" : mode === "signup" ? "Create Account" : "Reset Password"}
+          </div>
+
           <div className="subtitle">
-            Sign in to submit manuscripts, run the council, and reopen saved reports.
+            {mode === "forgot"
+              ? "Enter your email and we will send you a password reset link."
+              : "Sign in to submit manuscripts, run the council, and reopen saved reports."}
           </div>
 
-          <div className="tabs">
-            <button
-              type="button"
-              className={`tab ${mode === "signin" ? "active" : ""}`}
-              onClick={() => {
-                setMode("signin");
-                setError("");
-                setMessage("");
-              }}
-            >
-              Sign In
-            </button>
+          {mode !== "forgot" && (
+            <div className="tabs">
+              <button
+                type="button"
+                className={`tab ${mode === "signin" ? "active" : ""}`}
+                onClick={() => switchMode("signin")}
+              >
+                Sign In
+              </button>
 
-            <button
-              type="button"
-              className={`tab ${mode === "signup" ? "active" : ""}`}
-              onClick={() => {
-                setMode("signup");
-                setError("");
-                setMessage("");
-              }}
-            >
-              Sign Up
-            </button>
-          </div>
+              <button
+                type="button"
+                className={`tab ${mode === "signup" ? "active" : ""}`}
+                onClick={() => switchMode("signup")}
+              >
+                Sign Up
+              </button>
+            </div>
+          )}
 
           <form onSubmit={handleSubmit}>
             <div className="field">
@@ -307,22 +360,50 @@ export default function LoginPage() {
               />
             </div>
 
-            <div className="field">
-              <label className="label">Password</label>
-              <input
-                className="input"
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                disabled={loading}
-                placeholder="Minimum 6 characters"
-              />
-            </div>
+            {mode !== "forgot" && (
+              <div className="field">
+                <label className="label">Password</label>
+                <input
+                  className="input"
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  disabled={loading}
+                  placeholder="Minimum 6 characters"
+                />
+              </div>
+            )}
 
             <button className="button" type="submit" disabled={loading}>
-              {loading ? "Working..." : mode === "signin" ? "Sign In" : "Create Account"}
+              {loading
+                ? "Working..."
+                : mode === "signin"
+                  ? "Sign In"
+                  : mode === "signup"
+                    ? "Create Account"
+                    : "Send Reset Link"}
             </button>
           </form>
+
+          <div className="link-row">
+            {mode === "signin" && (
+              <button className="text-link" type="button" onClick={() => switchMode("forgot")}>
+                Forgot Password?
+              </button>
+            )}
+
+            {mode === "forgot" && (
+              <button className="text-link" type="button" onClick={() => switchMode("signin")}>
+                Back to Sign In
+              </button>
+            )}
+
+            {mode === "signup" && (
+              <button className="text-link" type="button" onClick={() => switchMode("signin")}>
+                Already Have an Account?
+              </button>
+            )}
+          </div>
 
           {error && <div className="error">{error}</div>}
           {message && <div className="message">{message}</div>}
