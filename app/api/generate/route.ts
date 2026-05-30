@@ -123,7 +123,7 @@ export async function POST(req: NextRequest) {
     for (const persona of PERSONAS) {
       const message = await client.messages.create({
         model: "claude-sonnet-4-6",
-        max_tokens: 1024,
+        max_tokens: 16000,
         system: persona.systemPrompt,
         messages: [
           {
@@ -149,7 +149,6 @@ export async function POST(req: NextRequest) {
 
     if (error) {
       console.error("Supabase save error:", error);
-      // Still return reports even if save fails
       return NextResponse.json({ reports });
     }
 
