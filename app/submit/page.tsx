@@ -164,9 +164,22 @@ export default function SubmitPage() {
     }, 3500);
 
     try {
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+
+      if (!session) {
+        setError("You must be logged in to run the council.");
+        setLoading(false);
+        return;
+      }
+
       const response = await fetch("/api/generate", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${session.access_token}`,
+        },
         body: JSON.stringify({
           manuscriptText: manuscript,
           userId,
@@ -640,3 +653,4 @@ export default function SubmitPage() {
     </div>
   );
 }
+

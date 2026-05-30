@@ -1,3 +1,4 @@
+@'
 import { NextRequest, NextResponse } from "next/server";
 import Anthropic from "@anthropic-ai/sdk";
 import { createClient } from "@supabase/supabase-js";
@@ -9,7 +10,13 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_ROLE_KEY!
 );
 
-const INTAKE_INSTRUCTION = (writingType: string, audience: string, biggestConcern: string, preparationGoal: string, feedbackTone: string) => `
+const INTAKE_INSTRUCTION = (
+  writingType: string,
+  audience: string,
+  biggestConcern: string,
+  preparationGoal: string,
+  feedbackTone: string
+) => `
 The user provided the following intake context. Use it to calibrate your critique. Do not judge all writing types by the same standard. A sermon, memoir, children's story, poem, essay, and thriller should each be evaluated according to its own purpose, audience, genre expectations, and emotional contract with the reader.
 
 Writing type: ${writingType || "Not specified"}
@@ -136,9 +143,32 @@ Overall Publication Readiness: score /10
 
 export async function POST(req: NextRequest) {
   try {
+    const authHeader = req.headers.get("authorization") || "";
+    const token = authHeader.startsWith("Bearer ")
+      ? authHeader.replace("Bearer ", "")
+      : "";
+
+    if (!token) {
+      return NextResponse.json(
+        { error: "You must be logged in to run the council." },
+        { status: 401 }
+      );
+    }
+
+    const {
+      data: { user },
+      error: userError,
+    } = await supabase.auth.getUser(token);
+
+    if (userError || !user) {
+      return NextResponse.json(
+        { error: "Your login session expired. Please sign in again." },
+        { status: 401 }
+      );
+    }
+
     const {
       manuscriptText,
-      userId,
       title,
       writingType,
       audience,
@@ -148,7 +178,17 @@ export async function POST(req: NextRequest) {
     } = await req.json();
 
     if (!manuscriptText) {
-      return NextResponse.json({ error: "No manuscript text provided" }, { status: 400 });
+      return NextResponse.json(
+        { error: "No manuscript text provided." },
+        { status: 400 }
+      );
+    }
+
+    if (typeof manuscriptText !== "string" || manuscriptText.trim().length < 50) {
+      return NextResponse.json(
+        { error: "Manuscript text is too short." },
+        { status: 400 }
+      );
     }
 
     const intakeContext = INTAKE_INSTRUCTION(
@@ -172,6 +212,7 @@ export async function POST(req: NextRequest) {
             },
           ],
         });
+
         return {
           key: persona.key,
           text: (message.content[0] as { text: string }).text,
@@ -180,6 +221,7 @@ export async function POST(req: NextRequest) {
     );
 
     const reports: Record<string, string> = {};
+
     for (const result of results) {
       reports[result.key] = result.text;
     }
@@ -190,7 +232,7 @@ export async function POST(req: NextRequest) {
         content: JSON.stringify(reports),
         report_type: "council",
         created_at: new Date().toISOString(),
-        user_id: userId || null,
+        user_id: user.id,
         title: title || null,
         intake: JSON.stringify({
           writingType: writingType || null,
@@ -205,12 +247,19 @@ export async function POST(req: NextRequest) {
 
     if (error) {
       console.error("Supabase save error:", error);
-      return NextResponse.json({ reports });
+      return NextResponse.json({
+        reports,
+        error: "Report generated but could not be saved.",
+      });
     }
 
     return NextResponse.json({ reports, submissionId: data.id });
   } catch (error) {
     console.error("Council error:", error);
-    return NextResponse.json({ error: "Something went wrong" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Something went wrong." },
+      { status: 500 }
+    );
   }
 }
+'@ | Set-Content -LiteralPath ".\app\api\generate\route.ts" -Encoding utf8
