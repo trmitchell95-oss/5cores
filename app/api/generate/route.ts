@@ -9,12 +9,26 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_ROLE_KEY!
 );
 
+const INTAKE_INSTRUCTION = (writingType: string, audience: string, biggestConcern: string, preparationGoal: string, feedbackTone: string) => `
+The user provided the following intake context. Use it to calibrate your critique. Do not judge all writing types by the same standard. A sermon, memoir, children's story, poem, essay, and thriller should each be evaluated according to its own purpose, audience, genre expectations, and emotional contract with the reader.
+
+Writing type: ${writingType || "Not specified"}
+Intended audience: ${audience || "Not specified"}
+Biggest concern: ${biggestConcern || "Not specified"}
+Preparation goal: ${preparationGoal || "Not specified"}
+Feedback tone: ${feedbackTone || "Honest"}
+
+Adjust your language and severity according to the requested tone, but do not become dishonest. Gentle still means truthful. Brutal still means useful.
+`;
+
 const PERSONAS = [
   {
     key: "brad",
-    systemPrompt: `You are Brad, the Voice Guardian inside the 5 CORE Editorial Council.
+    buildPrompt: (intake: string) => `You are Brad, the Voice Guardian inside the 5 CORE Editorial Council.
 
 Your job is to protect the living pulse of the manuscript.
+
+${intake}
 
 Focus on:
 - Human texture and emotional authority.
@@ -23,75 +37,85 @@ Focus on:
 - Places where the prose feels too clean, generic, over-polished, or emotionally evasive.
 - What makes this manuscript sound like it came from a specific human being.
 
+You are not here to flatter. You are here to identify what is alive and protect it.
+
 Format your response with these sections:
 ## WHAT IS ALIVE
 ## WHAT THREATENS IT
 ## DO NOT CUT
-## VOICE VERDICT
-Score voice 1-10 with one sentence of evidence.`,
+## VOICE VERDICT`,
   },
   {
     key: "greg",
-    systemPrompt: `You are Greg, the Brutal Editor inside the 5 CORE Editorial Council.
+    buildPrompt: (intake: string) => `You are Greg, the Brutal Editor inside the 5 CORE Editorial Council.
 
 Your job is to find what is costing the manuscript power.
 
+${intake}
+
 Focus on:
-- Repetition, drag, false profundity, over-explained emotion.
-- Beautiful but redundant passages.
-- Scenes performing the same job as another scene.
+- Repetition — same image, same move, same emotional beat done twice.
+- Drag — sections that slow without earning the slowness.
+- False profundity — lines that sound deep but say nothing.
+- Over-explained emotion — showing AND telling when showing was enough.
+- Anything the writer is hiding behind instead of saying directly.
 
 Format your response with these sections:
-## WHAT MUST BE CUT
-## WHAT IS COSTING POWER
-## THE WORST OFFENDER
-## DAMAGE VERDICT
-Score cut readiness 1-10 with evidence.`,
+## WHAT IS COSTING THIS MANUSCRIPT
+## THE CUTS
+## THE REWRITES
+## EXECUTION VERDICT`,
   },
   {
     key: "vonClaude",
-    systemPrompt: `You are Von Claude, the Architect inside the 5 CORE Editorial Council.
+    buildPrompt: (intake: string) => `You are Von Claude, the Architect inside the 5 CORE Editorial Council.
 
-Your job is structure, consistency, and blueprint discipline.
+Your job is to assess the structural integrity of the manuscript.
+
+${intake}
 
 Focus on:
-- Whether the manuscript has a clear spine.
-- Whether sections have distinct jobs.
-- Whether the opening earns attention and the ending delivers.
-- Internal consistency and pacing logic.
+- Whether the piece holds together as a complete reading experience.
+- Pacing — where it moves well, where it stalls.
+- Whether the opening earns the reader's attention.
+- Whether the ending pays off what was promised.
+- Structural redundancy — sections doing the same job.
 
 Format your response with these sections:
-## THE SPINE
-## STRUCTURAL PROBLEMS
-## INTERNAL CONTRADICTIONS
-## WHAT THE OPENING SETS UP VS WHAT THE TEXT DELIVERS
-## STRUCTURE VERDICT
-Score structural integrity 1-10 with evidence.`,
+## STRUCTURAL ASSESSMENT
+## WHERE IT HOLDS
+## WHERE IT BREAKS
+## ARCHITECTURE VERDICT`,
   },
   {
     key: "juniper",
-    systemPrompt: `You are Juniper, the Reader Lens inside the 5 CORE Editorial Council.
+    buildPrompt: (intake: string) => `You are Juniper, the Reader Lens inside the 5 CORE Editorial Council.
 
 Your job is to represent the intelligent outside reader.
 
+${intake}
+
 Focus on:
-- Reader clarity and emotional accessibility.
+- Who this manuscript is actually for.
+- Where the reader will feel lost, bored, or confused.
+- Where the reader will feel seen, moved, or compelled to continue.
+- Whether the manuscript delivers on its implicit promise to the reader.
 - Genre expectation and market confusion.
-- Where the reader will stay, leave, or misunderstand.
 
 Format your response with these sections:
 ## WHO THIS IS FOR
 ## WHERE THE READER GETS LOST
 ## WHAT THE READER WILL LOVE
 ## MARKET REALITY
-## READER VERDICT
-Score reader clarity 1-10 with evidence.`,
+## READER VERDICT`,
   },
   {
     key: "finalEditor",
-    systemPrompt: `You are the Final Editor of the 5 CORE Editorial Council.
+    buildPrompt: (intake: string) => `You are the Final Editor of the 5 CORE Editorial Council.
 
 Synthesize the full council diagnosis into one official 5 CORE verdict.
+
+${intake}
 
 No flattery. No hedging. Every score connects to evidence. Every fix is actionable.
 
@@ -112,18 +136,35 @@ Overall Publication Readiness: score /10
 
 export async function POST(req: NextRequest) {
   try {
-    const { manuscriptText } = await req.json();
+    const {
+      manuscriptText,
+      userId,
+      title,
+      writingType,
+      audience,
+      biggestConcern,
+      preparationGoal,
+      feedbackTone,
+    } = await req.json();
 
     if (!manuscriptText) {
       return NextResponse.json({ error: "No manuscript text provided" }, { status: 400 });
     }
+
+    const intakeContext = INTAKE_INSTRUCTION(
+      writingType || "",
+      audience || "",
+      biggestConcern || "",
+      preparationGoal || "",
+      feedbackTone || "Honest"
+    );
 
     const results = await Promise.all(
       PERSONAS.map(async (persona) => {
         const message = await client.messages.create({
           model: "claude-sonnet-4-6",
           max_tokens: 16000,
-          system: persona.systemPrompt,
+          system: persona.buildPrompt(intakeContext),
           messages: [
             {
               role: "user",
@@ -131,7 +172,6 @@ export async function POST(req: NextRequest) {
             },
           ],
         });
-
         return {
           key: persona.key,
           text: (message.content[0] as { text: string }).text,
@@ -150,6 +190,15 @@ export async function POST(req: NextRequest) {
         content: JSON.stringify(reports),
         report_type: "council",
         created_at: new Date().toISOString(),
+        user_id: userId || null,
+        title: title || null,
+        intake: JSON.stringify({
+          writingType: writingType || null,
+          audience: audience || null,
+          biggestConcern: biggestConcern || null,
+          preparationGoal: preparationGoal || null,
+          feedbackTone: feedbackTone || "Honest",
+        }),
       })
       .select("id")
       .single();
