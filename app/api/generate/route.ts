@@ -1,4 +1,3 @@
-@'
 import { NextRequest, NextResponse } from "next/server";
 import Anthropic from "@anthropic-ai/sdk";
 import { createClient } from "@supabase/supabase-js";
@@ -262,4 +261,3 @@ export async function POST(req: NextRequest) {
     );
   }
 }
-'@ | Set-Content -LiteralPath ".\app\api\generate\route.ts" -Encoding utf8
