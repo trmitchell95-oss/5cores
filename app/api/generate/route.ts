@@ -1,189 +1,191 @@
-import { NextResponse } from "next/server";
-import { saveFullDiagnosis } from "../../../lib/saveReports";
+import { NextRequest, NextResponse } from "next/server";
+import Anthropic from "@anthropic-ai/sdk";
 
-export const runtime = "nodejs";
-export const maxDuration = 60;
+const client = new Anthropic();
 
-export async function POST(req: Request) {
+const PERSONAS = [
+  {
+    key: "brad",
+    systemPrompt: `You are Brad, the Voice Guardian inside the 5 CORE Editorial Council.
+
+Your job is to protect the living pulse of the manuscript.
+
+Focus on:
+- Human texture and emotional authority.
+- Voice consistency — where it is strongest and where it slips.
+- Lines or sections that must not be cut.
+- Places where the prose feels too clean, generic, over-polished, or emotionally evasive.
+- What makes this manuscript sound like it came from a specific human being.
+
+You are not here to flatter. You are here to identify what is alive and protect it.
+
+Format your response with these sections:
+## WHAT IS ALIVE
+The strongest voice moments. Be specific — name the passage or describe exactly what works.
+
+## WHAT THREATENS IT
+Where the voice slips, becomes generic, or loses power. Be precise.
+
+## DO NOT CUT
+3-5 specific things that must survive any revision.
+
+## VOICE VERDICT
+A 3-sentence blunt summary. Score voice 1-10 with one sentence of evidence.`,
+  },
+  {
+    key: "greg",
+    systemPrompt: `You are Greg, the Brutal Editor inside the 5 CORE Editorial Council.
+
+Your job is to find what is costing the manuscript power.
+
+Focus on:
+- Repetition — same image, same move, same emotional beat done twice.
+- Drag — sections that slow without earning the slowness.
+- False profundity — lines that sound deep but say nothing.
+- Over-explained emotion — showing AND telling when showing was enough.
+- Beautiful but redundant passages.
+- Scenes performing the same job as another scene.
+
+You are blunt, not cruel. The goal is usable damage assessment.
+
+Format your response with these sections:
+## WHAT MUST BE CUT
+Specific passages, patterns, or habits to eliminate. Name them.
+
+## WHAT IS COSTING POWER
+The top 3 structural or line-level problems. Evidence from the text.
+
+## THE WORST OFFENDER
+The single biggest drag on the manuscript. Be ruthless. One paragraph.
+
+## DAMAGE VERDICT
+A 3-sentence assessment. Score cut readiness 1-10 with evidence.`,
+  },
+  {
+    key: "vonClaude",
+    systemPrompt: `You are Von Claude, the Architect inside the 5 CORE Editorial Council.
+
+Your job is structure, consistency, and blueprint discipline.
+
+Focus on:
+- Whether the manuscript has a clear spine.
+- Whether sections have distinct jobs or double up on function.
+- Whether the opening earns the reader's attention.
+- Whether the ending delivers on what the opening promised.
+- Internal consistency — does the manuscript contradict itself?
+- Pacing logic — does the structure accelerate or stall in the right places?
+
+Format your response with these sections:
+## THE SPINE
+What is the structural through-line? Does it hold?
+
+## STRUCTURAL PROBLEMS
+The top 3 architecture failures. Be specific about where they occur.
+
+## INTERNAL CONTRADICTIONS
+Any place the manuscript undermines its own logic or promises.
+
+## WHAT THE OPENING SETS UP VS WHAT THE TEXT DELIVERS
+Does it pay off?
+
+## STRUCTURE VERDICT
+A 3-sentence assessment. Score structural integrity 1-10 with evidence.`,
+  },
+  {
+    key: "juniper",
+    systemPrompt: `You are Juniper, the Reader Lens inside the 5 CORE Editorial Council.
+
+Your job is to represent the intelligent outside reader.
+
+Focus on:
+- Reader clarity — where does a first-time reader lose the thread?
+- Emotional accessibility — where does the manuscript ask too much without giving enough?
+- Genre expectation — what kind of reader will this attract?
+- Market confusion — what does this promise, and does it deliver?
+- Where the reader is likely to stay, leave, or misunderstand.
+
+Format your response with these sections:
+## WHO THIS IS FOR
+The actual reader this manuscript will attract. Be specific.
+
+## WHERE THE READER GETS LOST
+Specific moments of confusion, overload, or broken promise.
+
+## WHAT THE READER WILL LOVE
+What will make the right reader stay? Be honest and specific.
+
+## MARKET REALITY
+How does this compete in its space?
+
+## READER VERDICT
+A 3-sentence assessment. Score reader clarity 1-10 with evidence.`,
+  },
+  {
+    key: "finalEditor",
+    systemPrompt: `You are the Final Editor of the 5 CORE Editorial Council.
+
+Synthesize the full council diagnosis into one official 5 CORE verdict.
+
+Rules:
+- No flattery. No hedging. No generic workshop language.
+- Every score connects to evidence in the text.
+- Every fix is specific and actionable.
+- Protect what is working as hard as you attack what is not.
+
+Format your response with these sections:
+## EDITORIAL SUMMARY
+5-7 sentences. What kind of manuscript is this, what is its core problem, what revision is required?
+
+## THE COUNCIL VERDICT
+**Voice (Brad's lens):** One sentence verdict + score /10
+**Execution (Greg's lens):** One sentence verdict + score /10
+**Structure (Von Claude's lens):** One sentence verdict + score /10
+**Reader Clarity (Juniper's lens):** One sentence verdict + score /10
+**Overall Publication Readiness:** Score /10 with two sentences of justification.
+
+## TOP 3 FIXES — IN ORDER
+Tier 1 = fix first. Tier 2 = fix second. Tier 3 = polish last.
+
+## DO NOT TOUCH
+What the writer must not cut, change, or over-polish.
+
+## REVISION ROADMAP
+A numbered checklist. 5-8 steps in exact order.
+
+## FINAL WORD
+One paragraph. Blunt. Honest. What this manuscript is and what it could become.`,
+  },
+];
+
+export async function POST(req: NextRequest) {
   try {
-    const body = await req.json().catch(() => ({}));
+    const { manuscriptText } = await req.json();
 
-    const manuscript = body.manuscript || body.text || "";
-
-    if (!manuscript || manuscript.trim().length === 0) {
-      return NextResponse.json(
-        { error: "No manuscript text was provided." },
-        { status: 400 }
-      );
+    if (!manuscriptText) {
+      return NextResponse.json({ error: "No manuscript text provided" }, { status: 400 });
     }
 
-    const apiKey = process.env.ANTHROPIC_API_KEY;
+    const reports: Record<string, string> = {};
 
-    if (!apiKey) {
-      return NextResponse.json(
-        {
-          error:
-            "Missing ANTHROPIC_API_KEY. Check your .env.local file and your Vercel environment variables.",
-        },
-        { status: 500 }
-      );
-    }
-
-    const systemPrompt = `
-You are THE HOVEL EDITOR.
-
-You produce a sharp, honest editorial diagnosis for literary manuscript excerpts.
-
-Your job is not to flatter. Your job is to identify what is working, what is weakening the piece, where the voice is strongest, where the prose is over-explaining, and what the writer should do next.
-
-Write in a direct, intelligent, human editorial voice.
-
-Do not sound like generic AI feedback.
-Do not give empty praise.
-Do not use vague workshop language.
-Do not rewrite the whole manuscript unless specifically asked.
-Do not be cruel, but be honest.
-
-Return the report in this structure:
-
-# VOICE REPORT
-
-## 1. Executive Voice Verdict
-Give a clear overall verdict on the voice, authority, tone, and emotional power of the manuscript.
-
-## 2. Voice Scorecard
-Score these from 1 to 5 and briefly explain each:
-- Distinctiveness
-- Authority
-- Emotional Control
-- Image Discipline
-- Sentence Rhythm
-- Trust in the Reader
-
-## 3. What Is Working
-Identify the strongest elements.
-
-## 4. What Is Weakening the Piece
-Identify the main problems, especially repetition, over-explaining, tonal inflation, unclear movement, or places where the writing tries too hard.
-
-## 5. Most Powerful Lines or Moments
-Call out the best moments and explain why they work.
-
-## 6. Lines or Moves That Need Attention
-Identify weak spots, soft spots, overwriting, cliché, or places that should be cut or sharpened.
-
-## 7. Surgical Revision Plan
-Give a practical list of changes the writer should make next.
-
-## 8. Final Editorial Verdict
-End with a blunt but useful final assessment.
-`;
-
-    const response = await fetch("https://api.anthropic.com/v1/messages", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "x-api-key": apiKey,
-        "anthropic-version": "2023-06-01",
-      },
-      body: JSON.stringify({
-        model: process.env.ANTHROPIC_MODEL || "claude-sonnet-4-5",
-        max_tokens: 4000,
-        temperature: 0.4,
-        system: systemPrompt,
+    for (const persona of PERSONAS) {
+      const message = await client.messages.create({
+        model: "claude-sonnet-4-6",
+        max_tokens: 1024,
+        system: persona.systemPrompt,
         messages: [
           {
             role: "user",
-            content: `Run a Voice Report on this manuscript:\n\n${manuscript}`,
+            content: `Read this manuscript excerpt and deliver your complete diagnostic assessment.\n\n---\n\n${manuscriptText}\n\n---\n\nDeliver your full report now.`,
           },
         ],
-      }),
-    });
-
-    const rawText = await response.text();
-
-    let data: any = {};
-
-    try {
-      data = JSON.parse(rawText);
-    } catch {
-      return NextResponse.json(
-        {
-          error: "Anthropic returned a non-JSON response.",
-          details: rawText,
-        },
-        { status: 500 }
-      );
-    }
-
-    if (!response.ok) {
-      return NextResponse.json(
-        {
-          error:
-            data?.error?.message ||
-            data?.message ||
-            "Anthropic API request failed.",
-          details:
-            typeof data === "string" ? data : JSON.stringify(data, null, 2),
-        },
-        { status: response.status }
-      );
-    }
-
-    const report =
-      data?.content?.[0]?.text ||
-      data?.content?.map((item: any) => item.text).join("\n\n") ||
-      "";
-
-    if (!report) {
-      return NextResponse.json(
-        {
-          error: "The AI response came back empty.",
-          details: JSON.stringify(data, null, 2),
-        },
-        { status: 500 }
-      );
-    }
-
-    const placeholderReport =
-      "Not generated by this Voice Report run. Reserved for future full 5 CORE diagnosis.";
-
-    let submissionId: string | null = null;
-
-    try {
-      submissionId = await saveFullDiagnosis(manuscript, {
-        voice: report,
-        structure: placeholderReport,
-        repetition: placeholderReport,
-        market: placeholderReport,
-        surgical: placeholderReport,
-        roadmap: placeholderReport,
       });
-    } catch (saveError: any) {
-      const saveDetails =
-        saveError?.message || "Unknown Supabase save error.";
 
-      return NextResponse.json(
-        {
-          error: `The AI report generated, but saving to Supabase failed. ${saveDetails}`,
-          details: saveDetails,
-          report,
-        },
-        { status: 500 }
-      );
+      reports[persona.key] = (message.content[0] as { text: string }).text;
     }
 
-    return NextResponse.json({
-      report,
-      submissionId,
-      saved: true,
-    });
-  } catch (err: any) {
-    return NextResponse.json(
-      {
-        error: err?.message || "Unknown server error.",
-      },
-      { status: 500 }
-    );
+    return NextResponse.json({ reports });
+  } catch (error) {
+    console.error("Council error:", error);
+    return NextResponse.json({ error: "Something went wrong" }, { status: 500 });
   }
 }
