@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState, useRef, useEffect } from "react";
 import { createClient } from "@supabase/supabase-js";
@@ -41,34 +41,54 @@ function renderMarkdown(text: string): string {
     line = line.replace(/\*([^*\s][^*]*[^*\s]|[^*\s])\*/g, "<em>$1</em>");
 
     if (/^# /.test(line)) {
-      if (inList) { html.push("</ul>"); inList = false; }
+      if (inList) {
+        html.push("</ul>");
+        inList = false;
+      }
       html.push(`<h1 class="report-title">${line.replace(/^# /, "")}</h1>`);
       continue;
     }
+
     if (/^## /.test(line)) {
-      if (inList) { html.push("</ul>"); inList = false; }
+      if (inList) {
+        html.push("</ul>");
+        inList = false;
+      }
       html.push(`<h2 class="section-head">${line.replace(/^## /, "")}</h2>`);
       continue;
     }
+
     if (/^### /.test(line)) {
-      if (inList) { html.push("</ul>"); inList = false; }
+      if (inList) {
+        html.push("</ul>");
+        inList = false;
+      }
       html.push(`<h3 class="section-subhead">${line.replace(/^### /, "")}</h3>`);
       continue;
     }
 
     if (/^---+$/.test(line.trim())) {
-      if (inList) { html.push("</ul>"); inList = false; }
+      if (inList) {
+        html.push("</ul>");
+        inList = false;
+      }
       html.push(`<hr class="report-divider"/>`);
       continue;
     }
 
     if (/^[-•] /.test(line)) {
-      if (!inList) { html.push("<ul class='report-list'>"); inList = true; }
+      if (!inList) {
+        html.push("<ul class='report-list'>");
+        inList = true;
+      }
       html.push(`<li>${line.replace(/^[-•] /, "")}</li>`);
       continue;
     }
 
-    if (inList) { html.push("</ul>"); inList = false; }
+    if (inList) {
+      html.push("</ul>");
+      inList = false;
+    }
 
     if (line.trim() === "") {
       html.push("<br/>");
@@ -86,6 +106,12 @@ function renderMarkdown(text: string): string {
 export default function SubmitPage() {
   const [manuscript, setManuscript] = useState("");
   const [title, setTitle] = useState("");
+  const [writingType, setWritingType] = useState("Fiction");
+  const [audience, setAudience] = useState("Readers");
+  const [biggestConcern, setBiggestConcern] = useState("");
+  const [preparationGoal, setPreparationGoal] = useState("Revision");
+  const [feedbackTone, setFeedbackTone] = useState("Honest");
+
   const [reports, setReports] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(false);
   const [activeTab, setActiveTab] = useState("brad");
@@ -98,18 +124,31 @@ export default function SubmitPage() {
 
   useEffect(() => {
     async function checkAuth() {
-      const { data: { session } } = await supabase.auth.getSession();
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+
       if (!session) {
         window.location.href = "/login";
       } else {
         setUserId(session.user.id);
       }
     }
+
     checkAuth();
   }, []);
 
   async function runCouncil() {
     if (!manuscript.trim()) return;
+
+    const intake = {
+      writingType,
+      audience,
+      biggestConcern: biggestConcern.trim(),
+      preparationGoal,
+      feedbackTone,
+    };
+
     setLoading(true);
     setReports({});
     setHasRun(false);
@@ -118,6 +157,7 @@ export default function SubmitPage() {
 
     let idx = 0;
     setStatusMsg(STATUS_MESSAGES[0]);
+
     intervalRef.current = setInterval(() => {
       idx = Math.min(idx + 1, STATUS_MESSAGES.length - 1);
       setStatusMsg(STATUS_MESSAGES[idx]);
@@ -131,6 +171,12 @@ export default function SubmitPage() {
           manuscriptText: manuscript,
           userId,
           title: title.trim() || "Untitled",
+          intake,
+          writingType,
+          audience,
+          biggestConcern: biggestConcern.trim(),
+          preparationGoal,
+          feedbackTone,
         }),
       });
 
@@ -156,6 +202,11 @@ export default function SubmitPage() {
   function reset() {
     setManuscript("");
     setTitle("");
+    setWritingType("Fiction");
+    setAudience("Readers");
+    setBiggestConcern("");
+    setPreparationGoal("Revision");
+    setFeedbackTone("Honest");
     setReports({});
     setHasRun(false);
     setActiveTab("brad");
@@ -178,17 +229,145 @@ export default function SubmitPage() {
         .subtitle { font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 300; color: #9a9186; margin-top: 12px; }
         .back-link { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #5a5448; text-decoration: none; letter-spacing: 0.1em; display: inline-block; margin-bottom: 32px; }
         .back-link:hover { color: #9a9186; }
-        .title-input { width: 100%; background: #161410; border: 1px solid #2a2520; color: #f0ece4; font-family: 'Cormorant Garamond', serif; font-size: 22px; padding: 14px 20px; outline: none; margin-bottom: 12px; transition: border-color 0.2s; }
-        .title-input:focus { border-color: #c8935a; }
-        .title-input::placeholder { color: #5a5448; }
-        .textarea { width: 100%; background: #161410; border: 1px solid #2a2520; color: #f0ece4; font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 300; padding: 20px; resize: vertical; outline: none; min-height: 220px; line-height: 1.7; transition: border-color 0.2s; }
-        .textarea:focus { border-color: #c8935a; }
-        .textarea::placeholder { color: #5a5448; }
-        .run-btn { margin-top: 16px; padding: 14px 36px; background: #c8935a; color: #0e0d0b; font-family: 'IBM Plex Mono', monospace; font-size: 12px; letter-spacing: 0.15em; text-transform: uppercase; border: none; cursor: pointer; transition: background 0.2s; }
+
+        .title-input,
+        .select-input,
+        .concern-input {
+          width: 100%;
+          background: #161410;
+          border: 1px solid #2a2520;
+          color: #f0ece4;
+          outline: none;
+          transition: border-color 0.2s;
+        }
+
+        .title-input {
+          font-family: 'Cormorant Garamond', serif;
+          font-size: 22px;
+          padding: 14px 20px;
+          margin-bottom: 18px;
+        }
+
+        .title-input:focus,
+        .select-input:focus,
+        .concern-input:focus,
+        .textarea:focus {
+          border-color: #c8935a;
+        }
+
+        .title-input::placeholder,
+        .concern-input::placeholder,
+        .textarea::placeholder {
+          color: #5a5448;
+        }
+
+        .intake-panel {
+          background: #12100d;
+          border: 1px solid #2a2520;
+          padding: 20px;
+          margin-bottom: 18px;
+        }
+
+        .intake-title {
+          font-family: 'IBM Plex Mono', monospace;
+          font-size: 10px;
+          letter-spacing: 0.16em;
+          color: #c8935a;
+          text-transform: uppercase;
+          margin-bottom: 16px;
+        }
+
+        .intake-grid {
+          display: grid;
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+          gap: 14px;
+        }
+
+        .field-full {
+          grid-column: 1 / -1;
+        }
+
+        .field-label {
+          display: block;
+          font-family: 'IBM Plex Mono', monospace;
+          font-size: 10px;
+          letter-spacing: 0.12em;
+          color: #6b6560;
+          text-transform: uppercase;
+          margin-bottom: 7px;
+        }
+
+        .select-input {
+          font-family: 'DM Sans', sans-serif;
+          font-size: 14px;
+          padding: 12px 14px;
+        }
+
+        .concern-input {
+          min-height: 76px;
+          resize: vertical;
+          font-family: 'DM Sans', sans-serif;
+          font-size: 14px;
+          line-height: 1.5;
+          padding: 12px 14px;
+        }
+
+        .intake-help {
+          font-family: 'DM Sans', sans-serif;
+          font-size: 12px;
+          color: #5a5448;
+          margin-top: 12px;
+          line-height: 1.5;
+        }
+
+        .textarea {
+          width: 100%;
+          background: #161410;
+          border: 1px solid #2a2520;
+          color: #f0ece4;
+          font-family: 'DM Sans', sans-serif;
+          font-size: 15px;
+          font-weight: 300;
+          padding: 20px;
+          resize: vertical;
+          outline: none;
+          min-height: 220px;
+          line-height: 1.7;
+          transition: border-color 0.2s;
+        }
+
+        .run-btn {
+          margin-top: 16px;
+          padding: 14px 36px;
+          background: #c8935a;
+          color: #0e0d0b;
+          font-family: 'IBM Plex Mono', monospace;
+          font-size: 12px;
+          letter-spacing: 0.15em;
+          text-transform: uppercase;
+          border: none;
+          cursor: pointer;
+          transition: background 0.2s;
+        }
+
         .run-btn:hover:not(:disabled) { background: #e0aa70; }
         .run-btn:disabled { opacity: 0.45; cursor: not-allowed; }
-        .reset-btn { margin-left: 12px; padding: 14px 24px; background: transparent; color: #5a5448; font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; border: 1px solid #2a2520; cursor: pointer; }
+
+        .reset-btn {
+          margin-left: 12px;
+          padding: 14px 24px;
+          background: transparent;
+          color: #5a5448;
+          font-family: 'IBM Plex Mono', monospace;
+          font-size: 11px;
+          letter-spacing: 0.12em;
+          text-transform: uppercase;
+          border: 1px solid #2a2520;
+          cursor: pointer;
+        }
+
         .reset-btn:hover { border-color: #5a5448; color: #9a9186; }
+
         .status-bar { margin-top: 32px; padding: 16px 20px; background: #161410; border-left: 2px solid #c8935a; }
         .status-text { font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #c8935a; letter-spacing: 0.1em; }
         .council-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 0; margin-top: 16px; border: 1px solid #2a2520; }
@@ -198,16 +377,19 @@ export default function SubmitPage() {
         .persona-progress.pending { opacity: 0.35; }
         .persona-dot { width: 6px; height: 6px; border-radius: 50%; margin: 0 auto 6px; }
         .persona-name-sm { font-family: 'IBM Plex Mono', monospace; font-size: 9px; letter-spacing: 0.1em; color: #9a9186; text-transform: uppercase; }
+
         .tabs-wrap { display: flex; border-bottom: 1px solid #2a2520; margin-top: 48px; overflow-x: auto; }
         .tab-btn { padding: 14px 20px; font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; background: none; border: none; border-bottom: 2px solid transparent; cursor: pointer; white-space: nowrap; transition: all 0.2s; color: #5a5448; }
         .tab-btn.active { border-bottom-color: var(--tab-color); color: var(--tab-color); }
         .tab-btn:hover:not(.active):not(.locked) { color: #9a9186; }
         .tab-btn.locked { opacity: 0.3; cursor: default; }
+
         .persona-header { padding: 28px 0 20px; border-bottom: 1px solid #2a2520; margin-bottom: 28px; display: flex; align-items: flex-start; gap: 20px; }
         .persona-badge { width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: 'Cormorant Garamond', serif; font-size: 20px; font-weight: 700; flex-shrink: 0; border: 1px solid var(--badge-border); }
         .persona-name { font-family: 'Cormorant Garamond', serif; font-size: 26px; font-weight: 700; line-height: 1; }
         .persona-role { font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; margin-top: 4px; }
         .persona-tagline { font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 300; color: #9a9186; margin-top: 8px; }
+
         .report-content { font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 300; line-height: 1.8; color: #d4cfc7; }
         .report-title { font-family: 'Cormorant Garamond', serif; font-size: 28px; font-weight: 700; color: #f0ece4; margin: 24px 0 8px; line-height: 1.2; }
         .section-head { font-family: 'Cormorant Garamond', serif; font-size: 20px; font-weight: 600; color: #f0ece4; margin: 32px 0 10px; letter-spacing: 0.05em; }
@@ -216,6 +398,7 @@ export default function SubmitPage() {
         .report-list { padding-left: 20px; margin: 12px 0; }
         .report-list li { margin-bottom: 8px; line-height: 1.7; }
         .para { margin-bottom: 12px; }
+
         .word-count { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #5a5448; margin-top: 8px; }
         .council-label { font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.15em; color: #5a5448; text-transform: uppercase; margin-top: 32px; margin-bottom: 8px; }
         .empty-state { padding: 48px 0; text-align: center; }
@@ -225,10 +408,17 @@ export default function SubmitPage() {
         .saved-link a { color: #4a9c6a; }
         .dashboard-btn { display: inline-block; margin-top: 12px; padding: 12px 24px; background: transparent; color: #5a5448; font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; border: 1px solid #2a2520; text-decoration: none; }
         .dashboard-btn:hover { border-color: #5a5448; color: #9a9186; }
+
+        @media (max-width: 720px) {
+          .intake-grid { grid-template-columns: 1fr; }
+          .council-grid { grid-template-columns: 1fr; }
+          .persona-progress { border-right: none; border-bottom: 1px solid #2a2520; }
+          .persona-progress:last-child { border-bottom: none; }
+        }
       `}</style>
 
       <div className="app-wrap">
-        <a className="back-link" href="/dashboard">← Back to Dashboard</a>
+        <a className="back-link" href="/dashboard">Back to Dashboard</a>
 
         <div className="masthead">
           <div className="eyebrow">Editorial Council</div>
@@ -246,6 +436,96 @@ export default function SubmitPage() {
               onChange={(e) => setTitle(e.target.value)}
               disabled={loading}
             />
+
+            <div className="intake-panel">
+              <div className="intake-title">Quick Intake</div>
+
+              <div className="intake-grid">
+                <div>
+                  <label className="field-label">What kind of writing is this?</label>
+                  <select
+                    className="select-input"
+                    value={writingType}
+                    onChange={(e) => setWritingType(e.target.value)}
+                    disabled={loading}
+                  >
+                    <option>Fiction</option>
+                    <option>Memoir</option>
+                    <option>Essay</option>
+                    <option>Poetry</option>
+                    <option>Inspirational</option>
+                    <option>Children's</option>
+                    <option>Other</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="field-label">Who is it for?</label>
+                  <select
+                    className="select-input"
+                    value={audience}
+                    onChange={(e) => setAudience(e.target.value)}
+                    disabled={loading}
+                  >
+                    <option>Readers</option>
+                    <option>Family</option>
+                    <option>Publisher</option>
+                    <option>Agent</option>
+                    <option>Contest</option>
+                    <option>Personal</option>
+                    <option>Other</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="field-label">What are you preparing for?</label>
+                  <select
+                    className="select-input"
+                    value={preparationGoal}
+                    onChange={(e) => setPreparationGoal(e.target.value)}
+                    disabled={loading}
+                  >
+                    <option>Revision</option>
+                    <option>Submission</option>
+                    <option>Publication</option>
+                    <option>Personal feedback</option>
+                    <option>Contest</option>
+                    <option>Beta readers</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="field-label">Feedback tone</label>
+                  <select
+                    className="select-input"
+                    value={feedbackTone}
+                    onChange={(e) => setFeedbackTone(e.target.value)}
+                    disabled={loading}
+                  >
+                    <option>Gentle</option>
+                    <option>Honest</option>
+                    <option>Blunt</option>
+                    <option>Brutal</option>
+                  </select>
+                </div>
+
+                <div className="field-full">
+                  <label className="field-label">What worries you most about it?</label>
+                  <textarea
+                    className="concern-input"
+                    placeholder="Example: I worry the ending overexplains itself, or that the voice gets too heavy."
+                    value={biggestConcern}
+                    onChange={(e) => setBiggestConcern(e.target.value)}
+                    disabled={loading}
+                  />
+                </div>
+              </div>
+
+              <div className="intake-help">
+                These answers calibrate the council so it judges the piece by its actual purpose instead of treating every manuscript the same way.
+              </div>
+            </div>
+
             <textarea
               className="textarea"
               placeholder="Paste your manuscript excerpt here. A few paragraphs to a few pages. The council will read it completely before delivering any verdict."
@@ -253,11 +533,13 @@ export default function SubmitPage() {
               onChange={(e) => setManuscript(e.target.value)}
               disabled={loading}
             />
+
             {manuscript.length > 0 && (
               <div className="word-count">
                 {manuscript.trim().split(/\s+/).filter(Boolean).length} words
               </div>
             )}
+
             <div>
               <button
                 className="run-btn"
@@ -267,6 +549,7 @@ export default function SubmitPage() {
                 {loading ? "Running..." : "Convene the Council"}
               </button>
             </div>
+
             {error && <div className="error-msg">{error}</div>}
           </div>
         )}
@@ -276,7 +559,9 @@ export default function SubmitPage() {
             <div className="status-bar">
               <div className="status-text">{statusMsg}</div>
             </div>
+
             <div className="council-label">Council Status</div>
+
             <div className="council-grid">
               {PERSONAS.map((p) => (
                 <div key={p.key} className={`persona-progress ${reports[p.key] ? "done" : "pending"}`}>
@@ -297,9 +582,9 @@ export default function SubmitPage() {
 
             {submissionId && (
               <div className="saved-link">
-                ✓ Report saved — <a href={`/view/${submissionId}`}>View full report</a>
-                <br/>
-                <a className="dashboard-btn" href="/dashboard">← Back to Dashboard</a>
+                Report saved — <a href={`/reports/${submissionId}`}>View full report</a>
+                <br />
+                <a className="dashboard-btn" href="/dashboard">Back to Dashboard</a>
               </div>
             )}
 
@@ -311,7 +596,7 @@ export default function SubmitPage() {
                   style={{ "--tab-color": p.color } as React.CSSProperties}
                   onClick={() => reports[p.key] && setActiveTab(p.key)}
                 >
-                  {p.name}{p.key === "finalEditor" ? " ★" : ""}
+                  {p.name}{p.key === "finalEditor" ? " *" : ""}
                 </button>
               ))}
             </div>
@@ -329,6 +614,7 @@ export default function SubmitPage() {
                   >
                     {activePersona.name[0]}
                   </div>
+
                   <div>
                     <div className="persona-name" style={{ color: activePersona.color }}>{activePersona.name}</div>
                     <div className="persona-role" style={{ color: activePersona.color + "99" }}>{activePersona.role}</div>
