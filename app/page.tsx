@@ -18,17 +18,63 @@ const STATUS_MESSAGES = [
   "Von Claude is checking structure...",
   "Juniper is reading as a reader...",
   "Final Editor is synthesizing...",
-  "Saving your reports...",
+  "Preparing your reports...",
 ];
 
 function renderMarkdown(text: string): string {
   if (!text) return "";
-  return text
-    .replace(/## (.+)/g, '<h3 class="section-head">$1</h3>')
-    .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
-    .replace(/\n\n/g, '</p><p class="para">')
-    .replace(/\n- (.+)/g, "<li>$1</li>")
-    .replace(/\n/g, "<br/>");
+
+  const lines = text.split("\n");
+  const html: string[] = [];
+  let inList = false;
+
+  for (const rawLine of lines) {
+    let line = rawLine;
+
+    line = line.replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>");
+    line = line.replace(/\*([^*\s][^*]*[^*\s]|[^*\s])\*/g, "<em>$1</em>");
+
+    if (/^# /.test(line)) {
+      if (inList) { html.push("</ul>"); inList = false; }
+      html.push(`<h1 class="report-title">${line.replace(/^# /, "")}</h1>`);
+      continue;
+    }
+    if (/^## /.test(line)) {
+      if (inList) { html.push("</ul>"); inList = false; }
+      html.push(`<h2 class="section-head">${line.replace(/^## /, "")}</h2>`);
+      continue;
+    }
+    if (/^### /.test(line)) {
+      if (inList) { html.push("</ul>"); inList = false; }
+      html.push(`<h3 class="section-subhead">${line.replace(/^### /, "")}</h3>`);
+      continue;
+    }
+
+    if (/^---+$/.test(line.trim())) {
+      if (inList) { html.push("</ul>"); inList = false; }
+      html.push(`<hr class="report-divider"/>`);
+      continue;
+    }
+
+    if (/^[-•] /.test(line)) {
+      if (!inList) { html.push("<ul class='report-list'>"); inList = true; }
+      html.push(`<li>${line.replace(/^[-•] /, "")}</li>`);
+      continue;
+    }
+
+    if (inList) { html.push("</ul>"); inList = false; }
+
+    if (line.trim() === "") {
+      html.push("<br/>");
+      continue;
+    }
+
+    html.push(`<p class="para">${line}</p>`);
+  }
+
+  if (inList) html.push("</ul>");
+
+  return html.join("\n");
 }
 
 export default function Home() {
@@ -39,7 +85,7 @@ export default function Home() {
   const [statusMsg, setStatusMsg] = useState("");
   const [hasRun, setHasRun] = useState(false);
   const [error, setError] = useState("");
-  const [savedId, setSavedId] = useState("");
+  const [submissionId, setSubmissionId] = useState("");
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   async function runCouncil() {
@@ -49,7 +95,6 @@ export default function Home() {
     setHasRun(false);
     setActiveTab("brad");
     setError("");
-    setSavedId("");
 
     let idx = 0;
     setStatusMsg(STATUS_MESSAGES[0]);
@@ -59,7 +104,7 @@ export default function Home() {
     }, 3500);
 
     try {
-      const response = await fetch("/api/generate", {
+      const response = await fetch("/api/generate/reports", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ manuscriptText: manuscript }),
@@ -71,9 +116,7 @@ export default function Home() {
         setReports(data.reports);
         setHasRun(true);
         setActiveTab("brad");
-        if (data.submissionId) {
-          setSavedId(data.submissionId);
-        }
+        if (data.submissionId) setSubmissionId(data.submissionId);
       } else {
         setError(data.error || "Something went wrong. Please try again.");
       }
@@ -92,7 +135,7 @@ export default function Home() {
     setHasRun(false);
     setActiveTab("brad");
     setError("");
-    setSavedId("");
+    setSubmissionId("");
   }
 
   const activePersona = PERSONAS.find((p) => p.key === activeTab);
@@ -131,20 +174,25 @@ export default function Home() {
         .tab-btn:hover:not(.active):not(.locked) { color: #9a9186; }
         .tab-btn.locked { opacity: 0.3; cursor: default; }
         .persona-header { padding: 28px 0 20px; border-bottom: 1px solid #2a2520; margin-bottom: 28px; display: flex; align-items: flex-start; gap: 20px; }
-        .persona-badge { width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: 'Cormorant Garamond', serif; font-size: 18px; font-weight: 700; flex-shrink: 0; }
+        .persona-badge { width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: 'Cormorant Garamond', serif; font-size: 20px; font-weight: 700; flex-shrink: 0; border: 1px solid var(--badge-border); }
         .persona-name { font-family: 'Cormorant Garamond', serif; font-size: 26px; font-weight: 700; line-height: 1; }
         .persona-role { font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; margin-top: 4px; }
         .persona-tagline { font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 300; color: #9a9186; margin-top: 8px; }
         .report-content { font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 300; line-height: 1.8; color: #d4cfc7; }
-        .section-head { font-family: 'Cormorant Garamond', serif; font-size: 18px; font-weight: 600; color: #f0ece4; margin: 28px 0 10px; }
+        .report-title { font-family: 'Cormorant Garamond', serif; font-size: 28px; font-weight: 700; color: #f0ece4; margin: 24px 0 8px; line-height: 1.2; }
+        .section-head { font-family: 'Cormorant Garamond', serif; font-size: 20px; font-weight: 600; color: #f0ece4; margin: 32px 0 10px; letter-spacing: 0.05em; }
+        .section-subhead { font-family: 'Cormorant Garamond', serif; font-size: 16px; font-weight: 600; color: #9a9186; margin: 20px 0 8px; }
+        .report-divider { border: none; border-top: 1px solid #2a2520; margin: 28px 0; }
+        .report-list { padding-left: 20px; margin: 12px 0; }
+        .report-list li { margin-bottom: 8px; line-height: 1.7; }
         .para { margin-bottom: 12px; }
         .word-count { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #5a5448; margin-top: 8px; }
         .council-label { font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.15em; color: #5a5448; text-transform: uppercase; margin-top: 32px; margin-bottom: 8px; }
-        .saved-bar { margin-top: 24px; padding: 16px 20px; background: #0e1a10; border-left: 2px solid #4a9c6a; font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #4a9c6a; letter-spacing: 0.08em; }
-        .saved-link { color: #4a9c6a; text-decoration: underline; word-break: break-all; }
-        .error-msg { margin-top: 20px; padding: 16px 20px; background: #2a1010; border-left: 2px solid #b84040; font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #b84040; }
         .empty-state { padding: 48px 0; text-align: center; }
         .empty-label { font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.15em; color: #5a5448; text-transform: uppercase; margin-top: 12px; }
+        .error-msg { margin-top: 20px; padding: 16px 20px; background: #2a1010; border-left: 2px solid #b84040; font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #b84040; }
+        .saved-link { margin-top: 20px; padding: 14px 20px; background: #0a1a0e; border-left: 2px solid #4a9c6a; font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #4a9c6a; }
+        .saved-link a { color: #4a9c6a; }
       `}</style>
 
       <div className="app-wrap">
@@ -205,12 +253,9 @@ export default function Home() {
               <button className="reset-btn" onClick={reset}>New Manuscript</button>
             </div>
 
-            {savedId && (
-              <div className="saved-bar">
-                ✓ Report saved — bookmark this link to return anytime:&nbsp;
-                <a className="saved-link" href={`${window.location.origin}/view/${savedId}`}>
-                  {window.location.origin}/view/{savedId}
-                </a>
+            {submissionId && (
+              <div className="saved-link">
+                ✓ Report saved — bookmark this link to return anytime: <a href={`/view/${submissionId}`}>{`5scores.vercel.app/view/${submissionId}`}</a>
               </div>
             )}
 
@@ -232,7 +277,11 @@ export default function Home() {
                 <div className="persona-header">
                   <div
                     className="persona-badge"
-                    style={{ background: activePersona.color + "22", color: activePersona.color }}
+                    style={{
+                      background: activePersona.color + "22",
+                      color: activePersona.color,
+                      "--badge-border": activePersona.color + "55",
+                    } as React.CSSProperties}
                   >
                     {activePersona.name[0]}
                   </div>
@@ -246,7 +295,7 @@ export default function Home() {
                 {activeReport ? (
                   <div
                     className="report-content"
-                    dangerouslySetInnerHTML={{ __html: "<p class='para'>" + renderMarkdown(activeReport) + "</p>" }}
+                    dangerouslySetInnerHTML={{ __html: renderMarkdown(activeReport) }}
                   />
                 ) : (
                   <div className="empty-state">
