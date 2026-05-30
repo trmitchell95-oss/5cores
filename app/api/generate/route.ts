@@ -118,25 +118,32 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "No manuscript text provided" }, { status: 400 });
     }
 
+    const results = await Promise.all(
+      PERSONAS.map(async (persona) => {
+        const message = await client.messages.create({
+          model: "claude-sonnet-4-6",
+          max_tokens: 16000,
+          system: persona.systemPrompt,
+          messages: [
+            {
+              role: "user",
+              content: `Read this manuscript excerpt and deliver your complete diagnostic assessment.\n\n---\n\n${manuscriptText}\n\n---\n\nDeliver your full report now.`,
+            },
+          ],
+        });
+
+        return {
+          key: persona.key,
+          text: (message.content[0] as { text: string }).text,
+        };
+      })
+    );
+
     const reports: Record<string, string> = {};
-
-    for (const persona of PERSONAS) {
-      const message = await client.messages.create({
-        model: "claude-sonnet-4-6",
-        max_tokens: 16000,
-        system: persona.systemPrompt,
-        messages: [
-          {
-            role: "user",
-            content: `Read this manuscript excerpt and deliver your complete diagnostic assessment.\n\n---\n\n${manuscriptText}\n\n---\n\nDeliver your full report now.`,
-          },
-        ],
-      });
-
-      reports[persona.key] = (message.content[0] as { text: string }).text;
+    for (const result of results) {
+      reports[result.key] = result.text;
     }
 
-    // Save to Supabase
     const { data, error } = await supabase
       .from("reports")
       .insert({
