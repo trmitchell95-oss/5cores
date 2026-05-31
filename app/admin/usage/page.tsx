@@ -545,6 +545,10 @@ export default function AdminUsagePage() {
               Invites
             </Link>
 
+            <Link href="/admin/exports" className="nav-link">
+              Exports
+            </Link>
+
             <button
               className="refresh-btn"
               type="button"
@@ -729,6 +733,7 @@ export default function AdminUsagePage() {
     </main>
   );
 }
+
 
 
 
