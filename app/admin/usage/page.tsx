@@ -634,7 +634,11 @@ export default function AdminUsagePage() {
                   <tbody>
                     {users.map((user) => (
                       <tr key={user.id}>
-                        <td className="email-cell">{user.email}</td>
+                        <td className="email-cell">
+                          <a className="report-link" href={`/admin/users/${user.id}`}>
+                            {user.email}
+                          </a>
+                        </td>
                         <td className="mono">{formatDate(user.created_at)}</td>
                         <td className="mono">{formatDate(user.last_sign_in_at)}</td>
                         <td className="mono">{formatDate(user.lastActivityAt)}</td>
@@ -717,3 +721,4 @@ export default function AdminUsagePage() {
     </main>
   );
 }
+
