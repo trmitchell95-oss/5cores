@@ -70,7 +70,7 @@ export default function LandingPage() {
         </nav>
 
         <div className="hero">
-          <div className="eyebrow">Editorial Council â€” Beta</div>
+          <div className="eyebrow">EDITORIAL COUNCIL / BETA</div>
           <h1 className="headline">Your manuscript deserves a real diagnosis.</h1>
           <p className="subhead">Five distinct editorial minds read your work and tell you exactly what is working, what is costing you power, and what to fix first. No flattery. No hedging. No bullshit.</p>
           <a className="cta-btn" href="/login">Request Beta Access</a>
@@ -151,3 +151,4 @@ export default function LandingPage() {
     </div>
   );
 }
+
