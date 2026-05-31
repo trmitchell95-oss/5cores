@@ -1,4 +1,5 @@
 ﻿import { NextResponse } from "next/server";
+import { countWords, logUsageEvent } from "../../../lib/usage";
 
 export const runtime = "nodejs";
 
@@ -9,6 +10,7 @@ type ClaudeTextBlock = {
 
 const SPHINX_MIN_CHARS = 20;
 const SPHINX_MAX_CHARS = 10000;
+const DEFAULT_MODEL = "claude-sonnet-4-6";
 
 const SPHINX_SYSTEM_PROMPT = `
 You are SPHINX, an AI Stink Preventer.
@@ -191,31 +193,90 @@ Say whether the piece is ready, close, salvageable, or needs a deeper rewrite.
 `;
 
 export async function POST(request: Request) {
+  let inputChars = 0;
+  let inputWords = 0;
+  let mode = "GENERAL";
+  let strictness = "STANDARD";
+  const model = process.env.ANTHROPIC_MODEL || DEFAULT_MODEL;
+
   try {
     const body = await request.json();
 
     const text = typeof body.text === "string" ? body.text.trim() : "";
-    const mode = typeof body.mode === "string" ? body.mode.trim() : "GENERAL";
-    const strictness =
+    mode = typeof body.mode === "string" ? body.mode.trim() : "GENERAL";
+    strictness =
       typeof body.strictness === "string" ? body.strictness.trim() : "STANDARD";
 
+    inputChars = text.length;
+    inputWords = countWords(text);
+
     if (!text) {
+      await logUsageEvent({
+        tool: "sphinx",
+        status: "rejected",
+        inputChars,
+        inputWords,
+        model,
+        errorMessage: "No text provided.",
+        meta: { mode, strictness },
+      });
+
       return NextResponse.json(
         { error: "Paste some text first." },
         { status: 400 }
       );
     }
 
-    if (text.length < 20) {
+    if (text.length < SPHINX_MIN_CHARS) {
+      await logUsageEvent({
+        tool: "sphinx",
+        status: "rejected",
+        inputChars,
+        inputWords,
+        model,
+        errorMessage: "Text too short.",
+        meta: { mode, strictness },
+      });
+
       return NextResponse.json(
         { error: "Give Sphinx a little more text to work with." },
         { status: 400 }
       );
     }
 
+    if (text.length > SPHINX_MAX_CHARS) {
+      await logUsageEvent({
+        tool: "sphinx",
+        status: "rejected",
+        inputChars,
+        inputWords,
+        model,
+        errorMessage: "Text exceeded beta limit.",
+        meta: { mode, strictness, limit: SPHINX_MAX_CHARS },
+      });
+
+      return NextResponse.json(
+        {
+          error:
+            "That is too much text for Sphinx beta mode. Keep it under 10,000 characters. Sphinx is for cleanup, blurbs, posts, emails, application answers, and short passages, not whole manuscripts.",
+        },
+        { status: 413 }
+      );
+    }
+
     const apiKey = process.env.ANTHROPIC_API_KEY;
 
     if (!apiKey) {
+      await logUsageEvent({
+        tool: "sphinx",
+        status: "failed",
+        inputChars,
+        inputWords,
+        model,
+        errorMessage: "Missing ANTHROPIC_API_KEY.",
+        meta: { mode, strictness },
+      });
+
       return NextResponse.json(
         {
           error:
@@ -225,7 +286,14 @@ export async function POST(request: Request) {
       );
     }
 
-    const safeText = text;
+    await logUsageEvent({
+      tool: "sphinx",
+      status: "started",
+      inputChars,
+      inputWords,
+      model,
+      meta: { mode, strictness },
+    });
 
     const userPrompt = `
 MODE: ${mode}
@@ -234,7 +302,7 @@ STRICTNESS: ${strictness}
 Apply the strictness mode directly to the score, diagnosis, rewrite, and final verdict.
 
 TEXT TO ANALYZE AND REWRITE:
-${safeText}
+${text}
 `;
 
     const response = await fetch("https://api.anthropic.com/v1/messages", {
@@ -245,7 +313,7 @@ ${safeText}
         "anthropic-version": "2023-06-01",
       },
       body: JSON.stringify({
-        model: process.env.ANTHROPIC_MODEL || "claude-sonnet-4-6",
+        model,
         max_tokens: 6500,
         temperature: 0.25,
         system: SPHINX_SYSTEM_PROMPT,
@@ -260,6 +328,16 @@ ${safeText}
 
     if (!response.ok) {
       const errorText = await response.text();
+
+      await logUsageEvent({
+        tool: "sphinx",
+        status: "failed",
+        inputChars,
+        inputWords,
+        model,
+        errorMessage: errorText.slice(0, 500),
+        meta: { mode, strictness, stage: "anthropic_response" },
+      });
 
       return NextResponse.json(
         {
@@ -280,15 +358,44 @@ ${safeText}
         ?.trim() || "";
 
     if (!report) {
+      await logUsageEvent({
+        tool: "sphinx",
+        status: "failed",
+        inputChars,
+        inputWords,
+        model,
+        errorMessage: "Sphinx came back empty.",
+        meta: { mode, strictness },
+      });
+
       return NextResponse.json(
         { error: "Sphinx came back empty. Try again with different text." },
         { status: 500 }
       );
     }
 
+    await logUsageEvent({
+      tool: "sphinx",
+      status: "succeeded",
+      inputChars,
+      inputWords,
+      model,
+      meta: { mode, strictness, outputChars: report.length },
+    });
+
     return NextResponse.json({ report });
   } catch (error) {
     console.error("Sphinx route error:", error);
+
+    await logUsageEvent({
+      tool: "sphinx",
+      status: "failed",
+      inputChars,
+      inputWords,
+      model,
+      errorMessage: error instanceof Error ? error.message : String(error),
+      meta: { mode, strictness },
+    });
 
     return NextResponse.json(
       { error: "Something broke inside the Sphinx route." },
@@ -296,4 +403,3 @@ ${safeText}
     );
   }
 }
-

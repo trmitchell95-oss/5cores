@@ -1,11 +1,13 @@
 ﻿import { NextRequest, NextResponse } from "next/server";
 import Anthropic from "@anthropic-ai/sdk";
 import { createClient } from "@supabase/supabase-js";
+import { countWords, logUsageEvent } from "../../../lib/usage";
 
 const client = new Anthropic();
 
 const COUNCIL_MIN_CHARS = 50;
 const COUNCIL_MAX_CHARS = 25000;
+const DEFAULT_MODEL = "claude-sonnet-4-6";
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -41,7 +43,7 @@ ${intake}
 
 Focus on:
 - Human texture and emotional authority.
-- Voice consistency â€” where it is strongest and where it slips.
+- Voice consistency - where it is strongest and where it slips.
 - Lines or sections that must not be cut.
 - Places where the prose feels too clean, generic, over-polished, or emotionally evasive.
 - What makes this manuscript sound like it came from a specific human being.
@@ -63,10 +65,10 @@ Your job is to find what is costing the manuscript power.
 ${intake}
 
 Focus on:
-- Repetition â€” same image, same move, same emotional beat done twice.
-- Drag â€” sections that slow without earning the slowness.
-- False profundity â€” lines that sound deep but say nothing.
-- Over-explained emotion â€” showing AND telling when showing was enough.
+- Repetition - same image, same move, same emotional beat done twice.
+- Drag - sections that slow without earning the slowness.
+- False profundity - lines that sound deep but say nothing.
+- Over-explained emotion - showing AND telling when showing was enough.
 - Anything the writer is hiding behind instead of saying directly.
 
 Format your response with these sections:
@@ -85,10 +87,10 @@ ${intake}
 
 Focus on:
 - Whether the piece holds together as a complete reading experience.
-- Pacing â€” where it moves well, where it stalls.
+- Pacing - where it moves well, where it stalls.
 - Whether the opening earns the reader's attention.
 - Whether the ending pays off what was promised.
-- Structural redundancy â€” sections doing the same job.
+- Structural redundancy - sections doing the same job.
 
 Format your response with these sections:
 ## STRUCTURAL ASSESSMENT
@@ -136,7 +138,7 @@ Execution (Greg): score /10
 Structure (Von Clausen): score /10
 Reader Clarity (Juniper): score /10
 Overall Publication Readiness: score /10
-## TOP 3 FIXES â€” IN ORDER
+## TOP 3 FIXES - IN ORDER
 ## DO NOT TOUCH
 ## REVISION ROADMAP
 ## FINAL WORD`,
@@ -144,6 +146,12 @@ Overall Publication Readiness: score /10
 ];
 
 export async function POST(req: NextRequest) {
+  let userIdForLog: string | null = null;
+  let titleForLog: string | null = null;
+  let inputChars = 0;
+  let inputWords = 0;
+  const model = process.env.ANTHROPIC_MODEL || DEFAULT_MODEL;
+
   try {
     const authHeader = req.headers.get("authorization") || "";
     const token = authHeader.startsWith("Bearer ")
@@ -169,6 +177,8 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    userIdForLog = user.id;
+
     const {
       manuscriptText,
       title,
@@ -179,19 +189,87 @@ export async function POST(req: NextRequest) {
       feedbackTone,
     } = await req.json();
 
-    if (!manuscriptText) {
+    titleForLog = typeof title === "string" ? title.slice(0, 160) : null;
+
+    const cleanManuscript =
+      typeof manuscriptText === "string" ? manuscriptText.trim() : "";
+
+    inputChars = cleanManuscript.length;
+    inputWords = countWords(cleanManuscript);
+
+    if (!cleanManuscript) {
+      await logUsageEvent({
+        userId: userIdForLog,
+        tool: "council",
+        status: "rejected",
+        inputChars,
+        inputWords,
+        model,
+        title: titleForLog,
+        errorMessage: "No manuscript text provided.",
+      });
+
       return NextResponse.json(
         { error: "No manuscript text provided." },
         { status: 400 }
       );
     }
 
-    if (typeof manuscriptText !== "string" || manuscriptText.trim().length < 50) {
+    if (cleanManuscript.length < COUNCIL_MIN_CHARS) {
+      await logUsageEvent({
+        userId: userIdForLog,
+        tool: "council",
+        status: "rejected",
+        inputChars,
+        inputWords,
+        model,
+        title: titleForLog,
+        errorMessage: "Manuscript text is too short.",
+      });
+
       return NextResponse.json(
         { error: "Manuscript text is too short." },
         { status: 400 }
       );
     }
+
+    if (cleanManuscript.length > COUNCIL_MAX_CHARS) {
+      await logUsageEvent({
+        userId: userIdForLog,
+        tool: "council",
+        status: "rejected",
+        inputChars,
+        inputWords,
+        model,
+        title: titleForLog,
+        errorMessage: "Manuscript text exceeded beta limit.",
+        meta: { limit: COUNCIL_MAX_CHARS },
+      });
+
+      return NextResponse.json(
+        {
+          error:
+            "This excerpt is too long for the beta diagnosis. Keep it under 25,000 characters for now. Use a chapter, scene, essay, or substantial excerpt instead of the whole damn book.",
+        },
+        { status: 413 }
+      );
+    }
+
+    await logUsageEvent({
+      userId: userIdForLog,
+      tool: "council",
+      status: "started",
+      inputChars,
+      inputWords,
+      model,
+      title: titleForLog,
+      meta: {
+        writingType: writingType || null,
+        audience: audience || null,
+        preparationGoal: preparationGoal || null,
+        feedbackTone: feedbackTone || "Honest",
+      },
+    });
 
     const intakeContext = INTAKE_INSTRUCTION(
       writingType || "",
@@ -204,13 +282,13 @@ export async function POST(req: NextRequest) {
     const results = await Promise.all(
       PERSONAS.map(async (persona) => {
         const message = await client.messages.create({
-          model: "claude-sonnet-4-6",
+          model,
           max_tokens: 16000,
           system: persona.buildPrompt(intakeContext),
           messages: [
             {
               role: "user",
-              content: `Read this manuscript excerpt and deliver your complete diagnostic assessment.\n\n---\n\n${manuscriptText}\n\n---\n\nDeliver your full report now.`,
+              content: `Read this manuscript excerpt and deliver your complete diagnostic assessment.\n\n---\n\n${cleanManuscript}\n\n---\n\nDeliver your full report now.`,
             },
           ],
         });
@@ -249,19 +327,57 @@ export async function POST(req: NextRequest) {
 
     if (error) {
       console.error("Supabase save error:", error);
+
+      await logUsageEvent({
+        userId: userIdForLog,
+        tool: "council",
+        status: "failed",
+        inputChars,
+        inputWords,
+        model,
+        title: titleForLog,
+        errorMessage: error.message,
+        meta: { stage: "save_report" },
+      });
+
       return NextResponse.json({
         reports,
         error: "Report generated but could not be saved.",
       });
     }
 
+    await logUsageEvent({
+      userId: userIdForLog,
+      tool: "council",
+      status: "succeeded",
+      inputChars,
+      inputWords,
+      model,
+      title: titleForLog,
+      reportId: data.id,
+      meta: {
+        sections: Object.keys(reports),
+      },
+    });
+
     return NextResponse.json({ reports, submissionId: data.id });
   } catch (error) {
     console.error("Council error:", error);
+
+    await logUsageEvent({
+      userId: userIdForLog,
+      tool: "council",
+      status: "failed",
+      inputChars,
+      inputWords,
+      model,
+      title: titleForLog,
+      errorMessage: error instanceof Error ? error.message : String(error),
+    });
+
     return NextResponse.json(
       { error: "Something went wrong." },
       { status: 500 }
     );
   }
 }
-
