@@ -1,6 +1,6 @@
 ﻿"use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, type CSSProperties } from "react";
 import Link from "next/link";
 import { createClient } from "@supabase/supabase-js";
 
@@ -29,6 +29,13 @@ type InviteResponse = {
   items: InviteItem[];
 };
 
+type InviteDraft = {
+  label: string;
+  maxUses: string;
+  expiresAt: string;
+  notes: string;
+};
+
 function getSupabaseClient() {
   return createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -39,6 +46,18 @@ function getSupabaseClient() {
 function formatDate(value: string | null) {
   if (!value) return "None";
   return new Date(value).toLocaleString();
+}
+
+function isUsedUp(item: InviteItem) {
+  return (
+    item.max_uses !== null &&
+    item.max_uses !== undefined &&
+    Number(item.use_count || 0) >= Number(item.max_uses)
+  );
+}
+
+function isExpired(item: InviteItem) {
+  return item.expires_at ? new Date(item.expires_at).getTime() < Date.now() : false;
 }
 
 export default function AdminInvitesPage() {
@@ -54,6 +73,9 @@ export default function AdminInvitesPage() {
   const [expiresAt, setExpiresAt] = useState("");
   const [notes, setNotes] = useState("");
   const [creating, setCreating] = useState(false);
+
+  const [search, setSearch] = useState("");
+  const [filter, setFilter] = useState("all");
 
   async function getToken() {
     const supabase = getSupabaseClient();
@@ -150,7 +172,7 @@ export default function AdminInvitesPage() {
     }
   }
 
-  async function updateInvite(item: InviteItem, active: boolean) {
+  async function patchInvite(id: string, payload: Record<string, unknown>, successMessage: string) {
     try {
       setError("");
       setMessage("");
@@ -165,8 +187,8 @@ export default function AdminInvitesPage() {
           authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
-          id: item.id,
-          active,
+          id,
+          ...payload,
         }),
       });
 
@@ -176,10 +198,41 @@ export default function AdminInvitesPage() {
         throw new Error(result.error || "Could not update invite code.");
       }
 
-      setMessage(active ? "Invite enabled." : "Invite disabled.");
+      setMessage(successMessage);
       await loadInvites(true);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Something went wrong.");
+    }
+  }
+
+  async function updateInviteActive(item: InviteItem, active: boolean) {
+    await patchInvite(
+      item.id,
+      { active },
+      active ? "Invite enabled." : "Invite disabled."
+    );
+  }
+
+  async function updateInviteDetails(item: InviteItem, draft: InviteDraft) {
+    await patchInvite(
+      item.id,
+      {
+        label: draft.label,
+        maxUses: draft.maxUses,
+        expiresAt: draft.expiresAt,
+        notes: draft.notes,
+      },
+      "Invite details saved."
+    );
+  }
+
+  async function copyCode(codeToCopy: string) {
+    try {
+      await navigator.clipboard.writeText(codeToCopy);
+      setMessage(`Copied invite code: ${codeToCopy}`);
+      setError("");
+    } catch {
+      setError("Could not copy automatically. Select and copy the code manually.");
     }
   }
 
@@ -189,302 +242,477 @@ export default function AdminInvitesPage() {
 
   const items = data?.items || [];
 
-  const activeItems = useMemo(() => {
-    return items.filter((item) => item.active);
-  }, [items]);
+  const filteredItems = useMemo(() => {
+    const term = search.trim().toLowerCase();
+
+    return items.filter((item) => {
+      const matchesSearch =
+        !term ||
+        item.code.toLowerCase().includes(term) ||
+        String(item.label || "").toLowerCase().includes(term) ||
+        String(item.notes || "").toLowerCase().includes(term);
+
+      const usedUp = isUsedUp(item);
+      const expired = isExpired(item);
+
+      const matchesFilter =
+        filter === "all" ||
+        (filter === "active" && item.active) ||
+        (filter === "inactive" && !item.active) ||
+        (filter === "used" && Number(item.use_count || 0) > 0) ||
+        (filter === "unused" && Number(item.use_count || 0) === 0) ||
+        (filter === "used-up" && usedUp) ||
+        (filter === "expired" && expired);
+
+      return matchesSearch && matchesFilter;
+    });
+  }, [items, search, filter]);
 
   return (
-    <main
-      style={{
-        minHeight: "100vh",
-        background: "#0e0d0b",
-        color: "#f0ece4",
-        padding: "48px 24px",
-        fontFamily: "Arial, sans-serif",
-      }}
-    >
-      <div style={{ maxWidth: 1180, margin: "0 auto" }}>
-        <nav
-          style={{
-            display: "flex",
-            gap: 12,
-            marginBottom: 24,
-            flexWrap: "wrap",
-            alignItems: "center",
-          }}
-        >
-          <Link href="/admin/usage" style={{ color: "#c8935a" }}>
-            Speedometer
-          </Link>
-          <Link href="/admin/feedback" style={{ color: "#c8935a" }}>
-            Feedback
-          </Link>
-          <Link href="/dashboard" style={{ color: "#c8935a" }}>
-            Dashboard
-          </Link>
-          <button onClick={() => loadInvites(true)} disabled={refreshing}>
+    <main className="invite-shell">
+      <style>{`
+        body {
+          margin: 0;
+          background: #0e0d0b;
+        }
+
+        .invite-shell {
+          min-height: 100vh;
+          background:
+            radial-gradient(circle at top left, rgba(200,147,90,0.13), transparent 34rem),
+            radial-gradient(circle at bottom right, rgba(90,124,200,0.1), transparent 32rem),
+            #0e0d0b;
+          color: #f0ece4;
+          padding: 48px 24px 90px;
+          font-family: Arial, sans-serif;
+        }
+
+        .wrap {
+          max-width: 1180px;
+          margin: 0 auto;
+        }
+
+        .top-nav {
+          display: flex;
+          gap: 14px;
+          margin-bottom: 24px;
+          flex-wrap: wrap;
+          align-items: center;
+        }
+
+        .top-nav a,
+        .text-button {
+          color: #c8935a;
+          background: none;
+          border: none;
+          padding: 0;
+          font: inherit;
+          cursor: pointer;
+          text-decoration: none;
+        }
+
+        .hero,
+        .panel,
+        .invite-card {
+          border: 1px solid #26211c;
+          background: rgba(18,16,13,0.95);
+          box-shadow: 0 24px 80px rgba(0,0,0,0.22);
+        }
+
+        .hero {
+          border-radius: 28px;
+          padding: 32px;
+          margin-bottom: 22px;
+        }
+
+        .eyebrow {
+          color: #c8935a;
+          font-family: monospace;
+          letter-spacing: 0.2em;
+          text-transform: uppercase;
+          font-size: 12px;
+          font-weight: 900;
+        }
+
+        .title {
+          font-family: Georgia, serif;
+          font-size: clamp(48px, 8vw, 82px);
+          line-height: 0.95;
+          margin: 12px 0 0;
+        }
+
+        .subtitle {
+          color: #aaa096;
+          line-height: 1.7;
+          max-width: 820px;
+        }
+
+        .summary-line {
+          color: #aaa096;
+          line-height: 1.6;
+        }
+
+        .notice-good,
+        .notice-bad {
+          padding: 14px;
+          border-radius: 12px;
+          margin-bottom: 16px;
+          line-height: 1.5;
+        }
+
+        .notice-good {
+          border: 1px solid #214a2d;
+          background: #0a1a0e;
+          color: #98d8aa;
+        }
+
+        .notice-bad {
+          border: 1px solid #5a2020;
+          background: #2a1010;
+          color: #f0a0a0;
+        }
+
+        .panel {
+          border-radius: 24px;
+          padding: 22px;
+          margin-bottom: 22px;
+        }
+
+        .panel-title {
+          font-family: Georgia, serif;
+          font-size: 34px;
+          line-height: 1;
+          margin: 0 0 16px;
+        }
+
+        .form-grid {
+          display: grid;
+          gap: 12px;
+        }
+
+        .input,
+        .textarea,
+        .select {
+          width: 100%;
+          padding: 14px;
+          border-radius: 12px;
+          background: #0e0d0b;
+          color: #f0ece4;
+          border: 1px solid #302a24;
+          box-sizing: border-box;
+          outline: none;
+          font-size: 15px;
+        }
+
+        .textarea {
+          min-height: 90px;
+          resize: vertical;
+          line-height: 1.5;
+        }
+
+        .input:focus,
+        .textarea:focus,
+        .select:focus {
+          border-color: #c8935a;
+        }
+
+        .primary-button {
+          min-height: 48px;
+          border-radius: 12px;
+          border: none;
+          background: #c8935a;
+          color: #0e0d0b;
+          font-family: monospace;
+          font-weight: 900;
+          letter-spacing: 0.12em;
+          text-transform: uppercase;
+          cursor: pointer;
+        }
+
+        .primary-button:disabled {
+          opacity: 0.55;
+          cursor: not-allowed;
+        }
+
+        .toolbar {
+          display: grid;
+          grid-template-columns: minmax(0, 1fr) 220px;
+          gap: 12px;
+          margin-bottom: 18px;
+        }
+
+        .invite-list {
+          display: grid;
+          gap: 14px;
+        }
+
+        .invite-card {
+          border-radius: 18px;
+          padding: 18px;
+        }
+
+        .invite-head {
+          display: flex;
+          justify-content: space-between;
+          gap: 14px;
+          flex-wrap: wrap;
+          align-items: flex-start;
+        }
+
+        .code {
+          font-family: monospace;
+          color: #c8935a;
+          font-weight: 900;
+          font-size: 17px;
+          letter-spacing: 0.04em;
+          word-break: break-word;
+        }
+
+        .label {
+          color: #aaa096;
+          margin-top: 6px;
+          line-height: 1.5;
+        }
+
+        .badge-row {
+          display: flex;
+          gap: 8px;
+          flex-wrap: wrap;
+          margin-top: 12px;
+        }
+
+        .badge {
+          border: 1px solid #302a24;
+          border-radius: 999px;
+          padding: 6px 9px;
+          color: #aaa096;
+          font-family: monospace;
+          font-size: 11px;
+          background: #0e0d0b;
+        }
+
+        .badge.active {
+          color: #98d8aa;
+          border-color: #214a2d;
+        }
+
+        .badge.warning {
+          color: #f0d08a;
+          border-color: #5a4620;
+        }
+
+        .badge.bad {
+          color: #f0a0a0;
+          border-color: #5a2020;
+        }
+
+        .meta {
+          color: #8f867b;
+          font-size: 13px;
+          line-height: 1.65;
+          margin-top: 12px;
+        }
+
+        .card-buttons {
+          display: flex;
+          gap: 10px;
+          flex-wrap: wrap;
+        }
+
+        .secondary-button,
+        .danger-button,
+        .good-button {
+          border: 1px solid #302a24;
+          border-radius: 12px;
+          padding: 10px 12px;
+          cursor: pointer;
+          font-family: monospace;
+          font-weight: 900;
+          background: #11100e;
+          color: #c8935a;
+        }
+
+        .danger-button {
+          background: #2a1010;
+          color: #f0a0a0;
+        }
+
+        .good-button {
+          background: #0a1a0e;
+          color: #98d8aa;
+        }
+
+        .edit-grid {
+          display: grid;
+          grid-template-columns: 1fr 120px;
+          gap: 10px;
+          margin-top: 16px;
+        }
+
+        .full {
+          grid-column: 1 / -1;
+        }
+
+        @media (max-width: 760px) {
+          .invite-shell {
+            padding: 28px 14px 90px;
+          }
+
+          .hero,
+          .panel,
+          .invite-card {
+            border-radius: 20px;
+            padding: 18px;
+          }
+
+          .title {
+            font-size: clamp(42px, 12vw, 60px);
+          }
+
+          .toolbar,
+          .edit-grid {
+            grid-template-columns: 1fr;
+          }
+
+          .invite-head {
+            display: grid;
+            gap: 12px;
+          }
+
+          .card-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+          }
+
+          .secondary-button,
+          .danger-button,
+          .good-button {
+            width: 100%;
+          }
+        }
+      `}</style>
+
+      <div className="wrap">
+        <nav className="top-nav">
+          <Link href="/admin/usage">Speedometer</Link>
+          <Link href="/admin/feedback">Feedback</Link>
+          <Link href="/dashboard">Dashboard</Link>
+          <button className="text-button" onClick={() => loadInvites(true)} disabled={refreshing}>
             {refreshing ? "Refreshing..." : "Refresh"}
           </button>
         </nav>
 
-        <section
-          style={{
-            border: "1px solid #26211c",
-            borderRadius: 28,
-            padding: 32,
-            background: "rgba(18,16,13,0.95)",
-            marginBottom: 22,
-          }}
-        >
-          <div
-            style={{
-              color: "#c8935a",
-              fontFamily: "monospace",
-              letterSpacing: "0.2em",
-              textTransform: "uppercase",
-            }}
-          >
-            Admin Invites
-          </div>
-
-          <h1
-            style={{
-              fontFamily: "Georgia, serif",
-              fontSize: "clamp(48px, 8vw, 82px)",
-              margin: "12px 0 0",
-            }}
-          >
-            The velvet rope.
-          </h1>
-
-          <p style={{ color: "#aaa096", lineHeight: 1.7 }}>
-            Create and manage beta invite codes without crawling back into
-            Supabase every time.
+        <section className="hero">
+          <div className="eyebrow">Admin Invites</div>
+          <h1 className="title">The velvet rope.</h1>
+          <p className="subtitle">
+            Create, copy, search, edit, disable, and track beta invite codes without crawling back into Supabase every time.
           </p>
 
           {data && (
-            <p style={{ color: "#aaa096" }}>
-              Total: {data.summary.total} / Active: {data.summary.active} /
-              Inactive: {data.summary.inactive} / Used: {data.summary.used}
+            <p className="summary-line">
+              Total: {data.summary.total} / Active: {data.summary.active} / Inactive: {data.summary.inactive} / Used: {data.summary.used}
             </p>
           )}
         </section>
 
-        {error && (
-          <div
-            style={{
-              border: "1px solid #5a2020",
-              background: "#2a1010",
-              color: "#f0a0a0",
-              padding: 14,
-              borderRadius: 12,
-              marginBottom: 16,
-            }}
-          >
-            {error}
-          </div>
-        )}
+        {error && <div className="notice-bad">{error}</div>}
+        {message && <div className="notice-good">{message}</div>}
 
-        {message && (
-          <div
-            style={{
-              border: "1px solid #214a2d",
-              background: "#0a1a0e",
-              color: "#98d8aa",
-              padding: 14,
-              borderRadius: 12,
-              marginBottom: 16,
-            }}
-          >
-            {message}
-          </div>
-        )}
+        <section className="panel">
+          <h2 className="panel-title">Create invite code</h2>
 
-        <section
-          style={{
-            border: "1px solid #26211c",
-            borderRadius: 24,
-            padding: 22,
-            background: "rgba(18,16,13,0.95)",
-            marginBottom: 22,
-          }}
-        >
-          <h2 style={{ fontFamily: "Georgia, serif", fontSize: 34, marginTop: 0 }}>
-            Create invite code
-          </h2>
-
-          <form onSubmit={createInvite} style={{ display: "grid", gap: 12 }}>
+          <form onSubmit={createInvite} className="form-grid">
             <input
+              className="input"
               value={code}
               onChange={(event) => setCode(event.target.value)}
               placeholder="Custom code, or leave blank to auto-generate"
-              style={inputStyle}
             />
 
             <input
+              className="input"
               value={label}
               onChange={(event) => setLabel(event.target.value)}
               placeholder="Label, example: Cousins beta group"
-              style={inputStyle}
             />
 
             <input
+              className="input"
               value={maxUses}
               onChange={(event) => setMaxUses(event.target.value)}
               placeholder="Max uses, blank = unlimited"
               type="number"
               min="1"
-              style={inputStyle}
             />
 
             <input
+              className="input"
               value={expiresAt}
               onChange={(event) => setExpiresAt(event.target.value)}
               placeholder="Expires at, optional ISO date. Example: 2026-06-30T23:59:00Z"
-              style={inputStyle}
             />
 
             <textarea
+              className="textarea"
               value={notes}
               onChange={(event) => setNotes(event.target.value)}
               placeholder="Notes, optional"
-              style={{ ...inputStyle, minHeight: 90, resize: "vertical" }}
             />
 
-            <button
-              type="submit"
-              disabled={creating}
-              style={{
-                minHeight: 48,
-                borderRadius: 12,
-                border: "none",
-                background: "#c8935a",
-                color: "#0e0d0b",
-                fontFamily: "monospace",
-                fontWeight: 900,
-                letterSpacing: "0.12em",
-                textTransform: "uppercase",
-                cursor: creating ? "not-allowed" : "pointer",
-                opacity: creating ? 0.55 : 1,
-              }}
-            >
+            <button className="primary-button" type="submit" disabled={creating}>
               {creating ? "Creating..." : "Create Invite"}
             </button>
           </form>
         </section>
 
-        <section
-          style={{
-            border: "1px solid #26211c",
-            borderRadius: 24,
-            padding: 22,
-            background: "rgba(18,16,13,0.95)",
-          }}
-        >
-          <h2 style={{ fontFamily: "Georgia, serif", fontSize: 34, marginTop: 0 }}>
-            Invite codes
-          </h2>
+        <section className="panel">
+          <h2 className="panel-title">Invite codes</h2>
+
+          <div className="toolbar">
+            <input
+              className="input"
+              value={search}
+              onChange={(event) => setSearch(event.target.value)}
+              placeholder="Search code, label, or notes..."
+            />
+
+            <select
+              className="select"
+              value={filter}
+              onChange={(event) => setFilter(event.target.value)}
+            >
+              <option value="all">All invites</option>
+              <option value="active">Active only</option>
+              <option value="inactive">Inactive only</option>
+              <option value="used">Used at least once</option>
+              <option value="unused">Unused only</option>
+              <option value="used-up">Used up</option>
+              <option value="expired">Expired</option>
+            </select>
+          </div>
 
           {loading ? (
             <p>Loading invite codes...</p>
-          ) : items.length === 0 ? (
-            <p>No invite codes yet. Create one above.</p>
+          ) : filteredItems.length === 0 ? (
+            <p>No invite codes match this view.</p>
           ) : (
-            <div style={{ display: "grid", gap: 14 }}>
-              {items.map((item) => {
-                const usedUp =
-                  item.max_uses !== null &&
-                  item.max_uses !== undefined &&
-                  Number(item.use_count || 0) >= Number(item.max_uses);
-
-                return (
-                  <article
-                    key={item.id}
-                    style={{
-                      border: "1px solid #26211c",
-                      borderRadius: 18,
-                      padding: 18,
-                      background: item.active ? "#11100e" : "#171210",
-                    }}
-                  >
-                    <div
-                      style={{
-                        display: "flex",
-                        justifyContent: "space-between",
-                        gap: 12,
-                        flexWrap: "wrap",
-                      }}
-                    >
-                      <div>
-                        <div
-                          style={{
-                            fontFamily: "monospace",
-                            color: "#c8935a",
-                            fontWeight: 900,
-                            fontSize: 16,
-                          }}
-                        >
-                          {item.code}
-                        </div>
-
-                        <div style={{ color: "#aaa096", marginTop: 6 }}>
-                          {item.label || "No label"}
-                        </div>
-                      </div>
-
-                      <button
-                        type="button"
-                        onClick={() => updateInvite(item, !item.active)}
-                        style={{
-                          border: "1px solid #302a24",
-                          borderRadius: 12,
-                          background: item.active ? "#2a1010" : "#0a1a0e",
-                          color: item.active ? "#f0a0a0" : "#98d8aa",
-                          padding: "10px 12px",
-                          cursor: "pointer",
-                          fontFamily: "monospace",
-                          fontWeight: 900,
-                        }}
-                      >
-                        {item.active ? "Disable" : "Enable"}
-                      </button>
-                    </div>
-
-                    <div
-                      style={{
-                        color: "#8f867b",
-                        fontSize: 13,
-                        lineHeight: 1.65,
-                        marginTop: 12,
-                      }}
-                    >
-                      Status: {item.active ? "Active" : "Inactive"}{" "}
-                      {usedUp ? " / Used Up" : ""}
-                      <br />
-                      Uses: {item.use_count} / {item.max_uses ?? "unlimited"}
-                      <br />
-                      Created: {formatDate(item.created_at)}
-                      <br />
-                      Last used: {formatDate(item.last_used_at)}
-                      <br />
-                      Expires: {formatDate(item.expires_at)}
-                      {item.notes ? (
-                        <>
-                          <br />
-                          Notes: {item.notes}
-                        </>
-                      ) : null}
-                    </div>
-                  </article>
-                );
-              })}
+            <div className="invite-list">
+              {filteredItems.map((item) => (
+                <InviteCard
+                  key={item.id}
+                  item={item}
+                  onCopy={copyCode}
+                  onToggle={updateInviteActive}
+                  onSave={updateInviteDetails}
+                />
+              ))}
             </div>
           )}
 
-          {activeItems.length > 0 && (
-            <p style={{ color: "#8f867b", marginTop: 18 }}>
-              Active codes can be used on the signup page. Existing users do not
-              need a code to sign in.
+          {items.length > 0 && (
+            <p className="meta">
+              Active codes can be used on the signup page. Existing users do not need a code to sign in.
             </p>
           )}
         </section>
@@ -493,12 +721,124 @@ export default function AdminInvitesPage() {
   );
 }
 
-const inputStyle: React.CSSProperties = {
+function InviteCard({
+  item,
+  onCopy,
+  onToggle,
+  onSave,
+}: {
+  item: InviteItem;
+  onCopy: (code: string) => Promise<void>;
+  onToggle: (item: InviteItem, active: boolean) => Promise<void>;
+  onSave: (item: InviteItem, draft: InviteDraft) => Promise<void>;
+}) {
+  const [label, setLabel] = useState(item.label || "");
+  const [maxUses, setMaxUses] = useState(item.max_uses === null || item.max_uses === undefined ? "" : String(item.max_uses));
+  const [expiresAt, setExpiresAt] = useState(item.expires_at || "");
+  const [notes, setNotes] = useState(item.notes || "");
+  const [saving, setSaving] = useState(false);
+
+  const usedUp = isUsedUp(item);
+  const expired = isExpired(item);
+
+  async function saveDetails() {
+    setSaving(true);
+
+    try {
+      await onSave(item, {
+        label,
+        maxUses,
+        expiresAt,
+        notes,
+      });
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  return (
+    <article className="invite-card">
+      <div className="invite-head">
+        <div>
+          <div className="code">{item.code}</div>
+          <div className="label">{item.label || "No label"}</div>
+
+          <div className="badge-row">
+            <span className={item.active ? "badge active" : "badge bad"}>
+              {item.active ? "active" : "inactive"}
+            </span>
+
+            <span className={usedUp ? "badge bad" : "badge"}>
+              {item.use_count} / {item.max_uses ?? "unlimited"} uses
+            </span>
+
+            {expired && <span className="badge bad">expired</span>}
+            {!expired && item.expires_at && <span className="badge warning">expires</span>}
+          </div>
+        </div>
+
+        <div className="card-buttons">
+          <button className="secondary-button" type="button" onClick={() => onCopy(item.code)}>
+            Copy
+          </button>
+
+          <button
+            className={item.active ? "danger-button" : "good-button"}
+            type="button"
+            onClick={() => onToggle(item, !item.active)}
+          >
+            {item.active ? "Disable" : "Enable"}
+          </button>
+        </div>
+      </div>
+
+      <div className="meta">
+        Created: {formatDate(item.created_at)}
+        <br />
+        Last used: {formatDate(item.last_used_at)}
+        <br />
+        Expires: {formatDate(item.expires_at)}
+      </div>
+
+      <div className="edit-grid">
+        <input
+          className="input"
+          value={label}
+          onChange={(event) => setLabel(event.target.value)}
+          placeholder="Label"
+        />
+
+        <input
+          className="input"
+          value={maxUses}
+          onChange={(event) => setMaxUses(event.target.value)}
+          placeholder="Max uses"
+          type="number"
+          min="1"
+        />
+
+        <input
+          className="input full"
+          value={expiresAt}
+          onChange={(event) => setExpiresAt(event.target.value)}
+          placeholder="Expiration ISO date, optional"
+        />
+
+        <textarea
+          className="textarea full"
+          value={notes}
+          onChange={(event) => setNotes(event.target.value)}
+          placeholder="Notes"
+        />
+
+        <button className="primary-button full" type="button" onClick={saveDetails} disabled={saving}>
+          {saving ? "Saving..." : "Save Invite Details"}
+        </button>
+      </div>
+    </article>
+  );
+}
+
+const inputStyle: CSSProperties = {
   width: "100%",
-  padding: 14,
-  borderRadius: 12,
-  background: "#0e0d0b",
-  color: "#f0ece4",
-  border: "1px solid #302a24",
-  boxSizing: "border-box",
 };
