@@ -25,7 +25,6 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
-
 /* =========================================================
    5 CORE / SPHINX MOBILE READABILITY PATCH
    Makes long reports clearer on phones without changing app logic.
@@ -176,4 +175,3 @@ code {
     line-height: 1.78;
   }
 }
-
