@@ -1,4 +1,5 @@
-﻿import FeedbackLink from "./components/FeedbackLink";
+﻿import HelpLink from "./components/HelpLink";
+import FeedbackLink from "./components/FeedbackLink";
 import type { Metadata } from "next";
 import "./globals.css";
 
@@ -87,10 +88,81 @@ export default function RootLayout({
               }
             }
           `}</style>
+                  <HelpLink />
+          <style>{`
+            .hovel-help-link {
+              position: fixed;
+              left: 22px;
+              bottom: 22px;
+              z-index: 9998;
+              border: 1px solid #302a24;
+              background: #11100e;
+              color: #c8935a;
+              border-radius: 999px;
+              padding: 12px 16px;
+              font-family: monospace;
+              font-size: 11px;
+              font-weight: 900;
+              letter-spacing: 0.14em;
+              text-transform: uppercase;
+              text-decoration: none;
+              box-shadow: 0 18px 55px rgba(0,0,0,0.35);
+            }
+
+            .hovel-help-link:hover {
+              border-color: #c8935a;
+            }
+
+            @media (max-width: 640px) {
+              .hovel-help-link {
+                left: 14px;
+                bottom: 14px;
+                padding: 10px 13px;
+                font-size: 10px;
+              }
+            }
+          `}</style>
+                  <style>{`
+            /* help-button-big-yellow-final */
+            .hovel-help-link {
+              position: fixed !important;
+              left: 22px !important;
+              bottom: 84px !important;
+              z-index: 10000 !important;
+              border: 1px solid #c8935a !important;
+              background: #c8935a !important;
+              color: #0e0d0b !important;
+              border-radius: 999px !important;
+              padding: 14px 22px !important;
+              font-family: monospace !important;
+              font-size: 12px !important;
+              font-weight: 900 !important;
+              letter-spacing: 0.16em !important;
+              text-transform: uppercase !important;
+              text-decoration: none !important;
+              box-shadow: 0 18px 55px rgba(0,0,0,0.45) !important;
+            }
+
+            .hovel-help-link:hover {
+              filter: brightness(1.08) !important;
+            }
+
+            @media (max-width: 640px) {
+              .hovel-help-link {
+                left: 14px !important;
+                bottom: 82px !important;
+                padding: 12px 18px !important;
+                font-size: 11px !important;
+              }
+            }
+          `}</style>
         </body>
     </html>
   );
 }
+
+
+
 
 
 
