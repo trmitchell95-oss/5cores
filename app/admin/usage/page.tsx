@@ -549,6 +549,10 @@ export default function AdminUsagePage() {
               Exports
             </Link>
 
+            <Link href="/admin/health" className="nav-link">
+              Health
+            </Link>
+
             <button
               className="refresh-btn"
               type="button"
@@ -733,6 +737,7 @@ export default function AdminUsagePage() {
     </main>
   );
 }
+
 
 
 
