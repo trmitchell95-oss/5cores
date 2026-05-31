@@ -1,11 +1,11 @@
-"use client";
+﻿"use client";
 
 import { useState, useRef } from "react";
 
 const PERSONAS = [
   { key: "brad", name: "Brad", role: "Voice Guardian", color: "#c8935a", tagline: "Protects what is alive in the manuscript." },
   { key: "greg", name: "Greg", role: "Brutal Editor", color: "#b84040", tagline: "Finds what is costing the manuscript power." },
-  { key: "vonClaude", name: "Von Claude", role: "Architect", color: "#5a7cc8", tagline: "Structure, consistency, blueprint discipline." },
+  { key: "vonClaude", name: "Von Clausen", role: "Architect", color: "#5a7cc8", tagline: "Structure, consistency, blueprint discipline." },
   { key: "juniper", name: "Juniper", role: "Reader Lens", color: "#4a9c6a", tagline: "Represents the intelligent outside reader." },
   { key: "finalEditor", name: "Final Editor", role: "Synthesis", color: "#9c7ac8", tagline: "Resolves the council. Writes the official report." },
 ];
@@ -15,7 +15,7 @@ const STATUS_MESSAGES = [
   "Calling the council...",
   "Brad is protecting the voice...",
   "Greg is finding the drag...",
-  "Von Claude is checking structure...",
+  "Von Clausen is checking structure...",
   "Juniper is reading as a reader...",
   "Final Editor is synthesizing...",
   "Preparing your reports...",
@@ -141,7 +141,7 @@ export default function Home() {
 
       <div className="app-wrap">
         <div className="masthead">
-          <div className="eyebrow">Editorial Council — Phase 1 Prototype</div>
+          <div className="eyebrow">Editorial Council â€” Phase 1 Prototype</div>
           <div className="title">5 CORE</div>
           <div className="subtitle">Five editorial minds. One blunt verdict. No bullshit.</div>
         </div>
@@ -205,7 +205,7 @@ export default function Home() {
                   style={{ "--tab-color": p.color } as React.CSSProperties}
                   onClick={() => reports[p.key] && setActiveTab(p.key)}
                 >
-                  {p.name}{p.key === "finalEditor" ? " ★" : ""}
+                  {p.name}{p.key === "finalEditor" ? " â˜…" : ""}
                 </button>
               ))}
             </div>

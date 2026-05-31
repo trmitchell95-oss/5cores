@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from "next/server";
+﻿import { NextRequest, NextResponse } from "next/server";
 import Anthropic from "@anthropic-ai/sdk";
 import { createClient } from "@supabase/supabase-js";
 
@@ -38,7 +38,7 @@ ${intake}
 
 Focus on:
 - Human texture and emotional authority.
-- Voice consistency — where it is strongest and where it slips.
+- Voice consistency â€” where it is strongest and where it slips.
 - Lines or sections that must not be cut.
 - Places where the prose feels too clean, generic, over-polished, or emotionally evasive.
 - What makes this manuscript sound like it came from a specific human being.
@@ -60,10 +60,10 @@ Your job is to find what is costing the manuscript power.
 ${intake}
 
 Focus on:
-- Repetition — same image, same move, same emotional beat done twice.
-- Drag — sections that slow without earning the slowness.
-- False profundity — lines that sound deep but say nothing.
-- Over-explained emotion — showing AND telling when showing was enough.
+- Repetition â€” same image, same move, same emotional beat done twice.
+- Drag â€” sections that slow without earning the slowness.
+- False profundity â€” lines that sound deep but say nothing.
+- Over-explained emotion â€” showing AND telling when showing was enough.
 - Anything the writer is hiding behind instead of saying directly.
 
 Format your response with these sections:
@@ -74,7 +74,7 @@ Format your response with these sections:
   },
   {
     key: "vonClaude",
-    buildPrompt: (intake: string) => `You are Von Claude, the Architect inside the 5 CORE Editorial Council.
+    buildPrompt: (intake: string) => `You are Von Clausen, the Architect inside the 5 CORE Editorial Council.
 
 Your job is to assess the structural integrity of the manuscript.
 
@@ -82,10 +82,10 @@ ${intake}
 
 Focus on:
 - Whether the piece holds together as a complete reading experience.
-- Pacing — where it moves well, where it stalls.
+- Pacing â€” where it moves well, where it stalls.
 - Whether the opening earns the reader's attention.
 - Whether the ending pays off what was promised.
-- Structural redundancy — sections doing the same job.
+- Structural redundancy â€” sections doing the same job.
 
 Format your response with these sections:
 ## STRUCTURAL ASSESSMENT
@@ -130,10 +130,10 @@ Format your response with these sections:
 ## THE COUNCIL VERDICT
 Voice (Brad): score /10
 Execution (Greg): score /10
-Structure (Von Claude): score /10
+Structure (Von Clausen): score /10
 Reader Clarity (Juniper): score /10
 Overall Publication Readiness: score /10
-## TOP 3 FIXES — IN ORDER
+## TOP 3 FIXES â€” IN ORDER
 ## DO NOT TOUCH
 ## REVISION ROADMAP
 ## FINAL WORD`,

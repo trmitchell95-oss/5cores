@@ -1,216 +1,58 @@
-"use client";
+﻿"use client";
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useParams } from "next/navigation";
-import { createClient } from "@supabase/supabase-js";
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-);
-
-const PERSONAS = [
-  { key: "brad", name: "Brad", role: "Voice Guardian", color: "#c8935a", tagline: "Protects what is alive in the manuscript." },
-  { key: "greg", name: "Greg", role: "Brutal Editor", color: "#b84040", tagline: "Finds what is costing the manuscript power." },
-  { key: "vonClaude", name: "Von Claude", role: "Architect", color: "#5a7cc8", tagline: "Structure, consistency, blueprint discipline." },
-  { key: "juniper", name: "Juniper", role: "Reader Lens", color: "#4a9c6a", tagline: "Represents the intelligent outside reader." },
-  { key: "finalEditor", name: "Final Editor", role: "Synthesis", color: "#9c7ac8", tagline: "Resolves the council. Writes the official report." },
-];
-
-function renderMarkdown(text: string): string {
-  if (!text) return "";
-
-  const lines = text.split("\n");
-  const html: string[] = [];
-  let inList = false;
-
-  for (const rawLine of lines) {
-    let line = rawLine;
-
-    // Inline: bold before italic so ** is handled first
-    line = line.replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>");
-    line = line.replace(/\*([^*\s][^*]*[^*\s]|[^*\s])\*/g, "<em>$1</em>");
-
-    // Headings
-    if (/^# /.test(line)) {
-      if (inList) { html.push("</ul>"); inList = false; }
-      html.push(`<h1 class="report-title">${line.replace(/^# /, "")}</h1>`);
-      continue;
-    }
-    if (/^## /.test(line)) {
-      if (inList) { html.push("</ul>"); inList = false; }
-      html.push(`<h2 class="section-head">${line.replace(/^## /, "")}</h2>`);
-      continue;
-    }
-    if (/^### /.test(line)) {
-      if (inList) { html.push("</ul>"); inList = false; }
-      html.push(`<h3 class="section-subhead">${line.replace(/^### /, "")}</h3>`);
-      continue;
-    }
-
-    // Divider
-    if (/^---+$/.test(line.trim())) {
-      if (inList) { html.push("</ul>"); inList = false; }
-      html.push(`<hr class="report-divider"/>`);
-      continue;
-    }
-
-    // List items
-    if (/^[-•] /.test(line)) {
-      if (!inList) { html.push("<ul class='report-list'>"); inList = true; }
-      html.push(`<li>${line.replace(/^[-•] /, "")}</li>`);
-      continue;
-    }
-
-    // Close list if open
-    if (inList) { html.push("</ul>"); inList = false; }
-
-    // Empty line = paragraph break
-    if (line.trim() === "") {
-      html.push("<br/>");
-      continue;
-    }
-
-    html.push(`<p class="para">${line}</p>`);
-  }
-
-  if (inList) html.push("</ul>");
-
-  return html.join("\n");
-}
-
-export default function ViewReport() {
+export default function OldViewRedirectPage() {
   const params = useParams();
-  const id = params.id as string;
-  const [reports, setReports] = useState<Record<string, string>>({});
-  const [activeTab, setActiveTab] = useState("brad");
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
 
   useEffect(() => {
-    async function loadReport() {
-      try {
-        const { data, error } = await supabase
-          .from("reports")
-          .select("content")
-          .eq("id", id)
-          .single();
+    const rawId = params?.id;
+    const id = Array.isArray(rawId) ? rawId[0] : rawId;
 
-        if (error || !data) {
-          setError("Report not found.");
-          return;
-        }
-
-        const parsed = typeof data.content === "string"
-          ? JSON.parse(data.content)
-          : data.content;
-
-        setReports(parsed);
-        setActiveTab("brad");
-      } catch {
-        setError("Could not load report.");
-      } finally {
-        setLoading(false);
-      }
+    if (id) {
+      window.location.replace(`/reports/${id}`);
+    } else {
+      window.location.replace("/dashboard");
     }
-
-    if (id) loadReport();
-  }, [id]);
-
-  const activePersona = PERSONAS.find((p) => p.key === activeTab);
-  const activeReport = reports[activeTab];
+  }, [params]);
 
   return (
-    <div style={{ minHeight: "100vh", background: "#0e0d0b", color: "#f0ece4", fontFamily: "Georgia, serif" }}>
-      <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@300;400;500&family=IBM+Plex+Mono:wght@400;500&display=swap');
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        .app-wrap { max-width: 960px; margin: 0 auto; padding: 48px 32px 100px; }
-        .masthead { border-bottom: 1px solid #2a2520; padding-bottom: 32px; margin-bottom: 48px; }
-        .eyebrow { font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.2em; color: #c8935a; text-transform: uppercase; margin-bottom: 12px; }
-        .title { font-family: 'Cormorant Garamond', serif; font-size: clamp(40px, 7vw, 72px); font-weight: 700; line-height: 1; color: #f0ece4; }
-        .back-link { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #5a5448; text-decoration: none; letter-spacing: 0.1em; display: inline-block; margin-bottom: 32px; }
-        .back-link:hover { color: #9a9186; }
-        .tabs-wrap { display: flex; border-bottom: 1px solid #2a2520; margin-top: 48px; overflow-x: auto; }
-        .tab-btn { padding: 14px 20px; font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; background: none; border: none; border-bottom: 2px solid transparent; cursor: pointer; white-space: nowrap; transition: all 0.2s; color: #5a5448; }
-        .tab-btn.active { border-bottom-color: var(--tab-color); color: var(--tab-color); }
-        .tab-btn:hover:not(.active) { color: #9a9186; }
-        .persona-header { padding: 28px 0 20px; border-bottom: 1px solid #2a2520; margin-bottom: 28px; display: flex; align-items: flex-start; gap: 20px; }
-        .persona-badge { width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: 'Cormorant Garamond', serif; font-size: 20px; font-weight: 700; flex-shrink: 0; border: 1px solid var(--badge-border); }
-        .persona-name { font-family: 'Cormorant Garamond', serif; font-size: 26px; font-weight: 700; line-height: 1; }
-        .persona-role { font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; margin-top: 4px; }
-        .persona-tagline { font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 300; color: #9a9186; margin-top: 8px; }
-        .report-content { font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 300; line-height: 1.8; color: #d4cfc7; }
-        .report-title { font-family: 'Cormorant Garamond', serif; font-size: 28px; font-weight: 700; color: #f0ece4; margin: 24px 0 8px; line-height: 1.2; }
-        .section-head { font-family: 'Cormorant Garamond', serif; font-size: 20px; font-weight: 600; color: #f0ece4; margin: 32px 0 10px; letter-spacing: 0.05em; }
-        .section-subhead { font-family: 'Cormorant Garamond', serif; font-size: 16px; font-weight: 600; color: #9a9186; margin: 20px 0 8px; }
-        .report-divider { border: none; border-top: 1px solid #2a2520; margin: 28px 0; }
-        .report-list { padding-left: 20px; margin: 12px 0; }
-        .report-list li { margin-bottom: 8px; line-height: 1.7; }
-        .para { margin-bottom: 12px; }
-        .loading-msg { font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #5a5448; letter-spacing: 0.1em; }
-        .error-box { padding: 24px; background: #2a1010; border-left: 2px solid #b84040; font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #b84040; }
-      `}</style>
-
-      <div className="app-wrap">
-        <a className="back-link" href="/">← Back to 5 CORE</a>
-
-        <div className="masthead">
-          <div className="eyebrow">Editorial Council — Saved Report</div>
-          <div className="title">5 CORE</div>
+    <main
+      style={{
+        minHeight: "100vh",
+        background: "#0e0d0b",
+        color: "#f0ece4",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        fontFamily: "Georgia, serif",
+        padding: "24px",
+        textAlign: "center",
+      }}
+    >
+      <div>
+        <div
+          style={{
+            color: "#c8935a",
+            fontFamily: "monospace",
+            fontSize: "12px",
+            letterSpacing: "0.2em",
+            textTransform: "uppercase",
+            marginBottom: "12px",
+          }}
+        >
+          5 CORE
         </div>
 
-        {loading && <div className="loading-msg">Loading your report...</div>}
-        {error && <div className="error-box">{error}</div>}
+        <h1 style={{ fontSize: "42px", margin: 0 }}>
+          Opening the clean report viewer...
+        </h1>
 
-        {!loading && !error && (
-          <div>
-            <div className="tabs-wrap">
-              {PERSONAS.map((p) => (
-                <button
-                  key={p.key}
-                  className={`tab-btn ${activeTab === p.key ? "active" : ""}`}
-                  style={{ "--tab-color": p.color } as React.CSSProperties}
-                  onClick={() => setActiveTab(p.key)}
-                >
-                  {p.name}{p.key === "finalEditor" ? " ★" : ""}
-                </button>
-              ))}
-            </div>
-
-            {activePersona && (
-              <div>
-                <div className="persona-header">
-                  <div
-                    className="persona-badge"
-                    style={{
-                      background: activePersona.color + "22",
-                      color: activePersona.color,
-                      "--badge-border": activePersona.color + "55",
-                    } as React.CSSProperties}
-                  >
-                    {activePersona.name[0]}
-                  </div>
-                  <div>
-                    <div className="persona-name" style={{ color: activePersona.color }}>{activePersona.name}</div>
-                    <div className="persona-role" style={{ color: activePersona.color + "99" }}>{activePersona.role}</div>
-                    <div className="persona-tagline">{activePersona.tagline}</div>
-                  </div>
-                </div>
-
-                {activeReport ? (
-                  <div
-                    className="report-content"
-                    dangerouslySetInnerHTML={{ __html: renderMarkdown(activeReport) }}
-                  />
-                ) : (
-                  <div className="loading-msg">No report found for this editor.</div>
-                )}
-              </div>
-            )}
-          </div>
-        )}
+        <p style={{ color: "#9a9186", marginTop: "12px" }}>
+          If this page does not move automatically, go back to your dashboard and open the report from there.
+        </p>
       </div>
-    </div>
+    </main>
   );
 }

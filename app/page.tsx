@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useEffect, useState } from "react";
 import { createClient } from "@supabase/supabase-js";
@@ -70,7 +70,7 @@ export default function LandingPage() {
         </nav>
 
         <div className="hero">
-          <div className="eyebrow">Editorial Council — Beta</div>
+          <div className="eyebrow">Editorial Council â€” Beta</div>
           <h1 className="headline">Your manuscript deserves a real diagnosis.</h1>
           <p className="subhead">Five distinct editorial minds read your work and tell you exactly what is working, what is costing you power, and what to fix first. No flattery. No hedging. No bullshit.</p>
           <a className="cta-btn" href="/login">Request Beta Access</a>
@@ -80,34 +80,34 @@ export default function LandingPage() {
 
         <div className="problem-block">
           <div className="section-label">The Problem</div>
-          <p className="problem-text">You are too close to your own work. Professional editing is expensive. Generic AI feedback is useless. You need something that actually reads your manuscript like an editor would — and tells you the truth.</p>
+          <p className="problem-text">You are too close to your own work. Professional editing is expensive. Generic AI feedback is useless. You need something that actually reads your manuscript like an editor would â€” and tells you the truth.</p>
         </div>
 
         <div className="section-label">The Editorial Council</div>
         <div className="council-grid">
           <div className="council-card">
             <div className="card-initial" style={{ color: "#c8935a" }}>B</div>
-            <div className="card-name" style={{ color: "#c8935a" }}>Brad — Voice Guardian</div>
+            <div className="card-name" style={{ color: "#c8935a" }}>Brad â€” Voice Guardian</div>
             <div className="card-desc">Protects what is alive in the manuscript. Finds the pulse and makes sure no one cuts it.</div>
           </div>
           <div className="council-card">
             <div className="card-initial" style={{ color: "#b84040" }}>G</div>
-            <div className="card-name" style={{ color: "#b84040" }}>Greg — Brutal Editor</div>
+            <div className="card-name" style={{ color: "#b84040" }}>Greg â€” Brutal Editor</div>
             <div className="card-desc">Finds what is costing the manuscript power. Cuts without mercy. Explains why.</div>
           </div>
           <div className="council-card">
             <div className="card-initial" style={{ color: "#5a7cc8" }}>V</div>
-            <div className="card-name" style={{ color: "#5a7cc8" }}>Von Claude — Architect</div>
+            <div className="card-name" style={{ color: "#5a7cc8" }}>Von Clausen â€” Architect</div>
             <div className="card-desc">Structure, consistency, blueprint discipline. Whether the spine holds or collapses.</div>
           </div>
           <div className="council-card">
             <div className="card-initial" style={{ color: "#4a9c6a" }}>J</div>
-            <div className="card-name" style={{ color: "#4a9c6a" }}>Juniper — Reader Lens</div>
+            <div className="card-name" style={{ color: "#4a9c6a" }}>Juniper â€” Reader Lens</div>
             <div className="card-desc">Represents the intelligent outside reader. Where they stay. Where they leave. Why.</div>
           </div>
           <div className="council-card">
-            <div className="card-initial" style={{ color: "#9c7ac8" }}>★</div>
-            <div className="card-name" style={{ color: "#9c7ac8" }}>Final Editor — Synthesis</div>
+            <div className="card-initial" style={{ color: "#9c7ac8" }}>â˜…</div>
+            <div className="card-name" style={{ color: "#9c7ac8" }}>Final Editor â€” Synthesis</div>
             <div className="card-desc">Resolves the council into one official verdict. Scores. Fixes. Roadmap. No hedging.</div>
           </div>
         </div>
@@ -145,7 +145,7 @@ export default function LandingPage() {
         </div>
 
         <div className="footer">
-          5 CORE Editorial Council — Built for independent writers.
+          5 CORE Editorial Council â€” Built for independent writers.
         </div>
       </div>
     </div>
