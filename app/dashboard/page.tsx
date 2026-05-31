@@ -25,6 +25,7 @@ type Report = {
   id: string;
   created_at: string;
   title: string | null;
+  report_type?: string | null;
   intake?: string | Intake | null;
 };
 
@@ -62,10 +63,40 @@ function getReportLabel(count: number) {
   return `${count} saved reports`;
 }
 
+
+function getReportTypeValue(report: Report) {
+  return report.report_type === "sphinx" ? "sphinx" : "council";
+}
+
+function getReportTypeLabel(report: Report) {
+  return report.report_type === "sphinx" ? "Sphinx" : "5 CORE";
+}
+
+function getSearchText(report: Report) {
+  const intake = parseIntake(report.intake);
+
+  return [
+    report.title || "",
+    report.report_type || "",
+    getReportTypeLabel(report),
+    intake.writingType || "",
+    intake.audience || "",
+    intake.preparationGoal || "",
+    intake.feedbackTone || "",
+    intake.biggestConcern || "",
+  ]
+    .join(" ")
+    .toLowerCase();
+}
 export default function Dashboard() {
   const [reports, setReports] = useState<Report[]>([]);
   const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
   const [user, setUser] = useState<{ email?: string | null } | null>(null);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [reportFilter, setReportFilter] = useState("all");
+  const [visibleCount, setVisibleCount] = useState(20);
+  const [dashboardError, setDashboardError] = useState("");
 
   useEffect(() => {
     async function load() {
@@ -82,10 +113,10 @@ export default function Dashboard() {
 
       const { data, error } = await supabase
         .from("reports")
-        .select("id, created_at, title, intake")
+        .select("id, created_at, title, intake, report_type")
         .eq("user_id", session.user.id)
         .order("created_at", { ascending: false })
-        .limit(20);
+        .limit(100);
 
       if (error) {
         console.error("Dashboard load error:", error);
@@ -100,9 +131,50 @@ export default function Dashboard() {
     load();
   }, []);
 
+
+  useEffect(() => {
+    setVisibleCount(20);
+  }, [searchTerm, reportFilter]);
+
   async function handleSignOut() {
     await supabase.auth.signOut();
     window.location.href = "/";
+  }
+
+
+  async function refreshReports() {
+    setRefreshing(true);
+    setDashboardError("");
+
+    try {
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+
+      if (!session) {
+        window.location.href = "/login";
+        return;
+      }
+
+      const { data, error } = await supabase
+        .from("reports")
+        .select("id, created_at, title, intake, report_type")
+        .eq("user_id", session.user.id)
+        .order("created_at", { ascending: false })
+        .limit(100);
+
+      if (error) {
+        throw new Error(error.message);
+      }
+
+      setReports((data || []) as Report[]);
+    } catch (err) {
+      const message =
+        err instanceof Error ? err.message : "Could not refresh reports.";
+      setDashboardError(message);
+    } finally {
+      setRefreshing(false);
+    }
   }
 
   const latestReport = reports[0];
@@ -111,6 +183,22 @@ export default function Dashboard() {
   const isAdmin = Boolean(
     user?.email && ADMIN_EMAILS.includes(user.email.toLowerCase())
   );
+
+  const normalizedSearch = searchTerm.trim().toLowerCase();
+
+  const filteredReports = reports.filter((report) => {
+    const matchesSearch =
+      !normalizedSearch || getSearchText(report).includes(normalizedSearch);
+
+    const matchesType =
+      reportFilter === "all" || getReportTypeValue(report) === reportFilter;
+
+    return matchesSearch && matchesType;
+  });
+
+  const visibleReports = filteredReports.slice(0, visibleCount);
+  const hasMoreReports = visibleReports.length < filteredReports.length;
+  const filteredReportLabel = getReportLabel(filteredReports.length);
 
   return (
     <main className="dashboard-shell">
@@ -551,6 +639,84 @@ export default function Dashboard() {
           white-space: nowrap;
         }
 
+        .library-controls {
+          display: grid;
+          grid-template-columns: minmax(0, 1fr) 220px auto;
+          gap: 12px;
+          align-items: center;
+          margin-bottom: 18px;
+          padding-bottom: 18px;
+          border-bottom: 1px solid #26211c;
+        }
+
+        .library-input,
+        .library-select {
+          width: 100%;
+          min-height: 46px;
+          border: 1px solid #302a24;
+          background: #11100e;
+          color: #f0ece4;
+          border-radius: 14px;
+          padding: 12px 14px;
+          outline: none;
+          font-family: 'DM Sans', sans-serif;
+          font-size: 14px;
+        }
+
+        .library-input::placeholder {
+          color: #5f574f;
+        }
+
+        .library-input:focus,
+        .library-select:focus {
+          border-color: #c8a96e;
+        }
+
+        .library-btn,
+        .show-more-btn {
+          min-height: 46px;
+          border-radius: 14px;
+          border: 1px solid #302a24;
+          background: #11100e;
+          color: #9a9186;
+          font-family: 'IBM Plex Mono', monospace;
+          font-size: 10px;
+          font-weight: 700;
+          letter-spacing: 0.12em;
+          text-transform: uppercase;
+          padding: 12px 14px;
+          cursor: pointer;
+        }
+
+        .library-btn:hover,
+        .show-more-btn:hover {
+          color: #c8a96e;
+          border-color: #c8a96e;
+        }
+
+        .library-btn:disabled {
+          opacity: 0.45;
+          cursor: not-allowed;
+        }
+
+        .library-error {
+          margin-bottom: 18px;
+          padding: 14px 16px;
+          border: 1px solid #5a2020;
+          border-left: 3px solid #b84040;
+          background: #2a1010;
+          color: #f0a0a0;
+          border-radius: 14px;
+          font-family: 'IBM Plex Mono', monospace;
+          font-size: 11px;
+          line-height: 1.5;
+        }
+
+        .show-more-wrap {
+          display: flex;
+          justify-content: center;
+          margin-top: 16px;
+        }
         .loading,
         .empty-state {
           text-align: center;
@@ -662,6 +828,10 @@ export default function Dashboard() {
 
           .tool-card {
             min-height: auto;
+          }
+
+          .library-controls {
+            grid-template-columns: 1fr;
           }
         }
 
@@ -861,11 +1031,44 @@ export default function Dashboard() {
             <div>
               <h2 className="section-title">Saved Reports</h2>
               <p className="section-note">
-                Your last 20 saved manuscript reports. Newest reports appear first.
+                Search, filter, and open your saved reports. Newest reports appear first.
               </p>
             </div>
 
-            <div className="mini-stat">{loading ? "Loading" : reportLabel}</div>
+            <div className="mini-stat">
+              {loading ? "Loading" : `Showing ${visibleReports.length} of ${filteredReports.length} / ${reports.length}`}
+            </div>
+          </div>
+          {dashboardError && (
+            <div className="library-error">{dashboardError}</div>
+          )}
+
+          <div className="library-controls">
+            <input
+              className="library-input"
+              value={searchTerm}
+              onChange={(event) => setSearchTerm(event.target.value)}
+              placeholder="Search reports by title, type, audience, goal, or concern..."
+            />
+
+            <select
+              className="library-select"
+              value={reportFilter}
+              onChange={(event) => setReportFilter(event.target.value)}
+            >
+              <option value="all">All Reports</option>
+              <option value="council">5 CORE Only</option>
+              <option value="sphinx">Sphinx Only</option>
+            </select>
+
+            <button
+              className="library-btn"
+              type="button"
+              onClick={refreshReports}
+              disabled={refreshing}
+            >
+              {refreshing ? "Refreshing" : "Refresh"}
+            </button>
           </div>
 
           {loading ? (
@@ -880,9 +1083,15 @@ export default function Dashboard() {
                 </a>
               </div>
             </div>
+          ) : filteredReports.length === 0 ? (
+            <div className="empty-state">
+              <div className="empty-title">No matching reports.</div>
+              <div>Change the search or filter. The reports are probably there. They are just hiding like little digital possums.</div>
+            </div>
           ) : (
-            <div className="reports-list">
-              {reports.map((report) => {
+            <>
+              <div className="reports-list">
+                {visibleReports.map((report) => {
                 const intake = parseIntake(report.intake);
 
                 return (
@@ -918,13 +1127,27 @@ export default function Dashboard() {
                   </article>
                 );
               })}
-            </div>
+              </div>
+
+              {hasMoreReports && (
+                <div className="show-more-wrap">
+                  <button
+                    className="show-more-btn"
+                    type="button"
+                    onClick={() => setVisibleCount((count) => count + 20)}
+                  >
+                    Show More Reports
+                  </button>
+                </div>
+              )}
+            </>
           )}
         </section>
       </div>
     </main>
   );
 }
+
 
 
 
