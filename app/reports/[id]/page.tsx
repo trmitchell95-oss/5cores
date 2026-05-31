@@ -399,6 +399,28 @@ function ReportBlock({ block }: { block: RenderBlock }) {
   return <p className="report-para">{block.text}</p>;
 }
 
+function safeFileName(value: string) {
+  const cleaned = value
+    .replace(/[^\w\s.-]/g, "")
+    .replace(/\s+/g, "_")
+    .replace(/_+/g, "_")
+    .trim();
+
+  return cleaned || "saved_report";
+}
+
+function downloadTextFile(fileName: string, text: string, mimeType: string) {
+  const blob = new Blob([text], { type: mimeType });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+
+  link.href = url;
+  link.download = fileName;
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  URL.revokeObjectURL(url);
+}
 export default function SavedReportPage() {
   const params = useParams<{ id: string }>();
   const id = typeof params?.id === "string" ? params.id : "";
@@ -408,6 +430,10 @@ export default function SavedReportPage() {
   const [error, setError] = useState("");
   const [copied, setCopied] = useState(false);
   const [activeTab, setActiveTab] = useState("brad");
+  const [draftTitle, setDraftTitle] = useState("");
+  const [savingTitle, setSavingTitle] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+  const [manageMessage, setManageMessage] = useState("");
 
   useEffect(() => {
     async function loadReport() {
@@ -441,7 +467,9 @@ export default function SavedReportPage() {
           throw new Error(reportError.message);
         }
 
-        setReport(data as SavedReport);
+        const loadedReport = data as SavedReport;
+        setReport(loadedReport);
+        setDraftTitle(loadedReport.title || "");
       } catch (err) {
         const message =
           err instanceof Error ? err.message : "Could not load report.";
@@ -488,6 +516,9 @@ export default function SavedReportPage() {
         .join("\n\n---\n\n")
     : singleReportText;
 
+  const displayTitle = report?.title || "Saved Report";
+  const exportText = `# ${displayTitle}\n\n${report?.created_at ? `Saved: ${formatDate(report.created_at)}\n\n` : ""}${copyText}`;
+
   async function copyFullReport() {
     if (!copyText) return;
 
@@ -499,6 +530,122 @@ export default function SavedReportPage() {
     }, 2000);
   }
 
+
+  async function getAccessToken() {
+    const supabase = getSupabaseClient();
+
+    const {
+      data: { session },
+    } = await supabase.auth.getSession();
+
+    if (!session?.access_token) {
+      window.location.href = "/login";
+      return "";
+    }
+
+    return session.access_token;
+  }
+
+  async function saveTitle() {
+    const nextTitle = draftTitle.trim();
+
+    if (!report || !id) return;
+
+    if (!nextTitle) {
+      setError("Report title cannot be blank.");
+      return;
+    }
+
+    setSavingTitle(true);
+    setError("");
+    setManageMessage("");
+
+    try {
+      const token = await getAccessToken();
+      if (!token) return;
+
+      const response = await fetch(`/api/reports/${id}`, {
+        method: "PATCH",
+        headers: {
+          "content-type": "application/json",
+          authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ title: nextTitle }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Could not rename report.");
+      }
+
+      setReport((current) =>
+        current ? { ...current, title: data.title || nextTitle } : current
+      );
+      setManageMessage("Report title saved.");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Could not rename report.");
+    } finally {
+      setSavingTitle(false);
+    }
+  }
+
+  async function deleteReport() {
+    if (!report || !id) return;
+
+    const confirmed = window.confirm(
+      "Delete this saved report? This cannot be undone."
+    );
+
+    if (!confirmed) return;
+
+    setDeleting(true);
+    setError("");
+    setManageMessage("");
+
+    try {
+      const token = await getAccessToken();
+      if (!token) return;
+
+      const response = await fetch(`/api/reports/${id}`, {
+        method: "DELETE",
+        headers: {
+          authorization: `Bearer ${token}`,
+        },
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Could not delete report.");
+      }
+
+      window.location.href = "/dashboard";
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Could not delete report.");
+      setDeleting(false);
+    }
+  }
+
+  function downloadMarkdown() {
+    if (!copyText) return;
+
+    downloadTextFile(
+      `${safeFileName(displayTitle)}.md`,
+      exportText,
+      "text/markdown;charset=utf-8"
+    );
+  }
+
+  function downloadPlainText() {
+    if (!copyText) return;
+
+    downloadTextFile(
+      `${safeFileName(displayTitle)}.txt`,
+      exportText,
+      "text/plain;charset=utf-8"
+    );
+  }
   return (
     <main className="report-shell">
       <style>{`
@@ -801,6 +948,73 @@ export default function SavedReportPage() {
           margin: 32px 0;
         }
 
+        .manage-card {
+          margin-top: 24px;
+          border: 1px solid #302a24;
+          background: #11100e;
+          border-radius: 20px;
+          padding: 18px;
+        }
+
+        .manage-grid {
+          display: grid;
+          grid-template-columns: minmax(0, 1fr) auto;
+          gap: 12px;
+          align-items: center;
+        }
+
+        .title-input {
+          width: 100%;
+          min-height: 44px;
+          border: 1px solid #2a2520;
+          background: #0e0d0b;
+          color: #f0ece4;
+          border-radius: 13px;
+          padding: 12px 14px;
+          outline: none;
+          font-family: 'DM Sans', sans-serif;
+          font-size: 14px;
+        }
+
+        .title-input:focus {
+          border-color: #c8935a;
+        }
+
+        .manage-actions {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 10px;
+          margin-top: 12px;
+        }
+
+        .danger-btn {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          min-height: 44px;
+          border: 1px solid #5a2020;
+          background: #2a1010;
+          color: #d68c8c;
+          border-radius: 14px;
+          font-family: 'IBM Plex Mono', monospace;
+          font-size: 10px;
+          font-weight: 700;
+          letter-spacing: 0.12em;
+          text-transform: uppercase;
+          padding: 12px 14px;
+          cursor: pointer;
+        }
+
+        .danger-btn:hover {
+          border-color: #b84040;
+          color: #f0a0a0;
+        }
+
+        .manage-message {
+          margin-top: 12px;
+          color: #8bc99d;
+          font-size: 13px;
+        }
         .loading-box,
         .error-box,
         .empty-box {
@@ -894,6 +1108,64 @@ export default function SavedReportPage() {
               <span className="meta-chip">{councilSections.length} sections</span>
             )}
           </div>
+
+          {report && (
+            <div className="manage-card">
+              <div className="eyebrow">Rename saved report</div>
+
+              <div className="manage-grid">
+                <input
+                  className="title-input"
+                  value={draftTitle}
+                  onChange={(event) => setDraftTitle(event.target.value)}
+                  placeholder="Report title"
+                  maxLength={160}
+                />
+
+                <button
+                  className="action-btn"
+                  type="button"
+                  onClick={saveTitle}
+                  disabled={savingTitle || !draftTitle.trim()}
+                >
+                  {savingTitle ? "Saving" : "Save Title"}
+                </button>
+              </div>
+
+              <div className="manage-actions">
+                <button
+                  className="action-btn"
+                  type="button"
+                  onClick={downloadMarkdown}
+                  disabled={!copyText}
+                >
+                  Download .md
+                </button>
+
+                <button
+                  className="action-btn"
+                  type="button"
+                  onClick={downloadPlainText}
+                  disabled={!copyText}
+                >
+                  Download .txt
+                </button>
+
+                <button
+                  className="danger-btn"
+                  type="button"
+                  onClick={deleteReport}
+                  disabled={deleting}
+                >
+                  {deleting ? "Deleting" : "Delete Report"}
+                </button>
+              </div>
+
+              {manageMessage && (
+                <div className="manage-message">{manageMessage}</div>
+              )}
+            </div>
+          )}
         </section>
 
         {loading && <div className="loading-box">Loading saved report...</div>}
@@ -973,4 +1245,6 @@ export default function SavedReportPage() {
     </main>
   );
 }
+
+
 
