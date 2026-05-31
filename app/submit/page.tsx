@@ -364,7 +364,7 @@ export default function SubmitPage() {
         setError(data.error || "Something went wrong. Please try again.");
       }
     } catch {
-      setError("Connection failed. Please try again.");
+      setError("Connection failed before the council answered. Check your connection, wait a minute, and try again. If it keeps happening, send the admin what you were trying to run.");
     } finally {
       if (intervalRef.current) clearInterval(intervalRef.current);
       setLoading(false);
@@ -447,6 +447,14 @@ export default function SubmitPage() {
         .back-link:hover {
           color: #c8935a;
           border-color: #c8935a;
+        }
+
+        .top-nav-actions {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 10px;
+          align-items: center;
+          justify-content: flex-end;
         }
 
         .nav-pill {
@@ -1101,7 +1109,17 @@ export default function SubmitPage() {
             Back to Dashboard
           </a>
 
-          <div className="nav-pill">New Diagnosis Flow</div>
+          <div className="top-nav-actions">
+            <a className="back-link" href="/beta-terms">
+              Beta Terms
+            </a>
+            <div className="top-nav-actions">
+            <a className="back-link" href="/beta-terms">
+              Beta Terms
+            </a>
+            <div className="nav-pill">New Diagnosis Flow</div>
+          </div>
+          </div>
         </nav>
 
         <header className="masthead">
@@ -1136,7 +1154,7 @@ export default function SubmitPage() {
                   <div>
                     <div className="step-title">Manuscript</div>
                     <div className="step-text">
-                      Paste the writing directly, or upload a plain text file. Word documents come later.
+                      Paste the writing directly, or upload a .txt, .md, or .docx file. Old .doc files and PDFs come later.
                     </div>
                   </div>
                 </div>
@@ -1459,6 +1477,8 @@ export default function SubmitPage() {
     </main>
   );
 }
+
+
 
 
 

@@ -733,6 +733,9 @@ export default function Dashboard() {
                 Admin Usage
               </a>
             )}
+            <a className="signout-btn" href="/beta-terms">
+              Beta Terms
+            </a>
             <button className="signout-btn" onClick={handleSignOut}>
               Sign Out
             </button>
@@ -919,4 +922,6 @@ export default function Dashboard() {
     </main>
   );
 }
+
+
 

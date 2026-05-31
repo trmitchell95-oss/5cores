@@ -340,6 +340,21 @@ export default function LoginPage() {
           line-height: 1.5;
           margin-top: 20px;
         }
+
+        .terms-link {
+          display: inline-block;
+          margin-top: 8px;
+          color: #c8935a;
+          font-family: 'IBM Plex Mono', monospace;
+          font-size: 10px;
+          letter-spacing: 0.1em;
+          text-transform: uppercase;
+          text-decoration: none;
+        }
+
+        .terms-link:hover {
+          text-decoration: underline;
+        }
       `}</style>
 
       <div className="wrap">
@@ -452,10 +467,14 @@ export default function LoginPage() {
 
           <div className="note">
             Beta access is free for now. Each account keeps its own dashboard and saved report history.
+            <br />
+            <a className="terms-link" href="/beta-terms">Beta Terms / Privacy</a>
           </div>
         </div>
       </div>
     </div>
   );
 }
+
+
 

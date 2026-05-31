@@ -543,6 +543,10 @@ export default function HomePage() {
               Sphinx
             </Link>
 
+            <Link href="/beta-terms" className="nav-link">
+              Beta Terms
+            </Link>
+
             {!checkingLogin && isLoggedIn ? (
               <Link href="/dashboard" className="nav-link">
                 Dashboard
@@ -714,3 +718,5 @@ export default function HomePage() {
     </main>
   );
 }
+
+
