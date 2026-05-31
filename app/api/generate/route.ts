@@ -4,6 +4,9 @@ import { createClient } from "@supabase/supabase-js";
 
 const client = new Anthropic();
 
+const COUNCIL_MIN_CHARS = 50;
+const COUNCIL_MAX_CHARS = 25000;
+
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
   process.env.SUPABASE_SERVICE_ROLE_KEY!
@@ -261,3 +264,4 @@ export async function POST(req: NextRequest) {
     );
   }
 }
+

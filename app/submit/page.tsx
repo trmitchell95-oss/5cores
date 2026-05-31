@@ -46,6 +46,8 @@ const PERSONAS = [
   },
 ];
 
+const COUNCIL_MAX_CHARS = 25000;
+
 const STATUS_MESSAGES = [
   "Reading your manuscript...",
   "Calling the council...",
@@ -158,7 +160,8 @@ export default function SubmitPage() {
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const words = countWords(manuscript);
-  const readyToRun = manuscript.trim().length >= 50 && !loading;
+  const tooLong = manuscript.trim().length > COUNCIL_MAX_CHARS;
+  const readyToRun = manuscript.trim().length >= 50 && !tooLong && !loading;
   const activePersona = PERSONAS.find((p) => p.key === activeTab);
   const activeReport = reports[activeTab];
 
@@ -1073,7 +1076,7 @@ export default function SubmitPage() {
                 <div className="meter-card">
                   <div className="meter-row">
                     <span>{words.toLocaleString()} words</span>
-                    <span>{readyToRun ? "Ready" : "Need text"}</span>
+                    <span>{tooLong ? "Too long" : readyToRun ? "Ready" : "Need text"}</span>
                   </div>
 
                   <div className="meter-bar">
@@ -1084,7 +1087,7 @@ export default function SubmitPage() {
                   </div>
 
                   <div className="meter-help">
-                    Minimum is intentionally low for testing. For real use, stronger results come from a complete scene, chapter, essay, or substantial excerpt.
+                    Beta limit: 25,000 characters. Use a chapter, scene, essay, or substantial excerpt. Do not paste a whole book unless you enjoy setting money on fire.
                   </div>
                 </div>
 
@@ -1106,6 +1109,8 @@ export default function SubmitPage() {
                     Clear
                   </button>
                 </div>
+
+                {tooLong && <div className="error-msg">This excerpt is too long for beta mode. Keep it under 25,000 characters. Pick a chapter, scene, essay, or strong excerpt instead of feeding the truck the whole damn library.</div>}
 
                 {error && <div className="error-msg">{error}</div>}
               </div>
@@ -1369,4 +1374,5 @@ export default function SubmitPage() {
     </main>
   );
 }
+
 

@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server";
+﻿import { NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 
 export const runtime = "nodejs";
@@ -93,7 +93,7 @@ export async function POST(request: Request) {
       "",
       "## Original Text",
       "",
-      text.slice(0, 20000),
+      text,
       "",
       "## Stronger Version",
       "",
@@ -146,3 +146,4 @@ export async function POST(request: Request) {
     );
   }
 }
+

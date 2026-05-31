@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server";
+﻿import { NextResponse } from "next/server";
 
 export const runtime = "nodejs";
 
@@ -6,6 +6,9 @@ type ClaudeTextBlock = {
   type: string;
   text?: string;
 };
+
+const SPHINX_MIN_CHARS = 20;
+const SPHINX_MAX_CHARS = 10000;
 
 const SPHINX_SYSTEM_PROMPT = `
 You are SPHINX, an AI Stink Preventer.
@@ -222,7 +225,7 @@ export async function POST(request: Request) {
       );
     }
 
-    const safeText = text.slice(0, 20000);
+    const safeText = text;
 
     const userPrompt = `
 MODE: ${mode}
@@ -293,3 +296,4 @@ ${safeText}
     );
   }
 }
+

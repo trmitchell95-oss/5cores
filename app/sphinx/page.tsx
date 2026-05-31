@@ -13,6 +13,8 @@ const modes = [
   { value: "SOCIAL", label: "Social Post" },
 ];
 
+const SPHINX_MAX_CHARS = 10000;
+
 const strictnessOptions = [
   { value: "STANDARD", label: "Standard" },
   { value: "BRUTAL", label: "Brutal" },
@@ -74,6 +76,9 @@ export default function SphinxPage() {
   const [saveMessage, setSaveMessage] = useState("");
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [checkingLogin, setCheckingLogin] = useState(true);
+
+  const tooLong = text.trim().length > SPHINX_MAX_CHARS;
+  const canRunSphinx = text.trim().length >= 20 && !tooLong && !loading;
 
   useEffect(() => {
     async function checkLogin() {
@@ -299,7 +304,7 @@ export default function SphinxPage() {
               </h2>
               <p className="mt-1 text-sm text-zinc-400">
                 Best for blurbs, grant answers, emails, posts, bios, and
-                application responses.
+                application responses. Beta limit: 10,000 characters.
               </p>
             </div>
 
@@ -355,7 +360,7 @@ export default function SphinxPage() {
 
             <div className="mt-4 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
               <p className="text-sm text-zinc-500">
-                {text.length.toLocaleString()} characters
+                {text.length.toLocaleString()} / 10,000 characters
               </p>
 
               <div className="flex flex-wrap gap-3">
@@ -369,7 +374,7 @@ export default function SphinxPage() {
 
                 <button
                   onClick={runSphinx}
-                  disabled={loading || text.trim().length < 20}
+                  disabled={!canRunSphinx}
                   type="button"
                   className="rounded-xl bg-amber-400 px-5 py-3 text-sm font-black text-zinc-950 hover:bg-amber-300 disabled:cursor-not-allowed disabled:opacity-50"
                 >
@@ -377,6 +382,12 @@ export default function SphinxPage() {
                 </button>
               </div>
             </div>
+
+            {tooLong && (
+              <div className="mt-4 rounded-2xl border border-red-900 bg-red-950/50 p-4 text-sm text-red-200">
+                Sphinx beta limit is 10,000 characters. Use it for blurbs, posts, emails, application answers, and short passages, not whole manuscripts. Don&apos;t feed the little bastard a whale.
+              </div>
+            )}
 
             {error && (
               <div className="mt-4 rounded-2xl border border-red-900 bg-red-950/50 p-4 text-sm text-red-200">
@@ -486,3 +497,4 @@ export default function SphinxPage() {
     </main>
   );
 }
+
