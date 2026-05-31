@@ -1,353 +1,401 @@
 ﻿"use client";
 
 import { useEffect, useMemo, useState } from "react";
+import Link from "next/link";
 import { useParams } from "next/navigation";
 import { createClient } from "@supabase/supabase-js";
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-);
-
-const PERSONAS = [
-  { key: "brad", name: "Brad", role: "Voice Guardian", color: "#c8935a", tagline: "Protects what is alive in the manuscript." },
-  { key: "greg", name: "Greg", role: "Brutal Editor", color: "#b84040", tagline: "Finds what is costing the manuscript power." },
-  { key: "vonClaude", name: "Von Claude", role: "Architect", color: "#5a7cc8", tagline: "Structure, consistency, blueprint discipline." },
-  { key: "juniper", name: "Juniper", role: "Reader Lens", color: "#4a9c6a", tagline: "Represents the intelligent outside reader." },
-  { key: "finalEditor", name: "Final Editor", role: "Synthesis", color: "#9c7ac8", tagline: "Resolves the council. Writes the official report." },
-];
-
-type ReportRecord = {
+type SavedReport = {
   id: string;
-  created_at?: string;
   title?: string | null;
-  content?: string | Record<string, string> | null;
-  intake?: string | Record<string, unknown> | null;
+  created_at?: string | null;
+  report_type?: string | null;
+  content?: unknown;
+  voice?: unknown;
+  structure?: unknown;
+  repetition?: unknown;
+  market?: unknown;
+  line?: unknown;
+  voice_report?: unknown;
+  structure_report?: unknown;
+  repetition_report?: unknown;
+  market_report?: unknown;
+  line_report?: unknown;
+  [key: string]: unknown;
 };
 
-function formatDate(dateStr?: string) {
-  if (!dateStr) return "";
+type RenderBlock =
+  | { type: "h1"; text: string }
+  | { type: "h2"; text: string }
+  | { type: "h3"; text: string }
+  | { type: "paragraph"; text: string }
+  | { type: "quote"; text: string }
+  | { type: "bullet"; text: string }
+  | { type: "divider"; text: string };
 
-  return new Date(dateStr).toLocaleDateString("en-US", {
-    month: "short",
-    day: "numeric",
-    year: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-  });
+function getSupabaseClient() {
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+  if (!supabaseUrl || !supabaseAnonKey) {
+    throw new Error(
+      "Missing Supabase settings. Check NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY."
+    );
+  }
+
+  return createClient(supabaseUrl, supabaseAnonKey);
 }
 
-function parseReports(content: ReportRecord["content"]): Record<string, string> {
-  if (!content) return {};
+function asText(value: unknown) {
+  return typeof value === "string" ? value.trim() : "";
+}
 
-  if (typeof content === "object") {
-    return content as Record<string, string>;
+function isPlainObject(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null && !Array.isArray(value);
+}
+
+function renderSections(report: SavedReport) {
+  const contentText = asText(report.content);
+
+  if (contentText) {
+    return contentText;
   }
+
+  if (isPlainObject(report.content)) {
+    const nestedContent =
+      asText(report.content.content) ||
+      asText(report.content.fullReport) ||
+      asText(report.content.sphinx) ||
+      asText(report.content.report) ||
+      asText(report.content.voice) ||
+      asText(report.content.voice_report);
+
+    if (nestedContent) {
+      return nestedContent;
+    }
+  }
+
+  const sections = [
+    ["Voice Report", report.voice || report.voice_report],
+    ["Structure Report", report.structure || report.structure_report],
+    ["Repetition Report", report.repetition || report.repetition_report],
+    ["Market Report", report.market || report.market_report],
+    ["Line Report", report.line || report.line_report],
+  ];
+
+  const rendered = sections
+    .map(([label, value]) => {
+      const text = asText(value);
+      if (!text) return "";
+      return `# ${label}\n\n${text}`;
+    })
+    .filter(Boolean)
+    .join("\n\n---\n\n");
+
+  if (rendered) {
+    return rendered;
+  }
+
+  return "";
+}
+
+function formatDate(value?: string | null) {
+  if (!value) return "";
 
   try {
-    const parsed = JSON.parse(content);
-    if (parsed && typeof parsed === "object") {
-      return parsed as Record<string, string>;
-    }
+    return new Date(value).toLocaleString(undefined, {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+      hour: "numeric",
+      minute: "2-digit",
+    });
   } catch {
-    return {};
+    return value;
   }
-
-  return {};
 }
 
-function parseIntake(intake: ReportRecord["intake"]): Record<string, unknown> {
-  if (!intake) return {};
-
-  if (typeof intake === "object") {
-    return intake as Record<string, unknown>;
-  }
-
-  try {
-    const parsed = JSON.parse(intake);
-    if (parsed && typeof parsed === "object") {
-      return parsed as Record<string, unknown>;
-    }
-  } catch {
-    return {};
-  }
-
-  return {};
+function cleanInline(text: string) {
+  return text
+    .replace(/\*\*(.*?)\*\*/g, "$1")
+    .replace(/\*(.*?)\*/g, "$1")
+    .trim();
 }
 
-function renderMarkdown(text: string): string {
-  if (!text) return "";
+function parseReportText(text: string): RenderBlock[] {
+  const lines = text.replace(/\r\n/g, "\n").split("\n");
+  const blocks: RenderBlock[] = [];
+  let paragraph: string[] = [];
 
-  const lines = text.split("\n");
-  const html: string[] = [];
-  let inList = false;
+  function flushParagraph() {
+    const joined = paragraph.join(" ").trim();
+    if (joined) {
+      blocks.push({ type: "paragraph", text: cleanInline(joined) });
+    }
+    paragraph = [];
+  }
 
   for (const rawLine of lines) {
-    let line = rawLine;
+    const line = rawLine.trim();
 
-    line = line.replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>");
-    line = line.replace(/\*([^*\s][^*]*[^*\s]|[^*\s])\*/g, "<em>$1</em>");
-
-    if (/^# /.test(line)) {
-      if (inList) {
-        html.push("</ul>");
-        inList = false;
-      }
-      html.push(`<h1 class="report-title">${line.replace(/^# /, "")}</h1>`);
+    if (!line) {
+      flushParagraph();
       continue;
     }
 
-    if (/^## /.test(line)) {
-      if (inList) {
-        html.push("</ul>");
-        inList = false;
-      }
-      html.push(`<h2 class="section-head">${line.replace(/^## /, "")}</h2>`);
+    if (/^-{3,}$/.test(line)) {
+      flushParagraph();
+      blocks.push({ type: "divider", text: "" });
       continue;
     }
 
-    if (/^### /.test(line)) {
-      if (inList) {
-        html.push("</ul>");
-        inList = false;
-      }
-      html.push(`<h3 class="section-subhead">${line.replace(/^### /, "")}</h3>`);
+    if (line.startsWith("### ")) {
+      flushParagraph();
+      blocks.push({ type: "h3", text: cleanInline(line.replace(/^###\s+/, "")) });
       continue;
     }
 
-    if (/^---+$/.test(line.trim())) {
-      if (inList) {
-        html.push("</ul>");
-        inList = false;
-      }
-      html.push(`<hr class="report-divider" />`);
+    if (line.startsWith("## ")) {
+      flushParagraph();
+      blocks.push({ type: "h2", text: cleanInline(line.replace(/^##\s+/, "")) });
       continue;
     }
 
-    if (/^[-•] /.test(line)) {
-      if (!inList) {
-        html.push("<ul class='report-list'>");
-        inList = true;
-      }
-      html.push(`<li>${line.replace(/^[-•] /, "")}</li>`);
+    if (line.startsWith("# ")) {
+      flushParagraph();
+      blocks.push({ type: "h1", text: cleanInline(line.replace(/^#\s+/, "")) });
       continue;
     }
 
-    if (inList) {
-      html.push("</ul>");
-      inList = false;
-    }
-
-    if (line.trim() === "") {
-      html.push("<br/>");
+    if (line.startsWith(">")) {
+      flushParagraph();
+      blocks.push({
+        type: "quote",
+        text: cleanInline(line.replace(/^>\s?/, "")),
+      });
       continue;
     }
 
-    html.push(`<p class="para">${line}</p>`);
+    if (line.startsWith("- ") || line.startsWith("• ")) {
+      flushParagraph();
+      blocks.push({
+        type: "bullet",
+        text: cleanInline(line.replace(/^[-•]\s+/, "")),
+      });
+      continue;
+    }
+
+    paragraph.push(line);
   }
 
-  if (inList) html.push("</ul>");
+  flushParagraph();
 
-  return html.join("\n");
+  return blocks;
 }
 
-export default function ReportPage() {
-  const params = useParams();
-  const rawId = params?.id;
-  const reportId = Array.isArray(rawId) ? rawId[0] : rawId;
+function ReportBlock({ block }: { block: RenderBlock }) {
+  if (block.type === "h1") {
+    return (
+      <div className="mb-8 mt-2 rounded-2xl border border-amber-500/20 bg-amber-400/10 p-5">
+        <h2 className="text-2xl font-black tracking-tight text-amber-200">
+          {block.text}
+        </h2>
+      </div>
+    );
+  }
 
-  const [report, setReport] = useState<ReportRecord | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [errorMessage, setErrorMessage] = useState("");
-  const [activeTab, setActiveTab] = useState("brad");
+  if (block.type === "h2") {
+    return (
+      <h3 className="mb-4 mt-10 border-b border-zinc-800 pb-3 text-xl font-black tracking-tight text-zinc-100">
+        {block.text}
+      </h3>
+    );
+  }
 
-  useEffect(() => {
-    async function loadReport() {
-      const {
-        data: { session },
-      } = await supabase.auth.getSession();
+  if (block.type === "h3") {
+    return (
+      <h4 className="mb-3 mt-7 text-base font-bold uppercase tracking-[0.18em] text-amber-300">
+        {block.text}
+      </h4>
+    );
+  }
 
-      if (!session) {
-        window.location.href = "/login";
-        return;
-      }
+  if (block.type === "quote") {
+    return (
+      <blockquote className="my-5 border-l-4 border-amber-400 bg-zinc-900/70 px-5 py-4 text-lg italic leading-8 text-zinc-100">
+        {block.text}
+      </blockquote>
+    );
+  }
 
-      if (!reportId) {
-        setErrorMessage("Missing report ID.");
-        setLoading(false);
-        return;
-      }
+  if (block.type === "bullet") {
+    return (
+      <div className="mb-3 flex gap-3 rounded-xl bg-zinc-900/50 px-4 py-3 text-zinc-200">
+        <span className="mt-1 h-2 w-2 shrink-0 rounded-full bg-amber-400" />
+        <p className="leading-7">{block.text}</p>
+      </div>
+    );
+  }
 
-      const { data, error } = await supabase
-        .from("reports")
-        .select("*")
-        .eq("id", reportId)
-        .eq("user_id", session.user.id)
-        .single();
-
-      if (error) {
-        setErrorMessage(error.message);
-        setLoading(false);
-        return;
-      }
-
-      setReport(data as ReportRecord);
-      setLoading(false);
-    }
-
-    loadReport();
-  }, [reportId]);
-
-  const savedReports = useMemo(() => parseReports(report?.content), [report]);
-  const intake = useMemo(() => parseIntake(report?.intake), [report]);
-  const activePersona = PERSONAS.find((p) => p.key === activeTab);
-  const activeReport = savedReports[activeTab];
+  if (block.type === "divider") {
+    return <hr className="my-8 border-zinc-800" />;
+  }
 
   return (
-    <div style={{ minHeight: "100vh", background: "#0e0d0b", color: "#f0ece4", fontFamily: "Georgia, serif" }}>
-      <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@300;400;500&family=IBM+Plex+Mono:wght@400;500&display=swap');
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        .app-wrap { max-width: 960px; margin: 0 auto; padding: 48px 32px 100px; }
-        .back-link { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #5a5448; text-decoration: none; letter-spacing: 0.1em; display: inline-block; margin-bottom: 32px; }
-        .back-link:hover { color: #9a9186; }
-        .masthead { border-bottom: 1px solid #2a2520; padding-bottom: 32px; margin-bottom: 32px; }
-        .eyebrow { font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.2em; color: #c8935a; text-transform: uppercase; margin-bottom: 12px; }
-        .title { font-family: 'Cormorant Garamond', serif; font-size: clamp(38px, 6vw, 64px); font-weight: 700; line-height: 1; color: #f0ece4; }
-        .date { font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #5a5448; margin-top: 14px; }
-        .error-box { background: #161410; border: 1px solid #3a2520; padding: 24px; color: #d19a7a; }
-        .intake-box { background: #12100d; border: 1px solid #2a2520; padding: 18px 20px; margin-bottom: 32px; }
-        .intake-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px 20px; }
-        .intake-item { font-family: 'DM Sans', sans-serif; font-size: 13px; color: #9a9186; line-height: 1.45; }
-        .intake-label { display: block; font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.12em; color: #c8935a; text-transform: uppercase; margin-bottom: 4px; }
-        .tabs-wrap { display: flex; border-bottom: 1px solid #2a2520; margin-top: 24px; overflow-x: auto; }
-        .tab-btn { padding: 14px 20px; font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; background: none; border: none; border-bottom: 2px solid transparent; cursor: pointer; white-space: nowrap; transition: all 0.2s; color: #5a5448; }
-        .tab-btn.active { border-bottom-color: var(--tab-color); color: var(--tab-color); }
-        .tab-btn:hover:not(.active):not(.locked) { color: #9a9186; }
-        .tab-btn.locked { opacity: 0.3; cursor: default; }
-        .persona-header { padding: 28px 0 20px; border-bottom: 1px solid #2a2520; margin-bottom: 28px; display: flex; align-items: flex-start; gap: 20px; }
-        .persona-badge { width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: 'Cormorant Garamond', serif; font-size: 20px; font-weight: 700; flex-shrink: 0; border: 1px solid var(--badge-border); }
-        .persona-name { font-family: 'Cormorant Garamond', serif; font-size: 26px; font-weight: 700; line-height: 1; }
-        .persona-role { font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; margin-top: 4px; }
-        .persona-tagline { font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 300; color: #9a9186; margin-top: 8px; }
-        .report-content { font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 300; line-height: 1.8; color: #d4cfc7; }
-        .report-title { font-family: 'Cormorant Garamond', serif; font-size: 28px; font-weight: 700; color: #f0ece4; margin: 24px 0 8px; line-height: 1.2; }
-        .section-head { font-family: 'Cormorant Garamond', serif; font-size: 20px; font-weight: 600; color: #f0ece4; margin: 32px 0 10px; letter-spacing: 0.05em; }
-        .section-subhead { font-family: 'Cormorant Garamond', serif; font-size: 16px; font-weight: 600; color: #9a9186; margin: 20px 0 8px; }
-        .report-divider { border: none; border-top: 1px solid #2a2520; margin: 28px 0; }
-        .report-list { padding-left: 20px; margin: 12px 0; }
-        .report-list li { margin-bottom: 8px; line-height: 1.7; }
-        .para { margin-bottom: 12px; }
-        .empty-state { padding: 48px 0; color: #5a5448; font-family: 'DM Sans', sans-serif; }
-        @media (max-width: 720px) {
-          .intake-grid { grid-template-columns: 1fr; }
-        }
-      `}</style>
-
-      <div className="app-wrap">
-        <a className="back-link" href="/dashboard">Back to Dashboard</a>
-
-        {loading ? (
-          <div className="empty-state">Loading report...</div>
-        ) : errorMessage ? (
-          <div className="error-box">
-            <h1>Report could not be loaded.</h1>
-            <p>{errorMessage}</p>
-          </div>
-        ) : !report ? (
-          <div className="empty-state">Report not found.</div>
-        ) : (
-          <>
-            <div className="masthead">
-              <div className="eyebrow">Editorial Council Report</div>
-              <div className="title">{report.title || "Untitled Manuscript"}</div>
-              {report.created_at && <div className="date">{formatDate(report.created_at)}</div>}
-            </div>
-
-            {Object.keys(intake).length > 0 && (
-              <div className="intake-box">
-                <div className="eyebrow">Intake</div>
-                <div className="intake-grid">
-                  <div className="intake-item">
-                    <span className="intake-label">Writing Type</span>
-                    {String(intake.writingType || "Not specified")}
-                  </div>
-                  <div className="intake-item">
-                    <span className="intake-label">Audience</span>
-                    {String(intake.audience || "Not specified")}
-                  </div>
-                  <div className="intake-item">
-                    <span className="intake-label">Preparation Goal</span>
-                    {String(intake.preparationGoal || "Not specified")}
-                  </div>
-                  <div className="intake-item">
-                    <span className="intake-label">Feedback Tone</span>
-                    {String(intake.feedbackTone || "Honest")}
-                  </div>
-                  <div className="intake-item" style={{ gridColumn: "1 / -1" }}>
-                    <span className="intake-label">Biggest Concern</span>
-                    {String(intake.biggestConcern || "Not specified")}
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {Object.keys(savedReports).length === 0 ? (
-              <div className="empty-state">
-                This saved report opened, but no council report content was found.
-              </div>
-            ) : (
-              <>
-                <div className="tabs-wrap">
-                  {PERSONAS.map((p) => (
-                    <button
-                      key={p.key}
-                      className={`tab-btn ${activeTab === p.key ? "active" : ""} ${!savedReports[p.key] ? "locked" : ""}`}
-                      style={{ "--tab-color": p.color } as React.CSSProperties}
-                      onClick={() => savedReports[p.key] && setActiveTab(p.key)}
-                    >
-                      {p.name}{p.key === "finalEditor" ? " *" : ""}
-                    </button>
-                  ))}
-                </div>
-
-                {activePersona && (
-                  <div>
-                    <div className="persona-header">
-                      <div
-                        className="persona-badge"
-                        style={{
-                          background: activePersona.color + "22",
-                          color: activePersona.color,
-                          "--badge-border": activePersona.color + "55",
-                        } as React.CSSProperties}
-                      >
-                        {activePersona.name[0]}
-                      </div>
-
-                      <div>
-                        <div className="persona-name" style={{ color: activePersona.color }}>{activePersona.name}</div>
-                        <div className="persona-role" style={{ color: activePersona.color + "99" }}>{activePersona.role}</div>
-                        <div className="persona-tagline">{activePersona.tagline}</div>
-                      </div>
-                    </div>
-
-                    {activeReport ? (
-                      <div
-                        className="report-content"
-                        dangerouslySetInnerHTML={{ __html: renderMarkdown(activeReport) }}
-                      />
-                    ) : (
-                      <div className="empty-state">No report content found for this council member.</div>
-                    )}
-                  </div>
-                )}
-              </>
-            )}
-          </>
-        )}
-      </div>
-    </div>
+    <p className="mb-5 text-base leading-8 text-zinc-200 md:text-lg md:leading-9">
+      {block.text}
+    </p>
   );
 }
 
+export default function SavedReportPage() {
+  const params = useParams();
+  const id = typeof params?.id === "string" ? params.id : "";
+
+  const [report, setReport] = useState<SavedReport | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+  const [copied, setCopied] = useState(false);
+
+  useEffect(() => {
+    async function loadReport() {
+      try {
+        setLoading(true);
+        setError("");
+
+        if (!id) {
+          throw new Error("Missing report ID.");
+        }
+
+        const supabase = getSupabaseClient();
+
+        const {
+          data: { session },
+        } = await supabase.auth.getSession();
+
+        if (!session) {
+          throw new Error("Log in to view this saved report.");
+        }
+
+        const { data, error: reportError } = await supabase
+          .from("reports")
+          .select("*")
+          .eq("id", id)
+          .single();
+
+        if (reportError) {
+          throw new Error(reportError.message);
+        }
+
+        setReport(data as SavedReport);
+      } catch (err) {
+        const message =
+          err instanceof Error ? err.message : "Could not load report.";
+        setError(message);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    loadReport();
+  }, [id]);
+
+  const reportText = useMemo(() => {
+    if (!report) return "";
+    return renderSections(report);
+  }, [report]);
+
+  const blocks = useMemo(() => parseReportText(reportText), [reportText]);
+
+  const label =
+    report?.report_type === "sphinx"
+      ? "SPHINX SAVED REPORT"
+      : "EDITORIAL COUNCIL REPORT";
+
+  async function copyFullReport() {
+    if (!reportText) return;
+
+    await navigator.clipboard.writeText(reportText);
+    setCopied(true);
+
+    setTimeout(() => {
+      setCopied(false);
+    }, 2000);
+  }
+
+  return (
+    <main className="min-h-screen bg-black px-6 py-12 text-zinc-100">
+      <div className="mx-auto max-w-6xl">
+        <div className="mb-10 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+          <Link
+            href="/dashboard"
+            className="text-xs uppercase tracking-[0.28em] text-zinc-500 hover:text-amber-300"
+          >
+            Back to Dashboard
+          </Link>
+
+          <div className="flex gap-3">
+            <Link
+              href="/sphinx"
+              className="rounded-full border border-amber-400/40 px-5 py-3 text-xs font-black uppercase tracking-[0.2em] text-amber-300 hover:bg-amber-400 hover:text-black"
+            >
+              Open Sphinx
+            </Link>
+
+            <button
+              onClick={copyFullReport}
+              disabled={!reportText}
+              className="rounded-full border border-zinc-700 px-5 py-3 text-xs font-black uppercase tracking-[0.2em] text-zinc-300 hover:border-zinc-400 hover:text-white disabled:cursor-not-allowed disabled:opacity-40"
+            >
+              {copied ? "Copied" : "Copy Report"}
+            </button>
+          </div>
+        </div>
+
+        <section className="mb-10 rounded-3xl border border-zinc-800 bg-zinc-950/70 p-8 shadow-2xl">
+          <p className="mb-4 text-xs font-semibold uppercase tracking-[0.35em] text-amber-400">
+            {label}
+          </p>
+
+          <h1 className="max-w-5xl font-serif text-4xl font-black tracking-tight text-zinc-100 md:text-6xl">
+            {report?.title || "Saved Report"}
+          </h1>
+
+          {report?.created_at && (
+            <p className="mt-6 font-mono text-sm text-zinc-500">
+              {formatDate(report.created_at)}
+            </p>
+          )}
+        </section>
+
+        {loading && (
+          <div className="rounded-3xl border border-zinc-800 bg-zinc-950 p-8 text-zinc-400">
+            Loading saved report...
+          </div>
+        )}
+
+        {error && (
+          <div className="rounded-3xl border border-red-900 bg-red-950/40 p-8 text-red-200">
+            {error}
+          </div>
+        )}
+
+        {!loading && !error && reportText && (
+          <article className="rounded-3xl border border-zinc-800 bg-zinc-950 p-7 shadow-2xl md:p-10">
+            <div className="mx-auto max-w-4xl">
+              {blocks.map((block, index) => (
+                <ReportBlock key={`${block.type}-${index}`} block={block} />
+              ))}
+            </div>
+          </article>
+        )}
+
+        {!loading && !error && !reportText && (
+          <div className="rounded-3xl border border-zinc-800 bg-zinc-950 p-8 text-zinc-400">
+            This saved report opened, but no report content was found.
+          </div>
+        )}
+      </div>
+    </main>
+  );
+}

@@ -1,6 +1,7 @@
 ﻿"use client";
 
 import { useState } from "react";
+import { createClient } from "@supabase/supabase-js";
 
 const modes = [
   { value: "GENERAL", label: "General Human Cleanup" },
@@ -44,15 +45,32 @@ function extractSection(
   return remaining.slice(0, endIndex).trim();
 }
 
+function getSupabaseClient() {
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+  if (!supabaseUrl || !supabaseAnonKey) {
+    throw new Error(
+      "Missing Supabase browser settings. Check NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY."
+    );
+  }
+
+  return createClient(supabaseUrl, supabaseAnonKey);
+}
+
 export default function SphinxPage() {
+  const [title, setTitle] = useState("");
   const [text, setText] = useState("");
   const [mode, setMode] = useState("GENERAL");
   const [strictness, setStrictness] = useState("BRUTAL");
   const [report, setReport] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [saving, setSaving] = useState(false);
   const [copied, setCopied] = useState("");
   const [strongerVersion, setStrongerVersion] = useState("");
+  const [savedId, setSavedId] = useState("");
+  const [saveMessage, setSaveMessage] = useState("");
 
   async function runSphinx() {
     setLoading(true);
@@ -60,6 +78,8 @@ export default function SphinxPage() {
     setReport("");
     setCopied("");
     setStrongerVersion("");
+    setSavedId("");
+    setSaveMessage("");
 
     try {
       const response = await fetch("/api/sphinx", {
@@ -77,10 +97,11 @@ export default function SphinxPage() {
       }
 
       const nextReport = data.report || "";
-      const nextStrongerVersion = extractSection(nextReport, "## 6. Stronger Version", [
-        "## 7. What Changed",
-        "## 8. Final Sphinx Verdict",
-      ]);
+      const nextStrongerVersion = extractSection(
+        nextReport,
+        "## 6. Stronger Version",
+        ["## 7. What Changed", "## 8. Final Sphinx Verdict"]
+      );
 
       setReport(nextReport);
       setStrongerVersion(nextStrongerVersion);
@@ -90,6 +111,60 @@ export default function SphinxPage() {
       setError(message);
     } finally {
       setLoading(false);
+    }
+  }
+
+  async function saveSphinxReport() {
+    if (!report) return;
+
+    setSaving(true);
+    setError("");
+    setSaveMessage("");
+
+    try {
+      const supabase = getSupabaseClient();
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+
+      if (!session?.access_token) {
+        throw new Error("Log in before saving a Sphinx report.");
+      }
+
+      const response = await fetch("/api/sphinx/save", {
+        method: "POST",
+        headers: {
+          "content-type": "application/json",
+          authorization: `Bearer ${session.access_token}`,
+        },
+        body: JSON.stringify({
+          title,
+          text,
+          report,
+          strongerVersion,
+          mode,
+          strictness,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+              const saveErrorMessage = data.details
+        ? `${data.error || "Could not save Sphinx report."} Details: ${data.details}`
+        : data.error || "Could not save Sphinx report.";
+
+      throw new Error(saveErrorMessage);
+      }
+
+      setSavedId(data.id || "");
+      setSaveMessage("Saved to your reports.");
+    } catch (err) {
+      const message =
+        err instanceof Error ? err.message : "Something went wrong while saving.";
+      setError(message);
+    } finally {
+      setSaving(false);
     }
   }
 
@@ -116,11 +191,14 @@ export default function SphinxPage() {
   }
 
   function clearAll() {
+    setTitle("");
     setText("");
     setReport("");
     setError("");
     setCopied("");
     setStrongerVersion("");
+    setSavedId("");
+    setSaveMessage("");
   }
 
   return (
@@ -154,6 +232,13 @@ export default function SphinxPage() {
                 application responses.
               </p>
             </div>
+
+            <input
+              value={title}
+              onChange={(event) => setTitle(event.target.value)}
+              placeholder="Optional title for saved report"
+              className="mb-4 w-full rounded-2xl border border-zinc-700 bg-zinc-950 p-4 text-base text-zinc-100 outline-none placeholder:text-zinc-600 focus:border-amber-400"
+            />
 
             <div className="mb-4 grid gap-3 md:grid-cols-2">
               <label className="block">
@@ -228,6 +313,23 @@ export default function SphinxPage() {
                 {error}
               </div>
             )}
+
+            {saveMessage && (
+              <div className="mt-4 rounded-2xl border border-green-900 bg-green-950/40 p-4 text-sm text-green-200">
+                {saveMessage}
+                {savedId && (
+                  <>
+                    {" "}
+                    <a
+                      href={`/reports/${savedId}`}
+                      className="font-bold text-amber-300 underline"
+                    >
+                      Open saved report
+                    </a>
+                  </>
+                )}
+              </div>
+            )}
           </div>
 
           <div className="rounded-3xl border border-zinc-800 bg-zinc-900 p-6 shadow-xl">
@@ -242,6 +344,15 @@ export default function SphinxPage() {
               </div>
 
               <div className="flex flex-wrap gap-3">
+                <button
+                  onClick={saveSphinxReport}
+                  disabled={!report || saving}
+                  type="button"
+                  className="rounded-xl border border-zinc-700 px-4 py-3 text-sm font-semibold text-zinc-300 hover:border-green-400 hover:text-green-300 disabled:cursor-not-allowed disabled:opacity-50"
+                >
+                  {saving ? "Saving..." : "Save Report"}
+                </button>
+
                 <button
                   onClick={copyStrongerVersion}
                   disabled={!strongerVersion}
@@ -301,3 +412,4 @@ export default function SphinxPage() {
     </main>
   );
 }
+
