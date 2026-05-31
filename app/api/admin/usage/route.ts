@@ -3,7 +3,7 @@ import { createClient } from "@supabase/supabase-js";
 
 export const runtime = "nodejs";
 
-const ADMIN_EMAILS = (process.env.ADMIN_EMAILS || "trmitchell95@gmail.com")
+const ADMIN_EMAILS = (process.env.ADMIN_EMAILS || "")
   .split(",")
   .map((email) => email.trim().toLowerCase())
   .filter(Boolean);
@@ -64,6 +64,13 @@ export async function GET(req: NextRequest) {
     }
 
     const email = user.email.toLowerCase();
+
+    if (ADMIN_EMAILS.length === 0) {
+      return NextResponse.json(
+        { error: "ADMIN_EMAILS is not configured." },
+        { status: 500 }
+      );
+    }
 
     if (!ADMIN_EMAILS.includes(email)) {
       return NextResponse.json(
@@ -128,3 +135,4 @@ export async function GET(req: NextRequest) {
     );
   }
 }
+

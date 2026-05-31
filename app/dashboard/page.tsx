@@ -8,7 +8,10 @@ const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 );
 
-const ADMIN_EMAILS = ["trmitchell95@gmail.com"];
+const ADMIN_EMAILS = (process.env.NEXT_PUBLIC_ADMIN_EMAILS || "")
+  .split(",")
+  .map((email) => email.trim().toLowerCase())
+  .filter(Boolean);
 
 type Intake = {
   writingType?: string | null;
@@ -922,6 +925,7 @@ export default function Dashboard() {
     </main>
   );
 }
+
 
 
 
