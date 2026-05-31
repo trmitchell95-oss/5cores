@@ -69,10 +69,23 @@ export default function RootLayout({
               }
             }
           `}</style>
+                  <style>{`
+            /* mobile-hide-floating-sphinx */
+            @media (max-width: 720px) {
+              a[href="/sphinx"][class*="fixed"],
+              a[href="/sphinx"][class*="floating"],
+              .floating-sphinx,
+              .sphinx-floating,
+              .sphinx-float {
+                display: none !important;
+              }
+            }
+          `}</style>
         </body>
     </html>
   );
 }
+
 
 
 
