@@ -537,6 +537,10 @@ export default function AdminUsagePage() {
               Sphinx
             </Link>
 
+            <Link href="/admin/feedback" className="nav-link">
+              Feedback
+            </Link>
+
             <button
               className="refresh-btn"
               type="button"
@@ -721,4 +725,8 @@ export default function AdminUsagePage() {
     </main>
   );
 }
+
+
+
+
 
