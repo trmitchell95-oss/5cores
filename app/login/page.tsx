@@ -12,6 +12,7 @@ export default function LoginPage() {
   const [mode, setMode] = useState<"signin" | "signup" | "forgot">("signin");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
@@ -113,6 +114,7 @@ export default function LoginPage() {
     setError("");
     setMessage("");
     setPassword("");
+    setShowPassword(false);
   }
 
   return (
@@ -236,6 +238,35 @@ export default function LoginPage() {
 
         .input:focus {
           border-color: #c8935a;
+        }
+
+        .password-wrap {
+          position: relative;
+        }
+
+        .password-wrap .input {
+          padding-right: 86px;
+        }
+
+        .password-toggle {
+          position: absolute;
+          right: 8px;
+          top: 50%;
+          transform: translateY(-50%);
+          border: 1px solid #2a2520;
+          background: #161410;
+          color: #c8935a;
+          font-family: 'IBM Plex Mono', monospace;
+          font-size: 10px;
+          letter-spacing: 0.08em;
+          text-transform: uppercase;
+          padding: 8px 10px;
+          cursor: pointer;
+        }
+
+        .password-toggle:hover {
+          border-color: #c8935a;
+          color: #f0ece4;
         }
 
         .button {
@@ -363,14 +394,25 @@ export default function LoginPage() {
             {mode !== "forgot" && (
               <div className="field">
                 <label className="label">Password</label>
-                <input
-                  className="input"
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  disabled={loading}
-                  placeholder="Minimum 6 characters"
-                />
+                <div className="password-wrap">
+                  <input
+                    className="input"
+                    type={showPassword ? "text" : "password"}
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    disabled={loading}
+                    placeholder="Minimum 6 characters"
+                  />
+                  <button
+                    className="password-toggle"
+                    type="button"
+                    onClick={() => setShowPassword((current) => !current)}
+                    disabled={loading}
+                    aria-label={showPassword ? "Hide password" : "Show password"}
+                  >
+                    {showPassword ? "Hide" : "Show"}
+                  </button>
+                </div>
               </div>
             )}
 
@@ -416,3 +458,4 @@ export default function LoginPage() {
     </div>
   );
 }
+

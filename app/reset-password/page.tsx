@@ -11,6 +11,8 @@ const supabase = createClient(
 export default function ResetPasswordPage() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [checking, setChecking] = useState(true);
   const [hasSession, setHasSession] = useState(false);
@@ -172,6 +174,35 @@ export default function ResetPasswordPage() {
           border-color: #c8935a;
         }
 
+        .password-wrap {
+          position: relative;
+        }
+
+        .password-wrap .input {
+          padding-right: 86px;
+        }
+
+        .password-toggle {
+          position: absolute;
+          right: 8px;
+          top: 50%;
+          transform: translateY(-50%);
+          border: 1px solid #2a2520;
+          background: #161410;
+          color: #c8935a;
+          font-family: 'IBM Plex Mono', monospace;
+          font-size: 10px;
+          letter-spacing: 0.08em;
+          text-transform: uppercase;
+          padding: 8px 10px;
+          cursor: pointer;
+        }
+
+        .password-toggle:hover {
+          border-color: #c8935a;
+          color: #f0ece4;
+        }
+
         .button {
           width: 100%;
           margin-top: 8px;
@@ -233,26 +264,48 @@ export default function ResetPasswordPage() {
             <form onSubmit={handleReset}>
               <div className="field">
                 <label className="label">New Password</label>
-                <input
-                  className="input"
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  disabled={loading}
-                  placeholder="Minimum 6 characters"
-                />
+                <div className="password-wrap">
+                  <input
+                    className="input"
+                    type={showPassword ? "text" : "password"}
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    disabled={loading}
+                    placeholder="Minimum 6 characters"
+                  />
+                  <button
+                    className="password-toggle"
+                    type="button"
+                    onClick={() => setShowPassword((current) => !current)}
+                    disabled={loading}
+                    aria-label={showPassword ? "Hide password" : "Show password"}
+                  >
+                    {showPassword ? "Hide" : "Show"}
+                  </button>
+                </div>
               </div>
 
               <div className="field">
                 <label className="label">Confirm New Password</label>
-                <input
-                  className="input"
-                  type="password"
-                  value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
-                  disabled={loading}
-                  placeholder="Retype password"
-                />
+                <div className="password-wrap">
+                  <input
+                    className="input"
+                    type={showConfirmPassword ? "text" : "password"}
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    disabled={loading}
+                    placeholder="Retype password"
+                  />
+                  <button
+                    className="password-toggle"
+                    type="button"
+                    onClick={() => setShowConfirmPassword((current) => !current)}
+                    disabled={loading}
+                    aria-label={showConfirmPassword ? "Hide confirm password" : "Show confirm password"}
+                  >
+                    {showConfirmPassword ? "Hide" : "Show"}
+                  </button>
+                </div>
               </div>
 
               <button className="button" type="submit" disabled={loading}>
@@ -268,3 +321,4 @@ export default function ResetPasswordPage() {
     </div>
   );
 }
+
