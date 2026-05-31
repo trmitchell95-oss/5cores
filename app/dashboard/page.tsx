@@ -8,6 +8,8 @@ const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 );
 
+const ADMIN_EMAILS = ["trmitchell95@gmail.com"];
+
 type Intake = {
   writingType?: string | null;
   audience?: string | null;
@@ -103,6 +105,9 @@ export default function Dashboard() {
   const latestReport = reports[0];
   const latestIntake = latestReport ? parseIntake(latestReport.intake) : {};
   const reportLabel = getReportLabel(reports.length);
+  const isAdmin = Boolean(
+    user?.email && ADMIN_EMAILS.includes(user.email.toLowerCase())
+  );
 
   return (
     <main className="dashboard-shell">
@@ -206,6 +211,7 @@ export default function Dashboard() {
           white-space: nowrap;
         }
 
+        .admin-btn,
         .signout-btn {
           font-family: 'IBM Plex Mono', monospace;
           font-size: 11px;
@@ -217,11 +223,21 @@ export default function Dashboard() {
           padding: 10px 13px;
           cursor: pointer;
           text-transform: uppercase;
+          text-decoration: none;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
         }
 
+        .admin-btn:hover,
         .signout-btn:hover {
           color: #f0ece4;
           border-color: #6b6560;
+        }
+
+        .admin-btn {
+          color: #c8a96e;
+          border-color: #3a3020;
         }
 
         .hero-grid {
@@ -712,6 +728,11 @@ export default function Dashboard() {
 
           <div className="user-row">
             {user?.email && <span className="user-email">{user.email}</span>}
+            {isAdmin && (
+              <a className="admin-btn" href="/admin/usage">
+                Admin Usage
+              </a>
+            )}
             <button className="signout-btn" onClick={handleSignOut}>
               Sign Out
             </button>
@@ -898,3 +919,4 @@ export default function Dashboard() {
     </main>
   );
 }
+
