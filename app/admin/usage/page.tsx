@@ -19,10 +19,26 @@ type UsageEvent = {
   meta: Record<string, unknown> | null;
 };
 
+type AdminUser = {
+  id: string;
+  email: string;
+  created_at: string | null;
+  last_sign_in_at: string | null;
+  lastActivityAt: string | null;
+  reportCount: number;
+  councilRuns: number;
+  sphinxRuns: number;
+  sphinxSaveRuns: number;
+  problemCount: number;
+};
+
 type UsageSummary = {
   totalEvents: number;
+  aggregateEventCount: number;
   totalInputChars: number;
   totalInputWords: number;
+  totalUsers: number;
+  totalReports: number;
   byTool: Record<string, number>;
   byStatus: Record<string, number>;
   lastEventAt: string | null;
@@ -31,6 +47,7 @@ type UsageSummary = {
 type UsageResponse = {
   adminEmail: string;
   summary: UsageSummary;
+  users: AdminUser[];
   events: UsageEvent[];
 };
 
@@ -133,6 +150,7 @@ export default function AdminUsagePage() {
   }, []);
 
   const events = data?.events || [];
+  const users = data?.users || [];
   const summary = data?.summary;
 
   const recentFailures = useMemo(() => {
@@ -140,6 +158,10 @@ export default function AdminUsagePage() {
       (event) => event.status === "failed" || event.status === "rejected"
     ).length;
   }, [events]);
+
+  const activeUsers = useMemo(() => {
+    return users.filter((user) => user.lastActivityAt).length;
+  }, [users]);
 
   return (
     <main className="admin-shell">
@@ -166,7 +188,7 @@ export default function AdminUsagePage() {
         }
 
         .wrap {
-          max-width: 1220px;
+          max-width: 1240px;
           margin: 0 auto;
           padding: 34px 24px 90px;
         }
@@ -283,7 +305,7 @@ export default function AdminUsagePage() {
 
         .summary-grid {
           display: grid;
-          grid-template-columns: repeat(4, minmax(0, 1fr));
+          grid-template-columns: repeat(6, minmax(0, 1fr));
           gap: 14px;
           margin-bottom: 22px;
         }
@@ -307,7 +329,7 @@ export default function AdminUsagePage() {
 
         .card-value {
           font-family: 'Cormorant Garamond', serif;
-          font-size: 36px;
+          font-size: 34px;
           line-height: 1;
           font-weight: 700;
         }
@@ -324,6 +346,7 @@ export default function AdminUsagePage() {
           background: rgba(18, 16, 13, 0.92);
           border-radius: 28px;
           padding: 22px;
+          margin-bottom: 22px;
         }
 
         .panel-head {
@@ -382,6 +405,11 @@ export default function AdminUsagePage() {
         .mono {
           font-family: 'IBM Plex Mono', monospace;
           font-size: 11px;
+        }
+
+        .email-cell {
+          color: #f0ece4;
+          font-weight: 700;
         }
 
         .status {
@@ -449,9 +477,15 @@ export default function AdminUsagePage() {
           margin-bottom: 22px;
         }
 
-        @media (max-width: 900px) {
+        @media (max-width: 1100px) {
           .summary-grid {
-            grid-template-columns: repeat(2, minmax(0, 1fr));
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+          }
+        }
+
+        @media (max-width: 700px) {
+          .summary-grid {
+            grid-template-columns: 1fr;
           }
         }
 
@@ -463,10 +497,6 @@ export default function AdminUsagePage() {
           .topbar,
           .panel-head {
             flex-direction: column;
-          }
-
-          .summary-grid {
-            grid-template-columns: 1fr;
           }
 
           .hero,
@@ -522,9 +552,9 @@ export default function AdminUsagePage() {
           <div className="eyebrow">Usage Dashboard</div>
           <h1 className="title">The speedometer.</h1>
           <p className="subtitle">
-            Recent usage events across 5 CORE, Sphinx, and saved Sphinx reports.
-            This is the hidden mechanic panel so you can see what the app is doing
-            without digging through Supabase like a raccoon in a crawlspace.
+            Recent usage events, beta users, saved reports, and problem counts.
+            This tells you who is driving the truck, how hard they are pushing it,
+            and whether anything is coughing smoke.
           </p>
         </section>
 
@@ -535,15 +565,27 @@ export default function AdminUsagePage() {
         {summary && (
           <section className="summary-grid">
             <div className="card">
+              <div className="card-label">Beta Users</div>
+              <div className="card-value">{formatNumber(summary.totalUsers)}</div>
+              <div className="card-note">{formatNumber(activeUsers)} active users found.</div>
+            </div>
+
+            <div className="card">
+              <div className="card-label">Saved Reports</div>
+              <div className="card-value">{formatNumber(summary.totalReports)}</div>
+              <div className="card-note">Reports currently stored.</div>
+            </div>
+
+            <div className="card">
               <div className="card-label">Recent Events</div>
               <div className="card-value">{formatNumber(summary.totalEvents)}</div>
-              <div className="card-note">Last 100 usage events.</div>
+              <div className="card-note">Last 100 usage events shown below.</div>
             </div>
 
             <div className="card">
               <div className="card-label">Input Chars</div>
               <div className="card-value">{formatNumber(summary.totalInputChars)}</div>
-              <div className="card-note">Total characters in recent events.</div>
+              <div className="card-note">From last {formatNumber(summary.aggregateEventCount)} events.</div>
             </div>
 
             <div className="card">
@@ -561,68 +603,115 @@ export default function AdminUsagePage() {
         )}
 
         {!loading && data && (
-          <section className="panel">
-            <div className="panel-head">
-              <div>
-                <div className="panel-title">Recent usage events</div>
-                <div className="panel-note">
-                  Admin: {data.adminEmail} • Last event:{" "}
-                  {formatDate(data.summary.lastEventAt)}
+          <>
+            <section className="panel">
+              <div className="panel-head">
+                <div>
+                  <div className="panel-title">Beta users</div>
+                  <div className="panel-note">
+                    Admin: {data.adminEmail} • Users loaded:{" "}
+                    {formatNumber(users.length)}
+                  </div>
                 </div>
               </div>
-            </div>
 
-            <div className="table-wrap">
-              <table>
-                <thead>
-                  <tr>
-                    <th>Time</th>
-                    <th>Tool</th>
-                    <th>Status</th>
-                    <th>Size</th>
-                    <th>Model</th>
-                    <th>Title</th>
-                    <th>Report</th>
-                    <th>Error</th>
-                  </tr>
-                </thead>
-
-                <tbody>
-                  {events.map((event) => (
-                    <tr key={event.id}>
-                      <td className="mono">{formatDate(event.created_at)}</td>
-                      <td>{toolLabel(event.tool)}</td>
-                      <td>
-                        <span className={statusClass(event.status)}>
-                          {event.status}
-                        </span>
-                      </td>
-                      <td className="mono">
-                        {formatNumber(event.input_chars)} chars
-                        <br />
-                        {formatNumber(event.input_words)} words
-                      </td>
-                      <td className="mono">{event.model || "None"}</td>
-                      <td>{event.title || "Untitled"}</td>
-                      <td>
-                        {event.report_id ? (
-                          <a
-                            className="report-link"
-                            href={`/reports/${event.report_id}`}
-                          >
-                            Open
-                          </a>
-                        ) : (
-                          <span className="mono">None</span>
-                        )}
-                      </td>
-                      <td>{event.error_message || ""}</td>
+              <div className="table-wrap">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Email</th>
+                      <th>Created</th>
+                      <th>Last Sign-In</th>
+                      <th>Last Activity</th>
+                      <th>Reports</th>
+                      <th>5 CORE</th>
+                      <th>Sphinx</th>
+                      <th>Sphinx Saves</th>
+                      <th>Problems</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </section>
+                  </thead>
+
+                  <tbody>
+                    {users.map((user) => (
+                      <tr key={user.id}>
+                        <td className="email-cell">{user.email}</td>
+                        <td className="mono">{formatDate(user.created_at)}</td>
+                        <td className="mono">{formatDate(user.last_sign_in_at)}</td>
+                        <td className="mono">{formatDate(user.lastActivityAt)}</td>
+                        <td className="mono">{formatNumber(user.reportCount)}</td>
+                        <td className="mono">{formatNumber(user.councilRuns)}</td>
+                        <td className="mono">{formatNumber(user.sphinxRuns)}</td>
+                        <td className="mono">{formatNumber(user.sphinxSaveRuns)}</td>
+                        <td className="mono">{formatNumber(user.problemCount)}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </section>
+
+            <section className="panel">
+              <div className="panel-head">
+                <div>
+                  <div className="panel-title">Recent usage events</div>
+                  <div className="panel-note">
+                    Last event: {formatDate(data.summary.lastEventAt)}
+                  </div>
+                </div>
+              </div>
+
+              <div className="table-wrap">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Time</th>
+                      <th>Tool</th>
+                      <th>Status</th>
+                      <th>Size</th>
+                      <th>Model</th>
+                      <th>Title</th>
+                      <th>Report</th>
+                      <th>Error</th>
+                    </tr>
+                  </thead>
+
+                  <tbody>
+                    {events.map((event) => (
+                      <tr key={event.id}>
+                        <td className="mono">{formatDate(event.created_at)}</td>
+                        <td>{toolLabel(event.tool)}</td>
+                        <td>
+                          <span className={statusClass(event.status)}>
+                            {event.status}
+                          </span>
+                        </td>
+                        <td className="mono">
+                          {formatNumber(event.input_chars)} chars
+                          <br />
+                          {formatNumber(event.input_words)} words
+                        </td>
+                        <td className="mono">{event.model || "None"}</td>
+                        <td>{event.title || "Untitled"}</td>
+                        <td>
+                          {event.report_id ? (
+                            <a
+                              className="report-link"
+                              href={`/reports/${event.report_id}`}
+                            >
+                              Open
+                            </a>
+                          ) : (
+                            <span className="mono">None</span>
+                          )}
+                        </td>
+                        <td>{event.error_message || ""}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </section>
+          </>
         )}
       </div>
     </main>
