@@ -235,6 +235,7 @@ export default function SubmitPage() {
   const [submissionId, setSubmissionId] = useState("");
   const [userId, setUserId] = useState<string | null>(null);
   const [fileName, setFileName] = useState("");
+  const [runningSeconds, setRunningSeconds] = useState(0);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const words = countWords(manuscript);
@@ -259,6 +260,18 @@ export default function SubmitPage() {
     checkAuth();
   }, []);
 
+  useEffect(() => {
+    if (!loading) {
+      setRunningSeconds(0);
+      return;
+    }
+
+    const timer = setInterval(() => {
+      setRunningSeconds((seconds) => seconds + 1);
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, [loading]);
   async function handleFileUpload(event: React.ChangeEvent<HTMLInputElement>) {
     const file = event.target.files?.[0];
 
@@ -814,6 +827,63 @@ export default function SubmitPage() {
           color: #f0a0a0;
         }
 
+        .running-panel {
+          position: relative;
+          overflow: hidden;
+        }
+
+        .running-panel::after {
+          content: "";
+          position: absolute;
+          inset: 0;
+          pointer-events: none;
+          background: linear-gradient(90deg, transparent, rgba(200, 147, 90, 0.05), transparent);
+          animation: run-sheen 2.8s linear infinite;
+        }
+
+        @keyframes run-sheen {
+          0% {
+            transform: translateX(-100%);
+          }
+
+          100% {
+            transform: translateX(100%);
+          }
+        }
+
+        .run-spinner {
+          width: 46px;
+          height: 46px;
+          border-radius: 50%;
+          border: 4px solid #302a24;
+          border-top-color: #c8935a;
+          animation: spin 0.9s linear infinite;
+          margin-bottom: 16px;
+        }
+
+        @keyframes spin {
+          to {
+            transform: rotate(360deg);
+          }
+        }
+
+        .status-subtext {
+          margin-top: 10px;
+          color: #8f867b;
+          font-size: 13px;
+          line-height: 1.5;
+        }
+
+        .slow-note {
+          margin-top: 12px;
+          padding: 12px;
+          border: 1px solid #4a3520;
+          background: #1a130c;
+          border-radius: 13px;
+          color: #d8b072;
+          font-size: 12px;
+          line-height: 1.5;
+        }
         .status-bar {
           margin-top: 22px;
           padding: 18px;
@@ -1104,7 +1174,7 @@ export default function SubmitPage() {
       `}</style>
 
       <div className="app-wrap">
-        <nav className="top-nav">
+                <nav className="top-nav">
           <a className="back-link" href="/dashboard">
             Back to Dashboard
           </a>
@@ -1113,12 +1183,7 @@ export default function SubmitPage() {
             <a className="back-link" href="/beta-terms">
               Beta Terms
             </a>
-            <div className="top-nav-actions">
-            <a className="back-link" href="/beta-terms">
-              Beta Terms
-            </a>
             <div className="nav-pill">New Diagnosis Flow</div>
-          </div>
           </div>
         </nav>
 
@@ -1200,7 +1265,7 @@ export default function SubmitPage() {
                     onClick={runCouncil}
                     disabled={!readyToRun}
                   >
-                    {loading ? "Running..." : "Run Diagnosis"}
+                    {loading ? `Running... ${runningSeconds}s` : "Run Diagnosis"}
                   </button>
 
                   <button
@@ -1217,11 +1282,24 @@ export default function SubmitPage() {
 
                 {error && <div className="error-msg">{error}</div>}
               </div>
-
               {loading && (
-                <div className="panel">
+                <div className="panel running-panel">
+                  <div className="run-spinner" />
+
                   <div className="status-bar">
-                    <div className="status-text">{statusMsg}</div>
+                    <div className="status-text">
+                      {statusMsg || "The council is working..."}
+                    </div>
+
+                    <div className="status-subtext">
+                      Running for {runningSeconds}s. Do not refresh, do not click away, and do not feed it another manuscript while the council is chewing.
+                    </div>
+
+                    {runningSeconds >= 35 && (
+                      <div className="slow-note">
+                        Larger excerpts can take a little while. If this fails, the app should show an error instead of pretending nothing happened.
+                      </div>
+                    )}
                   </div>
 
                   <div className="council-label">Council Status</div>
@@ -1477,6 +1555,7 @@ export default function SubmitPage() {
     </main>
   );
 }
+
 
 
 

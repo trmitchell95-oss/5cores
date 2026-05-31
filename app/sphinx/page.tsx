@@ -15,6 +15,14 @@ const modes = [
 ];
 
 const SPHINX_MAX_CHARS = 10000;
+const SPHINX_STATUS_MESSAGES = [
+  "Sphinx is sniffing for robot perfume...",
+  "Checking for fake polish...",
+  "Looking for corporate filler...",
+  "Testing whether the voice still has a pulse...",
+  "Separating human grit from machine gloss...",
+  "Preparing the cleaner version...",
+];
 
 const strictnessOptions = [
   { value: "STANDARD", label: "Standard" },
@@ -236,6 +244,8 @@ export default function SphinxPage() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [checkingLogin, setCheckingLogin] = useState(true);
   const [uploadedFileName, setUploadedFileName] = useState("");
+  const [loadingMessage, setLoadingMessage] = useState("");
+  const [loadingSeconds, setLoadingSeconds] = useState(0);
 
   const tooLong = text.trim().length > SPHINX_MAX_CHARS;
   const canRunSphinx = text.trim().length >= 20 && !tooLong && !loading;
@@ -259,6 +269,24 @@ export default function SphinxPage() {
     checkLogin();
   }, []);
 
+  useEffect(() => {
+    if (!loading) {
+      setLoadingMessage("");
+      setLoadingSeconds(0);
+      return;
+    }
+
+    let index = 0;
+    setLoadingMessage(SPHINX_STATUS_MESSAGES[0]);
+
+    const timer = setInterval(() => {
+      index = (index + 1) % SPHINX_STATUS_MESSAGES.length;
+      setLoadingMessage(SPHINX_STATUS_MESSAGES[index]);
+      setLoadingSeconds((seconds) => seconds + 1);
+    }, 2500);
+
+    return () => clearInterval(timer);
+  }, [loading]);
   async function handleFileUpload(event: ChangeEvent<HTMLInputElement>) {
     const file = event.target.files?.[0];
 
@@ -538,6 +566,7 @@ export default function SphinxPage() {
                     type="file"
                     accept=".txt,.md,.docx,text/plain,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
                     onChange={handleFileUpload}
+                    disabled={loading}
                     className="hidden"
                   />
                 </label>
@@ -730,6 +759,7 @@ export default function SphinxPage() {
     </main>
   );
 }
+
 
 
 
