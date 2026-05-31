@@ -12,6 +12,7 @@ export default function LoginPage() {
   const [mode, setMode] = useState<"signin" | "signup" | "forgot">("signin");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [inviteCode, setInviteCode] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
@@ -86,23 +87,44 @@ export default function LoginPage() {
         }
 
         window.location.href = "/dashboard";
-      } else {
-        const { error } = await supabase.auth.signUp({
+        return;
+      }
+
+      if (!inviteCode.trim()) {
+        setError("Enter the beta invite code.");
+        setLoading(false);
+        return;
+      }
+
+      const response = await fetch("/api/auth/signup", {
+        method: "POST",
+        headers: {
+          "content-type": "application/json",
+        },
+        body: JSON.stringify({
           email: email.trim(),
           password,
-        });
+          inviteCode,
+        }),
+      });
 
-        if (error) {
-          setError(error.message);
-          setLoading(false);
-          return;
-        }
+      const data = await response.json();
 
-        setMessage("Account created. Check your email if confirmation is required, then sign in.");
-        setMode("signin");
-        setPassword("");
+      if (!response.ok) {
+        setError(data.error || "Could not create account.");
         setLoading(false);
+        return;
       }
+
+      setMessage(
+        data.message ||
+          "Account created. Check your email if confirmation is required, then sign in."
+      );
+      setMode("signin");
+      setPassword("");
+      setInviteCode("");
+      setShowPassword(false);
+      setLoading(false);
     } catch {
       setError("Something went wrong. Try again.");
       setLoading(false);
@@ -114,6 +136,7 @@ export default function LoginPage() {
     setError("");
     setMessage("");
     setPassword("");
+    setInviteCode("");
     setShowPassword(false);
   }
 
@@ -269,6 +292,14 @@ export default function LoginPage() {
           color: #f0ece4;
         }
 
+        .invite-help {
+          font-family: 'DM Sans', sans-serif;
+          font-size: 12px;
+          color: #6b6560;
+          line-height: 1.45;
+          margin-top: 7px;
+        }
+
         .button {
           width: 100%;
           margin-top: 8px;
@@ -370,7 +401,9 @@ export default function LoginPage() {
           <div className="subtitle">
             {mode === "forgot"
               ? "Enter your email and we will send you a password reset link."
-              : "Sign in to submit manuscripts, run the council, and reopen saved reports."}
+              : mode === "signup"
+                ? "Create a beta account with your invite code."
+                : "Sign in to submit manuscripts, run the council, and reopen saved reports."}
           </div>
 
           {mode !== "forgot" && (
@@ -431,6 +464,23 @@ export default function LoginPage() {
               </div>
             )}
 
+            {mode === "signup" && (
+              <div className="field">
+                <label className="label">Beta Invite Code</label>
+                <input
+                  className="input"
+                  type="text"
+                  value={inviteCode}
+                  onChange={(e) => setInviteCode(e.target.value)}
+                  disabled={loading}
+                  placeholder="Enter invite code"
+                />
+                <div className="invite-help">
+                  New beta accounts require an invite code. Existing users can still sign in normally.
+                </div>
+              </div>
+            )}
+
             <button className="button" type="submit" disabled={loading}>
               {loading
                 ? "Working..."
@@ -466,7 +516,7 @@ export default function LoginPage() {
           {message && <div className="message">{message}</div>}
 
           <div className="note">
-            Beta access is free for now. Each account keeps its own dashboard and saved report history.
+            Beta access is free for now. New accounts require an invite code. Each account keeps its own dashboard and saved report history.
             <br />
             <a className="terms-link" href="/beta-terms">Beta Terms / Privacy</a>
           </div>
@@ -475,6 +525,3 @@ export default function LoginPage() {
     </div>
   );
 }
-
-
-
