@@ -137,7 +137,7 @@ export async function GET(req: NextRequest) {
         );
       }
 
-      rows = (data || []) as ExportRow[];
+      rows = (data || []) as unknown as ExportRow[];
     } else if (type === "feedback") {
       headers = [
         "created_at",
@@ -165,7 +165,7 @@ export async function GET(req: NextRequest) {
         );
       }
 
-      rows = (data || []) as ExportRow[];
+      rows = (data || []) as unknown as ExportRow[];
     } else if (type === "invites") {
       headers = [
         "created_at",
@@ -193,7 +193,7 @@ export async function GET(req: NextRequest) {
         );
       }
 
-      rows = (data || []) as ExportRow[];
+      rows = (data || []) as unknown as ExportRow[];
     } else {
       return NextResponse.json(
         { error: "Invalid export type. Use usage, feedback, or invites." },
@@ -222,3 +222,4 @@ export async function GET(req: NextRequest) {
     );
   }
 }
+
