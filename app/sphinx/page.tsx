@@ -48,6 +48,87 @@ function extractSection(
   return remaining.slice(0, endIndex).trim();
 }
 
+function escapeHtml(value: string) {
+  return value
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
+function renderSphinxInline(value: string) {
+  return escapeHtml(value)
+    .replace(/\*\*(.+?)\*\*/g, "<strong class=\"font-bold text-white\">$1</strong>")
+    .replace(/\*([^*]+)\*/g, "<em class=\"italic text-zinc-200\">$1</em>");
+}
+
+function renderSphinxMarkdown(text: string): string {
+  if (!text) return "";
+
+  const lines = text.replace(/\r\n/g, "\n").split("\n");
+  const html: string[] = [];
+  let inList = false;
+
+  function closeList() {
+    if (inList) {
+      html.push("</ul>");
+      inList = false;
+    }
+  }
+
+  for (const rawLine of lines) {
+    const line = rawLine.trim();
+
+    if (!line) {
+      closeList();
+      html.push("<div class=\"h-3\"></div>");
+      continue;
+    }
+
+    if (line.startsWith("# ")) {
+      closeList();
+      html.push(`<h1 class="mb-6 text-3xl font-black tracking-tight text-white">${renderSphinxInline(line.replace(/^#\s+/, ""))}</h1>`);
+      continue;
+    }
+
+    if (line.startsWith("## ")) {
+      closeList();
+      html.push(`<h2 class="mb-4 mt-8 border-b border-zinc-800 pb-3 text-xl font-black tracking-tight text-amber-300">${renderSphinxInline(line.replace(/^##\s+/, ""))}</h2>`);
+      continue;
+    }
+
+    if (line.startsWith("### ")) {
+      closeList();
+      html.push(`<h3 class="mb-3 mt-6 text-sm font-bold uppercase tracking-[0.18em] text-zinc-300">${renderSphinxInline(line.replace(/^###\s+/, ""))}</h3>`);
+      continue;
+    }
+
+    if (/^---+$/.test(line)) {
+      closeList();
+      html.push("<hr class=\"my-6 border-zinc-800\" />");
+      continue;
+    }
+
+    if (line.startsWith("- ") || line.startsWith("• ")) {
+      if (!inList) {
+        html.push("<ul class=\"mb-5 space-y-3\">");
+        inList = true;
+      }
+
+      html.push(`<li class="rounded-xl border border-zinc-800 bg-zinc-900/60 px-4 py-3 text-sm leading-7 text-zinc-100">${renderSphinxInline(line.replace(/^[-•]\s+/, ""))}</li>`);
+      continue;
+    }
+
+    closeList();
+    html.push(`<p class="mb-4 text-sm leading-7 text-zinc-100">${renderSphinxInline(line)}</p>`);
+  }
+
+  closeList();
+
+  return html.join("\n");
+}
+
 function getSupabaseClient() {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
@@ -486,9 +567,10 @@ export default function SphinxPage() {
               )}
 
               {report && (
-                <pre className="whitespace-pre-wrap break-words font-sans text-sm leading-7 text-zinc-100">
-                  {report}
-                </pre>
+                <div
+                  className="sphinx-rendered-report"
+                  dangerouslySetInnerHTML={{ __html: renderSphinxMarkdown(report) }}
+                />
               )}
             </div>
           </div>
@@ -497,4 +579,6 @@ export default function SphinxPage() {
     </main>
   );
 }
+
+
 
