@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import { createClient } from "@supabase/supabase-js";
+import JSZip from "jszip";
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -135,6 +136,83 @@ function renderMarkdown(text: string): string {
   return html.join("\n");
 }
 
+function extractDocxParagraphText(paragraph: Element) {
+  const pieces: string[] = [];
+
+  function walk(node: Node) {
+    if (node.nodeType !== Node.ELEMENT_NODE) return;
+
+    const element = node as Element;
+    const name = element.nodeName;
+
+    if (name === "w:t") {
+      pieces.push(element.textContent || "");
+      return;
+    }
+
+    if (name === "w:tab") {
+      pieces.push("\t");
+      return;
+    }
+
+    if (name === "w:br" || name === "w:cr") {
+      pieces.push("\n");
+      return;
+    }
+
+    Array.from(element.childNodes).forEach(walk);
+  }
+
+  Array.from(paragraph.childNodes).forEach(walk);
+
+  return pieces.join("").replace(/\u00a0/g, " ").trimEnd();
+}
+
+async function readDocxFile(file: File) {
+  const arrayBuffer = await file.arrayBuffer();
+  const zip = await JSZip.loadAsync(arrayBuffer);
+  const documentFile = zip.file("word/document.xml");
+
+  if (!documentFile) {
+    throw new Error("Could not find document text inside the Word file.");
+  }
+
+  const xmlText = await documentFile.async("string");
+  const parser = new DOMParser();
+  const xml = parser.parseFromString(xmlText, "application/xml");
+
+  if (xml.getElementsByTagName("parsererror").length > 0) {
+    throw new Error("Could not parse the Word document.");
+  }
+
+  const paragraphs = Array.from(xml.getElementsByTagName("w:p"));
+
+  const text = paragraphs
+    .map(extractDocxParagraphText)
+    .map((line) => line.trim())
+    .filter(Boolean)
+    .join("\n\n");
+
+  if (!text.trim()) {
+    throw new Error("The Word document did not contain readable text.");
+  }
+
+  return text;
+}
+
+async function readUploadedFile(file: File) {
+  const lowerName = file.name.toLowerCase();
+
+  if (lowerName.endsWith(".docx")) {
+    return readDocxFile(file);
+  }
+
+  return file.text();
+}
+
+function titleFromFileName(fileName: string) {
+  return fileName.replace(/\.(txt|md|docx)$/i, "");
+}
 function countWords(text: string) {
   return text.trim().split(/\s+/).filter(Boolean).length;
 }
@@ -189,27 +267,34 @@ export default function SubmitPage() {
     setFileName(file.name);
     setError("");
 
+    const lowerName = file.name.toLowerCase();
+
     const allowed =
       file.type === "text/plain" ||
-      file.name.toLowerCase().endsWith(".txt") ||
-      file.name.toLowerCase().endsWith(".md");
+      file.type === "application/vnd.openxmlformats-officedocument.wordprocessingml.document" ||
+      lowerName.endsWith(".txt") ||
+      lowerName.endsWith(".md") ||
+      lowerName.endsWith(".docx");
 
     if (!allowed) {
-      setError("For now, upload a .txt or .md file, or paste the manuscript directly into the box.");
+      setError("For now, upload a .txt, .md, or .docx file, or paste the manuscript directly into the box. Old .doc files and PDFs are not supported yet.");
       event.target.value = "";
       return;
     }
 
     try {
-      const text = await file.text();
+      const text = await readUploadedFile(file);
       setManuscript(text);
 
       if (!title.trim()) {
-        const cleanName = file.name.replace(/\.(txt|md)$/i, "");
-        setTitle(cleanName);
+        setTitle(titleFromFileName(file.name));
       }
-    } catch {
-      setError("Could not read that file. Paste the manuscript into the box instead.");
+    } catch (err) {
+      setError(
+        err instanceof Error
+          ? err.message
+          : "Could not read that file. Paste the manuscript into the box instead."
+      );
     }
   }
 
@@ -1248,17 +1333,17 @@ export default function SubmitPage() {
               <div className="panel">
                 <div className="panel-title">Step 2: Add the manuscript</div>
                 <p className="panel-note">
-                  For this build, paste text directly or upload a .txt / .md file. Later we can add Word document upload.
+                  For this build, paste text directly or upload a .txt, .md, or .docx file. Old .doc files and PDFs are not supported yet.
                 </p>
 
                 <div className="upload-box">
                   <div className="upload-actions">
                     <label className="file-label">
-                      Upload Text File
+                      Upload Document
                       <input
                         className="file-input"
                         type="file"
-                        accept=".txt,.md,text/plain"
+                        accept=".txt,.md,.docx,text/plain,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
                         onChange={handleFileUpload}
                         disabled={loading}
                       />
@@ -1270,7 +1355,7 @@ export default function SubmitPage() {
                   </div>
 
                   <div className="tiny-note">
-                    Upload is optional. Pasting is still the safest test path right now.
+                    Upload is optional. Supported files: .txt, .md, and .docx. Pasting is still the safest test path right now.
                   </div>
                 </div>
 
@@ -1374,5 +1459,6 @@ export default function SubmitPage() {
     </main>
   );
 }
+
 
 

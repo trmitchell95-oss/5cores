@@ -1,8 +1,9 @@
 ﻿"use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, type ChangeEvent } from "react";
 import Link from "next/link";
 import { createClient } from "@supabase/supabase-js";
+import JSZip from "jszip";
 
 const modes = [
   { value: "GENERAL", label: "General Human Cleanup" },
@@ -21,6 +22,83 @@ const strictnessOptions = [
   { value: "MURDER MODE", label: "Murder Mode" },
 ];
 
+function extractDocxParagraphText(paragraph: Element) {
+  const pieces: string[] = [];
+
+  function walk(node: Node) {
+    if (node.nodeType !== Node.ELEMENT_NODE) return;
+
+    const element = node as Element;
+    const name = element.nodeName;
+
+    if (name === "w:t") {
+      pieces.push(element.textContent || "");
+      return;
+    }
+
+    if (name === "w:tab") {
+      pieces.push("\t");
+      return;
+    }
+
+    if (name === "w:br" || name === "w:cr") {
+      pieces.push("\n");
+      return;
+    }
+
+    Array.from(element.childNodes).forEach(walk);
+  }
+
+  Array.from(paragraph.childNodes).forEach(walk);
+
+  return pieces.join("").replace(/\u00a0/g, " ").trimEnd();
+}
+
+async function readDocxFile(file: File) {
+  const arrayBuffer = await file.arrayBuffer();
+  const zip = await JSZip.loadAsync(arrayBuffer);
+  const documentFile = zip.file("word/document.xml");
+
+  if (!documentFile) {
+    throw new Error("Could not find readable document text inside the Word file.");
+  }
+
+  const xmlText = await documentFile.async("string");
+  const parser = new DOMParser();
+  const xml = parser.parseFromString(xmlText, "application/xml");
+
+  if (xml.getElementsByTagName("parsererror").length > 0) {
+    throw new Error("Could not parse the Word document.");
+  }
+
+  const paragraphs = Array.from(xml.getElementsByTagName("w:p"));
+
+  const extractedText = paragraphs
+    .map(extractDocxParagraphText)
+    .map((line) => line.trim())
+    .filter(Boolean)
+    .join("\n\n");
+
+  if (!extractedText.trim()) {
+    throw new Error("The Word document did not contain readable text.");
+  }
+
+  return extractedText;
+}
+
+async function readUploadedFile(file: File) {
+  const lowerName = file.name.toLowerCase();
+
+  if (lowerName.endsWith(".docx")) {
+    return readDocxFile(file);
+  }
+
+  return file.text();
+}
+
+function titleFromFileName(fileName: string) {
+  return fileName.replace(/\.(txt|md|docx)$/i, "");
+}
 function extractSection(
   fullText: string,
   startHeading: string,
@@ -157,6 +235,7 @@ export default function SphinxPage() {
   const [saveMessage, setSaveMessage] = useState("");
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [checkingLogin, setCheckingLogin] = useState(true);
+  const [uploadedFileName, setUploadedFileName] = useState("");
 
   const tooLong = text.trim().length > SPHINX_MAX_CHARS;
   const canRunSphinx = text.trim().length >= 20 && !tooLong && !loading;
@@ -180,6 +259,51 @@ export default function SphinxPage() {
     checkLogin();
   }, []);
 
+  async function handleFileUpload(event: ChangeEvent<HTMLInputElement>) {
+    const file = event.target.files?.[0];
+
+    if (!file) return;
+
+    setError("");
+    setReport("");
+    setCopied("");
+    setStrongerVersion("");
+    setSavedId("");
+    setSaveMessage("");
+
+    const lowerName = file.name.toLowerCase();
+
+    const allowed =
+      file.type === "text/plain" ||
+      file.type === "application/vnd.openxmlformats-officedocument.wordprocessingml.document" ||
+      lowerName.endsWith(".txt") ||
+      lowerName.endsWith(".md") ||
+      lowerName.endsWith(".docx");
+
+    if (!allowed) {
+      setError("For now, upload a .txt, .md, or .docx file, or paste directly into the box. Old .doc files and PDFs are not supported yet.");
+      event.target.value = "";
+      return;
+    }
+
+    try {
+      const nextText = await readUploadedFile(file);
+      setText(nextText);
+      setUploadedFileName(file.name);
+
+      if (!title.trim()) {
+        setTitle(titleFromFileName(file.name));
+      }
+    } catch (err) {
+      setError(
+        err instanceof Error
+          ? err.message
+          : "Could not read that file. Paste the text into the box instead."
+      );
+    } finally {
+      event.target.value = "";
+    }
+  }
   async function runSphinx() {
     setLoading(true);
     setError("");
@@ -313,6 +437,7 @@ export default function SphinxPage() {
     setStrongerVersion("");
     setSavedId("");
     setSaveMessage("");
+    setUploadedFileName("");
   }
 
   return (
@@ -396,6 +521,32 @@ export default function SphinxPage() {
               className="mb-4 w-full rounded-2xl border border-zinc-700 bg-zinc-950 p-4 text-base text-zinc-100 outline-none placeholder:text-zinc-600 focus:border-amber-400"
             />
 
+            <div className="mb-4 rounded-2xl border border-dashed border-zinc-700 bg-zinc-950/70 p-4">
+              <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+                <div>
+                  <p className="text-sm font-bold text-zinc-200">
+                    Upload a document
+                  </p>
+                  <p className="mt-1 text-xs leading-5 text-zinc-500">
+                    Supports .txt, .md, and modern Word .docx files. Old .doc files and PDFs are not supported yet.
+                  </p>
+                </div>
+
+                <label className="inline-flex cursor-pointer items-center justify-center rounded-xl border border-zinc-700 px-4 py-3 text-sm font-bold text-zinc-200 hover:border-amber-400 hover:text-amber-300">
+                  Choose File
+                  <input
+                    type="file"
+                    accept=".txt,.md,.docx,text/plain,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                    onChange={handleFileUpload}
+                    className="hidden"
+                  />
+                </label>
+              </div>
+
+              <p className="mt-3 text-xs text-zinc-500">
+                {uploadedFileName ? `Loaded: ${uploadedFileName}` : "Optional. Pasting directly still works."}
+              </p>
+            </div>
             <div className="mb-4 grid gap-3 md:grid-cols-2">
               <label className="block">
                 <span className="mb-2 block text-xs font-bold uppercase tracking-[0.2em] text-zinc-500">
@@ -579,6 +730,8 @@ export default function SphinxPage() {
     </main>
   );
 }
+
+
 
 
 
