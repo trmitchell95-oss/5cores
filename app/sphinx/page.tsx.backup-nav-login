@@ -1,7 +1,6 @@
 ﻿"use client";
 
-import { useEffect, useState } from "react";
-import Link from "next/link";
+import { useState } from "react";
 import { createClient } from "@supabase/supabase-js";
 
 const modes = [
@@ -72,27 +71,6 @@ export default function SphinxPage() {
   const [strongerVersion, setStrongerVersion] = useState("");
   const [savedId, setSavedId] = useState("");
   const [saveMessage, setSaveMessage] = useState("");
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [checkingLogin, setCheckingLogin] = useState(true);
-
-  useEffect(() => {
-    async function checkLogin() {
-      try {
-        const supabase = getSupabaseClient();
-        const {
-          data: { session },
-        } = await supabase.auth.getSession();
-
-        setIsLoggedIn(Boolean(session?.access_token));
-      } catch {
-        setIsLoggedIn(false);
-      } finally {
-        setCheckingLogin(false);
-      }
-    }
-
-    checkLogin();
-  }, []);
 
   async function runSphinx() {
     setLoading(true);
@@ -139,11 +117,6 @@ export default function SphinxPage() {
   async function saveSphinxReport() {
     if (!report) return;
 
-    if (!isLoggedIn) {
-      window.location.href = "/login";
-      return;
-    }
-
     setSaving(true);
     setError("");
     setSaveMessage("");
@@ -155,7 +128,6 @@ export default function SphinxPage() {
       } = await supabase.auth.getSession();
 
       if (!session?.access_token) {
-        setIsLoggedIn(false);
         throw new Error("Log in before saving a Sphinx report.");
       }
 
@@ -178,11 +150,11 @@ export default function SphinxPage() {
       const data = await response.json();
 
       if (!response.ok) {
-        const saveErrorMessage = data.details
-          ? `${data.error || "Could not save Sphinx report."} Details: ${data.details}`
-          : data.error || "Could not save Sphinx report.";
+              const saveErrorMessage = data.details
+        ? `${data.error || "Could not save Sphinx report."} Details: ${data.details}`
+        : data.error || "Could not save Sphinx report.";
 
-        throw new Error(saveErrorMessage);
+      throw new Error(saveErrorMessage);
       }
 
       setSavedId(data.id || "");
@@ -232,48 +204,6 @@ export default function SphinxPage() {
   return (
     <main className="min-h-screen bg-zinc-950 px-6 py-10 text-zinc-100">
       <div className="mx-auto max-w-6xl">
-        <nav className="mb-6 flex flex-col gap-3 rounded-3xl border border-zinc-800 bg-zinc-900/80 p-4 shadow-xl md:flex-row md:items-center md:justify-between">
-          <div>
-            <p className="text-xs font-bold uppercase tracking-[0.25em] text-amber-400">
-              SPHINX Navigation
-            </p>
-            <p className="mt-1 text-sm text-zinc-400">
-              Run Sphinx publicly. Log in to save reports to your dashboard.
-            </p>
-          </div>
-
-          <div className="flex flex-wrap gap-3">
-            <Link
-              href="/submit"
-              className="rounded-xl border border-zinc-700 px-4 py-3 text-sm font-bold text-zinc-200 hover:border-amber-400 hover:text-amber-300"
-            >
-              Main 5 CORE
-            </Link>
-
-            <Link
-              href="/dashboard"
-              className="rounded-xl border border-zinc-700 px-4 py-3 text-sm font-bold text-zinc-200 hover:border-amber-400 hover:text-amber-300"
-            >
-              Dashboard
-            </Link>
-
-            {!checkingLogin && !isLoggedIn && (
-              <Link
-                href="/login"
-                className="rounded-xl bg-amber-400 px-4 py-3 text-sm font-black text-zinc-950 hover:bg-amber-300"
-              >
-                Log In to Save
-              </Link>
-            )}
-
-            {!checkingLogin && isLoggedIn && (
-              <span className="rounded-xl border border-green-800 bg-green-950/40 px-4 py-3 text-sm font-bold text-green-200">
-                Logged In
-              </span>
-            )}
-          </div>
-        </nav>
-
         <section className="mb-8 rounded-3xl border border-zinc-800 bg-zinc-900/70 p-8 shadow-2xl">
           <p className="mb-2 text-sm font-semibold uppercase tracking-[0.3em] text-amber-400">
             5 CORE Add-On
@@ -420,11 +350,7 @@ export default function SphinxPage() {
                   type="button"
                   className="rounded-xl border border-zinc-700 px-4 py-3 text-sm font-semibold text-zinc-300 hover:border-green-400 hover:text-green-300 disabled:cursor-not-allowed disabled:opacity-50"
                 >
-                  {!isLoggedIn
-                    ? "Log in to Save"
-                    : saving
-                      ? "Saving..."
-                      : "Save Report"}
+                  {saving ? "Saving..." : "Save Report"}
                 </button>
 
                 <button
@@ -486,3 +412,4 @@ export default function SphinxPage() {
     </main>
   );
 }
+
