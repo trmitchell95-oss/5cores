@@ -315,63 +315,103 @@ export async function POST(req: NextRequest) {
       feedbackTone || "Honest"
     );
 
-    const results = await Promise.all(
-      PERSONAS.map(async (persona) => {
-        try {
-          const message = await client.messages.create({
-            model,
-            max_tokens: 16000,
-            system: persona.buildPrompt(intakeContext),
-            messages: [
-              {
-                role: "user",
-                content: `Read this manuscript excerpt and deliver your complete diagnostic assessment.\n\n---\n\n${cleanManuscript}\n\n---\n\nDeliver your full report now.`,
-              },
-            ],
-          });
+    type PersonaRunResult =
+      | { key: string; text: string; ok: true }
+      | { key: string; text: string; ok: false; errorMessage: string };
 
-          const contentBlocks = message.content as Array<{
-            type: string;
-            text?: string;
-          }>;
+    function getPersonaLabel(key: string) {
+      if (key === "brad") return "Brad";
+      if (key === "greg") return "Greg";
+      if (key === "vonClaude") return "Von Clausen";
+      if (key === "juniper") return "Juniper";
+      if (key === "finalEditor") return "Final Editor";
+      return key;
+    }
 
-          const text = contentBlocks
-            .filter((block) => block.type === "text" && block.text)
-            .map((block) => block.text || "")
-            .join("\n")
-            .trim();
+    async function runPersona(
+      persona: (typeof PERSONAS)[number],
+      userContent: string
+    ): Promise<PersonaRunResult> {
+      try {
+        const message = await client.messages.create({
+          model,
+          max_tokens: persona.key === "finalEditor" ? 9000 : 16000,
+          system: persona.buildPrompt(intakeContext),
+          messages: [
+            {
+              role: "user",
+              content: userContent,
+            },
+          ],
+        });
 
-          if (!text) {
-            throw new Error(`${persona.key} returned an empty response.`);
-          }
+        const contentBlocks = message.content as Array<{
+          type: string;
+          text?: string;
+        }>;
 
-          return {
-            key: persona.key,
-            text,
-            ok: true as const,
-          };
-        } catch (error) {
-          console.error(`Council persona failed: ${persona.key}`, error);
+        const text = contentBlocks
+          .filter((block) => block.type === "text" && block.text)
+          .map((block) => block.text || "")
+          .join("\n")
+          .trim();
 
-          return {
-            key: persona.key,
-            text: `## ${persona.key.toUpperCase()} REPORT UNAVAILABLE
+        if (!text) {
+          throw new Error(`${persona.key} returned an empty response.`);
+        }
+
+        return {
+          key: persona.key,
+          text,
+          ok: true as const,
+        };
+      } catch (error) {
+        console.error(`Council persona failed: ${persona.key}`, error);
+
+        return {
+          key: persona.key,
+          text: `## ${getPersonaLabel(persona.key).toUpperCase()} REPORT UNAVAILABLE
 
 This council member failed to respond during this run.
 
 The rest of the Council continued working, so this report was not fully lost. Try running the diagnosis again later if you need this specific section.`,
-            ok: false as const,
-            errorMessage:
-              error instanceof Error ? error.message : String(error),
-          };
-        }
-      })
+          ok: false as const,
+          errorMessage:
+            error instanceof Error ? error.message : String(error),
+        };
+      }
+    }
+
+    const primaryPersonas = PERSONAS.filter(
+      (persona) => persona.key !== "finalEditor"
+    );
+
+    const finalEditorPersona = PERSONAS.find(
+      (persona) => persona.key === "finalEditor"
+    );
+
+    if (!finalEditorPersona) {
+      throw new Error("Final Editor persona is missing from PERSONAS.");
+    }
+
+    const manuscriptPrompt = `Read this manuscript excerpt and deliver your complete diagnostic assessment.
+
+---
+
+${cleanManuscript}
+
+---
+
+Deliver your full report now.`;
+
+    const primaryResults = await Promise.all(
+      primaryPersonas.map((persona) => runPersona(persona, manuscriptPrompt))
     );
 
     const reports: Record<string, string> = {};
     const failedPersonaKeys: string[] = [];
 
-    for (const result of results) {
+    for (const result of primaryResults) {
       reports[result.key] = result.text;
 
       if (!result.ok) {
@@ -379,7 +419,7 @@ The rest of the Council continued working, so this report was not fully lost. Tr
       }
     }
 
-    if (failedPersonaKeys.length === PERSONAS.length) {
+    if (failedPersonaKeys.length === primaryPersonas.length) {
       await logUsageEvent({
         userId: userIdForLog,
         tool: "council",
@@ -388,7 +428,7 @@ The rest of the Council continued working, so this report was not fully lost. Tr
         inputWords,
         model,
         title: titleForLog,
-        errorMessage: "All council personas failed.",
+        errorMessage: "All primary council personas failed.",
         meta: { failedPersonaKeys },
       });
 
@@ -399,6 +439,52 @@ The rest of the Council continued working, so this report was not fully lost. Tr
         },
         { status: 502 }
       );
+    }
+
+    const councilReportsForFinalEditor = primaryResults
+      .map(
+        (result) => `# ${getPersonaLabel(result.key)}
+
+${result.text}`
+      )
+      .join("\n\n---\n\n");
+
+    const finalEditorPrompt = `You are receiving the actual reports from the 5 CORE Editorial Council.
+
+Your job is to synthesize these reports into one official final verdict.
+
+Do not pretend you independently read all four reports if one is marked unavailable.
+If one council member is unavailable, acknowledge it briefly only if it affects the verdict.
+If two or more council members are unavailable, clearly state that the diagnosis has limited coverage.
+Do not invent evidence that is not present in the council reports.
+Do not repeat the full reports.
+Resolve contradictions.
+Prioritize the most important revision work.
+
+Council availability:
+${failedPersonaKeys.length > 0
+  ? `Unavailable or partial: ${failedPersonaKeys.map(getPersonaLabel).join(", ")}`
+  : "All primary council members responded."}
+
+COUNCIL REPORTS:
+
+---
+
+${councilReportsForFinalEditor}
+
+---
+
+Now write the official Final Editor synthesis using your required format.`;
+
+    const finalEditorResult = await runPersona(
+      finalEditorPersona,
+      finalEditorPrompt
+    );
+
+    reports[finalEditorResult.key] = finalEditorResult.text;
+
+    if (!finalEditorResult.ok) {
+      failedPersonaKeys.push(finalEditorResult.key);
     }
 
     const { data, error } = await supabase
