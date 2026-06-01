@@ -253,7 +253,7 @@ export default function SphinxPage() {
   const [loadingSeconds, setLoadingSeconds] = useState(0);
 
   const tooLong = text.trim().length > SPHINX_MAX_CHARS;
-  const canRunSphinx = text.trim().length >= 20 && !tooLong && !loading;
+  const canRunSphinx = text.trim().length >= 20 && !tooLong && !loading && !checkingLogin && isLoggedIn;
 
   useEffect(() => {
     async function checkLogin() {
@@ -719,7 +719,11 @@ export default function SphinxPage() {
                   type="button"
                   className="rounded-xl bg-amber-400 px-5 py-3 text-sm font-black text-zinc-950 hover:bg-amber-300 disabled:cursor-not-allowed disabled:opacity-50"
                 >
-                  {loading ? "Running Sphinx..." : "Run Sphinx"}
+                  {loading
+                    ? "Running Sphinx..."
+                    : !isLoggedIn
+                      ? "Log in to Run Sphinx"
+                      : "Run Sphinx"}
                 </button>
               </div>
             </div>

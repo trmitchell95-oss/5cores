@@ -1,4 +1,5 @@
 ﻿import { NextResponse } from "next/server";
+import { createClient } from "@supabase/supabase-js";
 import { countWords, logUsageEvent } from "../../../lib/usage";
 
 export const runtime = "nodejs";
@@ -11,6 +12,66 @@ type ClaudeTextBlock = {
 const SPHINX_MIN_CHARS = 20;
 const SPHINX_MAX_CHARS = 10000;
 const DEFAULT_MODEL = "claude-sonnet-4-6";
+
+
+type AuthResult =
+  | { ok: true; userId: string }
+  | { ok: false; status: number; error: string };
+
+function getBearerToken(request: Request) {
+  const authHeader = request.headers.get("authorization") || "";
+
+  if (!authHeader.toLowerCase().startsWith("bearer ")) {
+    return null;
+  }
+
+  return authHeader.slice(7).trim();
+}
+
+async function requireSphinxUser(request: Request): Promise<AuthResult> {
+  const token = getBearerToken(request);
+
+  if (!token) {
+    return {
+      ok: false,
+      status: 401,
+      error: "You must be logged in to use Sphinx.",
+    };
+  }
+
+  const supabaseUrl =
+    process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL;
+
+  const supabaseAnonKey =
+    process.env.SUPABASE_ANON_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+  if (!supabaseUrl || !supabaseAnonKey) {
+    return {
+      ok: false,
+      status: 500,
+      error: "Supabase auth is not configured.",
+    };
+  }
+
+  const supabase = createClient(supabaseUrl, supabaseAnonKey, {
+    auth: {
+      persistSession: false,
+      autoRefreshToken: false,
+    },
+  });
+
+  const { data, error } = await supabase.auth.getUser(token);
+
+  if (error || !data.user) {
+    return {
+      ok: false,
+      status: 401,
+      error: "Your session expired. Log in again.",
+    };
+  }
+
+  return { ok: true, userId: data.user.id };
+}
 
 const SPHINX_SYSTEM_PROMPT = `
 You are SPHINX, an AI Stink Preventer.
@@ -197,9 +258,28 @@ export async function POST(request: Request) {
   let inputWords = 0;
   let mode = "GENERAL";
   let strictness = "STANDARD";
+  let userId: string | null = null;
   const model = process.env.ANTHROPIC_MODEL || DEFAULT_MODEL;
 
   try {
+    const auth = await requireSphinxUser(request);
+
+    if (!auth.ok) {
+      await logUsageEvent({
+        tool: "sphinx",
+        status: "rejected",
+        inputChars,
+        inputWords,
+        model,
+        errorMessage: auth.error,
+        meta: { mode, strictness, stage: "auth" },
+      });
+
+      return NextResponse.json({ error: auth.error }, { status: auth.status });
+    }
+
+    userId = auth.userId;
+
     const body = await request.json();
 
     const text = typeof body.text === "string" ? body.text.trim() : "";
@@ -218,7 +298,7 @@ export async function POST(request: Request) {
         inputWords,
         model,
         errorMessage: "No text provided.",
-        meta: { mode, strictness },
+        meta: { mode, strictness, userId },
       });
 
       return NextResponse.json(
@@ -235,7 +315,7 @@ export async function POST(request: Request) {
         inputWords,
         model,
         errorMessage: "Text too short.",
-        meta: { mode, strictness },
+        meta: { mode, strictness, userId },
       });
 
       return NextResponse.json(
@@ -252,7 +332,7 @@ export async function POST(request: Request) {
         inputWords,
         model,
         errorMessage: "Text exceeded beta limit.",
-        meta: { mode, strictness, limit: SPHINX_MAX_CHARS },
+        meta: { mode, strictness, userId, limit: SPHINX_MAX_CHARS },
       });
 
       return NextResponse.json(
@@ -274,7 +354,7 @@ export async function POST(request: Request) {
         inputWords,
         model,
         errorMessage: "Missing ANTHROPIC_API_KEY.",
-        meta: { mode, strictness },
+        meta: { mode, strictness, userId },
       });
 
       return NextResponse.json(
@@ -292,7 +372,7 @@ export async function POST(request: Request) {
       inputChars,
       inputWords,
       model,
-      meta: { mode, strictness },
+      meta: { mode, strictness, userId },
     });
 
     const userPrompt = `
@@ -336,13 +416,12 @@ ${text}
         inputWords,
         model,
         errorMessage: errorText.slice(0, 500),
-        meta: { mode, strictness, stage: "anthropic_response" },
+        meta: { mode, strictness, userId, stage: "anthropic_response" },
       });
 
       return NextResponse.json(
         {
-          error: "Sphinx could not get a response from Claude.",
-          details: errorText,
+          error: "Sphinx could not get a response from Claude. Try again in a minute.",
         },
         { status: response.status }
       );
@@ -365,7 +444,7 @@ ${text}
         inputWords,
         model,
         errorMessage: "Sphinx came back empty.",
-        meta: { mode, strictness },
+        meta: { mode, strictness, userId },
       });
 
       return NextResponse.json(
@@ -380,7 +459,7 @@ ${text}
       inputChars,
       inputWords,
       model,
-      meta: { mode, strictness, outputChars: report.length },
+      meta: { mode, strictness, userId, outputChars: report.length },
     });
 
     return NextResponse.json({ report });
@@ -394,7 +473,7 @@ ${text}
       inputWords,
       model,
       errorMessage: error instanceof Error ? error.message : String(error),
-      meta: { mode, strictness },
+      meta: { mode, strictness, userId },
     });
 
     return NextResponse.json(
