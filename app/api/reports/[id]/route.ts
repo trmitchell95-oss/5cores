@@ -43,6 +43,54 @@ async function getUserFromRequest(req: NextRequest) {
   return { user, error: "" };
 }
 
+export async function GET(
+  req: NextRequest,
+  context: { params: Promise<{ id: string }> }
+) {
+  try {
+    const { id } = await context.params;
+
+    if (!id) {
+      return NextResponse.json({ error: "Missing report ID." }, { status: 400 });
+    }
+
+    const { user, error: userError } = await getUserFromRequest(req);
+
+    if (!user) {
+      return NextResponse.json({ error: userError }, { status: 401 });
+    }
+
+    const supabase = getSupabaseAdmin();
+
+    const { data, error } = await supabase
+      .from("reports")
+      .select("*")
+      .eq("id", id)
+      .eq("user_id", user.id)
+      .single();
+
+    if (error || !data) {
+      return NextResponse.json(
+        {
+          error: "Report not found or not yours.",
+          details: error?.message || null,
+        },
+        { status: 404 }
+      );
+    }
+
+    return NextResponse.json({ report: data });
+  } catch (error) {
+    return NextResponse.json(
+      {
+        error: "Something broke while loading the report.",
+        details: error instanceof Error ? error.message : String(error),
+      },
+      { status: 500 }
+    );
+  }
+}
+
 export async function PATCH(
   req: NextRequest,
   context: { params: Promise<{ id: string }> }
@@ -87,20 +135,13 @@ export async function PATCH(
       .select("id, title")
       .single();
 
-    if (error) {
+    if (error || !data) {
       return NextResponse.json(
         {
           error: "Could not rename report.",
-          details: error.message,
+          details: error?.message || "Report not found or not yours.",
         },
-        { status: 500 }
-      );
-    }
-
-    if (!data) {
-      return NextResponse.json(
-        { error: "Report not found or not yours." },
-        { status: 404 }
+        { status: error ? 500 : 404 }
       );
     }
 

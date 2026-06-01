@@ -456,18 +456,19 @@ export default function SavedReportPage() {
           return;
         }
 
-        const { data, error: reportError } = await supabase
-          .from("reports")
-          .select("*")
-          .eq("id", id)
-          .eq("user_id", session.user.id)
-          .single();
+        const response = await fetch(`/api/reports/${id}`, {
+          headers: {
+            authorization: `Bearer ${session.access_token}`,
+          },
+        });
 
-        if (reportError) {
-          throw new Error(reportError.message);
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(data.error || "Could not load report.");
         }
 
-        const loadedReport = data as SavedReport;
+        const loadedReport = data.report as SavedReport;
         setReport(loadedReport);
         setDraftTitle(loadedReport.title || "");
       } catch (err) {
@@ -1245,6 +1246,7 @@ export default function SavedReportPage() {
     </main>
   );
 }
+
 
 
 
