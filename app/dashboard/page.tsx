@@ -138,18 +138,19 @@ export default function Dashboard() {
         setIsAdmin(false);
       }
 
-      const { data, error } = await supabase
-        .from("reports")
-        .select("id, created_at, title, intake, report_type")
-        .eq("user_id", session.user.id)
-        .order("created_at", { ascending: false })
-        .limit(100);
+      const reportsResponse = await fetch("/api/reports", {
+        headers: {
+          authorization: `Bearer ${session.access_token}`,
+        },
+      });
 
-      if (error) {
-        console.error("Dashboard load error:", error);
+      const reportsData = await reportsResponse.json();
+
+      if (!reportsResponse.ok) {
+        console.error("Dashboard load error:", reportsData.error || reportsData.details);
         setReports([]);
-      } else if (data) {
-        setReports(data as Report[]);
+      } else {
+        setReports((reportsData.reports || []) as Report[]);
       }
 
       setLoading(false);
@@ -183,18 +184,19 @@ export default function Dashboard() {
         return;
       }
 
-      const { data, error } = await supabase
-        .from("reports")
-        .select("id, created_at, title, intake, report_type")
-        .eq("user_id", session.user.id)
-        .order("created_at", { ascending: false })
-        .limit(100);
+      const reportsResponse = await fetch("/api/reports", {
+        headers: {
+          authorization: `Bearer ${session.access_token}`,
+        },
+      });
 
-      if (error) {
-        throw new Error(error.message);
+      const reportsData = await reportsResponse.json();
+
+      if (!reportsResponse.ok) {
+        throw new Error(reportsData.error || "Could not refresh reports.");
       }
 
-      setReports((data || []) as Report[]);
+      setReports((reportsData.reports || []) as Report[]);
     } catch (err) {
       const message =
         err instanceof Error ? err.message : "Could not refresh reports.";
@@ -1252,6 +1254,7 @@ export default function Dashboard() {
     </main>
   );
 }
+
 
 
 
