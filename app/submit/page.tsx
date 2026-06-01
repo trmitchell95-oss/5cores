@@ -431,6 +431,70 @@ export default function SubmitPage() {
   return (
     <main className="submit-shell">
       <style>{`
+        /* Beta readability pass: larger text, clearer buttons, stronger contrast */
+        .submit-shell {
+          font-size: 17px;
+        }
+
+        .subtitle,
+        .panel-note,
+        .step-text,
+        .meter-help,
+        .tiny-note,
+        .file-name,
+        .status-subtext {
+          font-size: 15px !important;
+          line-height: 1.65 !important;
+          color: #bdb4aa !important;
+        }
+
+        .field-label,
+        .step-title,
+        .meter-row,
+        .status-text,
+        .council-label,
+        .persona-name-sm,
+        .nav-pill,
+        .back-link {
+          font-size: 12px !important;
+          letter-spacing: 0.11em !important;
+        }
+
+        .title-input,
+        .select-input,
+        .concern-input,
+        .textarea {
+          font-size: 17px !important;
+          line-height: 1.75 !important;
+        }
+
+        .select-input {
+          min-height: 54px !important;
+        }
+
+        .run-btn,
+        .reset-btn,
+        .dashboard-btn,
+        .file-label,
+        .back-link {
+          min-height: 54px !important;
+          font-size: 12px !important;
+          padding: 15px 18px !important;
+        }
+
+        .panel-title {
+          font-size: 34px !important;
+        }
+
+        .tool-note-strong,
+        .error-msg,
+        .saved-link,
+        .slow-note {
+          font-size: 14px !important;
+          line-height: 1.65 !important;
+        }
+
+
         @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@300;400;500;700&family=IBM+Plex+Mono:wght@400;500;700&display=swap');
 
         * {
