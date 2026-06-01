@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 
-const STORAGE_KEY = "hovel_manifesto_float_dismissed_v4";
+const STORAGE_KEY = "hovel_manifesto_float_dismissed_v5";
 
 export default function HovelManifestoFloat() {
   const [ready, setReady] = useState(false);
@@ -33,11 +33,11 @@ export default function HovelManifestoFloat() {
 
   return (
     <aside
-      aria-label="The Hovel manifesto"
-      className="fixed bottom-5 right-5 z-50 w-[min(92vw,440px)] rounded-3xl border border-amber-700/40 bg-zinc-950/95 p-5 text-zinc-100 shadow-2xl shadow-black/50 backdrop-blur"
+      aria-label="The Hovel Editor manifesto"
+      className="fixed bottom-5 right-5 z-50 w-[min(92vw,460px)] rounded-3xl border border-amber-700/40 bg-zinc-950/95 p-5 text-zinc-100 shadow-2xl shadow-black/50 backdrop-blur"
     >
       <div className="mb-2 text-xs font-black uppercase tracking-[0.28em] text-amber-400">
-        The Hovel Manifesto
+        The Hovel Editor Manifesto
       </div>
 
       <h2 className="mb-3 text-2xl font-black tracking-tight text-white">
@@ -46,20 +46,29 @@ export default function HovelManifestoFloat() {
 
       <div className="space-y-3 text-sm leading-7 text-zinc-300">
         <p>
-          The Hovel was not built to replace writers. It was built because too
-          much writing is being polished until it has no fingerprints left.
+          The Hovel Editor was not built to replace writers. It was built
+          because the machine is already in the room, and pretending otherwise
+          is useless. Writers are going to use AI. Editors are going to use AI.
+          Publishers, teachers, applicants, marketers, and weird little goblins
+          with laptops at 2:00 in the morning are going to use it. The question
+          is not whether the tool exists. The question is whether we let the
+          tool sand every fingerprint off the work.
         </p>
 
         <p>
           AI is a tool. So is a chisel. So is a brush. Michelangelo did not use
-          one sacred instrument for every cut and every color. He used what the
-          work demanded. That is the point here: use the machine, but do not let
-          the machine become the author.
+          one sacred instrument for every cut, scrape, shadow, and color. He
+          used what the work demanded. That is the point here too. Use the
+          machine when it helps. Distrust it when it flatters. Argue with it.
+          Ignore it when it is wrong. But do not hand it the keys to your voice.
         </p>
 
         <p>
-          5 CORE diagnoses the bones. SPHINX checks the pulse. The goal is not
-          cleaner writing. The goal is writing that still sounds stubbornly,
+          5 CORE checks the manuscript&apos;s bones. SPHINX checks the pulse.
+          One asks whether the structure holds. The other leans close to the
+          sentence and asks whether a human being still lives there. The goal is
+          not cleaner writing, smoother writing, or prettier beige oatmeal with
+          paragraph breaks. The goal is writing that still sounds stubbornly,
           unmistakably human.
         </p>
       </div>
@@ -83,5 +92,3 @@ export default function HovelManifestoFloat() {
     </aside>
   );
 }
-
-
