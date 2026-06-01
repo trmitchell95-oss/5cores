@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 
-const STORAGE_KEY = "hovel_manifesto_float_dismissed_v2";
+const STORAGE_KEY = "hovel_manifesto_float_dismissed_v3";
 
 export default function HovelManifestoFloat() {
   const [ready, setReady] = useState(false);
@@ -83,3 +83,4 @@ export default function HovelManifestoFloat() {
     </aside>
   );
 }
+
