@@ -1,7 +1,6 @@
 ﻿"use client";
 
 import Link from "next/link";
-import HovelManifestoFloat from "./HovelManifestoFloat";
 
 const cards = [
   {
@@ -45,7 +44,6 @@ const cards = [
 export default function StartPage() {
   return (
     <main className="start-shell">
-      <HovelManifestoFloat />
       <style>{`
         body {
           margin: 0;
@@ -293,6 +291,7 @@ export default function StartPage() {
           <Link href="/sphinx">Sphinx</Link>
           <Link href="/dashboard">Reports</Link>
           <Link href="/help">Help</Link>
+          <Link href="/manifesto">Manifesto</Link>
           <Link href="/feedback">Feedback</Link>
         </nav>
 
@@ -353,5 +352,7 @@ export default function StartPage() {
     </main>
   );
 }
+
+
 
 

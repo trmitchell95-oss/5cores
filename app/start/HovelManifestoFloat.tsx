@@ -76,10 +76,10 @@ export default function HovelManifestoFloat() {
 
       <div className="mt-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <a
-          href="/help"
+          href="/manifesto"
           className="text-sm font-bold text-amber-300 underline decoration-amber-600/60 underline-offset-4 hover:text-amber-200"
         >
-          Read the help page
+          Read the manifesto
         </a>
 
         <button
@@ -93,3 +93,4 @@ export default function HovelManifestoFloat() {
     </aside>
   );
 }
+

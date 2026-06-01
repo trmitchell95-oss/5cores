@@ -205,6 +205,7 @@ export default function HelpPage() {
           <Link href="/dashboard">Dashboard</Link>
           <Link href="/feedback">Feedback</Link>
           <Link href="/beta-terms">Beta Terms</Link>
+          <Link href="/manifesto">Manifesto</Link>
         </nav>
 
         <section className="hero">
@@ -219,6 +220,7 @@ export default function HelpPage() {
           <div className="button-row">
             <Link className="button" href="/submit">Start 5 CORE Diagnosis</Link>
             <Link className="button-dark" href="/sphinx">Run Sphinx Cleanup</Link>
+            <Link className="button-dark" href="/manifesto">Read The Manifesto</Link>
           </div>
         </section>
 
@@ -308,3 +310,4 @@ export default function HelpPage() {
     </main>
   );
 }
+
