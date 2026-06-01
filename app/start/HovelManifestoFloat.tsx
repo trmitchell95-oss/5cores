@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 
-const STORAGE_KEY = "hovel_manifesto_float_dismissed_v5";
+const STORAGE_KEY = "hovel_manifesto_float_dismissed_v6";
 
 export default function HovelManifestoFloat() {
   const [ready, setReady] = useState(false);
@@ -46,7 +46,8 @@ export default function HovelManifestoFloat() {
 
       <div className="space-y-3 text-sm leading-7 text-zinc-300">
         <p>
-          The Hovel Editor was not built to replace writers. It was built
+          The Hovel Editor is the garage. 5 CORE and SPHINX are the tools on
+          the bench. None of it was built to replace writers. It was built
           because the machine is already in the room, and pretending otherwise
           is useless. Writers are going to use AI. Editors are going to use AI.
           Publishers, teachers, applicants, marketers, and weird little goblins
@@ -67,8 +68,8 @@ export default function HovelManifestoFloat() {
           5 CORE checks the manuscript&apos;s bones. SPHINX checks the pulse.
           One asks whether the structure holds. The other leans close to the
           sentence and asks whether a human being still lives there. The goal is
-          not cleaner writing, smoother writing, or prettier beige oatmeal with
-          paragraph breaks. The goal is writing that still sounds stubbornly,
+          not cleaner writing, smoother writing, or prettier words wearing a
+          rented tuxedo. The goal is writing that still sounds stubbornly,
           unmistakably human.
         </p>
       </div>
