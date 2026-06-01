@@ -1,5 +1,6 @@
 ﻿import HelpLink from "./components/HelpLink";
 import FeedbackLink from "./components/FeedbackLink";
+import HovelManifestoFloat from "./start/HovelManifestoFloat";
 import type { Metadata } from "next";
 import "./globals.css";
 
@@ -16,6 +17,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body suppressHydrationWarning>
+        <HovelManifestoFloat />
         <a
           href="/sphinx"
           style={{
@@ -160,6 +162,7 @@ export default function RootLayout({
     </html>
   );
 }
+
 
 
 
