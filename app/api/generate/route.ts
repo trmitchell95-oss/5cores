@@ -1,7 +1,7 @@
 ﻿import { NextRequest, NextResponse } from "next/server";
 import Anthropic from "@anthropic-ai/sdk";
 import { createClient } from "@supabase/supabase-js";
-import { countWords, logUsageEvent } from "../../../lib/usage";
+import { checkDailyUsageLimit, countWords, logUsageEvent } from "../../../lib/usage";
 
 const client = new Anthropic();
 
@@ -178,6 +178,42 @@ export async function POST(req: NextRequest) {
     }
 
     userIdForLog = user.id;
+
+    const councilDailyLimit = Number(process.env.COUNCIL_DAILY_RUN_LIMIT || 5);
+
+    const limitCheck = await checkDailyUsageLimit({
+      userId: user.id,
+      userEmail: user.email || null,
+      tool: "council",
+      dailyLimit: councilDailyLimit,
+    });
+
+    if (!limitCheck.allowed) {
+      await logUsageEvent({
+        userId: userIdForLog,
+        tool: "council",
+        status: "rejected",
+        inputChars,
+        inputWords,
+        model,
+        title: titleForLog,
+        errorMessage: limitCheck.message || "Daily Council limit reached.",
+        meta: {
+          stage: "daily_limit",
+          used: limitCheck.used,
+          limit: limitCheck.limit,
+          resetAt: limitCheck.resetAt,
+        },
+      });
+
+      return NextResponse.json(
+        {
+          error:
+            "You have hit the daily 5 CORE beta limit. Try again tomorrow, or ask Tom if you need more runs.",
+        },
+        { status: 429 }
+      );
+    }
 
     const {
       manuscriptText,

@@ -1,10 +1,12 @@
-﻿import { createClient } from "@supabase/supabase-js";
+import { createClient } from "@supabase/supabase-js";
 
 type UsageStatus = "started" | "succeeded" | "failed" | "rejected";
 
+type UsageTool = "council" | "sphinx" | "sphinx_save";
+
 type UsageEvent = {
   userId?: string | null;
-  tool: "council" | "sphinx" | "sphinx_save";
+  tool: UsageTool;
   status: UsageStatus;
   inputChars?: number;
   inputWords?: number;
@@ -15,27 +17,158 @@ type UsageEvent = {
   meta?: Record<string, unknown>;
 };
 
+type DailyUsageLimitInput = {
+  userId: string;
+  userEmail?: string | null;
+  tool: UsageTool;
+  dailyLimit: number;
+};
+
+type DailyUsageLimitResult = {
+  allowed: boolean;
+  used: number;
+  limit: number;
+  resetAt: string;
+  isAdmin: boolean;
+  message?: string;
+};
+
 export function countWords(text: string) {
   return text.trim().split(/\s+/).filter(Boolean).length;
 }
 
-export async function logUsageEvent(event: UsageEvent) {
+function getServiceSupabaseClient() {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
   if (!supabaseUrl || !serviceRoleKey) {
+    return null;
+  }
+
+  return createClient(supabaseUrl, serviceRoleKey, {
+    auth: {
+      persistSession: false,
+      autoRefreshToken: false,
+    },
+  });
+}
+
+function getAdminEmails() {
+  return (process.env.ADMIN_EMAILS || process.env.NEXT_PUBLIC_ADMIN_EMAILS || "")
+    .split(",")
+    .map((email) => email.trim().toLowerCase())
+    .filter(Boolean);
+}
+
+function isAdminEmail(email?: string | null) {
+  if (!email) return false;
+  return getAdminEmails().includes(email.toLowerCase());
+}
+
+function getUtcDayWindow() {
+  const now = new Date();
+
+  const start = new Date(now);
+  start.setUTCHours(0, 0, 0, 0);
+
+  const reset = new Date(start);
+  reset.setUTCDate(reset.getUTCDate() + 1);
+
+  return {
+    startAt: start.toISOString(),
+    resetAt: reset.toISOString(),
+  };
+}
+
+export async function checkDailyUsageLimit(
+  input: DailyUsageLimitInput
+): Promise<DailyUsageLimitResult> {
+  const isAdmin = isAdminEmail(input.userEmail);
+  const { startAt, resetAt } = getUtcDayWindow();
+
+  if (isAdmin) {
+    return {
+      allowed: true,
+      used: 0,
+      limit: input.dailyLimit,
+      resetAt,
+      isAdmin: true,
+    };
+  }
+
+  const supabase = getServiceSupabaseClient();
+
+  if (!supabase) {
+    console.warn("Daily usage limit skipped: missing Supabase service settings.");
+
+    return {
+      allowed: true,
+      used: 0,
+      limit: input.dailyLimit,
+      resetAt,
+      isAdmin: false,
+    };
+  }
+
+  try {
+    const { count, error } = await supabase
+      .from("usage_events")
+      .select("id", { count: "exact", head: true })
+      .eq("user_id", input.userId)
+      .eq("tool", input.tool)
+      .eq("status", "started")
+      .gte("created_at", startAt);
+
+    if (error) {
+      console.warn("Daily usage limit skipped:", error.message);
+
+      return {
+        allowed: true,
+        used: 0,
+        limit: input.dailyLimit,
+        resetAt,
+        isAdmin: false,
+      };
+    }
+
+    const used = count || 0;
+    const allowed = used < input.dailyLimit;
+
+    return {
+      allowed,
+      used,
+      limit: input.dailyLimit,
+      resetAt,
+      isAdmin: false,
+      message: allowed
+        ? undefined
+        : `Daily beta limit reached for ${input.tool}. Try again tomorrow.`,
+    };
+  } catch (error) {
+    console.warn(
+      "Daily usage limit failed:",
+      error instanceof Error ? error.message : String(error)
+    );
+
+    return {
+      allowed: true,
+      used: 0,
+      limit: input.dailyLimit,
+      resetAt,
+      isAdmin: false,
+    };
+  }
+}
+
+export async function logUsageEvent(event: UsageEvent) {
+  const supabase = getServiceSupabaseClient();
+
+  if (!supabase) {
     console.warn("Usage logging skipped: missing Supabase service settings.");
     return;
   }
 
   try {
-    const supabase = createClient(supabaseUrl, serviceRoleKey, {
-      auth: {
-        persistSession: false,
-        autoRefreshToken: false,
-      },
-    });
-
     const { error } = await supabase.from("usage_events").insert({
       user_id: event.userId || null,
       tool: event.tool,

@@ -1,6 +1,6 @@
 ﻿import { NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
-import { countWords, logUsageEvent } from "../../../lib/usage";
+import { checkDailyUsageLimit, countWords, logUsageEvent } from "../../../lib/usage";
 
 export const runtime = "nodejs";
 
@@ -15,7 +15,7 @@ const DEFAULT_MODEL = "claude-sonnet-4-6";
 
 
 type AuthResult =
-  | { ok: true; userId: string }
+  | { ok: true; userId: string; userEmail: string | null }
   | { ok: false; status: number; error: string };
 
 function getBearerToken(request: Request) {
@@ -70,7 +70,7 @@ async function requireSphinxUser(request: Request): Promise<AuthResult> {
     };
   }
 
-  return { ok: true, userId: data.user.id };
+  return { ok: true, userId: data.user.id, userEmail: data.user.email || null };
 }
 
 const SPHINX_SYSTEM_PROMPT = `
@@ -279,6 +279,43 @@ export async function POST(request: Request) {
     }
 
     userId = auth.userId;
+
+    const sphinxDailyLimit = Number(process.env.SPHINX_DAILY_RUN_LIMIT || 20);
+
+    const limitCheck = await checkDailyUsageLimit({
+      userId: auth.userId,
+      userEmail: auth.userEmail,
+      tool: "sphinx",
+      dailyLimit: sphinxDailyLimit,
+    });
+
+    if (!limitCheck.allowed) {
+      await logUsageEvent({
+        userId,
+        tool: "sphinx",
+        status: "rejected",
+        inputChars,
+        inputWords,
+        model,
+        errorMessage: limitCheck.message || "Daily Sphinx limit reached.",
+        meta: {
+          mode,
+          strictness,
+          stage: "daily_limit",
+          used: limitCheck.used,
+          limit: limitCheck.limit,
+          resetAt: limitCheck.resetAt,
+        },
+      });
+
+      return NextResponse.json(
+        {
+          error:
+            "You have hit the daily Sphinx beta limit. Try again tomorrow, or ask Tom if you need more runs.",
+        },
+        { status: 429 }
+      );
+    }
 
     const body = await request.json();
 

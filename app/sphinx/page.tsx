@@ -446,10 +446,23 @@ export default function SphinxPage() {
     setSaveMessage("");
 
     try {
+      const supabase = getSupabaseClient();
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+
+      if (!session?.access_token) {
+        setIsLoggedIn(false);
+        throw new Error("You must be logged in to use Sphinx. Click Log In above, then come back.");
+      }
+
+      setIsLoggedIn(true);
+
       const response = await fetch("/api/sphinx", {
         method: "POST",
         headers: {
           "content-type": "application/json",
+          authorization: `Bearer ${session.access_token}`,
         },
         body: JSON.stringify({ text, mode, strictness }),
       });
