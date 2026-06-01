@@ -59,6 +59,17 @@ const STATUS_MESSAGES = [
   "Final Editor is synthesizing...",
   "Preparing your reports...",
 ];
+const COUNCIL_SAMPLE_MANUSCRIPT = `Mara stood at the edge of the old bridge and thought about everything she had ever lost. The river below moved like a long gray animal, carrying leaves, bottles, and pieces of the storm toward somewhere she could not see. She knew this place mattered. She knew it because her father had brought her here when she was small, back before sickness made him quiet and before everyone in the house learned how to whisper around closed doors.
+
+She gripped the envelope in her coat pocket. Inside was the letter she had written three times and hated every version of. The first version was too angry. The second was too forgiving. The third was a coward dressed up as a daughter.
+
+The wind pushed against her back.
+
+For a moment, Mara imagined throwing the letter into the river and letting the water decide what kind of person she was. That would be easier. That would be cleaner. That would let her pretend she had made a choice without actually making one.
+
+Behind her, a truck slowed on the road. Its headlights washed over the bridge railing, then moved on. Mara did not turn around. She was tired of turning around. She was tired of looking for someone who was not coming.
+
+She pulled out the envelope, held it over the river, and waited for her hand to open.`;
 
 function renderMarkdown(text: string): string {
   if (!text) return "";
@@ -399,6 +410,22 @@ export default function SubmitPage() {
     setError("");
     setSubmissionId("");
     setFileName("");
+  }
+
+  function loadSampleManuscript() {
+    setManuscript(COUNCIL_SAMPLE_MANUSCRIPT);
+    setTitle("5 CORE Sample Excerpt");
+    setWritingType("Fiction");
+    setAudience("Readers");
+    setBiggestConcern("I want to know if the emotion is working or if the scene is overexplaining itself.");
+    setPreparationGoal("Revision");
+    setFeedbackTone("Honest");
+    setReports({});
+    setHasRun(false);
+    setActiveTab("brad");
+    setError("");
+    setSubmissionId("");
+    setFileName("Sample excerpt");
   }
 
   return (
@@ -1270,6 +1297,15 @@ export default function SubmitPage() {
 
                   <button
                     className="reset-btn"
+                    onClick={loadSampleManuscript}
+                    disabled={loading}
+                    type="button"
+                  >
+                    Try Sample Excerpt
+                  </button>
+
+                  <button
+                    className="reset-btn"
                     onClick={reset}
                     disabled={loading}
                     type="button"
@@ -1555,6 +1591,7 @@ export default function SubmitPage() {
     </main>
   );
 }
+
 
 
 
