@@ -842,6 +842,88 @@ export default function Dashboard() {
           background: #1c1710;
         }
 
+        /* Dashboard beta readability pass */
+        .dashboard-shell {
+          font-size: 17px;
+        }
+
+        .brand-sub,
+        .subheading,
+        .status-muted,
+        .tool-text,
+        .how-text,
+        .section-note {
+          font-size: 15px !important;
+          line-height: 1.65 !important;
+          color: #bdb4aa !important;
+        }
+
+        .eyebrow,
+        .status-label,
+        .mini-stat,
+        .report-date,
+        .chip,
+        .latest-link,
+        .tool-link,
+        .admin-btn,
+        .signout-btn,
+        .primary-btn,
+        .secondary-btn,
+        .library-btn,
+        .show-more-btn,
+        .user-email {
+          font-size: 12px !important;
+          letter-spacing: 0.11em !important;
+        }
+
+        .primary-btn,
+        .secondary-btn,
+        .tool-link,
+        .view-link,
+        .admin-btn,
+        .signout-btn,
+        .library-btn,
+        .show-more-btn {
+          min-height: 52px !important;
+          padding: 15px 18px !important;
+        }
+
+        .library-input,
+        .library-select {
+          font-size: 16px !important;
+          min-height: 54px !important;
+        }
+
+        .status-big {
+          font-size: 42px !important;
+        }
+
+        .latest-title {
+          font-size: 29px !important;
+          line-height: 1.18 !important;
+        }
+
+        .tool-title {
+          font-size: 32px !important;
+        }
+
+        .section-title {
+          font-size: 38px !important;
+        }
+
+        .report-title {
+          font-size: 29px !important;
+          line-height: 1.18 !important;
+        }
+
+        .view-link {
+          font-size: 12px !important;
+        }
+
+        .report-card {
+          padding: 22px !important;
+        }
+
         @media (max-width: 900px) {
           .hero-grid,
           .tool-grid,

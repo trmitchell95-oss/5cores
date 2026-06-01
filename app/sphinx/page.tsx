@@ -553,7 +553,75 @@ export default function SphinxPage() {
   }
 
   return (
-    <main className="min-h-screen bg-zinc-950 px-6 py-10 text-zinc-100">
+    <main className="sphinx-shell min-h-screen bg-zinc-950 px-6 py-10 text-zinc-100">
+      <style>{`
+        /* Sphinx beta readability pass */
+        .sphinx-shell {
+          font-size: 17px;
+        }
+
+        .sphinx-shell p,
+        .sphinx-shell li,
+        .sphinx-shell textarea,
+        .sphinx-shell input,
+        .sphinx-shell select {
+          font-size: 17px !important;
+          line-height: 1.7 !important;
+        }
+
+        .sphinx-shell textarea {
+          min-height: 460px;
+        }
+
+        .sphinx-shell button,
+        .sphinx-shell a,
+        .sphinx-shell span {
+          font-size: 15px !important;
+        }
+
+        .sphinx-shell button,
+        .sphinx-shell a {
+          min-height: 52px;
+        }
+
+        .sphinx-shell .sphinx-rendered-report p,
+        .sphinx-shell .sphinx-rendered-report li {
+          font-size: 17px !important;
+          line-height: 1.75 !important;
+          color: #f0ece4 !important;
+        }
+
+        .sphinx-shell .sphinx-rendered-report h1 {
+          font-size: 34px !important;
+          line-height: 1.15 !important;
+        }
+
+        .sphinx-shell .sphinx-rendered-report h2 {
+          font-size: 25px !important;
+          line-height: 1.25 !important;
+        }
+
+        .sphinx-shell .sphinx-rendered-report h3 {
+          font-size: 17px !important;
+          line-height: 1.4 !important;
+        }
+
+        .sphinx-shell .text-zinc-400,
+        .sphinx-shell .text-zinc-500,
+        .sphinx-shell .text-zinc-600 {
+          color: #bdb4aa !important;
+        }
+
+        .sphinx-shell .text-xs {
+          font-size: 13px !important;
+          line-height: 1.45 !important;
+        }
+
+        .sphinx-shell .text-sm {
+          font-size: 16px !important;
+          line-height: 1.6 !important;
+        }
+      `}</style>
       <div className="mx-auto max-w-6xl">
         <nav className="mb-6 flex flex-col gap-3 rounded-3xl border border-zinc-800 bg-zinc-900/80 p-4 shadow-xl md:flex-row md:items-center md:justify-between">
           <div>
