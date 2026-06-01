@@ -29,6 +29,11 @@ const strictnessOptions = [
   { value: "BRUTAL", label: "Brutal" },
   { value: "MURDER MODE", label: "Murder Mode" },
 ];
+const SPHINX_SAMPLE_TEXT = `At our organization, we are deeply passionate about leveraging innovative solutions to empower individuals and communities in meaningful and impactful ways. Our mission is rooted in a commitment to excellence, authenticity, and transformative engagement, ensuring that every stakeholder feels seen, heard, and valued throughout the process.
+
+By embracing a forward-thinking approach, we seek to create dynamic opportunities that foster growth, collaboration, and long-term success. We believe that through intentional action, strategic alignment, and a culture of continuous improvement, we can unlock potential, inspire change, and build a brighter future for everyone involved.
+
+This initiative is more than a project. It is a journey toward possibility, purpose, and progress. Together, we can move beyond challenges, celebrate shared values, and create outcomes that resonate with meaning, compassion, and sustainable impact.`;
 
 function extractDocxParagraphText(paragraph: Element) {
   const pieces: string[] = [];
@@ -520,6 +525,20 @@ export default function SphinxPage() {
     setUploadedFileName("");
   }
 
+  function loadSampleText() {
+    setTitle("SPHINX Sample Text");
+    setText(SPHINX_SAMPLE_TEXT);
+    setMode("GENERAL");
+    setStrictness("BRUTAL");
+    setReport("");
+    setError("");
+    setCopied("");
+    setStrongerVersion("");
+    setSavedId("");
+    setSaveMessage("");
+    setUploadedFileName("");
+  }
+
   return (
     <main className="min-h-screen bg-zinc-950 px-6 py-10 text-zinc-100">
       <div className="mx-auto max-w-6xl">
@@ -678,6 +697,15 @@ export default function SphinxPage() {
 
               <div className="flex flex-wrap gap-3">
                 <button
+                  onClick={loadSampleText}
+                  disabled={loading}
+                  type="button"
+                  className="rounded-xl border border-amber-800 bg-amber-950/30 px-5 py-3 text-sm font-bold text-amber-200 hover:border-amber-400 hover:text-amber-100 disabled:cursor-not-allowed disabled:opacity-50"
+                >
+                  Try Sample Text
+                </button>
+
+                <button
                   onClick={clearAll}
                   type="button"
                   className="rounded-xl border border-zinc-700 px-5 py-3 text-sm font-semibold text-zinc-300 hover:border-zinc-500 hover:text-white"
@@ -813,6 +841,7 @@ export default function SphinxPage() {
     </main>
   );
 }
+
 
 
 
