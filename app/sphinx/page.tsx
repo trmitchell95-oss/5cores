@@ -332,6 +332,105 @@ export default function SphinxPage() {
       event.target.value = "";
     }
   }
+  async function saveSphinxReportWithValues(
+    reportToSave: string,
+    strongerVersionToSave: string,
+    options: { automatic?: boolean } = {}
+  ) {
+    if (!reportToSave) return false;
+
+    setSaving(true);
+
+    if (options.automatic) {
+      setSaveMessage("Sphinx finished. Auto-saving to your dashboard...");
+    } else {
+      setError("");
+      setSaveMessage("");
+    }
+
+    try {
+      const supabase = getSupabaseClient();
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+
+      if (!session?.access_token) {
+        setIsLoggedIn(false);
+
+        if (options.automatic) {
+          setSaveMessage("");
+          setError(
+            "Report generated, but it was not saved because you are not logged in. Copy the report or log in before leaving this page."
+          );
+          return false;
+        }
+
+        window.location.href = "/login";
+        return false;
+      }
+
+      setIsLoggedIn(true);
+
+      const response = await fetch("/api/sphinx/save", {
+        method: "POST",
+        headers: {
+          "content-type": "application/json",
+          authorization: `Bearer ${session.access_token}`,
+        },
+        body: JSON.stringify({
+          title,
+          text,
+          report: reportToSave,
+          strongerVersion: strongerVersionToSave,
+          mode,
+          strictness,
+        }),
+      });
+
+      let data: { id?: string; error?: string; details?: string } = {};
+
+      try {
+        data = await response.json();
+      } catch {
+        data = {};
+      }
+
+      if (!response.ok) {
+        const saveErrorMessage = data.details
+          ? `${data.error || "Could not save Sphinx report."} Details: ${data.details}`
+          : data.error || "Could not save Sphinx report.";
+
+        throw new Error(saveErrorMessage);
+      }
+
+      setSavedId(data.id || "");
+      setSaveMessage(
+        options.automatic
+          ? "Report auto-saved to your dashboard."
+          : "Saved to your reports."
+      );
+
+      return true;
+    } catch (err) {
+      const message =
+        err instanceof Error ? err.message : "Something went wrong while saving.";
+
+      setSaveMessage("");
+
+      if (options.automatic) {
+        setError(
+          `Report generated, but auto-save failed. Copy the report before leaving this page. Details: ${message}`
+        );
+      } else {
+        setError(message);
+      }
+
+      return false;
+    } finally {
+      setSaving(false);
+    }
+  }
+
   async function runSphinx() {
     setLoading(true);
     setError("");
@@ -365,6 +464,12 @@ export default function SphinxPage() {
 
       setReport(nextReport);
       setStrongerVersion(nextStrongerVersion);
+
+      if (nextReport) {
+        await saveSphinxReportWithValues(nextReport, nextStrongerVersion, {
+          automatic: true,
+        });
+      }
     } catch (err) {
       const message =
         err instanceof Error ? err.message : "Something went wrong.";
@@ -377,63 +482,10 @@ export default function SphinxPage() {
   async function saveSphinxReport() {
     if (!report) return;
 
-    if (!isLoggedIn) {
-      window.location.href = "/login";
-      return;
-    }
-
-    setSaving(true);
-    setError("");
-    setSaveMessage("");
-
-    try {
-      const supabase = getSupabaseClient();
-      const {
-        data: { session },
-      } = await supabase.auth.getSession();
-
-      if (!session?.access_token) {
-        setIsLoggedIn(false);
-        throw new Error("Log in before saving a Sphinx report.");
-      }
-
-      const response = await fetch("/api/sphinx/save", {
-        method: "POST",
-        headers: {
-          "content-type": "application/json",
-          authorization: `Bearer ${session.access_token}`,
-        },
-        body: JSON.stringify({
-          title,
-          text,
-          report,
-          strongerVersion,
-          mode,
-          strictness,
-        }),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        const saveErrorMessage = data.details
-          ? `${data.error || "Could not save Sphinx report."} Details: ${data.details}`
-          : data.error || "Could not save Sphinx report.";
-
-        throw new Error(saveErrorMessage);
-      }
-
-      setSavedId(data.id || "");
-      setSaveMessage("Saved to your reports.");
-    } catch (err) {
-      const message =
-        err instanceof Error ? err.message : "Something went wrong while saving.";
-      setError(message);
-    } finally {
-      setSaving(false);
-    }
+    await saveSphinxReportWithValues(report, strongerVersion, {
+      automatic: false,
+    });
   }
-
   async function copyReport() {
     if (!report) return;
 
@@ -477,7 +529,7 @@ export default function SphinxPage() {
               SPHINX Navigation
             </p>
             <p className="mt-1 text-sm text-zinc-400">
-              Run Sphinx publicly. Log in to save reports to your dashboard.
+              Run Sphinx. If you are logged in, completed reports auto-save to your dashboard.
             </p>
           </div>
 
@@ -696,7 +748,9 @@ export default function SphinxPage() {
                     ? "Log in to Save"
                     : saving
                       ? "Saving..."
-                      : "Save Report"}
+                      : savedId
+                        ? "Saved"
+                        : "Save Report"}
                 </button>
 
                 <button
@@ -759,6 +813,10 @@ export default function SphinxPage() {
     </main>
   );
 }
+
+
+
+
 
 
 
