@@ -48,13 +48,25 @@ function parseIntake(intake: Report["intake"]): Intake {
   return {};
 }
 
+function normalizeTimestamp(dateStr: string) {
+  const hasTimezone = /([zZ]|[+-]\d{2}:?\d{2})$/.test(dateStr);
+  return hasTimezone ? dateStr : `${dateStr}Z`;
+}
+
 function formatDate(dateStr: string) {
-  return new Date(dateStr).toLocaleDateString("en-US", {
+  const date = new Date(normalizeTimestamp(dateStr));
+
+  if (Number.isNaN(date.getTime())) {
+    return "Date unavailable";
+  }
+
+  return date.toLocaleString("en-US", {
     month: "short",
     day: "numeric",
     year: "numeric",
-    hour: "2-digit",
+    hour: "numeric",
     minute: "2-digit",
+    timeZoneName: "short",
   });
 }
 
