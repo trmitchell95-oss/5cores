@@ -244,7 +244,6 @@ export default function SubmitPage() {
   const [hasRun, setHasRun] = useState(false);
   const [error, setError] = useState("");
   const [submissionId, setSubmissionId] = useState("");
-  const [userId, setUserId] = useState<string | null>(null);
   const [fileName, setFileName] = useState("");
   const [runningSeconds, setRunningSeconds] = useState(0);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
@@ -263,8 +262,6 @@ export default function SubmitPage() {
 
       if (!session) {
         window.location.href = "/login";
-      } else {
-        setUserId(session.user.id);
       }
     }
 
@@ -366,7 +363,6 @@ export default function SubmitPage() {
         },
         body: JSON.stringify({
           manuscriptText: manuscript,
-          userId,
           title: title.trim() || "Untitled",
           intake,
           writingType,
@@ -1655,6 +1651,8 @@ export default function SubmitPage() {
     </main>
   );
 }
+
+
 
 
 
