@@ -235,7 +235,7 @@ export default function BetaTermsPage() {
           <div className="brand">
             <div className="brand-mark">5C</div>
             <div>
-              <div className="brand-main">5 CORE</div>
+              <div className="brand-main">The Council</div>
               <div className="brand-sub">Beta terms and privacy note</div>
             </div>
           </div>
@@ -251,7 +251,7 @@ export default function BetaTermsPage() {
           <div className="eyebrow">Plain-English Beta Terms</div>
           <h1 className="title">This is a free beta tool.</h1>
           <p className="subtitle">
-            5 CORE is still being tested, tightened, and improved. The goal is simple:
+            The Council is still being tested, tightened, and improved. The goal is simple:
             help writers get useful diagnostic feedback without pretending this is magic,
             therapy, legal advice, or a finished paid product.
           </p>
@@ -291,7 +291,7 @@ export default function BetaTermsPage() {
         <section className="section-card">
           <h2 className="section-title">What this is not</h2>
           <p className="body-text">
-            5 CORE and Sphinx are writing feedback tools. They are not a substitute for a human editor,
+            The Council and Sphinx are writing feedback tools. They are not a substitute for a human editor,
             lawyer, publisher, agent, therapist, accountant, or common sense.
           </p>
 
@@ -321,3 +321,4 @@ export default function BetaTermsPage() {
     </main>
   );
 }
+

@@ -35,7 +35,7 @@ Adjust your language and severity according to the requested tone, but do not be
 const PERSONAS = [
   {
     key: "brad",
-    buildPrompt: (intake: string) => `You are Brad, the Voice Guardian inside the 5 CORE Editorial Council.
+    buildPrompt: (intake: string) => `You are Brad, the Voice Guardian inside the The Council.
 
 Your job is to protect the living pulse of the manuscript.
 
@@ -58,7 +58,7 @@ Format your response with these sections:
   },
   {
     key: "greg",
-    buildPrompt: (intake: string) => `You are Greg, the Brutal Editor inside the 5 CORE Editorial Council.
+    buildPrompt: (intake: string) => `You are Greg, the Brutal Editor inside the The Council.
 
 Your job is to find what is costing the manuscript power.
 
@@ -79,7 +79,7 @@ Format your response with these sections:
   },
   {
     key: "vonClaude",
-    buildPrompt: (intake: string) => `You are Von Clausen, the Architect inside the 5 CORE Editorial Council.
+    buildPrompt: (intake: string) => `You are Von Clausen, the Architect inside the The Council.
 
 Your job is to assess the structural integrity of the manuscript.
 
@@ -100,7 +100,7 @@ Format your response with these sections:
   },
   {
     key: "juniper",
-    buildPrompt: (intake: string) => `You are Juniper, the Reader Lens inside the 5 CORE Editorial Council.
+    buildPrompt: (intake: string) => `You are Juniper, the Reader Lens inside the The Council.
 
 Your job is to represent the intelligent outside reader.
 
@@ -122,9 +122,9 @@ Format your response with these sections:
   },
   {
     key: "finalEditor",
-    buildPrompt: (intake: string) => `You are the Final Editor of the 5 CORE Editorial Council.
+    buildPrompt: (intake: string) => `You are the Final Editor of the The Council.
 
-Synthesize the full council diagnosis into one official 5 CORE verdict.
+Synthesize the full council diagnosis into one official The Council verdict.
 
 ${intake}
 
@@ -209,7 +209,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json(
         {
           error:
-            "You have hit the daily 5 CORE beta limit. Try again tomorrow, or ask Tom if you need more runs.",
+            "You have hit the daily The Council beta limit. Try again tomorrow, or ask Tom if you need more runs.",
         },
         { status: 429 }
       );
@@ -449,7 +449,7 @@ ${result.text}`
       )
       .join("\n\n---\n\n");
 
-    const finalEditorPrompt = `You are receiving the actual reports from the 5 CORE Editorial Council.
+    const finalEditorPrompt = `You are receiving the actual reports from the The Council.
 
 Your job is to synthesize these reports into one official final verdict.
 
@@ -564,3 +564,4 @@ Now write the official Final Editor synthesis using your required format.`;
     );
   }
 }
+

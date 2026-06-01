@@ -410,7 +410,7 @@ export default function SubmitPage() {
 
   function loadSampleManuscript() {
     setManuscript(COUNCIL_SAMPLE_MANUSCRIPT);
-    setTitle("5 CORE Sample Excerpt");
+    setTitle("The Council Sample Excerpt");
     setWritingType("Fiction");
     setAudience("Readers");
     setBiggestConcern("I want to know if the emotion is working or if the scene is overexplaining itself.");
@@ -1275,7 +1275,7 @@ export default function SubmitPage() {
         </nav>
 
         <header className="masthead">
-          <div className="eyebrow">5 CORE Manuscript Diagnosis</div>
+          <div className="eyebrow">The Council Manuscript Diagnosis</div>
           <h1 className="title">Start a new diagnosis.</h1>
           <p className="subtitle">
             Tell the council what kind of work this is, what you are preparing for, and how sharp the feedback should be. Then paste the manuscript and run the diagnosis.
@@ -1651,6 +1651,7 @@ export default function SubmitPage() {
     </main>
   );
 }
+
 
 
 

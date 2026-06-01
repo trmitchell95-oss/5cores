@@ -90,7 +90,7 @@ function statusClass(status: string) {
 }
 
 function toolLabel(tool: string) {
-  if (tool === "council") return "5 CORE";
+  if (tool === "council") return "The Council";
   if (tool === "sphinx") return "Sphinx";
   if (tool === "sphinx_save") return "Sphinx Save";
   return tool;
@@ -523,7 +523,7 @@ export default function AdminUsagePage() {
           <div className="brand">
             <div className="brand-mark">5C</div>
             <div>
-              <div className="brand-main">5 CORE Admin</div>
+              <div className="brand-main">The Council Admin</div>
               <div className="brand-sub">Private usage speedometer</div>
             </div>
           </div>
@@ -640,7 +640,7 @@ export default function AdminUsagePage() {
                       <th>Last Sign-In</th>
                       <th>Last Activity</th>
                       <th>Reports</th>
-                      <th>5 CORE</th>
+                      <th>The Council</th>
                       <th>Sphinx</th>
                       <th>Sphinx Saves</th>
                       <th>Problems</th>
@@ -737,6 +737,7 @@ export default function AdminUsagePage() {
     </main>
   );
 }
+
 
 
 

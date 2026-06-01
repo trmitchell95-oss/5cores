@@ -76,7 +76,7 @@ function getReportTypeValue(report: Report) {
 }
 
 function getReportTypeLabel(report: Report) {
-  return report.report_type === "sphinx" ? "Sphinx" : "5 CORE";
+  return report.report_type === "sphinx" ? "Sphinx" : "The Council";
 }
 
 function getSearchText(report: Report) {
@@ -1001,7 +1001,7 @@ export default function Dashboard() {
           <div className="brand-lockup">
             <div className="brand-mark">5C</div>
             <div>
-              <div className="brand-main">5 CORE</div>
+              <div className="brand-main">The Council</div>
               <div className="brand-sub">Manuscript diagnosis dashboard</div>
             </div>
           </div>
@@ -1027,7 +1027,7 @@ export default function Dashboard() {
             <div className="eyebrow">Start Here</div>
             <h1 className="heading">Diagnose the manuscript before you rewrite the damn thing.</h1>
             <p className="subheading">
-              Upload or paste a manuscript, answer a few plain-language questions, and let the 5 CORE council produce a saved editorial diagnosis you can actually use.
+              Upload or paste a manuscript, answer a few plain-language questions, and let the Council produce a saved editorial diagnosis you can actually use.
             </p>
 
             <div className="hero-actions">
@@ -1085,7 +1085,7 @@ export default function Dashboard() {
               </p>
             </div>
             <a className="tool-link" href="/submit">
-              Run 5 CORE
+              Run The Council
             </a>
           </article>
 
@@ -1164,7 +1164,7 @@ export default function Dashboard() {
               onChange={(event) => setReportFilter(event.target.value)}
             >
               <option value="all">All Reports</option>
-              <option value="council">5 CORE Only</option>
+              <option value="council">The Council Only</option>
               <option value="sphinx">Sphinx Only</option>
             </select>
 
@@ -1254,6 +1254,7 @@ export default function Dashboard() {
     </main>
   );
 }
+
 
 
 

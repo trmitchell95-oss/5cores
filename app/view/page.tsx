@@ -142,7 +142,7 @@ export default function Home() {
       <div className="app-wrap">
         <div className="masthead">
           <div className="eyebrow">Editorial Council â€” Phase 1 Prototype</div>
-          <div className="title">5 CORE</div>
+          <div className="title">The Council</div>
           <div className="subtitle">Five editorial minds. One blunt verdict. No bullshit.</div>
         </div>
 
@@ -244,3 +244,4 @@ export default function Home() {
     </div>
   );
 }
+

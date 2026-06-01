@@ -6,8 +6,8 @@ import HovelManifestoFloat from "./start/HovelManifestoFloat";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "5 CORE",
-  description: "Five editorial minds. One blunt verdict. No bullshit.",
+  title: "HOVEL EDITOR",
+  description: "A rough-edged writing diagnostics workshop for The Council, SPHINX, and saved reports.",
 };
 
 export default function RootLayout({
@@ -135,3 +135,6 @@ export default function RootLayout({
     </html>
   );
 }
+
+
+

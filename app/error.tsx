@@ -11,7 +11,7 @@ export default function ErrorPage({
   reset: () => void;
 }) {
   useEffect(() => {
-    console.error("5 CORE app error:", error);
+    console.error("The Council app error:", error);
   }, [error]);
 
   return (
@@ -160,3 +160,4 @@ export default function ErrorPage({
     </main>
   );
 }
+

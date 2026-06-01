@@ -42,7 +42,7 @@ export default function OldViewRedirectPage() {
             marginBottom: "12px",
           }}
         >
-          5 CORE
+          The Council
         </div>
 
         <h1 style={{ fontSize: "42px", margin: 0 }}>
@@ -56,3 +56,4 @@ export default function OldViewRedirectPage() {
     </main>
   );
 }
+

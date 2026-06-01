@@ -5,7 +5,7 @@ import Link from "next/link";
 const cards = [
   {
     eyebrow: "01",
-    title: "Run 5 CORE",
+    title: "Run The Council",
     copy:
       "Use this for chapters, scenes, essays, story openings, serious excerpts, and work that needs real editorial diagnosis.",
     href: "/submit",
@@ -287,7 +287,7 @@ export default function StartPage() {
       <div className="wrap">
         <nav className="top-nav">
           <Link href="/">Home</Link>
-          <Link href="/submit">5 CORE</Link>
+          <Link href="/submit">The Council</Link>
           <Link href="/sphinx">Sphinx</Link>
           <Link href="/dashboard">Reports</Link>
           <Link href="/help">Help</Link>
@@ -305,7 +305,7 @@ export default function StartPage() {
           </p>
 
           <div className="button-row">
-            <Link className="button" href="/submit">Start 5 CORE</Link>
+            <Link className="button" href="/submit">Start The Council</Link>
             <Link className="button-dark" href="/sphinx">Run Sphinx</Link>
             <Link className="button-dark" href="/dashboard">Open Reports</Link>
           </div>
@@ -332,13 +332,13 @@ export default function StartPage() {
           <ul>
             <li>Use excerpts, chapters, scenes, essays, bios, grant answers, and application responses.</li>
             <li>Do not paste a whole book unless you enjoy watching money catch fire.</li>
-            <li>Use 5 CORE for deeper manuscript diagnosis.</li>
+            <li>Use The Council for deeper manuscript diagnosis.</li>
             <li>Use Sphinx for shorter cleanup when something sounds stiff, generic, or too AI.</li>
             <li>Use Feedback when something breaks, confuses you, or gives you a useful idea.</li>
           </ul>
 
           <div className="callout">
-            Current beta limits: 5 CORE is best under about 25,000 characters.
+            Current beta limits: The Council is best under about 25,000 characters.
             Sphinx is best under about 10,000 characters.
           </div>
 
@@ -352,6 +352,9 @@ export default function StartPage() {
     </main>
   );
 }
+
+
+
 
 
 

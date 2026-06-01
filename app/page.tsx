@@ -533,7 +533,7 @@ export default function HomePage() {
           <div className="brand-lockup">
             <div className="brand-mark">5C</div>
             <div>
-              <div className="brand-main">5 CORE</div>
+              <div className="brand-main">HOVEL EDITOR</div>
               <div className="brand-sub">Manuscript diagnosis engine</div>
             </div>
           </div>
@@ -564,7 +564,7 @@ export default function HomePage() {
             <div className="eyebrow">Editorial Council / Beta</div>
             <h1 className="heading">Your manuscript deserves a real diagnosis.</h1>
             <p className="subheading">
-              5 CORE reads your work through five distinct editorial lenses and tells you what is alive, what is dragging, what is structurally cracked, and what to fix first. It is not a rewrite button. It is a manuscript pressure test.
+              The Council reads your work through five distinct editorial lenses and tells you what is alive, what is dragging, what is structurally cracked, and what to fix first. It is not a rewrite button. It is a manuscript pressure test.
             </p>
 
             <div className="hero-actions">
@@ -593,7 +593,7 @@ export default function HomePage() {
               <div className="side-label">What it is</div>
               <div className="side-title">A diagnostic engine, not a fake editor.</div>
               <p className="side-text">
-                Most AI writing tools try to polish your sentences until everything sounds like beige hotel soap. 5 CORE is built to tell you where the manuscript is actually working and where it is lying to itself.
+                Most AI writing tools try to polish your sentences until everything sounds like beige hotel soap. The Council is built to tell you where the manuscript is actually working and where it is lying to itself.
               </p>
             </div>
 
@@ -609,7 +609,7 @@ export default function HomePage() {
         <section className="section-grid">
           <article className="tool-card">
             <div className="tool-number">01</div>
-            <div className="card-title">5 CORE Diagnosis</div>
+            <div className="card-title">The Council Diagnosis</div>
             <p className="card-text">
               For scenes, chapters, essays, memoirs, children&apos;s books, and serious excerpts that need more than a grammar pass.
             </p>
@@ -718,5 +718,6 @@ export default function HomePage() {
     </main>
   );
 }
+
 
 

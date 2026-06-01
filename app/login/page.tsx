@@ -392,7 +392,7 @@ export default function LoginPage() {
         <div className="card">
           <a className="back-link" href="/">Back to Home</a>
 
-          <div className="eyebrow">5 CORE Beta Access</div>
+          <div className="eyebrow">The Council Beta Access</div>
 
           <div className="title">
             {mode === "signin" ? "Sign In" : mode === "signup" ? "Create Account" : "Reset Password"}
@@ -525,3 +525,4 @@ export default function LoginPage() {
     </div>
   );
 }
+

@@ -638,7 +638,7 @@ export default function SphinxPage() {
               href="/submit"
               className="rounded-xl border border-zinc-700 px-4 py-3 text-sm font-bold text-zinc-200 hover:border-amber-400 hover:text-amber-300"
             >
-              Main 5 CORE
+              The Council
             </Link>
 
             <Link
@@ -667,7 +667,7 @@ export default function SphinxPage() {
 
         <section className="mb-8 rounded-3xl border border-zinc-800 bg-zinc-900/70 p-8 shadow-2xl">
           <p className="mb-2 text-sm font-semibold uppercase tracking-[0.3em] text-amber-400">
-            5 CORE Add-On
+            HOVEL EDITOR Tool
           </p>
 
           <h1 className="mb-3 text-4xl font-black tracking-tight text-white md:text-5xl">
@@ -926,6 +926,7 @@ export default function SphinxPage() {
     </main>
   );
 }
+
 
 
 

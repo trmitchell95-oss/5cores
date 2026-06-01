@@ -271,7 +271,7 @@ export default function AdminExportsPage() {
             <article className="export-card">
               <h2 className="card-title">Usage</h2>
               <p className="card-copy">
-                Exports recent 5 CORE, Sphinx, save, failure, and rejection events.
+                Exports recent The Council, Sphinx, save, failure, and rejection events.
               </p>
               <button
                 className="export-button"
@@ -318,3 +318,4 @@ export default function AdminExportsPage() {
     </main>
   );
 }
+

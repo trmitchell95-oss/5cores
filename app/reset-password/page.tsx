@@ -248,7 +248,7 @@ export default function ResetPasswordPage() {
         <div className="card">
           <a className="back-link" href="/login">Back to Login</a>
 
-          <div className="eyebrow">5 CORE Account Recovery</div>
+          <div className="eyebrow">The Council Account Recovery</div>
           <div className="title">New Password</div>
           <div className="subtitle">
             Enter a new password for your account.
@@ -321,4 +321,5 @@ export default function ResetPasswordPage() {
     </div>
   );
 }
+
 

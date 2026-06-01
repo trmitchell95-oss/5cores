@@ -183,7 +183,7 @@ export default function ManifestoPage() {
         <nav className="top-nav">
           <Link href="/">Home</Link>
           <Link href="/start">Start</Link>
-          <Link href="/submit">5 CORE</Link>
+          <Link href="/submit">The Council</Link>
           <Link href="/sphinx">Sphinx</Link>
           <Link href="/dashboard">Reports</Link>
           <Link href="/help">Help</Link>
@@ -193,14 +193,14 @@ export default function ManifestoPage() {
           <div className="eyebrow">The Hovel Editor Manifesto</div>
           <h1 className="title">Keep the soul in the sentence.</h1>
           <p className="subtitle">
-            The public version of the little garage note behind 5 CORE, SPHINX, and the whole damn machine.
+            The public version of the little garage note behind The Council, SPHINX, and the whole damn machine.
           </p>
         </section>
 
         <section className="panel">
           <div className="manifesto-copy">
             <p>
-              The Hovel Editor is the garage. <strong>5 CORE</strong> and <strong>SPHINX</strong> are the tools on the bench. None of it was built to replace writers. It was built because the machine is already in the room, and pretending otherwise is useless. Writers are going to use AI. Editors are going to use AI. Publishers, teachers, applicants, marketers, and weird little goblins with laptops at 2:00 in the morning are going to use it. The question is not whether the tool exists. The question is whether we let the tool sand every fingerprint off the work.
+              The Hovel Editor is the garage. <strong>The Council</strong> and <strong>SPHINX</strong> are the tools on the bench. None of it was built to replace writers. It was built because the machine is already in the room, and pretending otherwise is useless. Writers are going to use AI. Editors are going to use AI. Publishers, teachers, applicants, marketers, and weird little goblins with laptops at 2:00 in the morning are going to use it. The question is not whether the tool exists. The question is whether we let the tool sand every fingerprint off the work.
             </p>
 
             <p>
@@ -208,13 +208,13 @@ export default function ManifestoPage() {
             </p>
 
             <p>
-              5 CORE checks the manuscript&apos;s bones. SPHINX checks the pulse. One asks whether the structure holds. The other leans close to the sentence and asks whether a human being still lives there. The goal is not cleaner writing, smoother writing, or prettier words wearing a rented tuxedo. The goal is writing that still sounds stubbornly, unmistakably human.
+              The Council checks the manuscript&apos;s bones. SPHINX checks the pulse. One asks whether the structure holds. The other leans close to the sentence and asks whether a human being still lives there. The goal is not cleaner writing, smoother writing, or prettier words wearing a rented tuxedo. The goal is writing that still sounds stubbornly, unmistakably human.
             </p>
           </div>
 
           <div className="button-row">
             <Link className="button" href="/start">Start Using The Hovel</Link>
-            <Link className="button-dark" href="/submit">Run 5 CORE</Link>
+            <Link className="button-dark" href="/submit">Run The Council</Link>
             <Link className="button-dark" href="/sphinx">Run SPHINX</Link>
           </div>
         </section>
@@ -222,3 +222,4 @@ export default function ManifestoPage() {
     </main>
   );
 }
+

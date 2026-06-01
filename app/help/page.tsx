@@ -200,7 +200,7 @@ export default function HelpPage() {
       <div className="wrap">
         <nav className="top-nav">
           <Link href="/">Home</Link>
-          <Link href="/submit">5 CORE</Link>
+          <Link href="/submit">The Council</Link>
           <Link href="/sphinx">Sphinx</Link>
           <Link href="/dashboard">Dashboard</Link>
           <Link href="/feedback">Feedback</Link>
@@ -210,15 +210,15 @@ export default function HelpPage() {
 
         <section className="hero">
           <div className="eyebrow">Beta Help</div>
-          <h1 className="title">How to use 5 CORE without feeding it a whale.</h1>
+          <h1 className="title">How to use The Council without feeding it a whale.</h1>
           <p className="subtitle">
-            5 CORE is a manuscript diagnosis engine. It is built to tell you what is working,
+            The Council is a manuscript diagnosis engine. It is built to tell you what is working,
             what is dragging, what is cracked, and what to fix first. It is not a magic rewrite button,
             a therapist, a lawyer, or a replacement for your own judgment.
           </p>
 
           <div className="button-row">
-            <Link className="button" href="/submit">Start 5 CORE Diagnosis</Link>
+            <Link className="button" href="/submit">Start The Council Diagnosis</Link>
             <Link className="button-dark" href="/sphinx">Run Sphinx Cleanup</Link>
             <Link className="button-dark" href="/manifesto">Read The Manifesto</Link>
           </div>
@@ -226,10 +226,10 @@ export default function HelpPage() {
 
         <section className="grid">
           <article className="card">
-            <div className="mini-label">5 CORE</div>
+            <div className="mini-label">The Council</div>
             <h2>Use it for manuscript diagnosis.</h2>
             <p>
-              5 CORE reads an excerpt through multiple editorial lenses and gives you a saved report.
+              The Council reads an excerpt through multiple editorial lenses and gives you a saved report.
               It is best for chapters, scenes, essays, story openings, grant answers, bios, or substantial excerpts.
             </p>
             <ul>
@@ -310,4 +310,5 @@ export default function HelpPage() {
     </main>
   );
 }
+
 
