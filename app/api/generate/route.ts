@@ -281,29 +281,88 @@ export async function POST(req: NextRequest) {
 
     const results = await Promise.all(
       PERSONAS.map(async (persona) => {
-        const message = await client.messages.create({
-          model,
-          max_tokens: 16000,
-          system: persona.buildPrompt(intakeContext),
-          messages: [
-            {
-              role: "user",
-              content: `Read this manuscript excerpt and deliver your complete diagnostic assessment.\n\n---\n\n${cleanManuscript}\n\n---\n\nDeliver your full report now.`,
-            },
-          ],
-        });
+        try {
+          const message = await client.messages.create({
+            model,
+            max_tokens: 16000,
+            system: persona.buildPrompt(intakeContext),
+            messages: [
+              {
+                role: "user",
+                content: `Read this manuscript excerpt and deliver your complete diagnostic assessment.\n\n---\n\n${cleanManuscript}\n\n---\n\nDeliver your full report now.`,
+              },
+            ],
+          });
 
-        return {
-          key: persona.key,
-          text: (message.content[0] as { text: string }).text,
-        };
+          const contentBlocks = message.content as Array<{
+            type: string;
+            text?: string;
+          }>;
+
+          const text = contentBlocks
+            .filter((block) => block.type === "text" && block.text)
+            .map((block) => block.text || "")
+            .join("\n")
+            .trim();
+
+          if (!text) {
+            throw new Error(`${persona.key} returned an empty response.`);
+          }
+
+          return {
+            key: persona.key,
+            text,
+            ok: true as const,
+          };
+        } catch (error) {
+          console.error(`Council persona failed: ${persona.key}`, error);
+
+          return {
+            key: persona.key,
+            text: `## ${persona.key.toUpperCase()} REPORT UNAVAILABLE
+
+This council member failed to respond during this run.
+
+The rest of the Council continued working, so this report was not fully lost. Try running the diagnosis again later if you need this specific section.`,
+            ok: false as const,
+            errorMessage:
+              error instanceof Error ? error.message : String(error),
+          };
+        }
       })
     );
 
     const reports: Record<string, string> = {};
+    const failedPersonaKeys: string[] = [];
 
     for (const result of results) {
       reports[result.key] = result.text;
+
+      if (!result.ok) {
+        failedPersonaKeys.push(result.key);
+      }
+    }
+
+    if (failedPersonaKeys.length === PERSONAS.length) {
+      await logUsageEvent({
+        userId: userIdForLog,
+        tool: "council",
+        status: "failed",
+        inputChars,
+        inputWords,
+        model,
+        title: titleForLog,
+        errorMessage: "All council personas failed.",
+        meta: { failedPersonaKeys },
+      });
+
+      return NextResponse.json(
+        {
+          error:
+            "The Council could not get a response from Claude. Try again in a minute.",
+        },
+        { status: 502 }
+      );
     }
 
     const { data, error } = await supabase
@@ -357,6 +416,8 @@ export async function POST(req: NextRequest) {
       reportId: data.id,
       meta: {
         sections: Object.keys(reports),
+        failedPersonaKeys,
+        partialFailure: failedPersonaKeys.length > 0,
       },
     });
 
