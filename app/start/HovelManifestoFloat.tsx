@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 
-const STORAGE_KEY = "hovel_manifesto_float_dismissed_v1";
+const STORAGE_KEY = "hovel_manifesto_float_dismissed_v2";
 
 export default function HovelManifestoFloat() {
   const [ready, setReady] = useState(false);
@@ -41,25 +41,26 @@ export default function HovelManifestoFloat() {
       </div>
 
       <h2 className="mb-3 text-2xl font-black tracking-tight text-white">
-        Pull the human back out of the machine.
+        Keep the soul in the sentence.
       </h2>
 
       <div className="space-y-3 text-sm leading-7 text-zinc-300">
         <p>
-          The Hovel Editor was not built to make writers sound like machines.
-          It was built because the machine has become part of the room, and
-          pretending otherwise is useless. The work now is to drag the human
-          pulse back through the wires: the grief, humor, dirt, rhythm,
-          contradiction, and voice that make writing belong to a person instead
-          of a template.
+          The Hovel was not built to replace writers. It was built because too
+          much writing is being polished until it has no fingerprints left.
         </p>
 
         <p>
-          Tools are not betrayals. Michelangelo did not carve with one holy
-          chisel or paint with one holy brush. He used the tool the work
-          demanded. That is the point here too. Use the machine when it helps,
-          distrust it when it flatters, and never let it become the author. The
-          Hovel exists to make the tool serve the hand, not replace it.
+          AI is a tool. So is a chisel. So is a brush. Michelangelo did not use
+          one sacred instrument for every cut and every color. He used what the
+          work demanded. That is the point here: use the machine, but do not let
+          the machine become the author.
+        </p>
+
+        <p>
+          5 CORE diagnoses the bones. SPHINX checks the pulse. The goal is not
+          cleaner writing. The goal is writing that still sounds stubbornly,
+          unmistakably human.
         </p>
       </div>
 
