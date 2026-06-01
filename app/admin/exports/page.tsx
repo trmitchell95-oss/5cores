@@ -22,9 +22,9 @@ function labelFor(type: ExportType) {
 function filenameFor(type: ExportType) {
   const stamp = new Date().toISOString().slice(0, 10);
 
-  if (type === "usage") return `5core-usage-events-${stamp}.csv`;
-  if (type === "feedback") return `5core-feedback-${stamp}.csv`;
-  return `5core-invite-codes-${stamp}.csv`;
+  if (type === "usage") return `hovel-editor-usage-events-${stamp}.csv`;
+  if (type === "feedback") return `hovel-editor-feedback-${stamp}.csv`;
+  return `hovel-editor-invite-codes-${stamp}.csv`;
 }
 
 export default function AdminExportsPage() {
@@ -318,4 +318,5 @@ export default function AdminExportsPage() {
     </main>
   );
 }
+
 

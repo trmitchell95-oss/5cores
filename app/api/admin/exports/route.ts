@@ -86,11 +86,11 @@ function toCsv(rows: ExportRow[], headers: string[]) {
 function filenameFor(type: string) {
   const stamp = new Date().toISOString().slice(0, 10);
 
-  if (type === "usage") return `5core-usage-events-${stamp}.csv`;
-  if (type === "feedback") return `5core-feedback-${stamp}.csv`;
-  if (type === "invites") return `5core-invite-codes-${stamp}.csv`;
+  if (type === "usage") return `hovel-editor-usage-events-${stamp}.csv`;
+  if (type === "feedback") return `hovel-editor-feedback-${stamp}.csv`;
+  if (type === "invites") return `hovel-editor-invite-codes-${stamp}.csv`;
 
-  return `5core-export-${stamp}.csv`;
+  return `hovel-editor-export-${stamp}.csv`;
 }
 
 export async function GET(req: NextRequest) {
@@ -222,4 +222,5 @@ export async function GET(req: NextRequest) {
     );
   }
 }
+
 
