@@ -498,7 +498,7 @@ export default function SphinxPage() {
   }
 
   async function saveSphinxReport() {
-    if (!report) return;
+    if (!report || savedId) return;
 
     await saveSphinxReportWithValues(report, strongerVersion, {
       automatic: false,
@@ -853,7 +853,7 @@ export default function SphinxPage() {
               <div className="flex flex-wrap gap-3">
                 <button
                   onClick={saveSphinxReport}
-                  disabled={!report || saving}
+                  disabled={!report || saving || Boolean(savedId)}
                   type="button"
                   className="rounded-xl border border-zinc-700 px-4 py-3 text-sm font-semibold text-zinc-300 hover:border-green-400 hover:text-green-300 disabled:cursor-not-allowed disabled:opacity-50"
                 >
@@ -862,7 +862,7 @@ export default function SphinxPage() {
                     : saving
                       ? "Saving..."
                       : savedId
-                        ? "Saved"
+                        ? "Already Saved"
                         : "Save Report"}
                 </button>
 
@@ -926,6 +926,8 @@ export default function SphinxPage() {
     </main>
   );
 }
+
+
 
 
 
