@@ -8,11 +8,6 @@ const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 );
 
-const ADMIN_EMAILS = (process.env.NEXT_PUBLIC_ADMIN_EMAILS || "")
-  .split(",")
-  .map((email) => email.trim().toLowerCase())
-  .filter(Boolean);
-
 type Intake = {
   writingType?: string | null;
   audience?: string | null;
@@ -105,6 +100,7 @@ export default function Dashboard() {
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [user, setUser] = useState<{ email?: string | null } | null>(null);
+  const [isAdmin, setIsAdmin] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [reportFilter, setReportFilter] = useState("all");
   const [visibleCount, setVisibleCount] = useState(20);
@@ -121,7 +117,26 @@ export default function Dashboard() {
         return;
       }
 
-      setUser(session.user);
+      try {
+        const meResponse = await fetch("/api/me", {
+          headers: {
+            authorization: `Bearer ${session.access_token}`,
+          },
+        });
+
+        const meData = await meResponse.json();
+
+        if (meResponse.ok) {
+          setUser(meData.user || session.user);
+          setIsAdmin(Boolean(meData.isAdmin));
+        } else {
+          setUser(session.user);
+          setIsAdmin(false);
+        }
+      } catch {
+        setUser(session.user);
+        setIsAdmin(false);
+      }
 
       const { data, error } = await supabase
         .from("reports")
@@ -192,10 +207,6 @@ export default function Dashboard() {
   const latestReport = reports[0];
   const latestIntake = latestReport ? parseIntake(latestReport.intake) : {};
   const reportLabel = getReportLabel(reports.length);
-  const isAdmin = Boolean(
-    user?.email && ADMIN_EMAILS.includes(user.email.toLowerCase())
-  );
-
   const normalizedSearch = searchTerm.trim().toLowerCase();
 
   const filteredReports = reports.filter((report) => {
