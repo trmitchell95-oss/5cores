@@ -619,7 +619,7 @@ export default function AdminUsagePage() {
             </div>
 
             <div className="card">
-              <div className="card-label">Rig Workbench</div>
+              <div className="card-label">Ideanator</div>
               <div className="card-value">{formatNumber(ideanatorRuns)}</div>
               <div className="card-note">Successful idea checks.</div>
             </div>
@@ -658,7 +658,7 @@ export default function AdminUsagePage() {
                       <th>Re-Read</th>
                       <th>Sphinx</th>
                       <th>Sphinx Saves</th>
-                      <th>Rig Workbench</th>
+                      <th>Ideanator</th>
                       <th>Problems</th>
                     </tr>
                   </thead>
@@ -755,7 +755,6 @@ export default function AdminUsagePage() {
     </main>
   );
 }
-
 
 
 

@@ -1,6 +1,6 @@
 ﻿"use client";
 
-import { useEffect, useState, type MouseEvent } from "react";
+import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import { createClient } from "@supabase/supabase-js";
 
@@ -13,8 +13,6 @@ function isIdeanatorPath(pathname: string, product: string) {
     pathname === "/ideanator" ||
     pathname === "/the-ideanator" ||
     pathname.startsWith("/ideanator/") ||
-    pathname === "/saved-ideas" ||
-    pathname.startsWith("/saved-ideas/") ||
     pathname.endsWith("/compare")
   );
 }
@@ -24,12 +22,6 @@ function getSupabaseClient() {
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
   );
-}
-
-function navClass(isActive: boolean) {
-  return isActive
-    ? "hovel-global-nav-link hovel-global-nav-primary"
-    : "hovel-global-nav-link";
 }
 
 export default function ProductNav() {
@@ -86,7 +78,7 @@ export default function ProductNav() {
     host === "theideanator.com" ||
     host === "www.theideanator.com";
 
-  async function handleSignOut(event: MouseEvent<HTMLAnchorElement>) {
+  async function handleSignOut(event: React.MouseEvent<HTMLAnchorElement>) {
     event.preventDefault();
 
     const supabase = getSupabaseClient();
@@ -96,11 +88,7 @@ export default function ProductNav() {
   }
 
   const authLink = authReady && signedIn ? (
-    <a
-      href={isIdeanator ? "/idea" : "/"}
-      className="hovel-global-nav-link"
-      onClick={handleSignOut}
-    >
+    <a href={isIdeanator ? "/idea" : "/"} className="hovel-global-nav-link" onClick={handleSignOut}>
       SIGN OUT
     </a>
   ) : (
@@ -110,14 +98,6 @@ export default function ProductNav() {
   );
 
   if (isIdeanator) {
-    const rigWorkbenchActive =
-      pathname === "/ideanator" || pathname.startsWith("/ideanator/");
-    const ideaCheckActive =
-      pathname === "/idea" || pathname === "/the-ideanator";
-    const ideaReportsActive = pathname === "/idea/saved";
-    const rigLibraryActive =
-      pathname === "/saved-ideas" || pathname.startsWith("/saved-ideas/");
-
     return (
       <nav
         className="hovel-global-nav hovel-global-nav-ideanator"
@@ -127,20 +107,16 @@ export default function ProductNav() {
           ID
         </a>
 
-        <a href="/ideanator" className={navClass(rigWorkbenchActive)}>
-          RIG WORKBENCH
+        <a href="/idea" className="hovel-global-nav-link hovel-global-nav-primary">
+          IDEANATOR
         </a>
 
-        <a href="/idea?start=intake" className={navClass(ideaCheckActive)}>
+        <a href="/idea?start=intake" className="hovel-global-nav-link">
           IDEA CHECK
         </a>
 
-        <a href="/idea/saved" className={navClass(ideaReportsActive)}>
+        <a href="/idea/saved" className="hovel-global-nav-link">
           IDEA REPORTS
-        </a>
-
-        <a href="/saved-ideas" className={navClass(rigLibraryActive)}>
-          RIG LIBRARY
         </a>
 
         {authLink}
@@ -174,3 +150,4 @@ export default function ProductNav() {
     </nav>
   );
 }
+

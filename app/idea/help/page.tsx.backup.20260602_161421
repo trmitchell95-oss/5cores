@@ -193,9 +193,9 @@ export default function IdeaHelpPage() {
 
       <div className="wrap">
         <nav className="top-nav">
-          <Link href="/idea">Rig Workbench</Link>
-          <Link href="/idea?start=intake">Idea Check</Link>
-          <Link href="/idea/saved">Idea Reports</Link>
+          <Link href="/idea">Ideanator</Link>
+          <Link href="/idea?start=intake">Drop Idea</Link>
+          <Link href="/idea/saved">Saved Ideas</Link>
           <Link href="/feedback?from=%2Fhelp">Feedback</Link>
           <Link href="/beta-terms">Beta Terms</Link>
         </nav>
@@ -211,7 +211,7 @@ export default function IdeaHelpPage() {
 
           <div className="button-row">
             <Link className="button" href="/idea?start=intake">Drop In An Idea</Link>
-            <Link className="button-dark" href="/idea/saved">Open Idea Reports</Link>
+            <Link className="button-dark" href="/idea/saved">Open Saved Ideas</Link>
             <Link className="button-dark" href="/beta-terms">Read Beta Terms</Link>
           </div>
         </section>
@@ -239,7 +239,7 @@ export default function IdeaHelpPage() {
               The human keeps working. The tool keeps pressure-testing.
             </p>
             <ul>
-              <li>Save reports to your Ideanator saved idea report reports.</li>
+              <li>Save reports to your Ideanator saved ideas.</li>
               <li>Use Back on the Lift to revise and rerun.</li>
               <li>Compare versions when working from a saved report.</li>
             </ul>
@@ -278,5 +278,3 @@ export default function IdeaHelpPage() {
     </main>
   );
 }
-
-

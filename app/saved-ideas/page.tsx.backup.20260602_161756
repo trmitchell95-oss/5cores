@@ -778,7 +778,7 @@ export default function SavedIdeasPage() {
         <header className="topbar">
           <nav className="nav">
             <Link href="/dashboard">Dashboard</Link>
-            <Link href="/ideanator">Rig Workbench</Link>
+            <Link href="/ideanator">Ideanator</Link>
             <Link href="/">Home</Link>
           </nav>
 
@@ -907,5 +907,4 @@ export default function SavedIdeasPage() {
     </main>
   );
 }
-
 

@@ -1158,7 +1158,7 @@ export default function Dashboard() {
           <article className="tool-card">
             <div>
               <div className="tool-number">05</div>
-              <div className="tool-title">Rig Workbench</div>
+              <div className="tool-title">Ideanator</div>
               <p className="tool-text">
                 Best for raw ideas, inventions, pitches, grant angles, product concepts, and half-formed little bastards that need a thinking rig before they become real work.
               </p>
@@ -1311,7 +1311,6 @@ export default function Dashboard() {
     </main>
   );
 }
-
 
 
 

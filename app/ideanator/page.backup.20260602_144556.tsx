@@ -290,7 +290,7 @@ export default function IdeanatorPage() {
         const data = await response.json();
 
         if (!response.ok) {
-          throw new Error(data.error || "Could not load saved idea.");
+          throw new Error(data.error || "Could not load saved idea report.");
         }
 
         if (!stillMounted) {
@@ -341,10 +341,10 @@ export default function IdeanatorPage() {
         setSavedId("");
         setSaveMessage("");
         setRerunSourceId(rerunId);
-        setRerunSourceTitle(savedReport.title || savedIdeaName || "Earlier saved idea");
+        setRerunSourceTitle(savedReport.title || savedIdeaName || "Earlier saved idea report");
         setPreviousVerdict(savedVerdict);
         setRerunNotice(
-          "Loaded your saved idea. Change whatever needs changing, then put it back on the lift."
+          "Loaded your saved idea report. Change whatever needs changing, then put it back on the lift."
         );
         setStage("intake");
         window.scrollTo({ top: 0, behavior: "smooth" });
@@ -356,7 +356,7 @@ export default function IdeanatorPage() {
         setErrorMessage(
           error instanceof Error
             ? error.message
-            : "Could not load saved idea."
+            : "Could not load saved idea report."
         );
         setStage("intake");
       }
@@ -845,7 +845,7 @@ export default function IdeanatorPage() {
             <div className="report-actions">
               <div>
                 <span>Take this thing with you.</span>
-                <p>Copy it, download it, or save it to your Ideanator saved ideas.</p>
+                <p>Copy it, download it, or save it to your Ideanator saved idea report reports.</p>
               </div>
 
               <div className="report-action-buttons">
@@ -1582,6 +1582,7 @@ function ResultCard({ title, body }: { title: string; body: string }) {
     </article>
   );
 }
+
 
 
 

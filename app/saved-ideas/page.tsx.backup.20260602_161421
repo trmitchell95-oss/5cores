@@ -357,7 +357,7 @@ export default function SavedIdeasPage() {
       const result = await response.json();
 
       if (!response.ok || !result.ok) {
-        throw new Error(result.error || "Could not load saved idea report reports.");
+        throw new Error(result.error || "Could not load saved ideas.");
       }
 
       setRigs(result.rigs || []);
@@ -366,7 +366,7 @@ export default function SavedIdeasPage() {
         setMessage("Saved ideas refreshed.");
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Could not load saved idea report reports.");
+      setError(err instanceof Error ? err.message : "Could not load saved ideas.");
     } finally {
       setLoading(false);
       setRefreshing(false);
@@ -397,13 +397,13 @@ export default function SavedIdeasPage() {
       const result = await response.json();
 
       if (!response.ok || !result.ok) {
-        throw new Error(result.error || "Could not archive saved idea report.");
+        throw new Error(result.error || "Could not archive saved idea.");
       }
 
       setRigs((current) => current.filter((item) => item.id !== rig.id));
       setMessage("Saved idea archived.");
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Could not archive saved idea report.");
+      setError(err instanceof Error ? err.message : "Could not archive saved idea.");
     } finally {
       setArchivingId("");
     }
@@ -778,7 +778,7 @@ export default function SavedIdeasPage() {
         <header className="topbar">
           <nav className="nav">
             <Link href="/dashboard">Dashboard</Link>
-            <Link href="/ideanator">Rig Workbench</Link>
+            <Link href="/ideanator">Ideanator</Link>
             <Link href="/">Home</Link>
           </nav>
 
@@ -793,7 +793,7 @@ export default function SavedIdeasPage() {
         </header>
 
         <section className="hero">
-          <div className="eyebrow">Idea Reports</div>
+          <div className="eyebrow">Saved Ideas</div>
           <h1 className="title">The rig library.</h1>
           <p className="subtitle">
             These are the thinking patterns you saved. Open one back in the workbench,
@@ -820,10 +820,10 @@ export default function SavedIdeasPage() {
           </div>
 
           {loading ? (
-            <div className="empty">Loading saved idea report reports...</div>
+            <div className="empty">Loading saved ideas...</div>
           ) : filteredRigs.length === 0 ? (
             <div className="empty">
-              No saved idea report reports found. Build one in The Ideanator, run it, and save the rig.
+              No saved ideas found. Build one in The Ideanator, run it, and save the rig.
             </div>
           ) : (
             <div className="rig-list">
@@ -907,5 +907,3 @@ export default function SavedIdeasPage() {
     </main>
   );
 }
-
-
