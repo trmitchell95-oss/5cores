@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useState, useRef, useEffect } from "react";
 import { createClient } from "@supabase/supabase-js";
@@ -48,6 +48,14 @@ const PERSONAS = [
 ];
 
 const COUNCIL_MAX_CHARS = 25000;
+
+type ProjectOption = {
+  id: string;
+  title: string;
+  description?: string | null;
+  created_at?: string;
+  updated_at?: string;
+};
 
 const STATUS_MESSAGES = [
   "Reading your manuscript...",
@@ -245,14 +253,132 @@ export default function SubmitPage() {
   const [error, setError] = useState("");
   const [submissionId, setSubmissionId] = useState("");
   const [fileName, setFileName] = useState("");
+  const [projects, setProjects] = useState<ProjectOption[]>([]);
+  const [projectsLoading, setProjectsLoading] = useState(false);
+  const [selectedProjectId, setSelectedProjectId] = useState("");
+  const [newProjectTitle, setNewProjectTitle] = useState("");
+  const [saveManuscriptSnapshot, setSaveManuscriptSnapshot] = useState(false);
+  const [versionLabel, setVersionLabel] = useState("Draft 1");
+  const [snapshotMessage, setSnapshotMessage] = useState("");
   const [runningSeconds, setRunningSeconds] = useState(0);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const words = countWords(manuscript);
   const tooLong = manuscript.trim().length > COUNCIL_MAX_CHARS;
-  const readyToRun = manuscript.trim().length >= 50 && !tooLong && !loading;
+  const snapshotNeedsProject =
+    saveManuscriptSnapshot && !selectedProjectId && !newProjectTitle.trim();
+  const readyToRun =
+    manuscript.trim().length >= 50 && !tooLong && !loading && !snapshotNeedsProject;
   const activePersona = PERSONAS.find((p) => p.key === activeTab);
   const activeReport = reports[activeTab];
+
+  async function loadProjectsForSession(accessToken: string) {
+    setProjectsLoading(true);
+
+    try {
+      const response = await fetch("/api/projects", {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Could not load projects.");
+      }
+
+      setProjects((data.projects || []) as ProjectOption[]);
+    } catch {
+      setProjects([]);
+    } finally {
+      setProjectsLoading(false);
+    }
+  }
+
+  async function getProjectIdForSnapshot(accessToken: string) {
+    const trimmedNewProjectTitle = newProjectTitle.trim();
+
+    if (trimmedNewProjectTitle) {
+      const response = await fetch("/api/projects", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
+        body: JSON.stringify({
+          title: trimmedNewProjectTitle,
+          description: "",
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Could not create project.");
+      }
+
+      const project = data.project as ProjectOption;
+
+      setProjects((current) => [
+        project,
+        ...current.filter((item) => item.id !== project.id),
+      ]);
+      setSelectedProjectId(project.id);
+      setNewProjectTitle("");
+
+      return project.id;
+    }
+
+    if (selectedProjectId) {
+      return selectedProjectId;
+    }
+
+    throw new Error("Choose a project or enter a new project title.");
+  }
+
+  async function saveSnapshotForComparison(accessToken: string, reportId: string) {
+    if (!saveManuscriptSnapshot) return;
+
+    setSnapshotMessage("Saving manuscript snapshot for future comparison...");
+
+    try {
+      const projectId = await getProjectIdForSnapshot(accessToken);
+
+      const response = await fetch("/api/manuscript-versions", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
+        body: JSON.stringify({
+          projectId,
+          reportId,
+          title: title.trim() || "Untitled",
+          versionLabel: versionLabel.trim() || "Draft",
+          manuscriptText: manuscript,
+          source: "council",
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Could not save manuscript snapshot.");
+      }
+
+      setSnapshotMessage(
+        `${versionLabel.trim() || "Draft"} saved for future Council Re-Read comparison.`
+      );
+    } catch (err) {
+      const message =
+        err instanceof Error ? err.message : "Snapshot save failed.";
+
+      setSnapshotMessage(
+        `Report saved, but the manuscript snapshot did not save. Details: ${message}`
+      );
+    }
+  }
 
   useEffect(() => {
     async function checkAuth() {
@@ -262,7 +388,10 @@ export default function SubmitPage() {
 
       if (!session) {
         window.location.href = "/login";
+        return;
       }
+
+      await loadProjectsForSession(session.access_token);
     }
 
     checkAuth();
@@ -335,6 +464,7 @@ export default function SubmitPage() {
     setHasRun(false);
     setActiveTab("brad");
     setError("");
+    setSnapshotMessage("");
 
     let idx = 0;
     setStatusMsg(STATUS_MESSAGES[0]);
@@ -379,7 +509,21 @@ export default function SubmitPage() {
         setReports(data.reports);
         setHasRun(true);
         setActiveTab("brad");
-        if (data.submissionId) setSubmissionId(data.submissionId);
+
+        const nextSubmissionId =
+          typeof data.submissionId === "string" ? data.submissionId : "";
+
+        if (nextSubmissionId) {
+          setSubmissionId(nextSubmissionId);
+        }
+
+        if (saveManuscriptSnapshot && nextSubmissionId) {
+          await saveSnapshotForComparison(session.access_token, nextSubmissionId);
+        } else if (saveManuscriptSnapshot && !nextSubmissionId) {
+          setSnapshotMessage(
+            "The report finished, but there was no saved report ID to attach this manuscript snapshot to."
+          );
+        }
       } else {
         setError(data.error || "Something went wrong. Please try again.");
       }
@@ -406,6 +550,11 @@ export default function SubmitPage() {
     setError("");
     setSubmissionId("");
     setFileName("");
+    setSelectedProjectId("");
+    setNewProjectTitle("");
+    setSaveManuscriptSnapshot(false);
+    setVersionLabel("Draft 1");
+    setSnapshotMessage("");
   }
 
   function loadSampleManuscript() {
@@ -422,6 +571,7 @@ export default function SubmitPage() {
     setError("");
     setSubmissionId("");
     setFileName("Sample excerpt");
+    setSnapshotMessage("");
   }
 
   return (
@@ -1374,6 +1524,12 @@ export default function SubmitPage() {
                   </button>
                 </div>
 
+                {snapshotNeedsProject && (
+                  <div className="error-msg">
+                    Choose or create a project before saving a manuscript version for comparison.
+                  </div>
+                )}
+
                 {tooLong && <div className="error-msg">This excerpt is too long for beta mode. Keep it under 25,000 characters. Pick a chapter, scene, essay, or strong excerpt instead of feeding the truck the whole damn library.</div>}
 
                 {error && <div className="error-msg">{error}</div>}
@@ -1519,6 +1675,81 @@ export default function SubmitPage() {
                       disabled={loading}
                     />
                   </div>
+                  <div className="field-full">
+                    <label className="field-label">Step 1B: Project and version memory</label>
+
+                    <div className="upload-box">
+                      <div className="tiny-note" style={{ marginTop: 0, marginBottom: "12px" }}>
+                        Optional. Save this manuscript version only if you want HOVEL EDITOR to remember it for future Council Re-Read comparisons.
+                      </div>
+
+                      <label className="field-label">Existing project</label>
+                      <select
+                        className="select-input"
+                        value={selectedProjectId}
+                        onChange={(e) => setSelectedProjectId(e.target.value)}
+                        disabled={loading || projectsLoading || Boolean(newProjectTitle.trim())}
+                      >
+                        <option value="">
+                          {projectsLoading ? "Loading projects..." : "No project selected"}
+                        </option>
+                        {projects.map((project) => (
+                          <option key={project.id} value={project.id}>
+                            {project.title}
+                          </option>
+                        ))}
+                      </select>
+
+                      <div style={{ height: "14px" }} />
+
+                      <label className="field-label">Or create new project</label>
+                      <input
+                        className="title-input"
+                        type="text"
+                        placeholder="Example: Mesquite Gospel, SafeSchool Application, Chapter One"
+                        value={newProjectTitle}
+                        onChange={(e) => setNewProjectTitle(e.target.value)}
+                        disabled={loading}
+                      />
+
+                      <div style={{ height: "14px" }} />
+
+                      <label className="field-label">Version label</label>
+                      <input
+                        className="title-input"
+                        type="text"
+                        placeholder="Draft 1"
+                        value={versionLabel}
+                        onChange={(e) => setVersionLabel(e.target.value)}
+                        disabled={loading}
+                      />
+
+                      <label
+                        style={{
+                          display: "flex",
+                          gap: "12px",
+                          alignItems: "flex-start",
+                          marginTop: "16px",
+                          color: "#d4cfc7",
+                          lineHeight: 1.55,
+                        }}
+                      >
+                        <input
+                          type="checkbox"
+                          checked={saveManuscriptSnapshot}
+                          onChange={(e) => setSaveManuscriptSnapshot(e.target.checked)}
+                          disabled={loading}
+                          style={{ marginTop: "5px" }}
+                        />
+                        <span>
+                          Save this manuscript version for future comparison.
+                          <span className="tiny-note" style={{ display: "block" }}>
+                            This stores the draft text so a later Council Re-Read can compare Draft 1 against Draft 2. Leave unchecked if you only want the report saved.
+                          </span>
+                        </span>
+                      </label>
+                    </div>
+                  </div>
                 </div>
               </div>
 
@@ -1583,6 +1814,12 @@ export default function SubmitPage() {
                 <a href={`/reports/${submissionId}`}>Open the full saved report</a>
                 <br />
                 <a href="/dashboard">Back to dashboard</a>
+              </div>
+            )}
+
+            {snapshotMessage && (
+              <div className="saved-link">
+                {snapshotMessage}
               </div>
             )}
 
