@@ -242,7 +242,7 @@ export async function POST(request: NextRequest) {
 
     if (!auth.ok) {
       await logUsageEvent({
-        tool: "ideanator_blueprint",
+        tool: "ideanator",
         status: "rejected",
         inputChars,
         inputWords,
@@ -271,7 +271,7 @@ export async function POST(request: NextRequest) {
     if (!fog) {
       await logUsageEvent({
         userId: userIdForLog,
-        tool: "ideanator_blueprint",
+        tool: "ideanator",
         status: "rejected",
         inputChars,
         inputWords,
@@ -292,7 +292,7 @@ export async function POST(request: NextRequest) {
     if (fog.length < BLUEPRINT_MIN_CHARS) {
       await logUsageEvent({
         userId: userIdForLog,
-        tool: "ideanator_blueprint",
+        tool: "ideanator",
         status: "rejected",
         inputChars,
         inputWords,
@@ -313,7 +313,7 @@ export async function POST(request: NextRequest) {
     if (fog.length > BLUEPRINT_MAX_CHARS) {
       await logUsageEvent({
         userId: userIdForLog,
-        tool: "ideanator_blueprint",
+        tool: "ideanator",
         status: "rejected",
         inputChars,
         inputWords,
@@ -332,19 +332,19 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const ideanatorDailyLimit = Number(process.env.IDEANATOR_BLUEPRINT_DAILY_LIMIT || process.env.IDEANATOR_DAILY_RUN_LIMIT || 5);
+    const ideanatorDailyLimit = Number(process.env.IDEANATOR_DAILY_RUN_LIMIT || 5);
 
     const limitCheck = await checkDailyUsageLimit({
       userId: userIdForLog,
       userEmail: auth.userEmail,
-      tool: "ideanator_blueprint",
+      tool: "ideanator",
       dailyLimit: ideanatorDailyLimit,
     });
 
     if (!limitCheck.allowed) {
       await logUsageEvent({
         userId: userIdForLog,
-        tool: "ideanator_blueprint",
+        tool: "ideanator",
         status: "rejected",
         inputChars,
         inputWords,
@@ -370,7 +370,7 @@ export async function POST(request: NextRequest) {
 
     await logUsageEvent({
       userId: userIdForLog,
-      tool: "ideanator_blueprint",
+      tool: "ideanator",
       status: "started",
       inputChars,
       inputWords,
@@ -413,7 +413,7 @@ export async function POST(request: NextRequest) {
 
     await logUsageEvent({
       userId: userIdForLog,
-      tool: "ideanator_blueprint",
+      tool: "ideanator",
       status: "succeeded",
       inputChars,
       inputWords,
@@ -434,7 +434,7 @@ export async function POST(request: NextRequest) {
 
     await logUsageEvent({
       userId: userIdForLog,
-      tool: "ideanator_blueprint",
+      tool: "ideanator",
       status: "failed",
       inputChars,
       inputWords,
@@ -456,4 +456,3 @@ export async function POST(request: NextRequest) {
     );
   }
 }
-

@@ -96,10 +96,7 @@ function toolLabel(tool: string) {
   if (tool === "council-reread") return "Council Re-Read";
   if (tool === "sphinx") return "Sphinx";
   if (tool === "sphinx_save") return "Sphinx Save";
-  if (tool === "ideanator_check") return "Idea Check";
-  if (tool === "ideanator_blueprint") return "Rig Blueprint";
-  if (tool === "ideanator_run") return "Rig Run";
-  if (tool === "ideanator") return "Legacy Ideanator";
+  if (tool === "ideanator") return "Ideanator";
   return tool;
 }
 
@@ -758,7 +755,6 @@ export default function AdminUsagePage() {
     </main>
   );
 }
-
 
 
 

@@ -2,15 +2,7 @@
 
 type UsageStatus = "started" | "succeeded" | "failed" | "rejected";
 
-type UsageTool =
-  | "council"
-  | "council-reread"
-  | "sphinx"
-  | "sphinx_save"
-  | "ideanator"
-  | "ideanator_check"
-  | "ideanator_blueprint"
-  | "ideanator_run";
+type UsageTool = "council" | "council-reread" | "sphinx" | "sphinx_save" | "ideanator";
 
 type UsageEvent = {
   userId?: string | null;
@@ -62,7 +54,7 @@ function getServiceSupabaseClient() {
 }
 
 function getAdminEmails() {
-  return (process.env.ADMIN_EMAILS || "")
+  return (process.env.ADMIN_EMAILS || process.env.NEXT_PUBLIC_ADMIN_EMAILS || "")
     .split(",")
     .map((email) => email.trim().toLowerCase())
     .filter(Boolean);
@@ -200,7 +192,5 @@ export async function logUsageEvent(event: UsageEvent) {
     );
   }
 }
-
-
 
 
