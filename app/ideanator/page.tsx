@@ -70,6 +70,8 @@ const verdicts: Verdict[] = [
   "Dangerously Good",
 ];
 
+const IDEANATOR_MAX_CHARS = 60000;
+
 function normalizeIdeaName(value: string) {
   const cleaned = value.trim().replace(/\s+/g, " ");
 
@@ -240,6 +242,9 @@ export default function IdeanatorPage() {
     return normalizeIdeaName(ideaName);
   }, [ideaName]);
 
+  const ideaCharCount = ideaText.length;
+  const ideaTooLong = ideaCharCount > IDEANATOR_MAX_CHARS;
+
   useEffect(() => {
     let stillMounted = true;
 
@@ -363,6 +368,14 @@ export default function IdeanatorPage() {
     event.preventDefault();
 
     if (!ideaText.trim()) {
+      return;
+    }
+
+    if (ideaTooLong) {
+      setErrorMessage(
+        "This idea dump is over 60,000 characters. Trim it down to the useful chaos before we put it on the lift."
+      );
+      setStage("intake");
       return;
     }
 
@@ -696,6 +709,15 @@ export default function IdeanatorPage() {
                   onChange={(event) => setIdeaText(event.target.value)}
                   placeholder="Dump the chaos here. Half-thoughts are allowed. Weird is allowed. Rambling is allowed. Lying to yourself is discouraged."
                 />
+
+                <div className={`idea-limit-note ${ideaTooLong ? "over-limit" : ""}`}>
+                  <strong>
+                    {ideaCharCount.toLocaleString()} / {IDEANATOR_MAX_CHARS.toLocaleString()} characters
+                  </strong>
+                  <p>
+                    Short ideas work. Messy documents work. Product notes, invention notes, diagrams explained in text, feature maps, and strategy dumps are welcome. Do not paste a full manuscript or anything you are not comfortable submitting for analysis.
+                  </p>
+                </div>
               </label>
 
               <div className="intake-preview full-width">
@@ -711,7 +733,7 @@ export default function IdeanatorPage() {
                 <button
                   className="primary-button"
                   type="submit"
-                  disabled={!ideaText.trim()}
+                  disabled={!ideaText.trim() || ideaTooLong}
                 >
                   Put it on the lift
                 </button>
@@ -778,7 +800,7 @@ export default function IdeanatorPage() {
             <div className="report-actions">
               <div>
                 <span>Take this thing with you.</span>
-                <p>Copy it, download it, or save it to your HOVEL reports.</p>
+                <p>Copy it, download it, or save it to your Ideanator saved ideas.</p>
               </div>
 
               <div className="report-action-buttons">
@@ -1200,8 +1222,38 @@ export default function IdeanatorPage() {
         }
 
         textarea {
-          min-height: 230px;
+          min-height: 360px;
           resize: vertical;
+        }
+
+        .idea-limit-note {
+          border: 1px solid rgba(255, 221, 159, 0.16);
+          background: rgba(255, 255, 255, 0.045);
+          border-radius: 16px;
+          padding: 12px 14px;
+        }
+
+        .idea-limit-note strong {
+          display: block;
+          color: #f0b35f;
+          font-size: 0.86rem;
+          margin-bottom: 6px;
+        }
+
+        .idea-limit-note p {
+          margin: 0;
+          color: #bdb4a8;
+          font-size: 0.88rem;
+          line-height: 1.5;
+        }
+
+        .idea-limit-note.over-limit {
+          border-color: rgba(248, 113, 113, 0.55);
+          background: rgba(248, 113, 113, 0.1);
+        }
+
+        .idea-limit-note.over-limit strong {
+          color: #fecaca;
         }
 
         .full-width {
@@ -1464,6 +1516,7 @@ function ResultCard({ title, body }: { title: string; body: string }) {
     </article>
   );
 }
+
 
 
 

@@ -7,7 +7,7 @@ const client = new Anthropic();
 
 const DEFAULT_MODEL = "claude-sonnet-4-6";
 const IDEANATOR_MIN_CHARS = 10;
-const IDEANATOR_MAX_CHARS = 12000;
+const IDEANATOR_MAX_CHARS = 60000;
 
 type Verdict =
   | "Greenlight"
@@ -52,6 +52,19 @@ function cleanText(value: unknown) {
   }
 
   return value.trim().replace(/\s+/g, " ");
+}
+
+function cleanIdeaText(value: unknown) {
+  if (typeof value !== "string") {
+    return "";
+  }
+
+  return value
+    .trim()
+    .replace(/\r\n/g, "\n")
+    .replace(/[ \t]+\n/g, "\n")
+    .replace(/\n[ \t]+/g, "\n")
+    .replace(/\n{4,}/g, "\n\n\n");
 }
 
 function normalizeIdeaName(value: unknown) {
@@ -269,6 +282,8 @@ ${ideaText}
 
 Rules:
 - Be specific to this idea.
+- For long idea documents, synthesize the core concept instead of summarizing every note.
+- Respect bullets, flows, sections, and diagrams when the user explains them in text.
 - Do not give a generic entrepreneurship answer.
 - Do not invent detailed facts, partners, customers, prices, laws, or technical claims.
 - If the idea is unclear, say so in the weak spots.
@@ -294,7 +309,7 @@ export async function POST(request: NextRequest) {
     const body = (await request.json()) as IdeanatorRequest;
 
     const ideaName = normalizeIdeaName(body.ideaName);
-    const ideaText = cleanText(body.ideaText);
+    const ideaText = cleanIdeaText(body.ideaText);
     const ideaKind = normalizeIdeaKind(body.ideaKind);
     const primaryNeed = normalizePrimaryNeed(body.primaryNeed);
 
@@ -323,7 +338,7 @@ export async function POST(request: NextRequest) {
         {
           ok: false,
           error:
-            "This idea dump is too long for the first Ideanator beta. Keep it under 12,000 characters for now.",
+            "This idea dump is too long for the Ideanator beta. Keep it under 60,000 characters for now. That is enough for a serious concept document, not a whole damn manuscript.",
         },
         { status: 413 },
       );
@@ -389,3 +404,4 @@ export async function POST(request: NextRequest) {
     );
   }
 }
+
