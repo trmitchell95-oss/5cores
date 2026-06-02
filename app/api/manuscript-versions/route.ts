@@ -245,3 +245,96 @@ export async function POST(req: NextRequest) {
     );
   }
 }
+
+
+export async function DELETE(req: NextRequest) {
+  try {
+    const { user, error: userError } = await getUserFromRequest(req);
+
+    if (!user) {
+      return NextResponse.json({ error: userError }, { status: 401 });
+    }
+
+    const versionId = req.nextUrl.searchParams.get("versionId") || "";
+
+    if (!versionId) {
+      return NextResponse.json(
+        { error: "Missing manuscript version ID." },
+        { status: 400 }
+      );
+    }
+
+    const supabase = getSupabaseAdmin();
+
+    const { data: version, error: versionError } = await supabase
+      .from("manuscript_versions")
+      .select("id, project_id")
+      .eq("id", versionId)
+      .eq("user_id", user.id)
+      .single();
+
+    if (versionError || !version) {
+      return NextResponse.json(
+        {
+          error: "Manuscript version not found or not yours.",
+          details: versionError?.message || null,
+        },
+        { status: 404 }
+      );
+    }
+
+    const { error: unlinkReportsError } = await supabase
+      .from("reports")
+      .update({ manuscript_version_id: null })
+      .eq("user_id", user.id)
+      .eq("manuscript_version_id", versionId);
+
+    if (unlinkReportsError) {
+      return NextResponse.json(
+        {
+          error: "Could not unlink reports from this manuscript version.",
+          details: unlinkReportsError.message,
+        },
+        { status: 500 }
+      );
+    }
+
+    const { error: deleteError } = await supabase
+      .from("manuscript_versions")
+      .delete()
+      .eq("id", versionId)
+      .eq("user_id", user.id);
+
+    if (deleteError) {
+      return NextResponse.json(
+        {
+          error: "Could not delete manuscript version.",
+          details: deleteError.message,
+        },
+        { status: 500 }
+      );
+    }
+
+    if (version.project_id) {
+      await supabase
+        .from("projects")
+        .update({ updated_at: new Date().toISOString() })
+        .eq("id", version.project_id)
+        .eq("user_id", user.id);
+    }
+
+    return NextResponse.json({
+      ok: true,
+      deletedId: versionId,
+      projectId: version.project_id || null,
+    });
+  } catch (error) {
+    return NextResponse.json(
+      {
+        error: "Something broke while deleting the manuscript version.",
+        details: error instanceof Error ? error.message : String(error),
+      },
+      { status: 500 }
+    );
+  }
+}

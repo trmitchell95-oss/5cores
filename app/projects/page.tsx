@@ -64,6 +64,7 @@ export default function ProjectsPage() {
   const [loading, setLoading] = useState(true);
   const [creating, setCreating] = useState(false);
   const [loadingDetail, setLoadingDetail] = useState(false);
+  const [deletingVersionId, setDeletingVersionId] = useState("");
   const [error, setError] = useState("");
 
   async function getAccessToken() {
@@ -195,6 +196,61 @@ export default function ProjectsPage() {
       setError(err instanceof Error ? err.message : "Could not create project.");
     } finally {
       setCreating(false);
+    }
+  }
+
+  async function deleteManuscriptVersion(version: ManuscriptVersion) {
+    const label = version.version_label || "Draft";
+    const title = version.title || "Untitled";
+
+    const confirmed = window.confirm(
+      `Delete saved manuscript snapshot "${label} · ${title}"?\n\nThis removes the stored draft text used for future Re-Read comparisons. Attached reports stay saved.`
+    );
+
+    if (!confirmed) return;
+
+    setDeletingVersionId(version.id);
+    setError("");
+
+    try {
+      const token = await getAccessToken();
+      if (!token) return;
+
+      const response = await fetch(`/api/manuscript-versions?versionId=${encodeURIComponent(version.id)}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const data = await response.json().catch(() => ({}));
+
+      if (!response.ok) {
+        throw new Error(data.error || "Could not delete manuscript snapshot.");
+      }
+
+      setDetail((current) => {
+        if (!current) return current;
+
+        return {
+          ...current,
+          versions: current.versions.filter((item) => item.id !== version.id),
+        };
+      });
+
+      if (selectedProjectId) {
+        await loadProject(selectedProjectId, token);
+      }
+
+      await loadProjects(false);
+    } catch (err) {
+      const message =
+        err instanceof Error ? err.message : "Could not delete manuscript snapshot.";
+
+      setError(message);
+      window.alert(message);
+    } finally {
+      setDeletingVersionId("");
     }
   }
 
@@ -463,6 +519,41 @@ export default function ProjectsPage() {
           text-transform: uppercase;
         }
 
+        .item-actions {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 16px;
+          align-items: center;
+        }
+
+        .danger-btn {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          margin-top: 12px;
+          border: 1px solid #5a2020;
+          background: #2a1010;
+          color: #f0a0a0;
+          border-radius: 14px;
+          padding: 10px 12px;
+          font-family: 'IBM Plex Mono', monospace;
+          font-size: 10px;
+          font-weight: 800;
+          letter-spacing: 0.1em;
+          text-transform: uppercase;
+          cursor: pointer;
+        }
+
+        .danger-btn:hover:not(:disabled) {
+          border-color: #f0a0a0;
+          filter: brightness(1.08);
+        }
+
+        .danger-btn:disabled {
+          opacity: 0.45;
+          cursor: not-allowed;
+        }
+
         .empty,
         .error {
           border-radius: 18px;
@@ -660,7 +751,7 @@ export default function ProjectsPage() {
                         {version.source || "council"} · {formatDate(version.created_at)}
                       </div>
 
-                      <div style={{ display: "flex", flexWrap: "wrap", gap: "16px" }}>
+                      <div className="item-actions">
                         {version.report_id && (
                           <Link className="item-link" href={`/reports/${version.report_id}`}>
                             Open attached report
@@ -673,6 +764,15 @@ export default function ProjectsPage() {
                         >
                           Run Re-Read From This Draft
                         </Link>
+
+                        <button
+                          className="danger-btn"
+                          type="button"
+                          disabled={deletingVersionId === version.id}
+                          onClick={() => deleteManuscriptVersion(version)}
+                        >
+                          {deletingVersionId === version.id ? "Deleting..." : "Delete Snapshot"}
+                        </button>
                       </div>
                     </div>
                   ))}
