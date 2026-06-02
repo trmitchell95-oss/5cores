@@ -1,9 +1,11 @@
 ﻿"use client";
 
-import { usePathname, useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
 
-function isIdeanatorPath(pathname: string) {
+function isIdeanatorPath(pathname: string, product: string) {
   return (
+    product === "idea" ||
     pathname === "/idea" ||
     pathname.startsWith("/idea/") ||
     pathname === "/ideas" ||
@@ -16,14 +18,13 @@ function isIdeanatorPath(pathname: string) {
 
 export default function ProductNav() {
   const pathname = usePathname() || "/";
-  const searchParams = useSearchParams();
-  const product = searchParams.get("product");
-  const browserProduct =
-    typeof window !== "undefined"
-      ? new URLSearchParams(window.location.search).get("product")
-      : "";
-  const isIdeanator =
-    isIdeanatorPath(pathname) || product === "idea" || browserProduct === "idea";
+  const [product, setProduct] = useState("");
+
+  useEffect(() => {
+    setProduct(new URLSearchParams(window.location.search).get("product") || "");
+  }, [pathname]);
+
+  const isIdeanator = isIdeanatorPath(pathname, product);
 
   if (isIdeanator) {
     return (
@@ -46,7 +47,6 @@ export default function ProductNav() {
         <a href="/idea/saved" className="hovel-global-nav-link">
           SAVED IDEAS
         </a>
-
       </nav>
     );
   }
@@ -75,7 +75,3 @@ export default function ProductNav() {
     </nav>
   );
 }
-
-
-
-
