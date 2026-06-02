@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
@@ -121,7 +121,12 @@ export default function IdeanatorComparePage() {
         const result = (await response.json()) as CompareApiResponse;
 
         if (!response.ok || !("ok" in result) || !result.ok) {
-          throw new Error(result.error || "Could not compare versions.");
+          const message =
+            "error" in result && typeof result.error === "string"
+              ? result.error
+              : "Could not compare versions.";
+
+          throw new Error(message);
         }
 
         setData(result);
@@ -146,7 +151,7 @@ export default function IdeanatorComparePage() {
 
     return `IDEANATOR VERSION COMPARISON
 
-${data.previous.title} → ${data.current.title}
+${data.previous.title} â†’ ${data.current.title}
 
 VERDICT MOVEMENT
 ${c.verdictMovement}
@@ -457,7 +462,7 @@ ${c.honestRead}`;
                   <span>Earlier Version</span>
                   <strong>{data.previous.title}</strong>
                   <small>
-                    {data.previous.verdict} • {formatDate(data.previous.created_at)}
+                    {data.previous.verdict} â€¢ {formatDate(data.previous.created_at)}
                   </small>
                 </div>
 
@@ -465,7 +470,7 @@ ${c.honestRead}`;
                   <span>Revised Version</span>
                   <strong>{data.current.title}</strong>
                   <small>
-                    {data.current.verdict} • {formatDate(data.current.created_at)}
+                    {data.current.verdict} â€¢ {formatDate(data.current.created_at)}
                   </small>
                 </div>
               </div>
