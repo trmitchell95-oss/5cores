@@ -406,50 +406,6 @@ export default function IdeanatorPage() {
     }
   }
 
-  function slugifyFileName(value: string) {
-    return (
-      value
-        .toLowerCase()
-        .replace(/[^a-z0-9]+/g, "-")
-        .replace(/^-+|-+$/g, "")
-        .slice(0, 80) || "ideanator-rig"
-    );
-  }
-
-  function downloadTextFile(
-    label: string,
-    filename: string,
-    value: string,
-    mimeType = "text/markdown;charset=utf-8"
-  ) {
-    try {
-      setError("");
-      setMessage("");
-
-      if (!value.trim()) {
-        setError(`Nothing to download yet for ${label}.`);
-        return;
-      }
-
-      const safeFileName = filename.trim() || "ideanator-export.md";
-      const blob = new Blob([value], { type: mimeType });
-      const url = window.URL.createObjectURL(blob);
-      const anchor = document.createElement("a");
-
-      anchor.href = url;
-      anchor.download = safeFileName;
-      document.body.appendChild(anchor);
-      anchor.click();
-      anchor.remove();
-
-      window.URL.revokeObjectURL(url);
-
-      setMessage(`${label} downloaded.`);
-    } catch {
-      setError("Could not download the file.");
-    }
-  }
-
   async function generateBlueprint() {
     try {
       setLoadingBlueprint(true);
@@ -811,21 +767,6 @@ export default function IdeanatorPage() {
                 Copy Actual Prompt
               </button>
 
-              <button
-                type="button"
-                onClick={() =>
-                  downloadTextFile(
-                    "Blueprint JSON",
-                    `${slugifyFileName(blueprint.rigName || "ideanator-rig")}-blueprint.json`,
-                    JSON.stringify(blueprint, null, 2),
-                    "application/json;charset=utf-8"
-                  )
-                }
-                className="rounded-xl border border-neutral-700 px-3 py-2 text-sm font-bold text-neutral-100 transition hover:border-amber-400 hover:text-amber-300"
-              >
-                Download Blueprint
-              </button>
-
               {activeRigId && (
                 <span className="rounded-xl border border-emerald-900 bg-emerald-950/40 px-3 py-2 text-sm font-bold text-emerald-200">
                   Opened Saved Rig
@@ -1012,20 +953,6 @@ export default function IdeanatorPage() {
               >
                 Copy Prompt
               </button>
-
-              <button
-                type="button"
-                onClick={() =>
-                  downloadTextFile(
-                    "Actual Prompt",
-                    `${slugifyFileName(blueprint.rigName || "ideanator-rig")}-prompt.md`,
-                    actualPrompt
-                  )
-                }
-                className="rounded-xl border border-neutral-700 px-3 py-2 text-sm font-bold text-neutral-100 transition hover:border-amber-400 hover:text-amber-300"
-              >
-                Download Prompt
-              </button>
             </div>
 
             <pre className="mt-4 max-h-[420px] overflow-auto whitespace-pre-wrap rounded-2xl border border-neutral-800 bg-neutral-950 p-4 text-sm leading-6 text-neutral-200">
@@ -1060,38 +987,10 @@ export default function IdeanatorPage() {
 
                 <button
                   type="button"
-                  onClick={() =>
-                    downloadTextFile(
-                      "Rig Output",
-                      `${slugifyFileName(blueprint.rigName || "ideanator-rig")}-output.md`,
-                      output
-                    )
-                  }
-                  className="rounded-xl border border-neutral-700 px-3 py-2 text-sm font-bold text-neutral-100 transition hover:border-amber-400 hover:text-amber-300"
-                >
-                  Download Output
-                </button>
-
-                <button
-                  type="button"
                   onClick={() => copyToClipboard("Full Rig Packet", fullRigPacket)}
                   className="rounded-xl border border-amber-400 px-3 py-2 text-sm font-bold text-amber-300 transition hover:bg-amber-400 hover:text-neutral-950"
                 >
                   Copy Full Rig Packet
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() =>
-                    downloadTextFile(
-                      "Full Rig Packet",
-                      `${slugifyFileName(blueprint.rigName || "ideanator-rig")}-packet.md`,
-                      fullRigPacket
-                    )
-                  }
-                  className="rounded-xl border border-amber-400 px-3 py-2 text-sm font-bold text-amber-300 transition hover:bg-amber-400 hover:text-neutral-950"
-                >
-                  Download Packet
                 </button>
               </div>
             </div>
@@ -1223,5 +1122,4 @@ export default function IdeanatorPage() {
     </main>
   );
 }
-
 
