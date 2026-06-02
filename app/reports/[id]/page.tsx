@@ -1105,7 +1105,7 @@ export default function SavedReportPage() {
 
           <div className="top-actions">
             {isIdeanatorSavedReport(report) && (
-              <Link href={`/ideanator?rerun=${id}`} className="nav-link">
+              <Link href={`/idea?rerun=${id}`} className="nav-link">
                 Back on the Lift
               </Link>
             )}
@@ -1297,6 +1297,8 @@ export default function SavedReportPage() {
     </main>
   );
 }
+
+
 
 
 

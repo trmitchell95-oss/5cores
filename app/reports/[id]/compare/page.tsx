@@ -426,7 +426,7 @@ ${c.honestRead}`;
           </Link>
 
           <div className="nav-actions">
-            <Link href="/ideanator" className="nav-link">
+            <Link href="/idea" className="nav-link">
               Open Ideanator
             </Link>
 
@@ -523,4 +523,6 @@ ${c.honestRead}`;
     </main>
   );
 }
+
+
 

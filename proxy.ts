@@ -5,19 +5,43 @@ const IDEANATOR_HOSTS = new Set([
   "www.theideanator.com",
 ]);
 
+const HOVEL_EDITOR_HOST = "https://www.hoveleditor.com";
+
+const HOVEL_ONLY_PATHS = [
+  "/dashboard",
+  "/sphinx",
+  "/projects",
+  "/reread",
+  "/admin",
+];
+
+function isHovelOnlyPath(pathname: string) {
+  return HOVEL_ONLY_PATHS.some(
+    (path) => pathname === path || pathname.startsWith(`${path}/`)
+  );
+}
+
 export function proxy(request: NextRequest) {
   const host = request.headers.get("host")?.split(":")[0].toLowerCase() || "";
-  const { pathname } = request.nextUrl;
+  const { pathname, search } = request.nextUrl;
 
-  if (IDEANATOR_HOSTS.has(host) && pathname === "/") {
+  if (!IDEANATOR_HOSTS.has(host)) {
+    return NextResponse.next();
+  }
+
+  if (pathname === "/") {
     const url = request.nextUrl.clone();
     url.pathname = "/idea";
     return NextResponse.rewrite(url);
+  }
+
+  if (isHovelOnlyPath(pathname)) {
+    return NextResponse.redirect(`${HOVEL_EDITOR_HOST}${pathname}${search}`);
   }
 
   return NextResponse.next();
 }
 
 export const config = {
-  matcher: ["/"],
+  matcher: ["/", "/dashboard/:path*", "/sphinx/:path*", "/projects/:path*", "/reread/:path*", "/admin/:path*"],
 };

@@ -619,7 +619,7 @@ export default function SavedIdeasPage() {
 
                       <a
                         className="small-link"
-                        href={`/ideanator?rerun=${encodeURIComponent(report.id)}`}
+                        href={`/idea?rerun=${encodeURIComponent(report.id)}`}
                       >
                         Back on Lift
                       </a>
@@ -647,6 +647,8 @@ export default function SavedIdeasPage() {
     </main>
   );
 }
+
+
 
 
 
