@@ -176,3 +176,21 @@ code {
   }
 }
 
+
+/* HOVEL_GLOBAL_BACKGROUND_GUARD
+   Keeps the floating nav area from flashing white on HOVEL / Ideanator pages. */
+html,
+body {
+  background:
+    radial-gradient(circle at top left, rgba(245, 158, 11, 0.14), transparent 34rem),
+    linear-gradient(135deg, #332313 0%, #242018 46%, #1c211e 100%);
+  color: #f5f1e8;
+}
+
+body {
+  min-height: 100vh;
+}
+
+a {
+  color: inherit;
+}
