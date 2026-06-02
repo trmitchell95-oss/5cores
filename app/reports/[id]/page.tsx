@@ -186,6 +186,10 @@ function getSingleTextFromObject(value: unknown): string {
 }
 
 function buildCouncilSections(report: SavedReport): ReportSection[] {
+  if (report.report_type === "council-reread") {
+    return [];
+  }
+
   const contentCouncil = findCouncilObject(report.content);
 
   if (contentCouncil) {
@@ -509,7 +513,9 @@ export default function SavedReportPage() {
   const label =
     report?.report_type === "sphinx"
       ? "SPHINX SAVED REPORT"
-      : "EDITORIAL COUNCIL REPORT";
+      : report?.report_type === "council-reread"
+        ? "COUNCIL RE-READ REPORT"
+        : "EDITORIAL COUNCIL REPORT";
 
   const copyText = councilSections.length
     ? councilSections
@@ -1098,7 +1104,11 @@ export default function SavedReportPage() {
 
           <div className="meta-row">
             <span className="meta-chip">
-              {councilSections.length ? "Council Format" : "Single Report"}
+              {report?.report_type === "council-reread"
+                ? "Re-Read Format"
+                : councilSections.length
+                  ? "Council Format"
+                  : "Single Report"}
             </span>
 
             {report?.report_type && (
