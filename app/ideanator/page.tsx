@@ -955,6 +955,20 @@ export default function IdeanatorPage() {
           outline: none;
         }
 
+        .ideanator-page select {
+          color-scheme: dark;
+        }
+
+        .ideanator-page select option {
+          background: #14120f;
+          color: #fff7ea;
+        }
+
+        .ideanator-page select option:checked {
+          background: #f0b35f;
+          color: #18100a;
+        }
+
         input:focus,
         select:focus,
         textarea:focus {
@@ -1210,3 +1224,4 @@ function ResultCard({ title, body }: { title: string; body: string }) {
     </article>
   );
 }
+
