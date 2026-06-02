@@ -221,6 +221,11 @@ function getSelectValue(value: string, options: string[], fallback: string) {
   return options.includes(value) ? value : fallback;
 }
 
+function redirectToLogin() {
+  const nextPath = `${window.location.pathname}${window.location.search}`;
+  window.location.assign(`/login?next=${encodeURIComponent(nextPath)}`);
+}
+
 export default function IdeanatorPage() {
   const [stage, setStage] = useState<Stage>("landing");
   const [ideaName, setIdeaName] = useState("");
@@ -272,7 +277,7 @@ export default function IdeanatorPage() {
         } = await supabase.auth.getSession();
 
         if (!session?.access_token) {
-          window.location.href = `/login?next=${encodeURIComponent(window.location.pathname + window.location.search)}`;
+          redirectToLogin();
           return;
         }
 
@@ -389,7 +394,7 @@ export default function IdeanatorPage() {
 
     if (!session?.access_token) {
       setErrorMessage("The engine is behind the login. Sign in first, then we will put it on the lift.");
-      window.location.href = `/login?next=${encodeURIComponent(window.location.pathname + window.location.search)}`;
+      redirectToLogin();
       return;
     }
 
@@ -410,6 +415,11 @@ export default function IdeanatorPage() {
       });
 
       const data = (await response.json()) as IdeanatorApiResponse;
+
+      if (response.status === 401) {
+        redirectToLogin();
+        return;
+      }
 
       if (!response.ok || !data.ok) {
         const message =
@@ -522,7 +532,7 @@ export default function IdeanatorPage() {
       } = await supabase.auth.getSession();
 
       if (!session?.access_token) {
-        window.location.href = `/login?next=${encodeURIComponent(window.location.pathname + window.location.search)}`;
+        redirectToLogin();
         return;
       }
 
@@ -1561,6 +1571,7 @@ function ResultCard({ title, body }: { title: string; body: string }) {
     </article>
   );
 }
+
 
 
 
