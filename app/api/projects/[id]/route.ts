@@ -128,3 +128,176 @@ export async function GET(
     );
   }
 }
+
+
+export async function PATCH(
+  req: NextRequest,
+  context: { params: Promise<{ id: string }> }
+) {
+  try {
+    const { id } = await context.params;
+
+    if (!id) {
+      return NextResponse.json({ error: "Missing project ID." }, { status: 400 });
+    }
+
+    const { user, error: userError } = await getUserFromRequest(req);
+
+    if (!user) {
+      return NextResponse.json({ error: userError }, { status: 401 });
+    }
+
+    const body = await req.json();
+
+    const title = typeof body.title === "string" ? body.title.trim() : "";
+    const description =
+      typeof body.description === "string" ? body.description.trim() : "";
+
+    if (!title) {
+      return NextResponse.json(
+        { error: "Project title is required." },
+        { status: 400 }
+      );
+    }
+
+    if (title.length > 160) {
+      return NextResponse.json(
+        { error: "Project title must be 160 characters or fewer." },
+        { status: 400 }
+      );
+    }
+
+    const supabase = getSupabaseAdmin();
+
+    const { data, error } = await supabase
+      .from("projects")
+      .update({
+        title,
+        description: description || null,
+        updated_at: new Date().toISOString(),
+      })
+      .eq("id", id)
+      .eq("user_id", user.id)
+      .select("id, title, description, created_at, updated_at")
+      .single();
+
+    if (error || !data) {
+      return NextResponse.json(
+        {
+          error: "Could not update project.",
+          details: error?.message || "Project not found or not yours.",
+        },
+        { status: error ? 500 : 404 }
+      );
+    }
+
+    return NextResponse.json({ project: data });
+  } catch (error) {
+    return NextResponse.json(
+      {
+        error: "Something broke while updating the project.",
+        details: error instanceof Error ? error.message : String(error),
+      },
+      { status: 500 }
+    );
+  }
+}
+
+export async function DELETE(
+  req: NextRequest,
+  context: { params: Promise<{ id: string }> }
+) {
+  try {
+    const { id } = await context.params;
+
+    if (!id) {
+      return NextResponse.json({ error: "Missing project ID." }, { status: 400 });
+    }
+
+    const { user, error: userError } = await getUserFromRequest(req);
+
+    if (!user) {
+      return NextResponse.json({ error: userError }, { status: 401 });
+    }
+
+    const supabase = getSupabaseAdmin();
+
+    const { data: project, error: projectError } = await supabase
+      .from("projects")
+      .select("id")
+      .eq("id", id)
+      .eq("user_id", user.id)
+      .single();
+
+    if (projectError || !project) {
+      return NextResponse.json(
+        {
+          error: "Project not found or not yours.",
+          details: projectError?.message || null,
+        },
+        { status: 404 }
+      );
+    }
+
+    const { error: unlinkReportsError } = await supabase
+      .from("reports")
+      .update({
+        project_id: null,
+        manuscript_version_id: null,
+      })
+      .eq("user_id", user.id)
+      .eq("project_id", id);
+
+    if (unlinkReportsError) {
+      return NextResponse.json(
+        {
+          error: "Could not detach reports from this project.",
+          details: unlinkReportsError.message,
+        },
+        { status: 500 }
+      );
+    }
+
+    const { error: deleteVersionsError } = await supabase
+      .from("manuscript_versions")
+      .delete()
+      .eq("project_id", id)
+      .eq("user_id", user.id);
+
+    if (deleteVersionsError) {
+      return NextResponse.json(
+        {
+          error: "Could not delete project manuscript snapshots.",
+          details: deleteVersionsError.message,
+        },
+        { status: 500 }
+      );
+    }
+
+    const { error: deleteProjectError } = await supabase
+      .from("projects")
+      .delete()
+      .eq("id", id)
+      .eq("user_id", user.id);
+
+    if (deleteProjectError) {
+      return NextResponse.json(
+        {
+          error: "Could not delete project.",
+          details: deleteProjectError.message,
+        },
+        { status: 500 }
+      );
+    }
+
+    return NextResponse.json({ ok: true, deletedId: id });
+  } catch (error) {
+    return NextResponse.json(
+      {
+        error: "Something broke while deleting the project.",
+        details: error instanceof Error ? error.message : String(error),
+      },
+      { status: 500 }
+    );
+  }
+}
