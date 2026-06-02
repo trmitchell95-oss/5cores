@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 function isIdeanatorPath(pathname: string) {
   return (
     pathname === "/idea" ||
+    pathname.startsWith("/idea/") ||
     pathname === "/ideas" ||
     pathname === "/ideanator" ||
     pathname === "/the-ideanator" ||
@@ -35,7 +36,7 @@ export default function ProductNav() {
           DROP IDEA
         </a>
 
-        <a href="/dashboard#saved-reports" className="hovel-global-nav-link">
+        <a href="/idea/saved" className="hovel-global-nav-link">
           SAVED IDEAS
         </a>
 
@@ -70,3 +71,4 @@ export default function ProductNav() {
     </nav>
   );
 }
+
