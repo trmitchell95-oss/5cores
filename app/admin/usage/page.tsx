@@ -30,6 +30,7 @@ type AdminUser = {
   councilRereadRuns: number;
   sphinxRuns: number;
   sphinxSaveRuns: number;
+  ideanatorRuns: number;
   problemCount: number;
 };
 
@@ -95,6 +96,7 @@ function toolLabel(tool: string) {
   if (tool === "council-reread") return "Council Re-Read";
   if (tool === "sphinx") return "Sphinx";
   if (tool === "sphinx_save") return "Sphinx Save";
+  if (tool === "ideanator") return "Ideanator";
   return tool;
 }
 
@@ -163,6 +165,10 @@ export default function AdminUsagePage() {
 
   const activeUsers = useMemo(() => {
     return users.filter((user) => user.lastActivityAt).length;
+  }, [users]);
+
+  const ideanatorRuns = useMemo(() => {
+    return users.reduce((sum, user) => sum + Number(user.ideanatorRuns || 0), 0);
   }, [users]);
 
   return (
@@ -613,6 +619,12 @@ export default function AdminUsagePage() {
             </div>
 
             <div className="card">
+              <div className="card-label">Ideanator</div>
+              <div className="card-value">{formatNumber(ideanatorRuns)}</div>
+              <div className="card-note">Successful idea checks.</div>
+            </div>
+
+            <div className="card">
               <div className="card-label">Problems</div>
               <div className="card-value">{formatNumber(recentFailures)}</div>
               <div className="card-note">Failed or rejected recent events.</div>
@@ -646,6 +658,7 @@ export default function AdminUsagePage() {
                       <th>Re-Read</th>
                       <th>Sphinx</th>
                       <th>Sphinx Saves</th>
+                      <th>Ideanator</th>
                       <th>Problems</th>
                     </tr>
                   </thead>
@@ -666,6 +679,7 @@ export default function AdminUsagePage() {
                         <td className="mono">{formatNumber(user.councilRereadRuns)}</td>
                         <td className="mono">{formatNumber(user.sphinxRuns)}</td>
                         <td className="mono">{formatNumber(user.sphinxSaveRuns)}</td>
+                        <td className="mono">{formatNumber(user.ideanatorRuns)}</td>
                         <td className="mono">{formatNumber(user.problemCount)}</td>
                       </tr>
                     ))}
@@ -741,6 +755,7 @@ export default function AdminUsagePage() {
     </main>
   );
 }
+
 
 
 

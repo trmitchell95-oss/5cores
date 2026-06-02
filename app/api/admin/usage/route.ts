@@ -201,6 +201,10 @@ export async function GET(req: NextRequest) {
           (event) => event.tool === "sphinx_save" && event.status === "succeeded"
         ).length;
 
+        const ideanatorRuns = userEvents.filter(
+          (event) => event.tool === "ideanator" && event.status === "succeeded"
+        ).length;
+
         const problemCount = userEvents.filter((event) =>
           isProblemStatus(event.status)
         ).length;
@@ -230,6 +234,7 @@ export async function GET(req: NextRequest) {
           councilRereadRuns,
           sphinxRuns,
           sphinxSaveRuns,
+          ideanatorRuns,
           problemCount,
         };
       })
@@ -269,4 +274,5 @@ export async function GET(req: NextRequest) {
     );
   }
 }
+
 

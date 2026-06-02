@@ -271,7 +271,7 @@ export default function AdminExportsPage() {
             <article className="export-card">
               <h2 className="card-title">Usage</h2>
               <p className="card-copy">
-                Exports recent The Council, Sphinx, save, failure, and rejection events.
+                Exports recent The Council, Sphinx, Ideanator, save, failure, and rejection events.
               </p>
               <button
                 className="export-button"
@@ -286,7 +286,7 @@ export default function AdminExportsPage() {
             <article className="export-card">
               <h2 className="card-title">Feedback</h2>
               <p className="card-copy">
-                Exports beta tester comments, bug reports, feature requests, and review status.
+                Exports beta tester comments, Ideanator notes, bug reports, feature requests, and review status.
               </p>
               <button
                 className="export-button"
@@ -318,5 +318,6 @@ export default function AdminExportsPage() {
     </main>
   );
 }
+
 
 

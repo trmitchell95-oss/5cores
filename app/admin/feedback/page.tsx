@@ -47,6 +47,18 @@ function typeLabel(value: string) {
   return "General";
 }
 
+function toolLabel(value: string | null) {
+  if (!value) return "App";
+  if (value === "ideanator") return "Ideanator";
+  if (value === "5core") return "The Council";
+  if (value === "council") return "The Council";
+  if (value === "sphinx") return "Sphinx";
+  if (value === "dashboard") return "Dashboard";
+  if (value === "saved_report") return "Saved Report";
+  if (value === "admin") return "Admin";
+  return value;
+}
+
 function formatDate(value: string) {
   return new Date(value).toLocaleString();
 }
@@ -56,6 +68,7 @@ export default function AdminFeedbackPage() {
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [statusFilter, setStatusFilter] = useState("all");
+  const [toolFilter, setToolFilter] = useState("all");
   const [error, setError] = useState("");
 
   async function loadFeedback(isRefresh = false) {
@@ -146,10 +159,22 @@ export default function AdminFeedbackPage() {
 
   const items = data?.items || [];
 
+  const toolOptions = useMemo(() => {
+    const tools = Array.from(
+      new Set(items.map((item) => item.tool || "app"))
+    ).sort();
+
+    return tools;
+  }, [items]);
+
   const filteredItems = useMemo(() => {
-    if (statusFilter === "all") return items;
-    return items.filter((item) => item.status === statusFilter);
-  }, [items, statusFilter]);
+    return items.filter((item) => {
+      const statusMatches = statusFilter === "all" || item.status === statusFilter;
+      const toolMatches = toolFilter === "all" || (item.tool || "app") === toolFilter;
+
+      return statusMatches && toolMatches;
+    });
+  }, [items, statusFilter, toolFilter]);
 
   return (
     <main style={{
@@ -203,16 +228,29 @@ export default function AdminFeedbackPage() {
             <div style={{ display: "flex", justifyContent: "space-between", gap: 12, alignItems: "center", marginBottom: 18 }}>
               <h2 style={{ fontFamily: "Georgia, serif", fontSize: 34, margin: 0 }}>Feedback items</h2>
 
-              <select
-                value={statusFilter}
-                onChange={(event) => setStatusFilter(event.target.value)}
-                style={{ padding: 10, borderRadius: 10, background: "#0e0d0b", color: "#f0ece4", border: "1px solid #302a24" }}
-              >
-                <option value="all">All Statuses</option>
-                {STATUS_OPTIONS.map((status) => (
-                  <option key={status} value={status}>{status}</option>
-                ))}
-              </select>
+              <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
+                <select
+                  value={statusFilter}
+                  onChange={(event) => setStatusFilter(event.target.value)}
+                  style={{ padding: 10, borderRadius: 10, background: "#0e0d0b", color: "#f0ece4", border: "1px solid #302a24" }}
+                >
+                  <option value="all">All Statuses</option>
+                  {STATUS_OPTIONS.map((status) => (
+                    <option key={status} value={status}>{status}</option>
+                  ))}
+                </select>
+
+                <select
+                  value={toolFilter}
+                  onChange={(event) => setToolFilter(event.target.value)}
+                  style={{ padding: 10, borderRadius: 10, background: "#0e0d0b", color: "#f0ece4", border: "1px solid #302a24" }}
+                >
+                  <option value="all">All Tools</option>
+                  {toolOptions.map((tool) => (
+                    <option key={tool} value={tool}>{toolLabel(tool)}</option>
+                  ))}
+                </select>
+              </div>
             </div>
 
             <div style={{ display: "grid", gap: 14 }}>
@@ -252,7 +290,7 @@ function FeedbackCard({
         </div>
 
         <div style={{ color: "#8f867b", fontSize: 13 }}>
-          {formatDate(item.created_at)} • {item.email || "No email"} • {item.tool || "app"}
+          {formatDate(item.created_at)} • {item.email || "No email"} • {toolLabel(item.tool)}
         </div>
       </div>
 
@@ -302,3 +340,4 @@ function FeedbackCard({
     </article>
   );
 }
+
