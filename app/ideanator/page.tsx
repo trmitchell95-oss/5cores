@@ -692,6 +692,15 @@ export default function IdeanatorPage() {
               </p>
             </div>
 
+            <div className="beta-run-note">
+              <span>Beta run limit</span>
+              <p>
+                The showroom is public, but the engine is behind sign-in. Beta users
+                currently get 5 Ideanator runs per day so the app does not get fed
+                a dump truck full of tokens before it can pay for its own damn gas.
+              </p>
+            </div>
+
             {errorMessage && (
               <div className="error-box">
                 <span>The lift jammed.</span>
@@ -1296,6 +1305,7 @@ export default function IdeanatorPage() {
         }
 
         .long-doc-note,
+        .beta-run-note,
         .intake-preview,
         .submitted-box,
         .error-box,
@@ -1571,6 +1581,7 @@ function ResultCard({ title, body }: { title: string; body: string }) {
     </article>
   );
 }
+
 
 
 
