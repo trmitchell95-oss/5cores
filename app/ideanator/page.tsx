@@ -1,6 +1,7 @@
-"use client";
+﻿"use client";
 
 import { FormEvent, useMemo, useState } from "react";
+import { createClient } from "@supabase/supabase-js";
 
 type Stage = "landing" | "intake" | "loading" | "results";
 
@@ -99,6 +100,76 @@ function getIdeaPreview(text: string) {
   return `${cleaned.slice(0, 220)}...`;
 }
 
+function getSupabaseClient() {
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+  if (!supabaseUrl || !supabaseAnonKey) {
+    throw new Error("Missing Supabase browser settings.");
+  }
+
+  return createClient(supabaseUrl, supabaseAnonKey);
+}
+
+function formatDiagnosisText(run: IdeaRun) {
+  const report = run.report;
+  const moves = report.nextThreeMoves
+    .slice(0, 3)
+    .map((move, index) => `${index + 1}. ${move}`)
+    .join("\n");
+
+  return `THE IDEANATOR REPORT
+
+IDEA
+${report.ideaName}
+
+TYPE
+${report.ideaKind}
+
+ASKED FOR
+${report.primaryNeed}
+
+BRUTAL VERDICT
+${report.verdict}
+
+WHAT YOU DROPPED IN
+${run.submittedText}
+
+THE SPARK
+${report.spark}
+
+THE PLAIN-ENGLISH VERSION
+${report.plainEnglishVersion}
+
+THE STRONGEST USE CASE
+${report.strongestUseCase}
+
+THE WEAK SPOTS
+${report.weakSpots}
+
+THE AUDIENCE
+${report.audience}
+
+THE MONEY / VALUE PATH
+${report.moneyValuePath}
+
+THE PART YOU ARE PROBABLY AVOIDING
+${report.avoidance}
+
+NEXT THREE MOVES
+${moves}`;
+}
+
+function safeFileName(value: string) {
+  const cleaned = value
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .slice(0, 80);
+
+  return cleaned || "ideanator-report";
+}
+
 export default function IdeanatorPage() {
   const [stage, setStage] = useState<Stage>("landing");
   const [ideaName, setIdeaName] = useState("");
@@ -107,6 +178,10 @@ export default function IdeanatorPage() {
   const [primaryNeed, setPrimaryNeed] = useState(needs[0]);
   const [currentRun, setCurrentRun] = useState<IdeaRun | null>(null);
   const [errorMessage, setErrorMessage] = useState("");
+  const [copied, setCopied] = useState(false);
+  const [savingDiagnosis, setSavingDiagnosis] = useState(false);
+  const [savedId, setSavedId] = useState("");
+  const [saveMessage, setSaveMessage] = useState("");
 
   const liveDisplayName = useMemo(() => {
     return normalizeIdeaName(ideaName);
@@ -173,20 +248,118 @@ export default function IdeanatorPage() {
     setPrimaryNeed(needs[0]);
     setCurrentRun(null);
     setErrorMessage("");
+    setCopied(false);
+    setSavingDiagnosis(false);
+    setSavedId("");
+    setSaveMessage("");
     setStage("landing");
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
   function returnToLanding() {
     setErrorMessage("");
+    setCopied(false);
+    setSavingDiagnosis(false);
+    setSavedId("");
+    setSaveMessage("");
     setStage("landing");
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
   function returnToIntake() {
     setErrorMessage("");
+    setCopied(false);
+    setSaveMessage("");
     setStage("intake");
     window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  async function copyDiagnosis() {
+    if (!currentRun) return;
+
+    await navigator.clipboard.writeText(formatDiagnosisText(currentRun));
+    setCopied(true);
+
+    window.setTimeout(() => {
+      setCopied(false);
+    }, 1800);
+  }
+
+  function downloadDiagnosis() {
+    if (!currentRun) return;
+
+    const text = formatDiagnosisText(currentRun);
+    const blob = new Blob([text], { type: "text/plain;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+
+    link.href = url;
+    link.download = `${safeFileName(currentRun.report.ideaName)}.txt`;
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+
+    URL.revokeObjectURL(url);
+  }
+
+  async function saveDiagnosis() {
+    if (!currentRun || savingDiagnosis || savedId) return;
+
+    setSavingDiagnosis(true);
+    setErrorMessage("");
+    setSaveMessage("");
+
+    try {
+      const supabase = getSupabaseClient();
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+
+      if (!session?.access_token) {
+        window.location.href = "/login";
+        return;
+      }
+
+      const response = await fetch("/api/ideanator/save", {
+        method: "POST",
+        headers: {
+          "content-type": "application/json",
+          authorization: `Bearer ${session.access_token}`,
+        },
+        body: JSON.stringify({
+          report: currentRun.report,
+          submittedText: currentRun.submittedText,
+        }),
+      });
+
+      let data: { id?: string; error?: string; details?: string } = {};
+
+      try {
+        data = await response.json();
+      } catch {
+        data = {};
+      }
+
+      if (!response.ok) {
+        const message = data.details
+          ? `${data.error || "Could not save Ideanator report."} Details: ${data.details}`
+          : data.error || "Could not save Ideanator report.";
+
+        throw new Error(message);
+      }
+
+      setSavedId(data.id || "");
+      setSaveMessage("Saved to your reports.");
+    } catch (error) {
+      setSaveMessage("");
+      setErrorMessage(
+        error instanceof Error
+          ? error.message
+          : "Something went wrong while saving the diagnosis."
+      );
+    } finally {
+      setSavingDiagnosis(false);
+    }
   }
 
   return (
@@ -401,6 +574,52 @@ export default function IdeanatorPage() {
             <div className="submitted-box">
               <span>What you dropped in</span>
               <p>{getIdeaPreview(currentRun.submittedText)}</p>
+            </div>
+
+            {saveMessage && (
+              <div className="save-box">
+                <span>{saveMessage}</span>
+                {savedId && (
+                  <a href={`/reports/${savedId}`}>Open saved report</a>
+                )}
+              </div>
+            )}
+
+            {errorMessage && (
+              <div className="error-box results-error">
+                <span>The lift jammed.</span>
+                <p>{errorMessage}</p>
+              </div>
+            )}
+
+            <div className="report-actions">
+              <div>
+                <span>Take this thing with you.</span>
+                <p>Copy it, download it, or save it to your HOVEL reports.</p>
+              </div>
+
+              <div className="report-action-buttons">
+                <button className="secondary-button" type="button" onClick={copyDiagnosis}>
+                  {copied ? "Copied" : "Copy Diagnosis"}
+                </button>
+
+                <button className="secondary-button" type="button" onClick={downloadDiagnosis}>
+                  Download .txt
+                </button>
+
+                <button
+                  className="primary-button"
+                  type="button"
+                  onClick={saveDiagnosis}
+                  disabled={savingDiagnosis || Boolean(savedId)}
+                >
+                  {savingDiagnosis
+                    ? "Saving..."
+                    : savedId
+                      ? "Saved"
+                      : "Save Diagnosis"}
+                </button>
+              </div>
             </div>
 
             <div className="cards-grid">
@@ -754,7 +973,9 @@ export default function IdeanatorPage() {
 
         .intake-preview,
         .submitted-box,
-        .error-box {
+        .error-box,
+        .save-box,
+        .report-actions {
           border: 1px solid rgba(240, 179, 95, 0.24);
           background: rgba(240, 179, 95, 0.08);
           border-radius: 18px;
@@ -767,8 +988,57 @@ export default function IdeanatorPage() {
           margin-bottom: 24px;
         }
 
+        .results-error {
+          margin-bottom: 20px;
+        }
+
         .error-box p {
           margin-bottom: 0;
+        }
+
+        .save-box {
+          border-color: rgba(34, 197, 94, 0.42);
+          background: rgba(34, 197, 94, 0.1);
+          margin-bottom: 20px;
+        }
+
+        .save-box span {
+          display: block;
+          color: #dcfce7;
+          font-weight: 900;
+          margin-bottom: 8px;
+        }
+
+        .save-box a {
+          color: #f0b35f;
+          font-weight: 900;
+        }
+
+        .report-actions {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          gap: 18px;
+          margin-bottom: 28px;
+        }
+
+        .report-actions span {
+          display: block;
+          color: #fff7ea;
+          font-size: 1rem;
+          font-weight: 900;
+          margin-bottom: 6px;
+        }
+
+        .report-actions p {
+          margin-bottom: 0;
+        }
+
+        .report-action-buttons {
+          display: flex;
+          gap: 12px;
+          flex-wrap: wrap;
+          justify-content: flex-end;
         }
 
         .intake-preview strong {
@@ -888,9 +1158,18 @@ export default function IdeanatorPage() {
           }
 
           .topbar,
-          .result-header {
+          .result-header,
+          .report-actions {
             flex-direction: column;
             align-items: stretch;
+          }
+
+          .report-action-buttons {
+            justify-content: stretch;
+          }
+
+          .report-action-buttons button {
+            width: 100%;
           }
 
           .ghost-button {

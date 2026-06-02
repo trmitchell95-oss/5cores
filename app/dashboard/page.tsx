@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useEffect, useState } from "react";
 import { createClient } from "@supabase/supabase-js";
@@ -72,12 +72,18 @@ function getReportLabel(count: number) {
 
 
 function getReportTypeValue(report: Report) {
+  const intake = parseIntake(report.intake) as Intake & { tool?: string | null };
+
+  if (report.report_type === "ideanator" || intake.tool === "ideanator") return "ideanator";
   if (report.report_type === "sphinx") return "sphinx";
   if (report.report_type === "council-reread") return "council-reread";
   return "council";
 }
 
 function getReportTypeLabel(report: Report) {
+  const intake = parseIntake(report.intake) as Intake & { tool?: string | null };
+
+  if (report.report_type === "ideanator" || intake.tool === "ideanator") return "Ideanator";
   if (report.report_type === "sphinx") return "Sphinx";
   if (report.report_type === "council-reread") return "Council Re-Read";
   return "The Council";
@@ -1070,7 +1076,7 @@ export default function Dashboard() {
                   <div className="latest-title">{latestReport.title || "Untitled Manuscript"}</div>
                   <p className="status-muted">
                     {formatDate(latestReport.created_at)}
-                    {latestIntake.writingType ? ` • ${latestIntake.writingType}` : ""}
+                    {latestIntake.writingType ? ` â€¢ ${latestIntake.writingType}` : ""}
                   </p>
                   <a className="latest-link" href={`/reports/${latestReport.id}`}>
                     Open Latest Report
@@ -1190,6 +1196,7 @@ export default function Dashboard() {
               <option value="council">The Council Only</option>
               <option value="council-reread">Council Re-Read Only</option>
               <option value="sphinx">Sphinx Only</option>
+              <option value="ideanator">Ideanator Only</option>
             </select>
 
             <button
@@ -1280,6 +1287,8 @@ export default function Dashboard() {
     </main>
   );
 }
+
+
 
 
 
