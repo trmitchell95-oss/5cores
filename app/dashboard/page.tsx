@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useEffect, useState } from "react";
 import { createClient } from "@supabase/supabase-js";
@@ -72,11 +72,15 @@ function getReportLabel(count: number) {
 
 
 function getReportTypeValue(report: Report) {
-  return report.report_type === "sphinx" ? "sphinx" : "council";
+  if (report.report_type === "sphinx") return "sphinx";
+  if (report.report_type === "council-reread") return "council-reread";
+  return "council";
 }
 
 function getReportTypeLabel(report: Report) {
-  return report.report_type === "sphinx" ? "Sphinx" : "The Council";
+  if (report.report_type === "sphinx") return "Sphinx";
+  if (report.report_type === "council-reread") return "Council Re-Read";
+  return "The Council";
 }
 
 function getSearchText(report: Report) {
@@ -530,7 +534,7 @@ export default function Dashboard() {
 
         .tool-grid {
           display: grid;
-          grid-template-columns: repeat(3, minmax(0, 1fr));
+          grid-template-columns: repeat(4, minmax(0, 1fr));
           gap: 16px;
           margin-bottom: 22px;
         }
@@ -999,10 +1003,10 @@ export default function Dashboard() {
       <div className="page-wrap">
         <header className="topbar">
           <div className="brand-lockup">
-            <div className="brand-mark">5C</div>
+            <div className="brand-mark">HE</div>
             <div>
-              <div className="brand-main">The Council</div>
-              <div className="brand-sub">Manuscript diagnosis dashboard</div>
+              <div className="brand-main">HOVEL EDITOR</div>
+              <div className="brand-sub">Manuscript memory dashboard</div>
             </div>
           </div>
 
@@ -1027,18 +1031,24 @@ export default function Dashboard() {
             <div className="eyebrow">Start Here</div>
             <h1 className="heading">Diagnose the manuscript before you rewrite the damn thing.</h1>
             <p className="subheading">
-              Upload or paste a manuscript, answer a few plain-language questions, and let the Council produce a saved editorial diagnosis you can actually use.
+              Run a diagnosis, organize drafts into projects, compare revisions, reopen saved reports, and use SPHINX when the prose smells too polished, too stiff, or too AI.
             </p>
 
             <div className="hero-actions">
               <a className="primary-btn" href="/submit">
-                Start New Diagnosis
+                Run The Council
+              </a>
+              <a className="secondary-btn" href="/projects">
+                Open Projects
+              </a>
+              <a className="secondary-btn" href="/reread">
+                Council Re-Read
               </a>
               <a className="secondary-btn" href="/sphinx">
-                Run Sphinx Cleanup
+                Run SPHINX
               </a>
               <a className="secondary-btn" href="#saved-reports">
-                View Saved Reports
+                Saved Reports
               </a>
             </div>
           </div>
@@ -1105,13 +1115,26 @@ export default function Dashboard() {
           <article className="tool-card">
             <div>
               <div className="tool-number">03</div>
-              <div className="tool-title">Report Library</div>
+              <div className="tool-title">Projects</div>
               <p className="tool-text">
-                Reopen previous diagnoses, compare progress, and keep your revision trail from turning into a folder full of chaos goblins.
+                Organize manuscripts into project folders, preserve draft history, and keep revision memory from turning into a folder full of chaos goblins.
               </p>
             </div>
-            <a className="tool-link" href="#saved-reports">
-              Browse Reports
+            <a className="tool-link" href="/projects">
+              Open Projects
+            </a>
+          </article>
+
+          <article className="tool-card">
+            <div>
+              <div className="tool-number">04</div>
+              <div className="tool-title">Re-Read</div>
+              <p className="tool-text">
+                Compare a revised draft against an earlier saved version and see what actually improved, worsened, or still needs work.
+              </p>
+            </div>
+            <a className="tool-link" href="/reread">
+              Run Re-Read
             </a>
           </article>
         </section>
@@ -1165,6 +1188,7 @@ export default function Dashboard() {
             >
               <option value="all">All Reports</option>
               <option value="council">The Council Only</option>
+              <option value="council-reread">Council Re-Read Only</option>
               <option value="sphinx">Sphinx Only</option>
             </select>
 
@@ -1208,6 +1232,8 @@ export default function Dashboard() {
                       <div className="report-date">{formatDate(report.created_at)}</div>
 
                       <div className="chips">
+                        <span className="chip gold">{getReportTypeLabel(report)}</span>
+
                         {intake.writingType ? (
                           <span className="chip gold">{intake.writingType}</span>
                         ) : (
