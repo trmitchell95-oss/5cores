@@ -323,7 +323,6 @@ export default function IdeanatorPage() {
   const [loadingBlueprint, setLoadingBlueprint] = useState(false);
   const [runningRig, setRunningRig] = useState(false);
   const [savingRig, setSavingRig] = useState(false);
-  const [updatingRig, setUpdatingRig] = useState(false);
   const [loadingRigs, setLoadingRigs] = useState(false);
   const [archivingRigId, setArchivingRigId] = useState("");
   const [activeRigId, setActiveRigId] = useState("");
@@ -507,11 +506,7 @@ export default function IdeanatorPage() {
       }
 
       setOutput(result.output || "");
-      setMessage(
-        activeRigId
-          ? "Rig ran successfully. Click Update Open Rig to save these changes."
-          : "Rig ran successfully."
-      );
+      setMessage("Rig ran successfully.");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Something went wrong while running the rig.");
     } finally {
@@ -519,7 +514,7 @@ export default function IdeanatorPage() {
     }
   }
 
-  async function saveRigAsNew() {
+  async function saveRig() {
     try {
       setSavingRig(true);
       setError("");
@@ -563,7 +558,7 @@ export default function IdeanatorPage() {
 
       setSavedRigs((current) => [savedRig, ...current]);
       setActiveRigId(savedRig.id);
-      setMessage("Saved as a new rig.");
+      setMessage("Rig saved to your account.");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Could not save rig.");
     } finally {
@@ -571,64 +566,6 @@ export default function IdeanatorPage() {
     }
   }
 
-
-  async function updateOpenRig() {
-    try {
-      setUpdatingRig(true);
-      setError("");
-      setMessage("");
-
-      if (!activeRigId) {
-        setError("Open a saved rig first, or use Save as New Rig.");
-        return;
-      }
-
-      if (!blueprint.purpose.trim()) {
-        setError("The open rig needs a blueprint before it can be updated.");
-        return;
-      }
-
-      const token = await getSessionToken();
-
-      if (!token) {
-        return;
-      }
-
-      const response = await fetch("/api/ideanator/rigs", {
-        method: "PATCH",
-        headers: {
-          "content-type": "application/json",
-          authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          id: activeRigId,
-          rigName: blueprint.rigName || "Untitled Thinking Rig",
-          fog,
-          blueprint,
-          actualPrompt,
-          latestOutput: output,
-        }),
-      });
-
-      const result = await response.json();
-
-      if (!response.ok || !result.ok) {
-        throw new Error(result.error || "Could not update open rig.");
-      }
-
-      const updatedRig = result.rig as SavedRig;
-
-      setSavedRigs((current) =>
-        current.map((rig) => (rig.id === updatedRig.id ? updatedRig : rig))
-      );
-
-      setMessage("Open rig updated.");
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Could not update open rig.");
-    } finally {
-      setUpdatingRig(false);
-    }
-  }
   function openSavedRig(rig: SavedRig) {
     const nextBlueprint = coerceBlueprint(rig.blueprint);
 
@@ -879,7 +816,7 @@ export default function IdeanatorPage() {
             <div>
               <h2 className="font-bold">Thinking Rig Controls</h2>
               <p className="text-sm text-neutral-400">
-                Generate the blueprint, inspect the real prompt, run the rig, then update or save the pattern.
+                Generate the blueprint, inspect the real prompt, run the rig, then save the pattern.
               </p>
             </div>
 
@@ -907,22 +844,12 @@ export default function IdeanatorPage() {
                 {runningRig ? "Running..." : "Run Rig"}
               </button>
 
-              {activeRigId && (
-                <button
-                  onClick={updateOpenRig}
-                  disabled={updatingRig}
-                  className="rounded-xl border border-emerald-500 px-4 py-3 font-bold text-emerald-300 transition hover:bg-emerald-500 hover:text-neutral-950 disabled:cursor-not-allowed disabled:opacity-60"
-                >
-                  {updatingRig ? "Updating..." : "Update Open Rig"}
-                </button>
-              )}
-
               <button
-                onClick={saveRigAsNew}
+                onClick={saveRig}
                 disabled={savingRig}
                 className="rounded-xl border border-amber-400 px-4 py-3 font-bold text-amber-300 transition hover:bg-amber-400 hover:text-neutral-950 disabled:cursor-not-allowed disabled:opacity-60"
               >
-                {savingRig ? "Saving..." : "Save as New Rig"}
+                {savingRig ? "Saving..." : "Save Rig"}
               </button>
 
               <button
@@ -1122,4 +1049,3 @@ export default function IdeanatorPage() {
     </main>
   );
 }
-
