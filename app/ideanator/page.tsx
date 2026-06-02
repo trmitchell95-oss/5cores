@@ -11,13 +11,35 @@ type Verdict =
   | "Beautiful Mess"
   | "Dangerously Good";
 
-type IdeaRun = {
-  name: string;
-  text: string;
-  kind: string;
-  need: string;
+type IdeanatorReport = {
+  ideaName: string;
+  ideaKind: string;
+  primaryNeed: string;
   verdict: Verdict;
+  spark: string;
+  plainEnglishVersion: string;
+  strongestUseCase: string;
+  weakSpots: string;
+  audience: string;
+  moneyValuePath: string;
+  avoidance: string;
+  nextThreeMoves: string[];
 };
+
+type IdeaRun = {
+  submittedText: string;
+  report: IdeanatorReport;
+};
+
+type IdeanatorApiResponse =
+  | {
+      ok: true;
+      report: IdeanatorReport;
+    }
+  | {
+      ok: false;
+      error: string;
+    };
 
 const ideaKinds = [
   "Business",
@@ -63,24 +85,6 @@ function normalizeIdeaName(value: string) {
   return cleaned;
 }
 
-function getFakeVerdict(kind: string, need: string): Verdict {
-  if (kind === "Book / Story") return "Beautiful Mess";
-  if (kind === "Invention / Product") return "Dangerously Good";
-  if (kind === "Social Impact") return "Workbench";
-  if (need === "Tear it apart honestly") return "Workbench";
-  if (need === "Is this worth pursuing?") return "Workbench";
-
-  return "Workbench";
-}
-
-function getIdeaPhrase(kind: string) {
-  if (kind === "I have no damn clue") {
-    return "early-stage idea";
-  }
-
-  return `${kind.toLowerCase()} concept`;
-}
-
 function getIdeaPreview(text: string) {
   const cleaned = text.trim().replace(/\s+/g, " ");
 
@@ -88,11 +92,11 @@ function getIdeaPreview(text: string) {
     return "No idea text was submitted.";
   }
 
-  if (cleaned.length <= 180) {
+  if (cleaned.length <= 220) {
     return cleaned;
   }
 
-  return `${cleaned.slice(0, 180)}...`;
+  return `${cleaned.slice(0, 220)}...`;
 }
 
 export default function IdeanatorPage() {
@@ -102,41 +106,64 @@ export default function IdeanatorPage() {
   const [ideaKind, setIdeaKind] = useState(ideaKinds[0]);
   const [primaryNeed, setPrimaryNeed] = useState(needs[0]);
   const [currentRun, setCurrentRun] = useState<IdeaRun | null>(null);
+  const [errorMessage, setErrorMessage] = useState("");
 
   const liveDisplayName = useMemo(() => {
     return normalizeIdeaName(ideaName);
   }, [ideaName]);
 
-  const result = currentRun ?? {
-    name: liveDisplayName,
-    text: ideaText,
-    kind: ideaKind,
-    need: primaryNeed,
-    verdict: getFakeVerdict(ideaKind, primaryNeed),
-  };
-
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
     if (!ideaText.trim()) {
       return;
     }
 
-    const submittedRun: IdeaRun = {
-      name: normalizeIdeaName(ideaName),
-      text: ideaText.trim(),
-      kind: ideaKind,
-      need: primaryNeed,
-      verdict: getFakeVerdict(ideaKind, primaryNeed),
-    };
-
-    setCurrentRun(submittedRun);
+    setErrorMessage("");
     setStage("loading");
 
-    window.setTimeout(() => {
+    try {
+      const response = await fetch("/api/ideanator", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          ideaName,
+          ideaText,
+          ideaKind,
+          primaryNeed,
+        }),
+      });
+
+      const data = (await response.json()) as IdeanatorApiResponse;
+
+      if (!response.ok || !data.ok) {
+        const message =
+          "error" in data
+            ? data.error
+            : "The Ideanator coughed, smoked, and refused to start.";
+
+        throw new Error(message);
+      }
+
+      setCurrentRun({
+        submittedText: ideaText,
+        report: data.report,
+      });
+
       setStage("results");
       window.scrollTo({ top: 0, behavior: "smooth" });
-    }, 1400);
+    } catch (error) {
+      const message =
+        error instanceof Error
+          ? error.message
+          : "The Ideanator coughed, smoked, and refused to start.";
+
+      setErrorMessage(message);
+      setStage("intake");
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
   }
 
   function resetRun() {
@@ -145,16 +172,19 @@ export default function IdeanatorPage() {
     setIdeaKind(ideaKinds[0]);
     setPrimaryNeed(needs[0]);
     setCurrentRun(null);
+    setErrorMessage("");
     setStage("landing");
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
   function returnToLanding() {
+    setErrorMessage("");
     setStage("landing");
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
   function returnToIntake() {
+    setErrorMessage("");
     setStage("intake");
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
@@ -258,6 +288,13 @@ export default function IdeanatorPage() {
               </p>
             </div>
 
+            {errorMessage && (
+              <div className="error-box">
+                <span>The lift jammed.</span>
+                <p>{errorMessage}</p>
+              </div>
+            )}
+
             <form onSubmit={handleSubmit} className="idea-form">
               <label>
                 <span>Idea name</span>
@@ -334,78 +371,70 @@ export default function IdeanatorPage() {
             <h2>The little bastard is on the lift.</h2>
 
             <p>
-              We are checking the frame, the spark, the tires, and whether this
-              thing explodes at highway speed.
+              We are sending it through the shop now. Frame, spark, tires,
+              obvious leaks, hidden rot, weird noises, and whether this thing
+              explodes at highway speed.
             </p>
           </section>
         )}
 
-        {stage === "results" && (
+        {stage === "results" && currentRun && (
           <section className="results-card">
             <div className="result-header">
               <div>
                 <p className="eyebrow">IDEA CHECK COMPLETE</p>
-                <h2>{result.name}</h2>
+                <h2>{currentRun.report.ideaName}</h2>
                 <p>
-                  Type: <strong>{result.kind}</strong>
+                  Type: <strong>{currentRun.report.ideaKind}</strong>
                 </p>
                 <p>
-                  Asked for: <strong>{result.need}</strong>
+                  Asked for: <strong>{currentRun.report.primaryNeed}</strong>
                 </p>
               </div>
 
               <div className="verdict-badge">
                 <span>Brutal Verdict</span>
-                <strong>{result.verdict}</strong>
+                <strong>{currentRun.report.verdict}</strong>
               </div>
             </div>
 
             <div className="submitted-box">
               <span>What you dropped in</span>
-              <p>{getIdeaPreview(result.text)}</p>
+              <p>{getIdeaPreview(currentRun.submittedText)}</p>
             </div>
 
             <div className="cards-grid">
-              <ResultCard
-                title="The Spark"
-                body="There is something here because the idea has tension. It is not just a feature or a cute thought. It is trying to solve a real confusion point before the user even knows what box to put it in."
-              />
+              <ResultCard title="The Spark" body={currentRun.report.spark} />
 
               <ResultCard
                 title="The Plain-English Version"
-                body={`${result.name} is a ${getIdeaPhrase(
-                  result.kind,
-                )} that needs to be reduced to one clean promise before anyone can judge whether it has legs.`}
+                body={currentRun.report.plainEnglishVersion}
               />
 
               <ResultCard
                 title="The Strongest Use Case"
-                body="The strongest version helps someone move from vague interest to clear next action. The value is not that it gives them more ideas. The value is that it helps them stop drowning in the ones they already have."
+                body={currentRun.report.strongestUseCase}
               />
 
-              <ResultCard
-                title="The Weak Spots"
-                body="Right now, the danger is over-explaining. If this takes five paragraphs to defend, the user will leave. The first version needs one job, one promise, and one satisfying result."
-              />
+              <ResultCard title="The Weak Spots" body={currentRun.report.weakSpots} />
 
-              <ResultCard
-                title="The Audience"
-                body="This is probably for idea-heavy people: writers, founders, inventors, students, small business owners, creators, and restless porch philosophers with too many napkins and not enough structure."
-              />
+              <ResultCard title="The Audience" body={currentRun.report.audience} />
 
               <ResultCard
                 title="The Money / Value Path"
-                body="The path is not selling inspiration. The path is selling clarity. A simple paid idea check, saved reports, deeper diagnostics, and later specialized tracks could all make sense."
+                body={currentRun.report.moneyValuePath}
               />
 
               <ResultCard
                 title="The Part You Are Probably Avoiding"
-                body="You may be attached to the clever version of the idea instead of the useful version. The useful version is usually smaller, uglier, and more likely to survive contact with real people."
+                body={currentRun.report.avoidance}
               />
 
               <ResultCard
                 title="Next Three Moves"
-                body="1. Write the one-sentence version. 2. Show it to five people who might actually use it. 3. Build the smallest ugly version possible before adding any fancy bullshit."
+                body={currentRun.report.nextThreeMoves
+                  .map((move, index) => `${index + 1}. ${move}`)
+                  .join(" ")}
               />
             </div>
 
@@ -413,7 +442,9 @@ export default function IdeanatorPage() {
               {verdicts.map((verdict) => (
                 <span
                   key={verdict}
-                  className={verdict === result.verdict ? "active-verdict" : ""}
+                  className={
+                    verdict === currentRun.report.verdict ? "active-verdict" : ""
+                  }
                 >
                   {verdict}
                 </span>
@@ -587,7 +618,8 @@ export default function IdeanatorPage() {
         .promise-grid span,
         .result-card h3,
         .submitted-box span,
-        .intake-preview span {
+        .intake-preview span,
+        .error-box span {
           display: block;
           color: #fff7ea;
           font-size: 1rem;
@@ -721,11 +753,22 @@ export default function IdeanatorPage() {
         }
 
         .intake-preview,
-        .submitted-box {
+        .submitted-box,
+        .error-box {
           border: 1px solid rgba(240, 179, 95, 0.24);
           background: rgba(240, 179, 95, 0.08);
           border-radius: 18px;
           padding: 16px 18px;
+        }
+
+        .error-box {
+          border-color: rgba(248, 113, 113, 0.45);
+          background: rgba(248, 113, 113, 0.1);
+          margin-bottom: 24px;
+        }
+
+        .error-box p {
+          margin-bottom: 0;
         }
 
         .intake-preview strong {
