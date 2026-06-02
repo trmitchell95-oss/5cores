@@ -863,12 +863,13 @@ export default function IdeanatorPage() {
       <style>{`
         .ideanator-page {
           min-height: 100vh;
+          margin-top: -92px;
           background:
-            radial-gradient(circle at top left, rgba(245, 158, 11, 0.18), transparent 34rem),
-            radial-gradient(circle at bottom right, rgba(125, 211, 252, 0.12), transparent 30rem),
-            #101010;
+            radial-gradient(circle at top left, rgba(245, 158, 11, 0.24), transparent 34rem),
+            radial-gradient(circle at bottom right, rgba(125, 211, 252, 0.13), transparent 30rem),
+            linear-gradient(135deg, #241a10 0%, #191612 46%, #151716 100%);
           color: #f5f1e8;
-          padding: 28px;
+          padding: 120px 28px 28px;
           font-family:
             ui-sans-serif,
             system-ui,
@@ -935,7 +936,7 @@ export default function IdeanatorPage() {
         .loading-card,
         .results-card {
           border: 1px solid rgba(255, 255, 255, 0.14);
-          background: rgba(20, 20, 20, 0.88);
+          background: rgba(31, 29, 25, 0.92);
           box-shadow: 0 24px 80px rgba(0, 0, 0, 0.45);
           border-radius: 32px;
           padding: clamp(24px, 5vw, 56px);
@@ -1353,7 +1354,8 @@ export default function IdeanatorPage() {
 
         @media (max-width: 860px) {
           .ideanator-page {
-            padding: 16px;
+            margin-top: -86px;
+            padding: 104px 16px 16px;
           }
 
           .topbar,
@@ -1396,6 +1398,14 @@ export default function IdeanatorPage() {
             border-radius: 24px;
           }
         }
+
+        /* IDEANATOR PAGE TOP OFFSET FIX */
+        @media (max-width: 520px) {
+          .ideanator-page {
+            margin-top: -124px;
+            padding-top: 146px !important;
+          }
+        }
       `}</style>
     </main>
   );
@@ -1409,6 +1419,7 @@ function ResultCard({ title, body }: { title: string; body: string }) {
     </article>
   );
 }
+
 
 
 
