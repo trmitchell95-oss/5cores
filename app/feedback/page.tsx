@@ -1,6 +1,6 @@
 ﻿"use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { createClient } from "@supabase/supabase-js";
 
@@ -48,22 +48,15 @@ export default function FeedbackPage() {
   const [error, setError] = useState("");
   const [sending, setSending] = useState(false);
   const [isIdeanator, setIsIdeanator] = useState(false);
+  const [loginHref, setLoginHref] = useState("/login");
 
-  const backHref = useMemo(() => {
-    return isIdeanator ? "/idea" : "/dashboard";
-  }, [isIdeanator]);
-
-  const backLabel = useMemo(() => {
-    return isIdeanator ? "Back to Ideanator" : "Back to Dashboard";
-  }, [isIdeanator]);
-
-  const loginHref = useMemo(() => {
-    return `/login?next=${encodeURIComponent(window.location.pathname + window.location.search)}`;
-  }, []);
+  const backHref = isIdeanator ? "/idea" : "/dashboard";
+  const backLabel = isIdeanator ? "Back to Ideanator" : "Back to Dashboard";
 
   useEffect(() => {
     async function loadSession() {
       const ideanatorHost = isIdeanatorHostName(window.location.hostname.toLowerCase());
+      setLoginHref(`/login?next=${encodeURIComponent(window.location.pathname + window.location.search)}`);
       const params = new URLSearchParams(window.location.search);
       const from = params.get("from") || document.referrer || window.location.href;
 
@@ -422,3 +415,4 @@ export default function FeedbackPage() {
     </main>
   );
 }
+
