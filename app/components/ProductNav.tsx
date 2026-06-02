@@ -1,6 +1,6 @@
 ﻿"use client";
 
-import { usePathname } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 
 function isIdeanatorPath(pathname: string) {
   return (
@@ -16,7 +16,9 @@ function isIdeanatorPath(pathname: string) {
 
 export default function ProductNav() {
   const pathname = usePathname() || "/";
-  const isIdeanator = isIdeanatorPath(pathname);
+  const searchParams = useSearchParams();
+  const product = searchParams.get("product");
+  const isIdeanator = isIdeanatorPath(pathname) || product === "idea";
 
   if (isIdeanator) {
     return (
@@ -71,4 +73,5 @@ export default function ProductNav() {
     </nav>
   );
 }
+
 

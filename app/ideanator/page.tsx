@@ -757,7 +757,7 @@ export default function IdeanatorPage() {
               <div className="save-box">
                 <span>{saveMessage}</span>
                 {savedId && (
-                  <a href={`/reports/${savedId}`}>Open saved report</a>
+                  <a href={`/reports/${savedId}?product=idea`}>Open saved report</a>
                 )}
               </div>
             )}
@@ -1409,6 +1409,7 @@ function ResultCard({ title, body }: { title: string; body: string }) {
     </article>
   );
 }
+
 
 
 

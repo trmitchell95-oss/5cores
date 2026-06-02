@@ -1096,8 +1096,11 @@ export default function SavedReportPage() {
 
       <div className="page-wrap">
         <div className="topbar">
-          <Link href="/dashboard" className="nav-link">
-            Back to Dashboard
+          <Link
+            href={isIdeanatorSavedReport(report) ? "/idea/saved" : "/dashboard"}
+            className="nav-link"
+          >
+            {isIdeanatorSavedReport(report) ? "Back to Saved Ideas" : "Back to Dashboard"}
           </Link>
 
           <div className="top-actions">
@@ -1106,13 +1109,15 @@ export default function SavedReportPage() {
                 Back on the Lift
               </Link>
             )}
-            <Link href="/ideanator" className="nav-link">
+            <Link href="/idea" className="nav-link">
               Open Ideanator
             </Link>
 
-            <Link href="/sphinx" className="nav-link">
-              Open Sphinx
-            </Link>
+            {!isIdeanatorSavedReport(report) && (
+              <Link href="/sphinx" className="nav-link">
+                Open Sphinx
+              </Link>
+            )}
 
             <button
               onClick={copyFullReport}
@@ -1292,6 +1297,7 @@ export default function SavedReportPage() {
     </main>
   );
 }
+
 
 
 
