@@ -19,12 +19,17 @@ function isIdeanatorPath(pathname: string, product: string) {
 export default function ProductNav() {
   const pathname = usePathname() || "/";
   const [product, setProduct] = useState("");
+  const [host, setHost] = useState("");
 
   useEffect(() => {
     setProduct(new URLSearchParams(window.location.search).get("product") || "");
+    setHost(window.location.hostname.toLowerCase());
   }, [pathname]);
 
-  const isIdeanator = isIdeanatorPath(pathname, product);
+  const isIdeanator =
+    isIdeanatorPath(pathname, product) ||
+    host === "theideanator.com" ||
+    host === "www.theideanator.com";
 
   if (isIdeanator) {
     return (
@@ -75,5 +80,6 @@ export default function ProductNav() {
     </nav>
   );
 }
+
 
 
