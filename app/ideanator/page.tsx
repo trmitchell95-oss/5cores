@@ -246,8 +246,14 @@ export default function IdeanatorPage() {
     async function loadSavedIdeaForRerun() {
       const params = new URLSearchParams(window.location.search);
       const rerunId = params.get("rerun");
+      const start = params.get("start");
 
       if (!rerunId) {
+        if (start === "intake") {
+          setStage("intake");
+          window.scrollTo({ top: 0, behavior: "smooth" });
+        }
+
         return;
       }
 
@@ -1458,6 +1464,7 @@ function ResultCard({ title, body }: { title: string; body: string }) {
     </article>
   );
 }
+
 
 
 

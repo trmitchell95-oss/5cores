@@ -498,7 +498,7 @@ export default function SavedIdeasPage() {
           </p>
 
           <div className="hero-actions">
-            <a className="primary-link" href="/idea">
+            <a className="primary-link" href="/idea?start=intake">
               Drop in a new idea
             </a>
 
@@ -647,6 +647,7 @@ export default function SavedIdeasPage() {
     </main>
   );
 }
+
 
 
 

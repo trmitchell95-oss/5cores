@@ -1,5 +1,1 @@
-﻿import { redirect } from "next/navigation";
-
-export default function IdeanatorShortcutPage() {
-  redirect("/ideanator");
-}
+﻿export { default } from "../ideanator/page";

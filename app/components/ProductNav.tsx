@@ -40,7 +40,7 @@ export default function ProductNav() {
           IDEANATOR
         </a>
 
-        <a href="/ideanator" className="hovel-global-nav-link">
+        <a href="/idea?start=intake" className="hovel-global-nav-link">
           DROP IDEA
         </a>
 
@@ -75,3 +75,5 @@ export default function ProductNav() {
     </nav>
   );
 }
+
+
