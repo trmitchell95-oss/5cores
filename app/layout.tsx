@@ -1,4 +1,4 @@
-﻿import type { Metadata } from "next";
+import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import HelpLink from "./components/HelpLink";
 import FeedbackLink from "./components/FeedbackLink";
@@ -26,6 +26,14 @@ export default function RootLayout({
           aria-label="Open Sphinx"
         >
           SPHINX
+        </a>
+
+        <a
+          href="/projects"
+          className="hovel-projects-link"
+          aria-label="Open Projects"
+        >
+          PROJECTS
         </a>
 
         {children}
@@ -58,6 +66,33 @@ export default function RootLayout({
 
           .hovel-sphinx-link:hover {
             filter: brightness(1.08);
+          }
+
+          .hovel-projects-link {
+            position: fixed;
+            top: 72px;
+            right: 18px;
+            z-index: 10000;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid rgba(255,255,255,0.22);
+            background: #11100e;
+            color: #facc15;
+            border-radius: 999px;
+            padding: 12px 18px;
+            font-family: monospace;
+            font-size: 12px;
+            font-weight: 900;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            text-decoration: none;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.55);
+          }
+
+          .hovel-projects-link:hover {
+            filter: brightness(1.08);
+            border-color: #facc15;
           }
 
           .hovel-feedback-link {
@@ -113,6 +148,14 @@ export default function RootLayout({
               padding: 10px 14px;
               font-size: 11px;
               letter-spacing: 0.12em;
+            }
+
+            .hovel-projects-link {
+              top: 60px;
+              right: 12px;
+              padding: 10px 14px;
+              font-size: 10px;
+              letter-spacing: 0.11em;
             }
 
             .hovel-feedback-link {
