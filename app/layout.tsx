@@ -27,6 +27,10 @@ export default function RootLayout({
             DASHBOARD
           </a>
 
+          <a href="/ideanator" className="hovel-global-nav-link">
+            IDEANATOR
+          </a>
+
           <a href="/sphinx" className="hovel-global-nav-link hovel-global-nav-primary">
             SPHINX
           </a>
@@ -267,7 +271,7 @@ export default function RootLayout({
               left: 8px;
               right: 8px;
               display: grid;
-              grid-template-columns: 38px minmax(0, 1fr) minmax(0, 1fr);
+              grid-template-columns: 38px repeat(3, minmax(0, 1fr));
               grid-auto-rows: 40px;
               align-items: stretch;
               justify-content: stretch;
@@ -293,7 +297,6 @@ export default function RootLayout({
               letter-spacing: 0.04em;
               border-radius: 13px;
             }
-
             .hovel-global-nav-link:nth-of-type(2) {
               grid-column: 2;
               grid-row: 1;
@@ -305,12 +308,17 @@ export default function RootLayout({
             }
 
             .hovel-global-nav-link:nth-of-type(4) {
+              grid-column: 4;
+              grid-row: 1;
+            }
+
+            .hovel-global-nav-link:nth-of-type(5) {
               grid-column: 2;
               grid-row: 2;
             }
 
-            .hovel-global-nav-link:nth-of-type(5) {
-              grid-column: 3;
+            .hovel-global-nav-link:nth-of-type(6) {
+              grid-column: 3 / span 2;
               grid-row: 2;
             }
 
@@ -543,6 +551,7 @@ export default function RootLayout({
     </html>
   );
 }
+
 
 
 

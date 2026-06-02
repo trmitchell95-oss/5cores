@@ -129,6 +129,28 @@ function decodeMaybeJson(value: unknown): unknown {
   return current;
 }
 
+function getReportIntakeObject(report?: SavedReport | null): Record<string, unknown> {
+  const decoded = decodeMaybeJson(report?.intake);
+
+  if (isPlainObject(decoded)) {
+    return decoded;
+  }
+
+  return {};
+}
+
+function isIdeanatorSavedReport(report?: SavedReport | null) {
+  if (!report) return false;
+
+  const intake = getReportIntakeObject(report);
+  const content = decodeMaybeJson(report.content);
+
+  return (
+    report.report_type === "ideanator" ||
+    intake.tool === "ideanator" ||
+    (isPlainObject(content) && isPlainObject(content.ideanator))
+  );
+}
 function findCouncilObject(value: unknown): Record<string, unknown> | null {
   const decoded = decodeMaybeJson(value);
 
@@ -186,7 +208,7 @@ function getSingleTextFromObject(value: unknown): string {
 }
 
 function buildCouncilSections(report: SavedReport): ReportSection[] {
-  if (report.report_type === "council-reread") {
+  if (report.report_type === "council-reread" || isIdeanatorSavedReport(report)) {
     return [];
   }
 
@@ -510,8 +532,9 @@ export default function SavedReportPage() {
   const activeText = activeSection?.text || singleReportText;
   const blocks = useMemo(() => parseReportText(activeText), [activeText]);
 
-  const label =
-    report?.report_type === "sphinx"
+  const label = isIdeanatorSavedReport(report)
+    ? "IDEANATOR SAVED REPORT"
+    : report?.report_type === "sphinx"
       ? "SPHINX SAVED REPORT"
       : report?.report_type === "council-reread"
         ? "COUNCIL RE-READ REPORT"
@@ -1078,6 +1101,10 @@ export default function SavedReportPage() {
           </Link>
 
           <div className="top-actions">
+            <Link href="/ideanator" className="nav-link">
+              Open Ideanator
+            </Link>
+
             <Link href="/sphinx" className="nav-link">
               Open Sphinx
             </Link>
@@ -1104,15 +1131,19 @@ export default function SavedReportPage() {
 
           <div className="meta-row">
             <span className="meta-chip">
-              {report?.report_type === "council-reread"
-                ? "Re-Read Format"
-                : councilSections.length
-                  ? "Council Format"
-                  : "Single Report"}
+              {isIdeanatorSavedReport(report)
+                ? "Ideanator Format"
+                : report?.report_type === "council-reread"
+                  ? "Re-Read Format"
+                  : councilSections.length
+                    ? "Council Format"
+                    : "Single Report"}
             </span>
 
-            {report?.report_type && (
-              <span className="meta-chip">{report.report_type}</span>
+            {report && (
+              <span className="meta-chip">
+                {isIdeanatorSavedReport(report) ? "ideanator" : report.report_type || "report"}
+              </span>
             )}
 
             {councilSections.length > 0 && (
@@ -1256,6 +1287,7 @@ export default function SavedReportPage() {
     </main>
   );
 }
+
 
 
 

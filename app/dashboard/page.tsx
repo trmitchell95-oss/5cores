@@ -540,7 +540,7 @@ export default function Dashboard() {
 
         .tool-grid {
           display: grid;
-          grid-template-columns: repeat(4, minmax(0, 1fr));
+          grid-template-columns: repeat(5, minmax(0, 1fr));
           gap: 16px;
           margin-bottom: 22px;
         }
@@ -1050,6 +1050,9 @@ export default function Dashboard() {
               <a className="secondary-btn" href="/reread">
                 Council Re-Read
               </a>
+              <a className="secondary-btn" href="/ideanator">
+                Run Ideanator
+              </a>
               <a className="secondary-btn" href="/sphinx">
                 Run SPHINX
               </a>
@@ -1141,6 +1144,19 @@ export default function Dashboard() {
             </div>
             <a className="tool-link" href="/reread">
               Run Re-Read
+            </a>
+          </article>
+
+          <article className="tool-card">
+            <div>
+              <div className="tool-number">05</div>
+              <div className="tool-title">Ideanator</div>
+              <p className="tool-text">
+                Put an early idea on the lift. Find the spark, the weak spots, the strongest use case, and the next three moves before you waste six months polishing a distraction.
+              </p>
+            </div>
+            <a className="tool-link" href="/ideanator">
+              Run Ideanator
             </a>
           </article>
         </section>
@@ -1287,6 +1303,8 @@ export default function Dashboard() {
     </main>
   );
 }
+
+
 
 
 
