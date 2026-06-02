@@ -1,13 +1,14 @@
 ﻿import type { Metadata } from "next";
 import type { ReactNode } from "react";
+import ProductNav from "./components/ProductNav";
 import HelpLink from "./components/HelpLink";
 import FeedbackLink from "./components/FeedbackLink";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "HOVEL EDITOR",
+  title: "HOVEL IDEAS",
   description:
-    "A rough-edged writing diagnostics workshop for The Council, SPHINX, Projects, and Re-Read reports.",
+    "A rough-edged creative workshop for HOVEL Editor, The Ideanator, SPHINX, Projects, and Re-Read reports.",
 };
 
 export default function RootLayout({
@@ -18,31 +19,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body suppressHydrationWarning>
-        <nav className="hovel-global-nav" aria-label="Hovel Editor navigation">
-          <a href="/" className="hovel-global-nav-mark" aria-label="Hovel Editor home">
-            5C
-          </a>
-
-          <a href="/dashboard" className="hovel-global-nav-link">
-            DASHBOARD
-          </a>
-
-          <a href="/ideanator" className="hovel-global-nav-link">
-            IDEANATOR
-          </a>
-
-          <a href="/sphinx" className="hovel-global-nav-link hovel-global-nav-primary">
-            SPHINX
-          </a>
-
-          <a href="/projects" className="hovel-global-nav-link">
-            PROJECTS
-          </a>
-
-          <a href="/reread" className="hovel-global-nav-link">
-            RE-READ
-          </a>
-        </nav>
+        <ProductNav />
 
         {children}
 
@@ -57,6 +34,7 @@ export default function RootLayout({
           body {
             padding-top: 92px;
           }
+
           .hovel-global-nav {
             position: fixed;
             top: 14px;
@@ -71,6 +49,11 @@ export default function RootLayout({
             background: rgba(14, 13, 11, 0.88);
             box-shadow: 0 20px 50px rgba(0, 0, 0, 0.55);
             backdrop-filter: blur(14px);
+          }
+
+          .hovel-global-nav-ideanator {
+            border-color: rgba(240, 179, 95, 0.28);
+            background: rgba(12, 12, 12, 0.9);
           }
 
           .hovel-global-nav-mark {
@@ -89,6 +72,10 @@ export default function RootLayout({
             text-decoration: none;
             box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.18);
             flex: 0 0 auto;
+          }
+
+          .hovel-global-nav-ideanator .hovel-global-nav-mark {
+            background: #f0b35f;
           }
 
           .hovel-global-nav-mark:hover {
@@ -129,6 +116,11 @@ export default function RootLayout({
             background: #facc15;
             color: #000000;
             border-color: rgba(255, 255, 255, 0.35);
+          }
+
+          .hovel-global-nav-ideanator .hovel-global-nav-primary {
+            background: #f0b35f;
+            color: #18100a;
           }
 
           .hovel-global-nav-primary:hover {
@@ -206,6 +198,7 @@ export default function RootLayout({
             body {
               padding-top: 86px;
             }
+
             .hovel-global-nav {
               top: 10px;
               right: 10px;
@@ -251,15 +244,6 @@ export default function RootLayout({
             }
           }
 
-          @media (max-width: 460px) {
-            .hovel-global-nav-link {
-              padding: 0 7px;
-              font-size: 8px;
-              letter-spacing: 0.04em;
-            }
-          }
-
-          /* HOVEL MOBILE POLISH PASS */
           @media (max-width: 520px) {
             body {
               padding-top: 124px;
@@ -271,7 +255,7 @@ export default function RootLayout({
               left: 8px;
               right: 8px;
               display: grid;
-              grid-template-columns: 38px repeat(3, minmax(0, 1fr));
+              grid-template-columns: 38px repeat(2, minmax(0, 1fr));
               grid-auto-rows: 40px;
               align-items: stretch;
               justify-content: stretch;
@@ -297,6 +281,7 @@ export default function RootLayout({
               letter-spacing: 0.04em;
               border-radius: 13px;
             }
+
             .hovel-global-nav-link:nth-of-type(2) {
               grid-column: 2;
               grid-row: 1;
@@ -308,17 +293,12 @@ export default function RootLayout({
             }
 
             .hovel-global-nav-link:nth-of-type(4) {
-              grid-column: 4;
-              grid-row: 1;
-            }
-
-            .hovel-global-nav-link:nth-of-type(5) {
               grid-column: 2;
               grid-row: 2;
             }
 
-            .hovel-global-nav-link:nth-of-type(6) {
-              grid-column: 3 / span 2;
+            .hovel-global-nav-link:nth-of-type(5) {
+              grid-column: 3;
               grid-row: 2;
             }
 
@@ -350,178 +330,12 @@ export default function RootLayout({
             .report-shell .page-wrap,
             .help-shell,
             .terms-shell .wrap,
-            .sphinx-shell {
+            .sphinx-shell,
+            .compare-shell .wrap,
+            .ideanator-page {
               padding-left: 12px !important;
               padding-right: 12px !important;
               padding-bottom: 110px !important;
-            }
-
-            .home-shell .page-wrap,
-            .dashboard-shell .page-wrap,
-            .submit-shell .app-wrap,
-            .report-shell .page-wrap {
-              padding-top: 18px !important;
-            }
-
-            .projects-shell,
-            .reread-shell,
-            .sphinx-shell,
-            .help-shell {
-              padding-top: 18px !important;
-            }
-
-            .topbar,
-            .top-nav,
-            .reports-head,
-            .results-head,
-            .panel-head {
-              gap: 12px !important;
-              margin-bottom: 18px !important;
-            }
-
-            .masthead,
-            .hero-card,
-            .side-card,
-            .status-card,
-            .tool-card,
-            .how-card,
-            .privacy-card,
-            .cta-card,
-            .panel,
-            .report-card,
-            .reports-panel,
-            .hero,
-            .card,
-            .section-card,
-            .manage-card,
-            .upload-box,
-            .meter-card,
-            .item {
-              border-radius: 18px !important;
-              padding: 18px !important;
-            }
-
-            .heading,
-            .title {
-              font-size: clamp(36px, 13vw, 52px) !important;
-              line-height: 0.98 !important;
-            }
-
-            .section-title,
-            .panel-title,
-            .card-title,
-            .tool-title,
-            .status-big,
-            .side-title,
-            .cta-title,
-            .report-title,
-            .item-title,
-            .project-title {
-              font-size: clamp(25px, 9vw, 34px) !important;
-              line-height: 1.05 !important;
-            }
-
-            .subtitle,
-            .subheading,
-            .panel-note,
-            .card-text,
-            .tool-text,
-            .how-text,
-            .side-text,
-            .status-muted,
-            .section-note,
-            .tiny-note,
-            .step-text,
-            .meter-help {
-              font-size: 14px !important;
-              line-height: 1.58 !important;
-            }
-
-            .hero-actions,
-            .button-row,
-            .top-actions,
-            .top-nav-actions,
-            .nav-actions,
-            .user-row,
-            .manage-actions,
-            .item-actions,
-            .upload-actions {
-              width: 100% !important;
-              display: flex !important;
-              flex-direction: column !important;
-              align-items: stretch !important;
-              gap: 10px !important;
-            }
-
-            .nav-link,
-            .nav-link-gold,
-            .back-link,
-            .primary-btn,
-            .secondary-btn,
-            .run-btn,
-            .reset-btn,
-            .dashboard-btn,
-            .tool-link,
-            .view-link,
-            .action-btn,
-            .small-btn,
-            .file-label,
-            .button,
-            .button-dark,
-            .library-btn,
-            .show-more-btn,
-            .admin-btn,
-            .signout-btn,
-            .danger-btn {
-              width: 100% !important;
-              min-height: 48px !important;
-              text-align: center !important;
-              justify-content: center !important;
-            }
-
-            .library-controls,
-            .manage-grid,
-            .form-grid,
-            .grid,
-            .hero-grid,
-            .tool-grid,
-            .how-grid,
-            .section-grid,
-            .wide-grid,
-            .workflow-grid {
-              grid-template-columns: 1fr !important;
-            }
-
-            .textarea,
-            .concern-input,
-            .sphinx-shell textarea {
-              min-height: 260px !important;
-            }
-
-            .draft-textarea {
-              min-height: 320px !important;
-            }
-
-            .title-input,
-            .select-input,
-            .input,
-            .textarea,
-            .select,
-            .library-input,
-            .library-select,
-            .concern-input {
-              font-size: 16px !important;
-            }
-
-            .tabs-wrap {
-              overflow-x: auto !important;
-              padding-bottom: 10px !important;
-            }
-
-            .tab-btn {
-              min-height: 44px !important;
-              font-size: 9px !important;
-              padding: 10px 12px !important;
             }
           }
 
@@ -539,19 +353,9 @@ export default function RootLayout({
             .hovel-global-nav-mark {
               font-size: 9px;
             }
-
-            .heading,
-            .title {
-              font-size: clamp(34px, 13vw, 46px) !important;
-            }
           }
-
         `}</style>
       </body>
     </html>
   );
 }
-
-
-
-
