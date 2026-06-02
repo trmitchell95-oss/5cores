@@ -21,7 +21,7 @@ export default function IdeaHelpPage() {
         }
 
         .wrap {
-          max-width: 1060px;
+          max-width: 1100px;
           margin: 0 auto;
         }
 
@@ -36,6 +36,11 @@ export default function IdeaHelpPage() {
         .top-nav a {
           color: #f0b35f;
           text-decoration: none;
+          font-family: monospace;
+          font-size: 12px;
+          font-weight: 900;
+          letter-spacing: 0.08em;
+          text-transform: uppercase;
         }
 
         .hero,
@@ -79,13 +84,20 @@ export default function IdeaHelpPage() {
         }
 
         .subtitle {
-          max-width: 820px;
+          max-width: 860px;
           font-size: 18px;
         }
 
         .grid {
           display: grid;
           grid-template-columns: repeat(2, minmax(0, 1fr));
+          gap: 16px;
+          margin-bottom: 22px;
+        }
+
+        .three-grid {
+          display: grid;
+          grid-template-columns: repeat(3, minmax(0, 1fr));
           gap: 16px;
           margin-bottom: 22px;
         }
@@ -111,6 +123,25 @@ export default function IdeaHelpPage() {
 
         li {
           margin-bottom: 10px;
+        }
+
+        .steps {
+          display: grid;
+          gap: 12px;
+          margin-top: 14px;
+        }
+
+        .step {
+          border: 1px solid rgba(255, 221, 159, 0.14);
+          background: rgba(0, 0, 0, 0.16);
+          border-radius: 18px;
+          padding: 16px;
+          color: #ddd5c7;
+          line-height: 1.6;
+        }
+
+        .step strong {
+          color: #fff7ea;
         }
 
         .callout {
@@ -160,6 +191,13 @@ export default function IdeaHelpPage() {
           padding-left: 32px;
         }
 
+        @media (max-width: 920px) {
+          .grid,
+          .three-grid {
+            grid-template-columns: 1fr;
+          }
+        }
+
         @media (max-width: 820px) {
           .idea-help-shell {
             padding: 78px 14px 90px;
@@ -170,10 +208,6 @@ export default function IdeaHelpPage() {
           .card {
             border-radius: 20px;
             padding: 18px;
-          }
-
-          .grid {
-            grid-template-columns: 1fr;
           }
 
           .title {
@@ -193,91 +227,176 @@ export default function IdeaHelpPage() {
 
       <div className="wrap">
         <nav className="top-nav">
-          <Link href="/idea">Rig Workbench</Link>
+          <Link href="/ideanator">Rig Workbench</Link>
           <Link href="/idea?start=intake">Idea Check</Link>
           <Link href="/idea/saved">Idea Reports</Link>
+          <Link href="/rigs">Rig Library</Link>
           <Link href="/feedback?from=%2Fhelp">Feedback</Link>
           <Link href="/beta-terms">Beta Terms</Link>
         </nav>
 
         <section className="hero">
           <div className="eyebrow">Ideanator Help</div>
-          <h1 className="title">How to use The Ideanator without lying to your idea.</h1>
+          <h1 className="title">Fog in. Thinking Rig out.</h1>
           <p className="subtitle">
-            The Ideanator is an idea diagnosis engine. It tells you what is alive,
-            what is weak, what is confusing, and what to do next. It is not a patent
-            attorney, investor, therapist, or magic business generator.
+            The Ideanator now has two connected lanes. Idea Check diagnoses the messy idea.
+            Rig Workbench turns that diagnosis, document, or rough material into a reusable working structure.
+            The goal is not to flatter the idea. The goal is to help you keep working without lying to yourself.
           </p>
 
           <div className="button-row">
-            <Link className="button" href="/idea?start=intake">Drop In An Idea</Link>
+            <Link className="button" href="/idea?start=intake">Run Idea Check</Link>
+            <Link className="button-dark" href="/ideanator">Open Rig Workbench</Link>
             <Link className="button-dark" href="/idea/saved">Open Idea Reports</Link>
-            <Link className="button-dark" href="/beta-terms">Read Beta Terms</Link>
+            <Link className="button-dark" href="/rigs">Open Rig Library</Link>
           </div>
         </section>
 
         <section className="grid">
           <article className="card">
-            <div className="mini-label">The Lift</div>
-            <h2>Use it for idea diagnosis.</h2>
+            <div className="mini-label">Lane One</div>
+            <h2>Idea Check diagnoses the idea.</h2>
             <p>
-              Drop in an idea, invention note, feature map, business thought,
-              social impact plan, story seed, or messy strategy dump.
+              Use Idea Check when you have a raw idea, invention note, product concept,
+              story seed, business thought, grant angle, feature map, or strategy dump
+              and need to know what the hell it actually is.
             </p>
             <ul>
-              <li>Best for early ideas that do not know what they are yet.</li>
-              <li>Current beta limit: about 60,000 characters.</li>
-              <li>Short ideas work. Detailed documents work. Whole manuscripts do not belong here.</li>
+              <li>Gives a verdict, spark, weak spots, audience, value path, and next moves.</li>
+              <li>Best for early ideas that are still foggy.</li>
+              <li>Saves as an Idea Report when you choose to save it.</li>
             </ul>
           </article>
 
           <article className="card">
-            <div className="mini-label">Back On The Lift</div>
-            <h2>Use it as a workshop loop.</h2>
+            <div className="mini-label">Lane Two</div>
+            <h2>Rig Workbench builds the reusable pattern.</h2>
             <p>
-              Save an idea, revise it, and run it again. The machine does not decide.
-              The human keeps working. The tool keeps pressure-testing.
+              Use Rig Workbench when you want to turn fog into a reusable structure.
+              The left side is the Fog. The right side is the Blueprint. The buttons below
+              run, save, copy, or export the rig.
             </p>
             <ul>
-              <li>Save reports to your Ideanator saved idea reports.</li>
-              <li>Use Back on the Lift to revise and rerun.</li>
-              <li>Compare versions when working from a saved report.</li>
+              <li>Fog is the messy source material.</li>
+              <li>Blueprint is the organized instruction structure.</li>
+              <li>Run Rig creates the finished output.</li>
             </ul>
           </article>
         </section>
 
         <section className="panel">
-          <h2>What should I paste?</h2>
+          <h2>The basic Ideanator loop.</h2>
+
+          <div className="steps">
+            <div className="step">
+              <strong>1. Drop the idea into Idea Check.</strong> Get the diagnosis first.
+            </div>
+
+            <div className="step">
+              <strong>2. Save the Idea Report.</strong> This preserves the verdict and useful notes.
+            </div>
+
+            <div className="step">
+              <strong>3. Click Build Rig.</strong> The report opens in Rig Workbench and fills the Fog and Blueprint.
+            </div>
+
+            <div className="step">
+              <strong>4. Review the Blueprint.</strong> Change the purpose, audience, tone, constraints, or missing pieces.
+            </div>
+
+            <div className="step">
+              <strong>5. Click Run Rig.</strong> This generates the finished working output.
+            </div>
+
+            <div className="step">
+              <strong>6. Save as New Rig.</strong> The reusable pattern goes to Rig Library.
+            </div>
+          </div>
+
+          <div className="callout">
+            When you arrive from Build Rig and feel lost, scroll up. Fog is on the left.
+            Blueprint is on the right. You usually do not need to generate the blueprint again.
+            Review it, then click Run Rig.
+          </div>
+        </section>
+
+        <section className="three-grid">
+          <article className="card">
+            <div className="mini-label">Idea Reports</div>
+            <h2>Reports are diagnosis.</h2>
+            <p>
+              Idea Reports are saved checkups. They tell you what the idea is,
+              what is strong, what leaks oil, and what to try next.
+            </p>
+            <ul>
+              <li>Use Back on the Lift to revise and rerun.</li>
+              <li>Use Compare when you have multiple versions.</li>
+              <li>Use Build Rig to turn the report into a reusable structure.</li>
+            </ul>
+          </article>
+
+          <article className="card">
+            <div className="mini-label">Rig Library</div>
+            <h2>Rigs are reusable tools.</h2>
+            <p>
+              A saved rig is not just a report. It is a reusable working pattern.
+              Open it, revise it, run it again, update it, copy it, export it, or archive it.
+            </p>
+            <ul>
+              <li>Open a saved rig from Rig Library.</li>
+              <li>Update Open Rig saves changes to the current rig.</li>
+              <li>Save as New Rig creates a new version.</li>
+            </ul>
+          </article>
+
+          <article className="card">
+            <div className="mini-label">Portable Prompt</div>
+            <h2>Take the rig elsewhere.</h2>
+            <p>
+              The Portable Prompt is the copyable structure you can take to another AI room.
+              It is for portability and trust, not because you have to leave the app.
+            </p>
+            <ul>
+              <li>Copy the Blueprint when you want the structure only.</li>
+              <li>Copy the Portable Prompt when you want to use the rig elsewhere.</li>
+              <li>Copy Full Rig Packet when you want everything together.</li>
+            </ul>
+          </article>
+        </section>
+
+        <section className="panel">
+          <h2>Uploads and exports.</h2>
+          <p>
+            Rig Workbench can accept pasted text or uploaded documents. Current upload support is for TXT,
+            Markdown, and modern Word DOCX files. Old DOC files and PDFs are not supported yet.
+          </p>
+
           <ul>
-            <li>A rough idea, concept note, invention summary, business thought, feature list, or product explanation.</li>
-            <li>Diagram explanations, flow maps, sketches translated into words, and working documents.</li>
-            <li>Enough context for the tool to understand the problem, user, shape, or purpose.</li>
+            <li>Use Upload TXT / MD / DOCX in the Fog panel.</li>
+            <li>Use exports when you want to keep the prompt, output, or full packet outside the app.</li>
+            <li>Do not upload confidential legal, medical, financial, or third-party material unless you are comfortable testing it in beta.</li>
           </ul>
 
           <div className="callout">
-            Do not paste material you are not comfortable submitting for analysis.
             This is a beta workshop, not a legal vault, patent opinion, investor guarantee,
-            or magic money machine.
+            therapist, accountant, or magic money machine.
           </div>
         </section>
 
         <section className="panel">
-          <h2>The verdicts.</h2>
+          <h2>Still confused?</h2>
           <p>
-            Every report gets one of five verdicts: Greenlight, Workbench, Distraction,
-            Beautiful Mess, or Dangerously Good. The verdict is not the end. It is where
-            the next round of work begins.
+            Start with Idea Check when the idea is unclear. Start with Rig Workbench when you already have material
+            and want a reusable working structure. Open Rig Library when you want to reuse something you already saved.
           </p>
 
           <div className="button-row">
-            <Link className="button" href="/idea?start=intake">Put Something On The Lift</Link>
+            <Link className="button" href="/ideanator">Open Rig Workbench</Link>
             <Link className="button-dark" href="/feedback?from=%2Fhelp">Send Feedback</Link>
+            <Link className="button-dark" href="/beta-terms">Read Beta Terms</Link>
           </div>
         </section>
       </div>
     </main>
   );
 }
-
-
-

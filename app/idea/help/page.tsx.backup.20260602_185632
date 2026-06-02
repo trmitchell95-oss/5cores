@@ -1,0 +1,283 @@
+﻿import Link from "next/link";
+
+export default function IdeaHelpPage() {
+  return (
+    <main className="idea-help-shell">
+      <style>{`
+        body {
+          margin: 0;
+          background: #1c211e;
+        }
+
+        .idea-help-shell {
+          min-height: 100vh;
+          padding: 88px 24px 90px;
+          color: #f5f1e8;
+          font-family: Arial, sans-serif;
+          background:
+            radial-gradient(circle at top left, rgba(245, 158, 11, 0.30), transparent 36rem),
+            radial-gradient(circle at bottom right, rgba(255, 202, 118, 0.14), transparent 32rem),
+            linear-gradient(135deg, #332313 0%, #242018 46%, #1c211e 100%);
+        }
+
+        .wrap {
+          max-width: 1060px;
+          margin: 0 auto;
+        }
+
+        .top-nav {
+          display: flex;
+          gap: 14px;
+          margin-bottom: 24px;
+          flex-wrap: wrap;
+          align-items: center;
+        }
+
+        .top-nav a {
+          color: #f0b35f;
+          text-decoration: none;
+        }
+
+        .hero,
+        .panel,
+        .card {
+          border: 1px solid rgba(255, 221, 159, 0.2);
+          background: rgba(43, 38, 30, 0.92);
+          box-shadow: 0 24px 80px rgba(0,0,0,0.22);
+        }
+
+        .hero {
+          border-radius: 28px;
+          padding: 32px;
+          margin-bottom: 22px;
+        }
+
+        .eyebrow,
+        .mini-label {
+          color: #f0b35f;
+          font-family: monospace;
+          letter-spacing: 0.2em;
+          text-transform: uppercase;
+          font-size: 12px;
+          font-weight: 900;
+        }
+
+        .title {
+          font-family: Georgia, serif;
+          font-size: clamp(48px, 8vw, 82px);
+          line-height: 0.95;
+          margin: 12px 0 0;
+        }
+
+        .subtitle,
+        .card p,
+        .panel p,
+        li {
+          color: #ddd5c7;
+          line-height: 1.65;
+          font-size: 16px;
+        }
+
+        .subtitle {
+          max-width: 820px;
+          font-size: 18px;
+        }
+
+        .grid {
+          display: grid;
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+          gap: 16px;
+          margin-bottom: 22px;
+        }
+
+        .card,
+        .panel {
+          border-radius: 24px;
+          padding: 24px;
+        }
+
+        .card h2,
+        .panel h2 {
+          font-family: Georgia, serif;
+          font-size: 34px;
+          line-height: 1;
+          margin: 0 0 14px;
+        }
+
+        ul {
+          margin: 12px 0 0;
+          padding-left: 22px;
+        }
+
+        li {
+          margin-bottom: 10px;
+        }
+
+        .callout {
+          border: 1px solid rgba(240, 179, 95, 0.35);
+          background: rgba(240, 179, 95, 0.09);
+          border-radius: 20px;
+          padding: 18px;
+          color: #f0d3a3;
+          line-height: 1.65;
+          margin-top: 16px;
+        }
+
+        .button-row {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 12px;
+          margin-top: 18px;
+        }
+
+        .button,
+        .button-dark {
+          border-radius: 999px;
+          padding: 13px 16px;
+          font-family: monospace;
+          font-size: 11px;
+          font-weight: 900;
+          letter-spacing: 0.12em;
+          text-transform: uppercase;
+          text-decoration: none;
+        }
+
+        .button {
+          background:
+            radial-gradient(circle at 18px 50%, #fff3c4 0 4px, transparent 5px),
+            linear-gradient(180deg, #ffd27a 0%, #f0b35f 52%, #c98438 100%);
+          color: #18100a;
+          border: 1px solid rgba(255, 241, 190, 0.7);
+          padding-left: 34px;
+        }
+
+        .button-dark {
+          color: #f0b35f;
+          border: 1px solid rgba(255, 221, 159, 0.22);
+          background:
+            radial-gradient(circle at 16px 50%, rgba(255, 220, 143, 0.72) 0 3px, transparent 4px),
+            rgba(255, 255, 255, 0.04);
+          padding-left: 32px;
+        }
+
+        @media (max-width: 820px) {
+          .idea-help-shell {
+            padding: 78px 14px 90px;
+          }
+
+          .hero,
+          .panel,
+          .card {
+            border-radius: 20px;
+            padding: 18px;
+          }
+
+          .grid {
+            grid-template-columns: 1fr;
+          }
+
+          .title {
+            font-size: clamp(42px, 12vw, 60px);
+          }
+
+          .button-row {
+            display: grid;
+          }
+
+          .button,
+          .button-dark {
+            text-align: center;
+          }
+        }
+      `}</style>
+
+      <div className="wrap">
+        <nav className="top-nav">
+          <Link href="/idea">Rig Workbench</Link>
+          <Link href="/idea?start=intake">Idea Check</Link>
+          <Link href="/idea/saved">Idea Reports</Link>
+          <Link href="/feedback?from=%2Fhelp">Feedback</Link>
+          <Link href="/beta-terms">Beta Terms</Link>
+        </nav>
+
+        <section className="hero">
+          <div className="eyebrow">Ideanator Help</div>
+          <h1 className="title">How to use The Ideanator without lying to your idea.</h1>
+          <p className="subtitle">
+            The Ideanator is an idea diagnosis engine. It tells you what is alive,
+            what is weak, what is confusing, and what to do next. It is not a patent
+            attorney, investor, therapist, or magic business generator.
+          </p>
+
+          <div className="button-row">
+            <Link className="button" href="/idea?start=intake">Drop In An Idea</Link>
+            <Link className="button-dark" href="/idea/saved">Open Idea Reports</Link>
+            <Link className="button-dark" href="/beta-terms">Read Beta Terms</Link>
+          </div>
+        </section>
+
+        <section className="grid">
+          <article className="card">
+            <div className="mini-label">The Lift</div>
+            <h2>Use it for idea diagnosis.</h2>
+            <p>
+              Drop in an idea, invention note, feature map, business thought,
+              social impact plan, story seed, or messy strategy dump.
+            </p>
+            <ul>
+              <li>Best for early ideas that do not know what they are yet.</li>
+              <li>Current beta limit: about 60,000 characters.</li>
+              <li>Short ideas work. Detailed documents work. Whole manuscripts do not belong here.</li>
+            </ul>
+          </article>
+
+          <article className="card">
+            <div className="mini-label">Back On The Lift</div>
+            <h2>Use it as a workshop loop.</h2>
+            <p>
+              Save an idea, revise it, and run it again. The machine does not decide.
+              The human keeps working. The tool keeps pressure-testing.
+            </p>
+            <ul>
+              <li>Save reports to your Ideanator saved idea reports.</li>
+              <li>Use Back on the Lift to revise and rerun.</li>
+              <li>Compare versions when working from a saved report.</li>
+            </ul>
+          </article>
+        </section>
+
+        <section className="panel">
+          <h2>What should I paste?</h2>
+          <ul>
+            <li>A rough idea, concept note, invention summary, business thought, feature list, or product explanation.</li>
+            <li>Diagram explanations, flow maps, sketches translated into words, and working documents.</li>
+            <li>Enough context for the tool to understand the problem, user, shape, or purpose.</li>
+          </ul>
+
+          <div className="callout">
+            Do not paste material you are not comfortable submitting for analysis.
+            This is a beta workshop, not a legal vault, patent opinion, investor guarantee,
+            or magic money machine.
+          </div>
+        </section>
+
+        <section className="panel">
+          <h2>The verdicts.</h2>
+          <p>
+            Every report gets one of five verdicts: Greenlight, Workbench, Distraction,
+            Beautiful Mess, or Dangerously Good. The verdict is not the end. It is where
+            the next round of work begins.
+          </p>
+
+          <div className="button-row">
+            <Link className="button" href="/idea?start=intake">Put Something On The Lift</Link>
+            <Link className="button-dark" href="/feedback?from=%2Fhelp">Send Feedback</Link>
+          </div>
+        </section>
+      </div>
+    </main>
+  );
+}
+
+
+
