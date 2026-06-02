@@ -380,6 +380,19 @@ export default function IdeanatorPage() {
     }
 
     setErrorMessage("");
+
+    const supabase = getSupabaseClient();
+
+    const {
+      data: { session },
+    } = await supabase.auth.getSession();
+
+    if (!session?.access_token) {
+      setErrorMessage("The engine is behind the login. Sign in first, then we will put it on the lift.");
+      window.location.href = `/login?next=${encodeURIComponent(window.location.pathname + window.location.search)}`;
+      return;
+    }
+
     setStage("loading");
 
     try {
@@ -1548,6 +1561,7 @@ function ResultCard({ title, body }: { title: string; body: string }) {
     </article>
   );
 }
+
 
 
 

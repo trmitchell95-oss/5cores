@@ -1,4 +1,5 @@
 ﻿import { NextRequest, NextResponse } from "next/server";
+import { createClient } from "@supabase/supabase-js";
 import Anthropic from "@anthropic-ai/sdk";
 
 export const runtime = "nodejs";
@@ -8,6 +9,32 @@ const client = new Anthropic();
 const DEFAULT_MODEL = "claude-sonnet-4-6";
 const IDEANATOR_MIN_CHARS = 10;
 const IDEANATOR_MAX_CHARS = 60000;
+
+async function hasValidIdeanatorSession(request: NextRequest) {
+  const authHeader = request.headers.get("authorization") || "";
+  const token = authHeader.startsWith("Bearer ")
+    ? authHeader.slice("Bearer ".length).trim()
+    : "";
+
+  if (!token) {
+    return false;
+  }
+
+  const supabase = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      auth: {
+        persistSession: false,
+        autoRefreshToken: false,
+      },
+    }
+  );
+
+  const { data, error } = await supabase.auth.getUser(token);
+
+  return Boolean(!error && data.user);
+}
 
 type Verdict =
   | "Greenlight"
@@ -404,4 +431,5 @@ export async function POST(request: NextRequest) {
     );
   }
 }
+
 
