@@ -35,6 +35,12 @@ export function proxy(request: NextRequest) {
     return NextResponse.rewrite(url);
   }
 
+  if (pathname === "/help") {
+    const url = request.nextUrl.clone();
+    url.pathname = "/idea/help";
+    return NextResponse.rewrite(url);
+  }
+
   if (isHovelOnlyPath(pathname)) {
     return NextResponse.redirect(`${HOVEL_EDITOR_HOST}${pathname}${search}`);
   }
@@ -45,3 +51,4 @@ export function proxy(request: NextRequest) {
 export const config = {
   matcher: ["/", "/dashboard/:path*", "/sphinx/:path*", "/projects/:path*", "/reread/:path*", "/admin/:path*"],
 };
+
