@@ -232,6 +232,9 @@ export default function IdeanatorPage() {
   const [savedId, setSavedId] = useState("");
   const [saveMessage, setSaveMessage] = useState("");
   const [rerunNotice, setRerunNotice] = useState("");
+  const [rerunSourceId, setRerunSourceId] = useState("");
+  const [rerunSourceTitle, setRerunSourceTitle] = useState("");
+  const [previousVerdict, setPreviousVerdict] = useState("");
 
   const liveDisplayName = useMemo(() => {
     return normalizeIdeaName(ideaName);
@@ -310,6 +313,8 @@ export default function IdeanatorPage() {
             ? contentObject.submittedText
             : "";
 
+        const savedVerdict = getStringField(ideanatorReport, "verdict");
+
         setIdeaName(savedIdeaName);
         setIdeaKind(savedIdeaKind);
         setPrimaryNeed(savedPrimaryNeed);
@@ -319,6 +324,9 @@ export default function IdeanatorPage() {
         setSavingDiagnosis(false);
         setSavedId("");
         setSaveMessage("");
+        setRerunSourceId(rerunId);
+        setRerunSourceTitle(savedReport.title || savedIdeaName || "Earlier saved idea");
+        setPreviousVerdict(savedVerdict);
         setRerunNotice(
           "Loaded your saved idea. Change whatever needs changing, then put it back on the lift."
         );
@@ -410,6 +418,10 @@ export default function IdeanatorPage() {
     setSavingDiagnosis(false);
     setSavedId("");
     setSaveMessage("");
+    setRerunSourceId("");
+    setRerunSourceTitle("");
+    setPreviousVerdict("");
+    setRerunNotice("");
     setStage("landing");
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
@@ -420,6 +432,10 @@ export default function IdeanatorPage() {
     setSavingDiagnosis(false);
     setSavedId("");
     setSaveMessage("");
+    setRerunSourceId("");
+    setRerunSourceTitle("");
+    setPreviousVerdict("");
+    setRerunNotice("");
     setStage("landing");
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
@@ -487,6 +503,9 @@ export default function IdeanatorPage() {
         body: JSON.stringify({
           report: currentRun.report,
           submittedText: currentRun.submittedText,
+          parentReportId: rerunSourceId,
+          sourceReportTitle: rerunSourceTitle,
+          previousVerdict,
         }),
       });
 
@@ -1390,6 +1409,7 @@ function ResultCard({ title, body }: { title: string; body: string }) {
     </article>
   );
 }
+
 
 
 
