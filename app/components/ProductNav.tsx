@@ -47,9 +47,6 @@ export default function ProductNav() {
           SAVED IDEAS
         </a>
 
-        <a href="/dashboard" className="hovel-global-nav-link">
-          HOVEL EDITOR
-        </a>
       </nav>
     );
   }
@@ -78,6 +75,7 @@ export default function ProductNav() {
     </nav>
   );
 }
+
 
 
 

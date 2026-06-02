@@ -302,6 +302,12 @@ export default function RootLayout({
               grid-row: 2;
             }
 
+            /* Ideanator-specific mobile nav */
+            .hovel-global-nav-ideanator .hovel-global-nav-link:nth-of-type(4) {
+              grid-column: 2 / span 2;
+              grid-row: 2;
+            }
+
             .hovel-beta-terms-link {
               display: none;
             }
@@ -359,3 +365,4 @@ export default function RootLayout({
     </html>
   );
 }
+

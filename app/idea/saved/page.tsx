@@ -436,6 +436,24 @@ export default function SavedIdeasPage() {
           margin-bottom: 18px;
         }
 
+        .backdoor-link {
+          margin-top: 28px;
+          color: rgba(245, 241, 232, 0.5);
+          font-size: 0.85rem;
+          text-align: center;
+        }
+
+        .backdoor-link a {
+          color: rgba(240, 179, 95, 0.8);
+          font-weight: 900;
+          text-decoration: none;
+        }
+
+        .backdoor-link a:hover {
+          color: #f0b35f;
+          text-decoration: underline;
+        }
+
         @media (max-width: 820px) {
           .wrap {
             padding: 22px 14px 110px;
@@ -484,9 +502,6 @@ export default function SavedIdeasPage() {
               Drop in a new idea
             </a>
 
-            <a className="secondary-link" href="/dashboard">
-              Open HOVEL Editor
-            </a>
           </div>
         </section>
 
@@ -624,9 +639,14 @@ export default function SavedIdeasPage() {
             </div>
           )}
         </section>
+
+        <div className="backdoor-link">
+          Need manuscript tools? <a href="/dashboard">Open HOVEL Editor.</a>
+        </div>
       </div>
     </main>
   );
 }
+
 
 
