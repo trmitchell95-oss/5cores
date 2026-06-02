@@ -1,6 +1,6 @@
 ﻿"use client";
 
-import { useEffect, useMemo, useState, type ReactNode } from "react";
+import { useMemo, useState, type ReactNode } from "react";
 import { createClient } from "@supabase/supabase-js";
 
 type Blueprint = {
@@ -12,18 +12,6 @@ type Blueprint = {
   constraints: string[];
   missingPieces: string[];
   promptStrategy: string;
-};
-
-type SavedRig = {
-  id: string;
-  created_at: string;
-  updated_at: string;
-  rig_name: string;
-  fog: string | null;
-  blueprint: Blueprint | Record<string, unknown> | null;
-  actual_prompt: string | null;
-  latest_output: string | null;
-  is_archived: boolean;
 };
 
 type TextBlueprintField =
@@ -54,52 +42,6 @@ function getSupabaseClient() {
   }
 
   return createClient(supabaseUrl, supabaseAnonKey);
-}
-
-function cleanString(value: unknown) {
-  return typeof value === "string" ? value : "";
-}
-
-function cleanStringArray(value: unknown) {
-  if (!Array.isArray(value)) return [];
-
-  return value
-    .filter((item): item is string => typeof item === "string")
-    .map((item) => item.trim())
-    .filter(Boolean);
-}
-
-function coerceBlueprint(value: unknown): Blueprint {
-  if (!value || typeof value !== "object" || Array.isArray(value)) {
-    return emptyBlueprint;
-  }
-
-  const record = value as Record<string, unknown>;
-
-  return {
-    rigName: cleanString(record.rigName),
-    purpose: cleanString(record.purpose),
-    audience: cleanString(record.audience),
-    outputType: cleanString(record.outputType),
-    tone: cleanString(record.tone),
-    constraints: cleanStringArray(record.constraints),
-    missingPieces: cleanStringArray(record.missingPieces),
-    promptStrategy: cleanString(record.promptStrategy),
-  };
-}
-
-function formatDate(value: string) {
-  try {
-    return new Date(value).toLocaleString(undefined, {
-      month: "short",
-      day: "numeric",
-      year: "numeric",
-      hour: "numeric",
-      minute: "2-digit",
-    });
-  } catch {
-    return value;
-  }
 }
 
 function assemblePrompt(fog: string, blueprint: Blueprint) {
@@ -319,13 +261,9 @@ export default function IdeanatorPage() {
   const [blueprint, setBlueprint] = useState<Blueprint>(emptyBlueprint);
   const [showPrompt, setShowPrompt] = useState(false);
   const [output, setOutput] = useState("");
-  const [savedRigs, setSavedRigs] = useState<SavedRig[]>([]);
+  const [savedRigs, setSavedRigs] = useState<string[]>([]);
   const [loadingBlueprint, setLoadingBlueprint] = useState(false);
   const [runningRig, setRunningRig] = useState(false);
-  const [savingRig, setSavingRig] = useState(false);
-  const [loadingRigs, setLoadingRigs] = useState(false);
-  const [archivingRigId, setArchivingRigId] = useState("");
-  const [activeRigId, setActiveRigId] = useState("");
   const [error, setError] = useState("");
   const [message, setMessage] = useState("");
 
@@ -351,43 +289,6 @@ export default function IdeanatorPage() {
     return session.access_token;
   }
 
-  async function loadSavedRigs(showLoadedMessage = false) {
-    try {
-      setLoadingRigs(true);
-      setError("");
-
-      const token = await getSessionToken();
-
-      if (!token) return;
-
-      const response = await fetch("/api/ideanator/rigs", {
-        headers: {
-          authorization: `Bearer ${token}`,
-        },
-      });
-
-      const result = await response.json();
-
-      if (!response.ok || !result.ok) {
-        throw new Error(result.error || "Could not load saved rigs.");
-      }
-
-      setSavedRigs(result.rigs || []);
-
-      if (showLoadedMessage) {
-        setMessage("Saved rigs refreshed.");
-      }
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Could not load saved rigs.");
-    } finally {
-      setLoadingRigs(false);
-    }
-  }
-
-  useEffect(() => {
-    loadSavedRigs(false);
-  }, []);
-
   async function copyToClipboard(label: string, value: string) {
     try {
       setError("");
@@ -411,7 +312,6 @@ export default function IdeanatorPage() {
       setError("");
       setMessage("");
       setOutput("");
-      setActiveRigId("");
 
       const token = await getSessionToken();
 
@@ -514,114 +414,19 @@ export default function IdeanatorPage() {
     }
   }
 
-  async function saveRig() {
-    try {
-      setSavingRig(true);
-      setError("");
-      setMessage("");
-
-      const rigName = blueprint.rigName || blueprint.outputType || "Untitled Thinking Rig";
-
-      if (!blueprint.purpose.trim()) {
-        setError("Generate or fill in the blueprint before saving a rig.");
-        return;
-      }
-
-      const token = await getSessionToken();
-
-      if (!token) {
-        return;
-      }
-
-      const response = await fetch("/api/ideanator/rigs", {
-        method: "POST",
-        headers: {
-          "content-type": "application/json",
-          authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          rigName,
-          fog,
-          blueprint,
-          actualPrompt,
-          latestOutput: output,
-        }),
-      });
-
-      const result = await response.json();
-
-      if (!response.ok || !result.ok) {
-        throw new Error(result.error || "Could not save rig.");
-      }
-
-      const savedRig = result.rig as SavedRig;
-
-      setSavedRigs((current) => [savedRig, ...current]);
-      setActiveRigId(savedRig.id);
-      setMessage("Rig saved to your account.");
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Could not save rig.");
-    } finally {
-      setSavingRig(false);
-    }
-  }
-
-  function openSavedRig(rig: SavedRig) {
-    const nextBlueprint = coerceBlueprint(rig.blueprint);
-
-    setFog(rig.fog || "");
-    setBlueprint({
-      ...nextBlueprint,
-      rigName: nextBlueprint.rigName || rig.rig_name || "Untitled Thinking Rig",
-    });
-    setOutput(rig.latest_output || "");
-    setActiveRigId(rig.id);
-    setShowPrompt(true);
+  function saveRig() {
     setError("");
-    setMessage(`Opened ${rig.rig_name || "saved rig"}.`);
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  }
+    setMessage("");
 
-  async function archiveSavedRig(rig: SavedRig) {
-    try {
-      setArchivingRigId(rig.id);
-      setError("");
-      setMessage("");
+    const rigName = blueprint.rigName || blueprint.outputType || "Untitled Thinking Rig";
 
-      const token = await getSessionToken();
-
-      if (!token) return;
-
-      const response = await fetch("/api/ideanator/rigs", {
-        method: "PATCH",
-        headers: {
-          "content-type": "application/json",
-          authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          id: rig.id,
-          isArchived: true,
-        }),
-      });
-
-      const result = await response.json();
-
-      if (!response.ok || !result.ok) {
-        throw new Error(result.error || "Could not archive rig.");
-      }
-
-      setSavedRigs((current) => current.filter((item) => item.id !== rig.id));
-
-      if (activeRigId === rig.id) {
-        setActiveRigId("");
-      }
-
-      setMessage("Rig archived.");
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Could not archive rig.");
-    } finally {
-      setArchivingRigId("");
+    if (!blueprint.purpose.trim()) {
+      setError("Generate or fill in the blueprint before saving a rig.");
+      return;
     }
+
+    setSavedRigs((current) => [rigName, ...current]);
+    setMessage("Rig saved in browser for now. Backend save comes next.");
   }
 
   return (
@@ -703,12 +508,6 @@ export default function IdeanatorPage() {
               >
                 Copy Actual Prompt
               </button>
-
-              {activeRigId && (
-                <span className="rounded-xl border border-emerald-900 bg-emerald-950/40 px-3 py-2 text-sm font-bold text-emerald-200">
-                  Opened Saved Rig
-                </span>
-              )}
             </div>
 
             <div className="space-y-4">
@@ -846,18 +645,9 @@ export default function IdeanatorPage() {
 
               <button
                 onClick={saveRig}
-                disabled={savingRig}
-                className="rounded-xl border border-amber-400 px-4 py-3 font-bold text-amber-300 transition hover:bg-amber-400 hover:text-neutral-950 disabled:cursor-not-allowed disabled:opacity-60"
+                className="rounded-xl border border-amber-400 px-4 py-3 font-bold text-amber-300 transition hover:bg-amber-400 hover:text-neutral-950"
               >
-                {savingRig ? "Saving..." : "Save Rig"}
-              </button>
-
-              <button
-                onClick={() => loadSavedRigs(true)}
-                disabled={loadingRigs}
-                className="rounded-xl border border-neutral-700 px-4 py-3 font-bold text-neutral-100 transition hover:border-neutral-500 disabled:cursor-not-allowed disabled:opacity-60"
-              >
-                {loadingRigs ? "Refreshing..." : "Refresh Rigs"}
+                Save Rig
               </button>
             </div>
           </div>
@@ -930,121 +720,24 @@ export default function IdeanatorPage() {
           </section>
         )}
 
-        <section className="rounded-3xl border border-neutral-800 bg-neutral-900 p-5 shadow-xl">
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-            <div>
-              <h2 className="text-xl font-bold">Saved Rigs</h2>
-              <p className="mt-1 text-sm text-neutral-400">
-                These are saved to your account. Open one, reuse it, copy it, or archive it.
-              </p>
-            </div>
-
-            <button
-              onClick={() => loadSavedRigs(true)}
-              disabled={loadingRigs}
-              className="rounded-xl border border-neutral-700 px-3 py-2 text-sm font-bold text-neutral-100 transition hover:border-amber-400 hover:text-amber-300 disabled:cursor-not-allowed disabled:opacity-60"
-            >
-              {loadingRigs ? "Loading..." : "Refresh"}
-            </button>
-          </div>
-
-          {loadingRigs && (
-            <p className="mt-4 rounded-2xl border border-neutral-800 bg-neutral-950 p-4 text-neutral-400">
-              Loading saved rigs...
+        {savedRigs.length > 0 && (
+          <section className="rounded-3xl border border-neutral-800 bg-neutral-900 p-5 shadow-xl">
+            <h2 className="text-xl font-bold">Saved Rigs</h2>
+            <p className="mt-1 text-sm text-neutral-400">
+              Mock saved in browser state for now. Backend persistence comes after this presentation pass.
             </p>
-          )}
-
-          {!loadingRigs && savedRigs.length === 0 && (
-            <p className="mt-4 rounded-2xl border border-neutral-800 bg-neutral-950 p-4 text-neutral-400">
-              No saved rigs yet. Build one, run it, then save the pattern.
-            </p>
-          )}
-
-          {savedRigs.length > 0 && (
-            <div className="mt-4 grid gap-3">
-              {savedRigs.map((rig) => {
-                const rigBlueprint = coerceBlueprint(rig.blueprint);
-                const isActive = activeRigId === rig.id;
-
-                return (
-                  <article
-                    key={rig.id}
-                    className={`rounded-2xl border p-4 ${
-                      isActive
-                        ? "border-amber-400 bg-amber-950/20"
-                        : "border-neutral-800 bg-neutral-950"
-                    }`}
-                  >
-                    <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-                      <div>
-                        <h3 className="text-lg font-black text-neutral-50">
-                          {rig.rig_name || rigBlueprint.rigName || "Untitled Thinking Rig"}
-                        </h3>
-
-                        <p className="mt-1 text-sm leading-6 text-neutral-400">
-                          {rigBlueprint.outputType || "No output type saved."}
-                        </p>
-
-                        <p className="mt-2 text-xs uppercase tracking-[0.14em] text-neutral-500">
-                          Updated {formatDate(rig.updated_at)}
-                        </p>
-
-                        {isActive && (
-                          <p className="mt-2 text-sm font-bold text-amber-300">
-                            Currently open
-                          </p>
-                        )}
-                      </div>
-
-                      <div className="flex flex-wrap gap-2">
-                        <button
-                          type="button"
-                          onClick={() => openSavedRig(rig)}
-                          className="rounded-xl bg-amber-400 px-3 py-2 text-sm font-black text-neutral-950 transition hover:bg-amber-300"
-                        >
-                          Open
-                        </button>
-
-                        <button
-                          type="button"
-                          onClick={() =>
-                            copyToClipboard(
-                              "Saved Rig Packet",
-                              formatFullRigPacket({
-                                fog: rig.fog || "",
-                                blueprint: {
-                                  ...rigBlueprint,
-                                  rigName:
-                                    rigBlueprint.rigName ||
-                                    rig.rig_name ||
-                                    "Untitled Thinking Rig",
-                                },
-                                actualPrompt: rig.actual_prompt || "",
-                                output: rig.latest_output || "",
-                              })
-                            )
-                          }
-                          className="rounded-xl border border-neutral-700 px-3 py-2 text-sm font-bold text-neutral-100 transition hover:border-amber-400 hover:text-amber-300"
-                        >
-                          Copy Packet
-                        </button>
-
-                        <button
-                          type="button"
-                          onClick={() => archiveSavedRig(rig)}
-                          disabled={archivingRigId === rig.id}
-                          className="rounded-xl border border-red-900 px-3 py-2 text-sm font-bold text-red-200 transition hover:bg-red-950 disabled:cursor-not-allowed disabled:opacity-60"
-                        >
-                          {archivingRigId === rig.id ? "Archiving..." : "Archive"}
-                        </button>
-                      </div>
-                    </div>
-                  </article>
-                );
-              })}
+            <div className="mt-4 flex flex-wrap gap-3">
+              {savedRigs.map((rig, index) => (
+                <span
+                  key={`${rig}-${index}`}
+                  className="rounded-full border border-neutral-700 bg-neutral-950 px-4 py-2 text-sm text-neutral-200"
+                >
+                  {rig}
+                </span>
+              ))}
             </div>
-          )}
-        </section>
+          </section>
+        )}
       </div>
     </main>
   );
