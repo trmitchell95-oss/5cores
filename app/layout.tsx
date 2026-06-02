@@ -254,6 +254,290 @@ export default function RootLayout({
               letter-spacing: 0.04em;
             }
           }
+
+          /* HOVEL MOBILE POLISH PASS */
+          @media (max-width: 520px) {
+            body {
+              padding-top: 124px;
+              padding-bottom: 84px;
+            }
+
+            .hovel-global-nav {
+              top: 8px;
+              left: 8px;
+              right: 8px;
+              display: grid;
+              grid-template-columns: 38px minmax(0, 1fr) minmax(0, 1fr);
+              grid-auto-rows: 40px;
+              align-items: stretch;
+              justify-content: stretch;
+              gap: 6px;
+              padding: 6px;
+              border-radius: 18px;
+            }
+
+            .hovel-global-nav-mark {
+              width: 100%;
+              height: 40px;
+              border-radius: 12px;
+              font-size: 10px;
+              grid-column: 1;
+              grid-row: 1 / span 2;
+            }
+
+            .hovel-global-nav-link {
+              width: 100%;
+              min-height: 40px;
+              padding: 0 6px;
+              font-size: 9px;
+              letter-spacing: 0.04em;
+              border-radius: 13px;
+            }
+
+            .hovel-global-nav-link:nth-of-type(2) {
+              grid-column: 2;
+              grid-row: 1;
+            }
+
+            .hovel-global-nav-link:nth-of-type(3) {
+              grid-column: 3;
+              grid-row: 1;
+            }
+
+            .hovel-global-nav-link:nth-of-type(4) {
+              grid-column: 2;
+              grid-row: 2;
+            }
+
+            .hovel-global-nav-link:nth-of-type(5) {
+              grid-column: 3;
+              grid-row: 2;
+            }
+
+            .hovel-beta-terms-link {
+              display: none;
+            }
+
+            .hovel-help-link {
+              left: 12px;
+              bottom: 12px;
+              padding: 10px 13px;
+              font-size: 9px;
+              letter-spacing: 0.08em;
+            }
+
+            .hovel-feedback-link {
+              right: 12px;
+              bottom: 12px;
+              padding: 10px 13px;
+              font-size: 9px;
+              letter-spacing: 0.08em;
+            }
+
+            .home-shell .page-wrap,
+            .dashboard-shell .page-wrap,
+            .submit-shell .app-wrap,
+            .projects-shell,
+            .reread-shell,
+            .report-shell .page-wrap,
+            .help-shell,
+            .terms-shell .wrap,
+            .sphinx-shell {
+              padding-left: 12px !important;
+              padding-right: 12px !important;
+              padding-bottom: 110px !important;
+            }
+
+            .home-shell .page-wrap,
+            .dashboard-shell .page-wrap,
+            .submit-shell .app-wrap,
+            .report-shell .page-wrap {
+              padding-top: 18px !important;
+            }
+
+            .projects-shell,
+            .reread-shell,
+            .sphinx-shell,
+            .help-shell {
+              padding-top: 18px !important;
+            }
+
+            .topbar,
+            .top-nav,
+            .reports-head,
+            .results-head,
+            .panel-head {
+              gap: 12px !important;
+              margin-bottom: 18px !important;
+            }
+
+            .masthead,
+            .hero-card,
+            .side-card,
+            .status-card,
+            .tool-card,
+            .how-card,
+            .privacy-card,
+            .cta-card,
+            .panel,
+            .report-card,
+            .reports-panel,
+            .hero,
+            .card,
+            .section-card,
+            .manage-card,
+            .upload-box,
+            .meter-card,
+            .item {
+              border-radius: 18px !important;
+              padding: 18px !important;
+            }
+
+            .heading,
+            .title {
+              font-size: clamp(36px, 13vw, 52px) !important;
+              line-height: 0.98 !important;
+            }
+
+            .section-title,
+            .panel-title,
+            .card-title,
+            .tool-title,
+            .status-big,
+            .side-title,
+            .cta-title,
+            .report-title,
+            .item-title,
+            .project-title {
+              font-size: clamp(25px, 9vw, 34px) !important;
+              line-height: 1.05 !important;
+            }
+
+            .subtitle,
+            .subheading,
+            .panel-note,
+            .card-text,
+            .tool-text,
+            .how-text,
+            .side-text,
+            .status-muted,
+            .section-note,
+            .tiny-note,
+            .step-text,
+            .meter-help {
+              font-size: 14px !important;
+              line-height: 1.58 !important;
+            }
+
+            .hero-actions,
+            .button-row,
+            .top-actions,
+            .top-nav-actions,
+            .nav-actions,
+            .user-row,
+            .manage-actions,
+            .item-actions,
+            .upload-actions {
+              width: 100% !important;
+              display: flex !important;
+              flex-direction: column !important;
+              align-items: stretch !important;
+              gap: 10px !important;
+            }
+
+            .nav-link,
+            .nav-link-gold,
+            .back-link,
+            .primary-btn,
+            .secondary-btn,
+            .run-btn,
+            .reset-btn,
+            .dashboard-btn,
+            .tool-link,
+            .view-link,
+            .action-btn,
+            .small-btn,
+            .file-label,
+            .button,
+            .button-dark,
+            .library-btn,
+            .show-more-btn,
+            .admin-btn,
+            .signout-btn,
+            .danger-btn {
+              width: 100% !important;
+              min-height: 48px !important;
+              text-align: center !important;
+              justify-content: center !important;
+            }
+
+            .library-controls,
+            .manage-grid,
+            .form-grid,
+            .grid,
+            .hero-grid,
+            .tool-grid,
+            .how-grid,
+            .section-grid,
+            .wide-grid,
+            .workflow-grid {
+              grid-template-columns: 1fr !important;
+            }
+
+            .textarea,
+            .concern-input,
+            .sphinx-shell textarea {
+              min-height: 260px !important;
+            }
+
+            .draft-textarea {
+              min-height: 320px !important;
+            }
+
+            .title-input,
+            .select-input,
+            .input,
+            .textarea,
+            .select,
+            .library-input,
+            .library-select,
+            .concern-input {
+              font-size: 16px !important;
+            }
+
+            .tabs-wrap {
+              overflow-x: auto !important;
+              padding-bottom: 10px !important;
+            }
+
+            .tab-btn {
+              min-height: 44px !important;
+              font-size: 9px !important;
+              padding: 10px 12px !important;
+            }
+          }
+
+          @media (max-width: 370px) {
+            body {
+              padding-top: 128px;
+            }
+
+            .hovel-global-nav-link {
+              font-size: 8px;
+              letter-spacing: 0.02em;
+              padding: 0 4px;
+            }
+
+            .hovel-global-nav-mark {
+              font-size: 9px;
+            }
+
+            .heading,
+            .title {
+              font-size: clamp(34px, 13vw, 46px) !important;
+            }
+          }
+
         `}</style>
       </body>
     </html>
