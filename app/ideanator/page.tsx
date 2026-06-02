@@ -652,8 +652,20 @@ export default function IdeanatorPage() {
               <p className="eyebrow">IDEA INTAKE</p>
               <h2>Tell us what is rattling around in there.</h2>
               <p>
-                No pitch-deck voice. No founder fog. Just explain the thing as
-                honestly as you can.
+                No pitch-deck voice. No founder fog. Paste the napkin sketch,
+                the messy concept doc, the product notes, the flow map, or the
+                whole idea dump. Short is fine. Detailed is fine. A full novel is
+                not what this bay is built for.
+              </p>
+            </div>
+
+            <div className="long-doc-note">
+              <span>Long idea documents are allowed.</span>
+              <p>
+                This bay can handle serious concept notes, invention details,
+                diagram explanations, market thoughts, feature lists, and messy
+                working documents up to 60,000 characters. Do not paste anything
+                you are not comfortable submitting for analysis.
               </p>
             </div>
 
@@ -707,7 +719,7 @@ export default function IdeanatorPage() {
                 <textarea
                   value={ideaText}
                   onChange={(event) => setIdeaText(event.target.value)}
-                  placeholder="Dump the chaos here. Half-thoughts are allowed. Weird is allowed. Rambling is allowed. Lying to yourself is discouraged."
+                  placeholder="Dump the chaos here. Half-thoughts, diagrams explained in text, feature maps, invention notes, founder rambling, and serious idea documents are allowed. Lying to yourself is discouraged."
                 />
 
                 <div className={`idea-limit-note ${ideaTooLong ? "over-limit" : ""}`}>
@@ -1260,6 +1272,7 @@ export default function IdeanatorPage() {
           grid-column: 1 / -1;
         }
 
+        .long-doc-note,
         .intake-preview,
         .submitted-box,
         .error-box,
@@ -1269,6 +1282,25 @@ export default function IdeanatorPage() {
           background: rgba(240, 179, 95, 0.08);
           border-radius: 18px;
           padding: 16px 18px;
+        }
+
+        .long-doc-note {
+          margin-bottom: 24px;
+          border-color: rgba(255, 221, 159, 0.22);
+          background: rgba(255, 221, 159, 0.075);
+        }
+
+        .long-doc-note span {
+          display: block;
+          color: #fff7ea;
+          font-size: 1rem;
+          font-weight: 900;
+          margin-bottom: 8px;
+        }
+
+        .long-doc-note p {
+          margin-bottom: 0;
+          color: #d8cfc0;
         }
 
         .error-box {
@@ -1516,6 +1548,7 @@ function ResultCard({ title, body }: { title: string; body: string }) {
     </article>
   );
 }
+
 
 
 
