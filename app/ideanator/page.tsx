@@ -405,6 +405,7 @@ export default function IdeanatorPage() {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          authorization: `Bearer ${session.access_token}`,
         },
         body: JSON.stringify({
           ideaName,
@@ -1581,6 +1582,7 @@ function ResultCard({ title, body }: { title: string; body: string }) {
     </article>
   );
 }
+
 
 
 
