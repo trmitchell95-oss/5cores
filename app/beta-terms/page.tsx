@@ -276,13 +276,15 @@ export default function BetaTermsPage() {
           <h2 className="section-title">What happens to your text</h2>
           <p className="body-text">
             When you paste or upload text, the app uses that text to generate a report.
-            If you save the report, it is connected to your logged-in account and appears
-            in your dashboard.
+            Saved reports are connected to your logged-in account and appear in your dashboard.
+            Manuscript text is only stored for future Re-Read comparison when you choose to save a manuscript snapshot.
           </p>
 
           <div className="plain-list">
             <div className="plain-item"><span className="dot" /><span>Saved reports are tied to your account login.</span></div>
+            <div className="plain-item"><span className="dot" /><span>Manuscript snapshots are optional and are used for Council Re-Read comparisons.</span></div>
             <div className="plain-item"><span className="dot" /><span>You can rename, download, copy, and delete saved reports.</span></div>
+            <div className="plain-item"><span className="dot" /><span>You can delete manuscript snapshots from Projects without deleting the saved report.</span></div>
             <div className="plain-item"><span className="dot" /><span>There is no public report wall.</span></div>
             <div className="plain-item"><span className="dot" /><span>Do not upload anything you are not comfortable testing in a beta system.</span></div>
           </div>
@@ -306,7 +308,7 @@ export default function BetaTermsPage() {
           <h2 className="section-title">The practical promise</h2>
           <p className="body-text">
             The app is being built around account separation, saved report history,
-            user-controlled deletion, usage limits, and clear beta expectations before payment is added.
+            optional manuscript snapshots, user-controlled deletion, usage limits, and clear beta expectations before payment is added.
           </p>
 
           <p className="body-text">

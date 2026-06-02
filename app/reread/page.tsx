@@ -765,9 +765,9 @@ export default function CouncilReReadPage() {
           <div className="eyebrow">HOVEL EDITOR MEMORY</div>
           <h1 className="title">Council Re-Read.</h1>
           <p className="subtitle">
-            Compare a revised draft against an earlier saved manuscript version.
-            This is where The Council stops treating every draft like it fell out of the sky
-            and starts judging whether the revision actually moved the work forward.
+            Compare a revised draft against an earlier saved manuscript snapshot.
+            Re-Read only works when you have chosen to save draft text inside a project.
+            The comparison report is saved separately from the snapshot itself.
           </p>
         </header>
 
@@ -785,7 +785,7 @@ export default function CouncilReReadPage() {
             <div className="panel">
               <div className="panel-title">1. Choose the old draft</div>
               <p className="panel-note">
-                Pick the saved manuscript version you want the revised draft compared against.
+                Pick the saved manuscript snapshot you want the revised draft compared against.
               </p>
 
               <label className="field-label">Project</label>
@@ -836,7 +836,7 @@ export default function CouncilReReadPage() {
 
               {baseVersionId && (
                 <div className="tiny-note">
-                  Earlier draft selected. The server will pull the saved manuscript text securely.
+                  Earlier draft selected. HOVEL will pull only the saved text tied to your account and project.
                 </div>
               )}
             </div>
@@ -882,9 +882,9 @@ export default function CouncilReReadPage() {
                   style={{ marginTop: "5px" }}
                 />
                 <span>
-                  Save this revised draft as a new manuscript version.
+                  Save this revised draft as a new manuscript snapshot.
                   <span className="tiny-note" style={{ display: "block" }}>
-                    This lets Draft 2 become the comparison point for Draft 3 later.
+                    This stores the revised draft text under your account and project so it can become the comparison point for Draft 3 later. Uncheck this if you only want the Re-Read report saved.
                   </span>
                 </span>
               </label>
@@ -925,7 +925,7 @@ export default function CouncilReReadPage() {
             <div className="panel">
               <div className="panel-title">4. Paste the revised draft</div>
               <p className="panel-note">
-                Paste Draft 2 here, or upload a .txt, .md, or .docx file.
+                Paste Draft 2 here, or upload a .txt, .md, or .docx file. This revised text is only saved as a snapshot if the save option is checked.
               </p>
 
               <div className="upload-box">

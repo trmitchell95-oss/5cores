@@ -276,6 +276,7 @@ export default function HelpPage() {
             <p>
               When you are signed in, saved reports stay connected to your account.
               You can reopen reports, rename them, delete them, or download them as text or markdown.
+              Manuscript snapshots are separate and optional. They are only for Re-Read comparisons.
             </p>
           </article>
 
@@ -293,12 +294,13 @@ export default function HelpPage() {
           <h2>Privacy, plain and simple.</h2>
           <p>
             This is a beta tool. Use common sense with sensitive material. The app needs your text
-            to generate reports, and signed-in users can save report history. Admin tools track usage,
+            to generate reports. Signed-in users can save report history. Manuscript text is only stored
+            for future Re-Read comparison when you choose to save a manuscript snapshot. Admin tools track usage,
             feedback, invite codes, and report metadata so the system can be tested and improved.
           </p>
           <p>
             Do not submit private legal, medical, financial, or confidential third-party material unless
-            you are comfortable using it in a beta testing environment.
+            you are comfortable using it in a beta testing environment. You can delete saved reports and manuscript snapshots, but beta systems should still be treated with caution.
           </p>
 
           <div className="button-row">

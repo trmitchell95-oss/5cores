@@ -611,10 +611,10 @@ export default function ProjectsPage() {
           <div className="eyebrow">HOVEL EDITOR MEMORY</div>
           <h1 className="title">Projects.</h1>
           <p className="subtitle">
-            Projects hold manuscript versions and saved Council reports together.
-            This is where Draft 1 becomes Draft 2, and where future Council Re-Reads
-            will remember what actually changed instead of pretending every upload
-            fell out of the sky.
+            Projects hold saved reports and optional manuscript snapshots together.
+            Reports are the feedback. Snapshots are the stored draft text used for future
+            Council Re-Read comparisons. You decide what HOVEL remembers, and you can
+            delete snapshots when you no longer want the draft text stored.
           </p>
         </header>
 
@@ -625,7 +625,7 @@ export default function ProjectsPage() {
             <div className="panel">
               <div className="panel-title">Create project</div>
               <p className="panel-note">
-                Use this for a book, chapter, essay, application, or anything you plan to revise over time.
+                Use this for a book, chapter, essay, application, or anything you plan to revise over time. Projects organize reports and optional manuscript snapshots.
               </p>
 
               <label className="field-label">Project title</label>
@@ -659,7 +659,7 @@ export default function ProjectsPage() {
             <div className="panel">
               <div className="panel-title">Your projects</div>
               <p className="panel-note">
-                Select a project to see saved manuscript versions and attached reports.
+                Select a project to see attached reports and any manuscript snapshots you chose to save.
               </p>
 
               {loading && <div className="empty">Loading projects...</div>}
@@ -699,7 +699,7 @@ export default function ProjectsPage() {
                 <>
                   <div className="panel-title">No project selected.</div>
                   <p className="panel-note">
-                    Pick a project on the left to see manuscript memory.
+                    Pick a project on the left to see saved reports and optional manuscript snapshots.
                   </p>
                 </>
               )}
@@ -708,7 +708,7 @@ export default function ProjectsPage() {
                 <>
                   <div className="panel-title">Loading project...</div>
                   <p className="panel-note">
-                    Pulling versions, reports, and whatever the raccoon filed correctly.
+                    Pulling saved reports and manuscript snapshots.
                   </p>
                 </>
               )}
@@ -731,7 +731,7 @@ export default function ProjectsPage() {
 
                   <div className="panel-title">Manuscript versions</div>
                   <p className="panel-note">
-                    These are opt-in saved drafts for future Council Re-Read comparison.
+                    These are opt-in saved drafts. A snapshot stores manuscript text so Council Re-Read can compare this draft against a later revision.
                   </p>
 
                   {detail.versions.length === 0 && (

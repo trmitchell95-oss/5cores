@@ -1466,7 +1466,7 @@ export default function SubmitPage() {
                   <div>
                     <div className="step-title">Diagnosis</div>
                     <div className="step-text">
-                      The report is saved to your dashboard after the council finishes reading.
+                      The report is saved to your dashboard after the council finishes reading. Manuscript text is only saved as a reusable snapshot if you choose that option.
                     </div>
                   </div>
                 </div>
@@ -1475,7 +1475,7 @@ export default function SubmitPage() {
               <div className="panel">
                 <div className="panel-title">Run check</div>
                 <p className="panel-note">
-                  The button unlocks once there is enough text to diagnose.
+                  The button unlocks once there is enough text to diagnose. Saving a reusable manuscript snapshot is optional.
                 </p>
 
                 <div className="meter-card">
@@ -1680,7 +1680,7 @@ export default function SubmitPage() {
 
                     <div className="upload-box">
                       <div className="tiny-note" style={{ marginTop: 0, marginBottom: "12px" }}>
-                        Optional. Save this manuscript version only if you want HOVEL EDITOR to remember it for future Council Re-Read comparisons.
+                        Optional. HOVEL EDITOR only stores manuscript text when you choose to save a snapshot. The regular report saves either way, but the draft text is only kept if this box is checked.
                       </div>
 
                       <label className="field-label">Existing project</label>
@@ -1742,9 +1742,9 @@ export default function SubmitPage() {
                           style={{ marginTop: "5px" }}
                         />
                         <span>
-                          Save this manuscript version for future comparison.
+                          Save manuscript text as a snapshot for future comparison.
                           <span className="tiny-note" style={{ display: "block" }}>
-                            This stores the draft text so a later Council Re-Read can compare Draft 1 against Draft 2. Leave unchecked if you only want the report saved.
+                            This stores this draft under your account and project so Council Re-Read can compare it against a later revision. Leave unchecked if you only want the report saved. You can delete snapshots from Projects without deleting the saved report.
                           </span>
                         </span>
                       </label>
