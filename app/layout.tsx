@@ -22,6 +22,14 @@ export default function RootLayout({
         <HovelManifestoFloat />
 
         <nav className="hovel-global-nav" aria-label="Hovel Editor navigation">
+          <a href="/" className="hovel-global-nav-mark" aria-label="Hovel Editor home">
+            5C
+          </a>
+
+          <a href="/dashboard" className="hovel-global-nav-link">
+            DASHBOARD
+          </a>
+
           <a href="/sphinx" className="hovel-global-nav-link hovel-global-nav-primary">
             SPHINX
           </a>
@@ -37,19 +45,26 @@ export default function RootLayout({
 
         {children}
 
+        <a href="/beta-terms" className="hovel-beta-terms-link">
+          Beta Terms
+        </a>
+
         <HelpLink />
         <FeedbackLink />
 
         <style>{`
+          body {
+            padding-top: 92px;
+          }
           .hovel-global-nav {
             position: fixed;
-            top: 18px;
+            top: 14px;
             right: 18px;
             z-index: 10000;
             display: flex;
             align-items: center;
-            gap: 8px;
-            padding: 8px;
+            gap: 7px;
+            padding: 7px;
             border: 1px solid rgba(255, 255, 255, 0.16);
             border-radius: 999px;
             background: rgba(14, 13, 11, 0.88);
@@ -57,16 +72,38 @@ export default function RootLayout({
             backdrop-filter: blur(14px);
           }
 
+          .hovel-global-nav-mark {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 36px;
+            height: 36px;
+            border-radius: 14px;
+            background: #c8935a;
+            color: #0e0d0b;
+            font-family: monospace;
+            font-size: 11px;
+            font-weight: 900;
+            letter-spacing: 0.02em;
+            text-decoration: none;
+            box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.18);
+            flex: 0 0 auto;
+          }
+
+          .hovel-global-nav-mark:hover {
+            filter: brightness(1.08);
+          }
+
           .hovel-global-nav-link {
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            min-height: 38px;
+            min-height: 36px;
             border: 1px solid rgba(200, 147, 90, 0.38);
             background: #17120d;
             color: #f0ece4;
             border-radius: 999px;
-            padding: 0 14px;
+            padding: 0 13px;
             font-family: monospace;
             font-size: 11px;
             font-weight: 900;
@@ -96,6 +133,26 @@ export default function RootLayout({
           .hovel-global-nav-primary:hover {
             color: #000000;
             border-color: #f0ece4;
+          }
+
+          .hovel-beta-terms-link {
+            position: fixed;
+            left: 50%;
+            bottom: 28px;
+            transform: translateX(-50%);
+            z-index: 9998;
+            color: rgba(240, 236, 228, 0.52);
+            font-family: monospace;
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            text-decoration: none;
+          }
+
+          .hovel-beta-terms-link:hover {
+            color: #c8935a;
+            text-decoration: underline;
           }
 
           .hovel-feedback-link {
@@ -144,7 +201,10 @@ export default function RootLayout({
             filter: brightness(1.08);
           }
 
-          @media (max-width: 760px) {
+          @media (max-width: 860px) {
+            body {
+              padding-top: 86px;
+            }
             .hovel-global-nav {
               top: 10px;
               right: 10px;
@@ -155,11 +215,18 @@ export default function RootLayout({
               border-radius: 22px;
             }
 
+            .hovel-global-nav-mark {
+              width: 34px;
+              height: 34px;
+              border-radius: 12px;
+              font-size: 10px;
+            }
+
             .hovel-global-nav-link {
               min-height: 34px;
-              padding: 0 10px;
-              font-size: 10px;
-              letter-spacing: 0.08em;
+              padding: 0 9px;
+              font-size: 9px;
+              letter-spacing: 0.06em;
             }
 
             .hovel-feedback-link {
@@ -176,13 +243,18 @@ export default function RootLayout({
               font-size: 10px;
               letter-spacing: 0.12em;
             }
+
+            .hovel-beta-terms-link {
+              bottom: 18px;
+              font-size: 9px;
+            }
           }
 
-          @media (max-width: 420px) {
+          @media (max-width: 460px) {
             .hovel-global-nav-link {
-              padding: 0 8px;
-              font-size: 9px;
-              letter-spacing: 0.06em;
+              padding: 0 7px;
+              font-size: 8px;
+              letter-spacing: 0.04em;
             }
           }
         `}</style>
@@ -190,3 +262,5 @@ export default function RootLayout({
     </html>
   );
 }
+
+
