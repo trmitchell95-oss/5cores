@@ -160,7 +160,8 @@ export default function Dashboard() {
         console.error("Dashboard load error:", reportsData.error || reportsData.details);
         setReports([]);
       } else {
-        setReports((reportsData.reports || []) as Report[]);
+        const allReports = (reportsData.reports || []) as Report[];
+        setReports(allReports.filter((report) => getReportTypeValue(report) !== "ideanator"));
       }
 
       setLoading(false);
@@ -206,7 +207,8 @@ export default function Dashboard() {
         throw new Error(reportsData.error || "Could not refresh reports.");
       }
 
-      setReports((reportsData.reports || []) as Report[]);
+      const allReports = (reportsData.reports || []) as Report[];
+      setReports(allReports.filter((report) => getReportTypeValue(report) !== "ideanator"));
     } catch (err) {
       const message =
         err instanceof Error ? err.message : "Could not refresh reports.";
@@ -1198,7 +1200,6 @@ export default function Dashboard() {
               <option value="council">The Council Only</option>
               <option value="council-reread">Council Re-Read Only</option>
               <option value="sphinx">Sphinx Only</option>
-              <option value="ideanator">Ideanator Only</option>
             </select>
 
             <button
@@ -1289,6 +1290,7 @@ export default function Dashboard() {
     </main>
   );
 }
+
 
 
 
