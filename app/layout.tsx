@@ -36,6 +36,14 @@ export default function RootLayout({
           PROJECTS
         </a>
 
+        <a
+          href="/reread"
+          className="hovel-reread-link"
+          aria-label="Open Council Re-Read"
+        >
+          RE-READ
+        </a>
+
         {children}
 
         <HelpLink />
@@ -95,6 +103,34 @@ export default function RootLayout({
             border-color: #facc15;
           }
 
+          .hovel-reread-link {
+            position: fixed;
+            top: 126px;
+            right: 18px;
+            z-index: 10000;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid rgba(200,147,90,0.45);
+            background: #1a130c;
+            color: #f0ece4;
+            border-radius: 999px;
+            padding: 12px 18px;
+            font-family: monospace;
+            font-size: 12px;
+            font-weight: 900;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            text-decoration: none;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.55);
+          }
+
+          .hovel-reread-link:hover {
+            filter: brightness(1.08);
+            border-color: #facc15;
+            color: #facc15;
+          }
+
           .hovel-feedback-link {
             position: fixed;
             right: 22px;
@@ -152,6 +188,14 @@ export default function RootLayout({
 
             .hovel-projects-link {
               top: 60px;
+              right: 12px;
+              padding: 10px 14px;
+              font-size: 10px;
+              letter-spacing: 0.11em;
+            }
+
+            .hovel-reread-link {
+              top: 108px;
               right: 12px;
               padding: 10px 14px;
               font-size: 10px;
