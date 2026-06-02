@@ -235,6 +235,14 @@ export default function CouncilReReadPage() {
       const token = await getAccessToken();
       if (!token) return;
 
+      const params =
+        typeof window !== "undefined"
+          ? new URLSearchParams(window.location.search)
+          : new URLSearchParams();
+
+      const requestedProjectId = params.get("projectId") || "";
+      const requestedBaseVersionId = params.get("baseVersionId") || "";
+
       const response = await fetch("/api/projects", {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -250,9 +258,13 @@ export default function CouncilReReadPage() {
       const nextProjects = (data.projects || []) as Project[];
       setProjects(nextProjects);
 
-      if (nextProjects[0]) {
-        setSelectedProjectId(nextProjects[0].id);
-        await loadVersions(nextProjects[0].id, token);
+      const projectToOpen =
+        nextProjects.find((project) => project.id === requestedProjectId) ||
+        nextProjects[0];
+
+      if (projectToOpen) {
+        setSelectedProjectId(projectToOpen.id);
+        await loadVersions(projectToOpen.id, token, requestedBaseVersionId);
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : "Could not load projects.");
@@ -261,7 +273,11 @@ export default function CouncilReReadPage() {
     }
   }
 
-  async function loadVersions(projectId: string, existingToken?: string) {
+  async function loadVersions(
+    projectId: string,
+    existingToken?: string,
+    preferredVersionId?: string
+  ) {
     if (!projectId) {
       setVersions([]);
       setBaseVersionId("");
@@ -289,7 +305,12 @@ export default function CouncilReReadPage() {
 
       const nextVersions = (data.versions || []) as ManuscriptVersion[];
       setVersions(nextVersions);
-      setBaseVersionId(nextVersions[0]?.id || "");
+
+      const preferredVersion = preferredVersionId
+        ? nextVersions.find((version) => version.id === preferredVersionId)
+        : null;
+
+      setBaseVersionId(preferredVersion?.id || nextVersions[0]?.id || "");
     } catch (err) {
       setError(
         err instanceof Error ? err.message : "Could not load manuscript versions."

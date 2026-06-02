@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
@@ -660,11 +660,20 @@ export default function ProjectsPage() {
                         {version.source || "council"} · {formatDate(version.created_at)}
                       </div>
 
-                      {version.report_id && (
-                        <Link className="item-link" href={`/reports/${version.report_id}`}>
-                          Open attached report
+                      <div style={{ display: "flex", flexWrap: "wrap", gap: "16px" }}>
+                        {version.report_id && (
+                          <Link className="item-link" href={`/reports/${version.report_id}`}>
+                            Open attached report
+                          </Link>
+                        )}
+
+                        <Link
+                          className="item-link"
+                          href={`/reread?projectId=${detail.project.id}&baseVersionId=${version.id}`}
+                        >
+                          Run Re-Read From This Draft
                         </Link>
-                      )}
+                      </div>
                     </div>
                   ))}
 
