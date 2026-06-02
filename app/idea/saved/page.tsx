@@ -511,7 +511,10 @@ export default function SavedIdeasPage() {
                   {latestReport.title || "Untitled Little Bastard"}
                 </div>
                 <p className="muted">{formatDate(latestReport.created_at)}</p>
-                <a className="secondary-link" href={`/reports/${latestReport.id}?product=idea`}>
+                <a
+                  className="secondary-link"
+                  href={`/reports/${encodeURIComponent(latestReport.id)}?product=idea`}
+                >
                   Open latest idea
                 </a>
               </>
@@ -592,16 +595,25 @@ export default function SavedIdeasPage() {
                     </div>
 
                     <div className="idea-actions">
-                      <a className="small-link" href={`/reports/${report.id}?product=idea`}>
+                      <a
+                        className="small-link"
+                        href={`/reports/${encodeURIComponent(report.id)}?product=idea`}
+                      >
                         View
                       </a>
 
-                      <a className="small-link" href={`/ideanator?rerun=${report.id}`}>
+                      <a
+                        className="small-link"
+                        href={`/ideanator?rerun=${encodeURIComponent(report.id)}`}
+                      >
                         Back on Lift
                       </a>
 
                       {parentReportId && (
-                        <a className="small-link" href={`/reports/${report.id}/compare`}>
+                        <a
+                          className="small-link"
+                          href={`/reports/${encodeURIComponent(report.id)}/compare?product=idea`}
+                        >
                           Compare
                         </a>
                       )}
@@ -616,4 +628,5 @@ export default function SavedIdeasPage() {
     </main>
   );
 }
+
 

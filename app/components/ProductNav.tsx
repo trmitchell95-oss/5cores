@@ -18,7 +18,12 @@ export default function ProductNav() {
   const pathname = usePathname() || "/";
   const searchParams = useSearchParams();
   const product = searchParams.get("product");
-  const isIdeanator = isIdeanatorPath(pathname) || product === "idea";
+  const browserProduct =
+    typeof window !== "undefined"
+      ? new URLSearchParams(window.location.search).get("product")
+      : "";
+  const isIdeanator =
+    isIdeanatorPath(pathname) || product === "idea" || browserProduct === "idea";
 
   if (isIdeanator) {
     return (
@@ -73,5 +78,6 @@ export default function ProductNav() {
     </nav>
   );
 }
+
 
 
