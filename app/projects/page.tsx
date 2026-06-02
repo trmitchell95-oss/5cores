@@ -506,6 +506,10 @@ export default function ProjectsPage() {
               Run The Council
             </Link>
 
+            <Link className="nav-link" href="/reread">
+              Council Re-Read
+            </Link>
+
             <Link className="nav-link" href="/sphinx">
               Open SPHINX
             </Link>
@@ -697,3 +701,4 @@ export default function ProjectsPage() {
     </main>
   );
 }
+
