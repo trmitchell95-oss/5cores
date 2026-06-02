@@ -2,7 +2,7 @@
 
 type UsageStatus = "started" | "succeeded" | "failed" | "rejected";
 
-type UsageTool = "council" | "council-reread" | "sphinx" | "sphinx_save";
+type UsageTool = "council" | "council-reread" | "sphinx" | "sphinx_save" | "ideanator";
 
 type UsageEvent = {
   userId?: string | null;
@@ -192,4 +192,5 @@ export async function logUsageEvent(event: UsageEvent) {
     );
   }
 }
+
 

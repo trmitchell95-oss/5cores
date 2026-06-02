@@ -1,6 +1,7 @@
 ﻿import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 import Anthropic from "@anthropic-ai/sdk";
+import { checkDailyUsageLimit, countWords, logUsageEvent } from "../../../lib/usage";
 
 export const runtime = "nodejs";
 
@@ -10,14 +11,31 @@ const DEFAULT_MODEL = "claude-sonnet-4-6";
 const IDEANATOR_MIN_CHARS = 10;
 const IDEANATOR_MAX_CHARS = 60000;
 
-async function hasValidIdeanatorSession(request: NextRequest) {
+type IdeanatorAuthResult =
+  | { ok: true; userId: string; userEmail: string | null }
+  | { ok: false; status: number; error: string };
+
+function getBearerToken(request: NextRequest) {
   const authHeader = request.headers.get("authorization") || "";
-  const token = authHeader.startsWith("Bearer ")
-    ? authHeader.slice("Bearer ".length).trim()
-    : "";
+
+  if (!authHeader.toLowerCase().startsWith("bearer ")) {
+    return "";
+  }
+
+  return authHeader.slice(7).trim();
+}
+
+async function requireIdeanatorUser(
+  request: NextRequest
+): Promise<IdeanatorAuthResult> {
+  const token = getBearerToken(request);
 
   if (!token) {
-    return false;
+    return {
+      ok: false,
+      status: 401,
+      error: "Sign in before putting an idea on the lift. The showroom is free. The engine is not.",
+    };
   }
 
   const supabase = createClient(
@@ -33,9 +51,20 @@ async function hasValidIdeanatorSession(request: NextRequest) {
 
   const { data, error } = await supabase.auth.getUser(token);
 
-  return Boolean(!error && data.user);
-}
+  if (error || !data.user) {
+    return {
+      ok: false,
+      status: 401,
+      error: "Your login session expired. Sign in again before running The Ideanator.",
+    };
+  }
 
+  return {
+    ok: true,
+    userId: data.user.id,
+    userEmail: data.user.email || null,
+  };
+}
 type Verdict =
   | "Greenlight"
   | "Workbench"
@@ -331,8 +360,36 @@ export async function GET() {
 
 export async function POST(request: NextRequest) {
   const model = process.env.IDEANATOR_MODEL || process.env.ANTHROPIC_MODEL || DEFAULT_MODEL;
+  let userIdForLog: string | null = null;
+  let titleForLog: string | null = null;
+  let inputChars = 0;
+  let inputWords = 0;
 
   try {
+    const auth = await requireIdeanatorUser(request);
+
+    if (!auth.ok) {
+      await logUsageEvent({
+        tool: "ideanator",
+        status: "rejected",
+        inputChars,
+        inputWords,
+        model,
+        errorMessage: auth.error,
+        meta: { stage: "auth" },
+      });
+
+      return NextResponse.json(
+        {
+          ok: false,
+          error: auth.error,
+        },
+        { status: auth.status }
+      );
+    }
+
+    userIdForLog = auth.userId;
+
     const body = (await request.json()) as IdeanatorRequest;
 
     const ideaName = normalizeIdeaName(body.ideaName);
@@ -340,7 +397,23 @@ export async function POST(request: NextRequest) {
     const ideaKind = normalizeIdeaKind(body.ideaKind);
     const primaryNeed = normalizePrimaryNeed(body.primaryNeed);
 
+    titleForLog = ideaName;
+    inputChars = ideaText.length;
+    inputWords = countWords(ideaText);
+
     if (!ideaText) {
+      await logUsageEvent({
+        userId: userIdForLog,
+        tool: "ideanator",
+        status: "rejected",
+        inputChars,
+        inputWords,
+        model,
+        title: titleForLog,
+        errorMessage: "Idea text is required.",
+        meta: { stage: "validation" },
+      });
+
       return NextResponse.json(
         {
           ok: false,
@@ -351,6 +424,18 @@ export async function POST(request: NextRequest) {
     }
 
     if (ideaText.length < IDEANATOR_MIN_CHARS) {
+      await logUsageEvent({
+        userId: userIdForLog,
+        tool: "ideanator",
+        status: "rejected",
+        inputChars,
+        inputWords,
+        model,
+        title: titleForLog,
+        errorMessage: "Idea text is too short.",
+        meta: { stage: "validation" },
+      });
+
       return NextResponse.json(
         {
           ok: false,
@@ -361,6 +446,18 @@ export async function POST(request: NextRequest) {
     }
 
     if (ideaText.length > IDEANATOR_MAX_CHARS) {
+      await logUsageEvent({
+        userId: userIdForLog,
+        tool: "ideanator",
+        status: "rejected",
+        inputChars,
+        inputWords,
+        model,
+        title: titleForLog,
+        errorMessage: "Idea text exceeded beta limit.",
+        meta: { stage: "validation", limit: IDEANATOR_MAX_CHARS },
+      });
+
       return NextResponse.json(
         {
           ok: false,
@@ -370,6 +467,58 @@ export async function POST(request: NextRequest) {
         { status: 413 },
       );
     }
+
+    const ideanatorDailyLimit = Number(process.env.IDEANATOR_DAILY_RUN_LIMIT || 5);
+
+    const limitCheck = await checkDailyUsageLimit({
+      userId: userIdForLog,
+      userEmail: auth.userEmail,
+      tool: "ideanator",
+      dailyLimit: ideanatorDailyLimit,
+    });
+
+    if (!limitCheck.allowed) {
+      await logUsageEvent({
+        userId: userIdForLog,
+        tool: "ideanator",
+        status: "rejected",
+        inputChars,
+        inputWords,
+        model,
+        title: titleForLog,
+        errorMessage: limitCheck.message || "Daily Ideanator limit reached.",
+        meta: {
+          stage: "daily_limit",
+          used: limitCheck.used,
+          limit: limitCheck.limit,
+          resetAt: limitCheck.resetAt,
+        },
+      });
+
+      return NextResponse.json(
+        {
+          ok: false,
+          error:
+            "You have hit the daily Ideanator beta limit. Try again tomorrow, or ask Tom if you need more runs.",
+        },
+        { status: 429 }
+      );
+    }
+
+    await logUsageEvent({
+      userId: userIdForLog,
+      tool: "ideanator",
+      status: "started",
+      inputChars,
+      inputWords,
+      model,
+      title: titleForLog,
+      meta: {
+        ideaKind,
+        primaryNeed,
+        limit: IDEANATOR_MAX_CHARS,
+      },
+    });
 
     const baseFallback = fallbackReport({
       ideaName,
@@ -412,12 +561,39 @@ export async function POST(request: NextRequest) {
     const parsed = extractJsonObject(text);
     const report = coerceReport(parsed, baseFallback);
 
+    await logUsageEvent({
+      userId: userIdForLog,
+      tool: "ideanator",
+      status: "succeeded",
+      inputChars,
+      inputWords,
+      model,
+      title: titleForLog,
+      meta: {
+        ideaKind,
+        primaryNeed,
+        verdict: report.verdict,
+        outputSections: Object.keys(report),
+      },
+    });
+
     return NextResponse.json({
       ok: true,
       report,
     });
   } catch (error) {
     console.error("Ideanator Claude error:", error);
+
+    await logUsageEvent({
+      userId: userIdForLog,
+      tool: "ideanator",
+      status: "failed",
+      inputChars,
+      inputWords,
+      model,
+      title: titleForLog,
+      errorMessage: error instanceof Error ? error.message : String(error),
+    });
 
     return NextResponse.json(
       {
@@ -431,5 +607,6 @@ export async function POST(request: NextRequest) {
     );
   }
 }
+
 
 
