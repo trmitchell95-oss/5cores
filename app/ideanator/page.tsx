@@ -4,6 +4,21 @@ import { FormEvent, useMemo, useState } from "react";
 
 type Stage = "landing" | "intake" | "loading" | "results";
 
+type Verdict =
+  | "Greenlight"
+  | "Workbench"
+  | "Distraction"
+  | "Beautiful Mess"
+  | "Dangerously Good";
+
+type IdeaRun = {
+  name: string;
+  text: string;
+  kind: string;
+  need: string;
+  verdict: Verdict;
+};
+
 const ideaKinds = [
   "Business",
   "App / Software",
@@ -24,7 +39,7 @@ const needs = [
   "Tear it apart honestly",
 ];
 
-const verdicts = [
+const verdicts: Verdict[] = [
   "Greenlight",
   "Workbench",
   "Distraction",
@@ -32,21 +47,73 @@ const verdicts = [
   "Dangerously Good",
 ];
 
+function normalizeIdeaName(value: string) {
+  const cleaned = value.trim().replace(/\s+/g, " ");
+
+  if (!cleaned) {
+    return "Untitled Little Bastard";
+  }
+
+  const hasRealCharacters = /[a-zA-Z0-9]/.test(cleaned);
+
+  if (!hasRealCharacters) {
+    return "Untitled Little Bastard";
+  }
+
+  return cleaned;
+}
+
+function getFakeVerdict(kind: string, need: string): Verdict {
+  if (kind === "Book / Story") return "Beautiful Mess";
+  if (kind === "Invention / Product") return "Dangerously Good";
+  if (kind === "Social Impact") return "Workbench";
+  if (need === "Tear it apart honestly") return "Workbench";
+  if (need === "Is this worth pursuing?") return "Workbench";
+
+  return "Workbench";
+}
+
+function getIdeaPhrase(kind: string) {
+  if (kind === "I have no damn clue") {
+    return "early-stage idea";
+  }
+
+  return `${kind.toLowerCase()} concept`;
+}
+
+function getIdeaPreview(text: string) {
+  const cleaned = text.trim().replace(/\s+/g, " ");
+
+  if (!cleaned) {
+    return "No idea text was submitted.";
+  }
+
+  if (cleaned.length <= 180) {
+    return cleaned;
+  }
+
+  return `${cleaned.slice(0, 180)}...`;
+}
+
 export default function IdeanatorPage() {
   const [stage, setStage] = useState<Stage>("landing");
   const [ideaName, setIdeaName] = useState("");
   const [ideaText, setIdeaText] = useState("");
   const [ideaKind, setIdeaKind] = useState(ideaKinds[0]);
   const [primaryNeed, setPrimaryNeed] = useState(needs[0]);
+  const [currentRun, setCurrentRun] = useState<IdeaRun | null>(null);
 
-  const displayName = ideaName.trim() || "Untitled Little Bastard";
+  const liveDisplayName = useMemo(() => {
+    return normalizeIdeaName(ideaName);
+  }, [ideaName]);
 
-  const fakeVerdict = useMemo(() => {
-    if (ideaKind === "Book / Story") return "Beautiful Mess";
-    if (ideaKind === "Invention / Product") return "Dangerously Good";
-    if (primaryNeed === "Tear it apart honestly") return "Workbench";
-    return "Workbench";
-  }, [ideaKind, primaryNeed]);
+  const result = currentRun ?? {
+    name: liveDisplayName,
+    text: ideaText,
+    kind: ideaKind,
+    need: primaryNeed,
+    verdict: getFakeVerdict(ideaKind, primaryNeed),
+  };
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -55,6 +122,15 @@ export default function IdeanatorPage() {
       return;
     }
 
+    const submittedRun: IdeaRun = {
+      name: normalizeIdeaName(ideaName),
+      text: ideaText.trim(),
+      kind: ideaKind,
+      need: primaryNeed,
+      verdict: getFakeVerdict(ideaKind, primaryNeed),
+    };
+
+    setCurrentRun(submittedRun);
     setStage("loading");
 
     window.setTimeout(() => {
@@ -68,7 +144,18 @@ export default function IdeanatorPage() {
     setIdeaText("");
     setIdeaKind(ideaKinds[0]);
     setPrimaryNeed(needs[0]);
+    setCurrentRun(null);
     setStage("landing");
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  function returnToLanding() {
+    setStage("landing");
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  function returnToIntake() {
+    setStage("intake");
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
@@ -81,11 +168,7 @@ export default function IdeanatorPage() {
             <h1>THE IDEANATOR</h1>
           </div>
 
-          <button
-            className="ghost-button"
-            type="button"
-            onClick={() => setStage("landing")}
-          >
+          <button className="ghost-button" type="button" onClick={returnToLanding}>
             Reset the lift
           </button>
         </header>
@@ -155,11 +238,7 @@ export default function IdeanatorPage() {
             </div>
 
             <div className="hero-actions">
-              <button
-                className="primary-button"
-                type="button"
-                onClick={() => setStage("intake")}
-              >
+              <button className="primary-button" type="button" onClick={returnToIntake}>
                 Drop it in
               </button>
 
@@ -226,12 +305,13 @@ export default function IdeanatorPage() {
                 />
               </label>
 
+              <div className="intake-preview full-width">
+                <span>Current label</span>
+                <strong>{liveDisplayName}</strong>
+              </div>
+
               <div className="form-actions full-width">
-                <button
-                  className="secondary-button"
-                  type="button"
-                  onClick={() => setStage("landing")}
-                >
+                <button className="secondary-button" type="button" onClick={returnToLanding}>
                   Back
                 </button>
 
@@ -265,16 +345,24 @@ export default function IdeanatorPage() {
             <div className="result-header">
               <div>
                 <p className="eyebrow">IDEA CHECK COMPLETE</p>
-                <h2>{displayName}</h2>
+                <h2>{result.name}</h2>
                 <p>
-                  Type: <strong>{ideaKind}</strong>
+                  Type: <strong>{result.kind}</strong>
+                </p>
+                <p>
+                  Asked for: <strong>{result.need}</strong>
                 </p>
               </div>
 
               <div className="verdict-badge">
                 <span>Brutal Verdict</span>
-                <strong>{fakeVerdict}</strong>
+                <strong>{result.verdict}</strong>
               </div>
+            </div>
+
+            <div className="submitted-box">
+              <span>What you dropped in</span>
+              <p>{getIdeaPreview(result.text)}</p>
             </div>
 
             <div className="cards-grid">
@@ -285,7 +373,9 @@ export default function IdeanatorPage() {
 
               <ResultCard
                 title="The Plain-English Version"
-                body={`"${displayName}" is a ${ideaKind.toLowerCase()} concept that needs to be reduced to one clean promise before anyone can judge whether it has legs.`}
+                body={`${result.name} is a ${getIdeaPhrase(
+                  result.kind,
+                )} that needs to be reduced to one clean promise before anyone can judge whether it has legs.`}
               />
 
               <ResultCard
@@ -323,7 +413,7 @@ export default function IdeanatorPage() {
               {verdicts.map((verdict) => (
                 <span
                   key={verdict}
-                  className={verdict === fakeVerdict ? "active-verdict" : ""}
+                  className={verdict === result.verdict ? "active-verdict" : ""}
                 >
                   {verdict}
                 </span>
@@ -331,19 +421,11 @@ export default function IdeanatorPage() {
             </div>
 
             <div className="form-actions">
-              <button
-                className="secondary-button"
-                type="button"
-                onClick={() => setStage("intake")}
-              >
+              <button className="secondary-button" type="button" onClick={returnToIntake}>
                 Edit the idea
               </button>
 
-              <button
-                className="primary-button"
-                type="button"
-                onClick={resetRun}
-              >
+              <button className="primary-button" type="button" onClick={resetRun}>
                 Run another idea
               </button>
             </div>
@@ -503,7 +585,9 @@ export default function IdeanatorPage() {
         }
 
         .promise-grid span,
-        .result-card h3 {
+        .result-card h3,
+        .submitted-box span,
+        .intake-preview span {
           display: block;
           color: #fff7ea;
           font-size: 1rem;
@@ -634,6 +718,27 @@ export default function IdeanatorPage() {
 
         .full-width {
           grid-column: 1 / -1;
+        }
+
+        .intake-preview,
+        .submitted-box {
+          border: 1px solid rgba(240, 179, 95, 0.24);
+          background: rgba(240, 179, 95, 0.08);
+          border-radius: 18px;
+          padding: 16px 18px;
+        }
+
+        .intake-preview strong {
+          display: block;
+          font-size: 1.1rem;
+        }
+
+        .submitted-box {
+          margin-bottom: 28px;
+        }
+
+        .submitted-box p {
+          margin-bottom: 0;
         }
 
         .loading-card {
