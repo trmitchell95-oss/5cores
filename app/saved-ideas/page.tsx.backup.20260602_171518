@@ -144,7 +144,7 @@ ${formatBlueprintForCopy({
 
 ---
 
-## Portable Prompt
+## Actual Prompt
 ${rig.actual_prompt || ""}
 
 ---
@@ -357,7 +357,7 @@ export default function SavedIdeasPage() {
       const result = await response.json();
 
       if (!response.ok || !result.ok) {
-        throw new Error(result.error || "Could not load saved idea reports.");
+        throw new Error(result.error || "Could not load saved idea report reports.");
       }
 
       setRigs(result.rigs || []);
@@ -366,7 +366,7 @@ export default function SavedIdeasPage() {
         setMessage("Saved ideas refreshed.");
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Could not load saved idea reports.");
+      setError(err instanceof Error ? err.message : "Could not load saved idea report reports.");
     } finally {
       setLoading(false);
       setRefreshing(false);
@@ -820,10 +820,10 @@ export default function SavedIdeasPage() {
           </div>
 
           {loading ? (
-            <div className="empty">Loading saved idea reports...</div>
+            <div className="empty">Loading saved idea report reports...</div>
           ) : filteredRigs.length === 0 ? (
             <div className="empty">
-              No saved idea reports found. Build one in The Ideanator, run it, and save the rig.
+              No saved idea report reports found. Build one in The Ideanator, run it, and save the rig.
             </div>
           ) : (
             <div className="rig-list">
@@ -907,6 +907,5 @@ export default function SavedIdeasPage() {
     </main>
   );
 }
-
 
 

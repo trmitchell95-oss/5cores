@@ -845,7 +845,7 @@ export default function IdeanatorPage() {
             <div className="report-actions">
               <div>
                 <span>Take this thing with you.</span>
-                <p>Copy it, download it, or save it to your Ideanator saved idea report reports.</p>
+                <p>Copy it, download it, or save it to your Ideanator saved idea reports.</p>
               </div>
 
               <div className="report-action-buttons">
@@ -1582,6 +1582,7 @@ function ResultCard({ title, body }: { title: string; body: string }) {
     </article>
   );
 }
+
 
 
 

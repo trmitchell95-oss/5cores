@@ -105,13 +105,13 @@ export default function SavedIdeasPage() {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.error || "Could not load saved idea report reports.");
+        throw new Error(data.error || "Could not load saved idea reports.");
       }
 
       const allReports = (data.reports || []) as Report[];
       setReports(allReports.filter(isIdeanatorReport));
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Could not load saved idea report reports.");
+      setError(err instanceof Error ? err.message : "Could not load saved idea reports.");
       setReports([]);
     } finally {
       setLoading(false);
@@ -514,7 +514,7 @@ export default function SavedIdeasPage() {
             <p className="muted">
               {reports.length === 1
                 ? "saved idea report in the shop."
-                : "saved idea report reports in the shop."}
+                : "saved idea reports in the shop."}
             </p>
           </div>
 
@@ -535,7 +535,7 @@ export default function SavedIdeasPage() {
               </>
             ) : (
               <p className="muted">
-                No saved idea report reports yet. Drop one in and let the little bastard make noise.
+                No saved idea reports yet. Drop one in and let the little bastard make noise.
               </p>
             )}
           </div>
@@ -564,16 +564,16 @@ export default function SavedIdeasPage() {
             className="search-input"
             value={searchTerm}
             onChange={(event) => setSearchTerm(event.target.value)}
-            placeholder="Search saved idea report reports by title, verdict, type, need, or source..."
+            placeholder="Search saved idea reports by title, verdict, type, need, or source..."
           />
 
           {loading ? (
-            <div className="empty-box">Loading saved idea report reports...</div>
+            <div className="empty-box">Loading saved idea reports...</div>
           ) : filteredReports.length === 0 ? (
             <div className="empty-box">
               {reports.length === 0
                 ? "No saved Ideanator reports yet."
-                : "No matching saved idea report reports. They may be hiding under the workbench."}
+                : "No matching saved idea reports. They may be hiding under the workbench."}
             </div>
           ) : (
             <div className="ideas-list">
@@ -647,6 +647,7 @@ export default function SavedIdeasPage() {
     </main>
   );
 }
+
 
 
 

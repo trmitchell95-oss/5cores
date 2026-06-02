@@ -178,7 +178,7 @@ ${formatBlueprintForCopy(blueprint)}
 
 ---
 
-## Portable Prompt
+## Actual Prompt
 ${actualPrompt || ""}
 
 ---
@@ -820,10 +820,10 @@ export default function IdeanatorPage() {
 
               <button
                 type="button"
-                onClick={() => copyToClipboard("Portable Prompt", actualPrompt)}
+                onClick={() => copyToClipboard("Actual Prompt", actualPrompt)}
                 className="rounded-xl border border-neutral-700 px-3 py-2 text-sm font-bold text-neutral-100 transition hover:border-amber-400 hover:text-amber-300"
               >
-                Copy Portable Prompt
+                Copy Actual Prompt
               </button>
 
               <button
@@ -970,7 +970,7 @@ export default function IdeanatorPage() {
                 onClick={() => setShowPrompt((current) => !current)}
                 className="rounded-xl border border-neutral-700 px-4 py-3 font-bold text-neutral-100 transition hover:border-neutral-500"
               >
-                {showPrompt ? "Hide Portable Prompt" : "Show Portable Prompt"}
+                {showPrompt ? "Hide Actual Prompt" : "Show Actual Prompt"}
               </button>
 
               <button
@@ -1014,7 +1014,7 @@ export default function IdeanatorPage() {
           <section className="rounded-3xl border border-neutral-800 bg-neutral-900 p-5 shadow-xl">
             <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
               <div>
-                <h2 className="text-xl font-bold">Portable Prompt Preview</h2>
+                <h2 className="text-xl font-bold">Actual Prompt Preview</h2>
                 <p className="mt-1 text-sm text-neutral-400">
                   This is the portable rig prompt. The user can take this into another AI room if they want.
                 </p>
@@ -1022,7 +1022,7 @@ export default function IdeanatorPage() {
 
               <button
                 type="button"
-                onClick={() => copyToClipboard("Portable Prompt", actualPrompt)}
+                onClick={() => copyToClipboard("Actual Prompt", actualPrompt)}
                 className="rounded-xl border border-neutral-700 px-3 py-2 text-sm font-bold text-neutral-100 transition hover:border-amber-400 hover:text-amber-300"
               >
                 Copy Prompt
@@ -1032,7 +1032,7 @@ export default function IdeanatorPage() {
                 type="button"
                 onClick={() =>
                   downloadTextFile(
-                    "Portable Prompt",
+                    "Actual Prompt",
                     `${slugifyFileName(blueprint.rigName || "ideanator-rig")}-prompt.md`,
                     actualPrompt
                   )
@@ -1238,7 +1238,6 @@ export default function IdeanatorPage() {
     </main>
   );
 }
-
 
 
 

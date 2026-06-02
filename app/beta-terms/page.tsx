@@ -361,7 +361,7 @@ export default function BetaTermsPage() {
           <h2 className="section-title">What happens to your text</h2>
           <p className="body-text">
             {isIdeanator
-              ? "When you paste an idea, the app uses that text to generate an Ideanator report. Saved ideas are connected to your logged-in account and appear in your Ideanator saved idea report reports area."
+              ? "When you paste an idea, the app uses that text to generate an Ideanator report. Saved ideas are connected to your logged-in account and appear in your Ideanator saved idea reports area."
               : "When you paste or upload text, the app uses that text to generate a report. Saved reports are connected to your logged-in account and appear in your dashboard. Manuscript text is only stored for future Re-Read comparison when you choose to save a manuscript snapshot."}
           </p>
 
@@ -409,4 +409,5 @@ export default function BetaTermsPage() {
     </main>
   );
 }
+
 

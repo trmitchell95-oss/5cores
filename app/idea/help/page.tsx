@@ -239,7 +239,7 @@ export default function IdeaHelpPage() {
               The human keeps working. The tool keeps pressure-testing.
             </p>
             <ul>
-              <li>Save reports to your Ideanator saved idea report reports.</li>
+              <li>Save reports to your Ideanator saved idea reports.</li>
               <li>Use Back on the Lift to revise and rerun.</li>
               <li>Compare versions when working from a saved report.</li>
             </ul>
@@ -278,5 +278,6 @@ export default function IdeaHelpPage() {
     </main>
   );
 }
+
 
 

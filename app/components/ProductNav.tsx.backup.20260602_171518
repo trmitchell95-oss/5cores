@@ -13,8 +13,8 @@ function isIdeanatorPath(pathname: string, product: string) {
     pathname === "/ideanator" ||
     pathname === "/the-ideanator" ||
     pathname.startsWith("/ideanator/") ||
-    pathname === "/rigs" || pathname === "/saved-ideas" ||
-    pathname.startsWith("/rigs/") || pathname.startsWith("/saved-ideas/") ||
+    pathname === "/saved-ideas" ||
+    pathname.startsWith("/saved-ideas/") ||
     pathname.endsWith("/compare")
   );
 }
@@ -116,7 +116,7 @@ export default function ProductNav() {
       pathname === "/idea" || pathname === "/the-ideanator";
     const ideaReportsActive = pathname === "/idea/saved";
     const rigLibraryActive =
-      pathname === "/rigs" || pathname === "/saved-ideas" || pathname.startsWith("/rigs/") || pathname.startsWith("/saved-ideas/");
+      pathname === "/saved-ideas" || pathname.startsWith("/saved-ideas/");
 
     return (
       <nav
@@ -139,7 +139,7 @@ export default function ProductNav() {
           IDEA REPORTS
         </a>
 
-        <a href="/rigs" className={navClass(rigLibraryActive)}>
+        <a href="/saved-ideas" className={navClass(rigLibraryActive)}>
           RIG LIBRARY
         </a>
 
@@ -174,4 +174,3 @@ export default function ProductNav() {
     </nav>
   );
 }
-
