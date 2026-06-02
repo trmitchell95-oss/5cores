@@ -1,6 +1,6 @@
 ﻿"use client";
 
-import { FormEvent, useMemo, useState } from "react";
+import { FormEvent, useEffect, useMemo, useState } from "react";
 import { createClient } from "@supabase/supabase-js";
 
 type Stage = "landing" | "intake" | "loading" | "results";
@@ -170,6 +170,55 @@ function safeFileName(value: string) {
   return cleaned || "ideanator-report";
 }
 
+function isPlainObject(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null && !Array.isArray(value);
+}
+
+function decodeMaybeJson(value: unknown): unknown {
+  let current = value;
+
+  for (let index = 0; index < 3; index += 1) {
+    if (typeof current !== "string") {
+      return current;
+    }
+
+    const trimmed = current.trim();
+
+    if (!trimmed) {
+      return "";
+    }
+
+    const looksJson =
+      (trimmed.startsWith("{") && trimmed.endsWith("}")) ||
+      (trimmed.startsWith("[") && trimmed.endsWith("]")) ||
+      (trimmed.startsWith("\"") && trimmed.endsWith("\""));
+
+    if (!looksJson) {
+      return current;
+    }
+
+    try {
+      current = JSON.parse(trimmed);
+    } catch {
+      return current;
+    }
+  }
+
+  return current;
+}
+
+function getStringField(value: Record<string, unknown> | null, key: string) {
+  if (!value) return "";
+
+  const field = value[key];
+
+  return typeof field === "string" ? field.trim() : "";
+}
+
+function getSelectValue(value: string, options: string[], fallback: string) {
+  return options.includes(value) ? value : fallback;
+}
+
 export default function IdeanatorPage() {
   const [stage, setStage] = useState<Stage>("landing");
   const [ideaName, setIdeaName] = useState("");
@@ -182,10 +231,119 @@ export default function IdeanatorPage() {
   const [savingDiagnosis, setSavingDiagnosis] = useState(false);
   const [savedId, setSavedId] = useState("");
   const [saveMessage, setSaveMessage] = useState("");
+  const [rerunNotice, setRerunNotice] = useState("");
 
   const liveDisplayName = useMemo(() => {
     return normalizeIdeaName(ideaName);
   }, [ideaName]);
+
+  useEffect(() => {
+    let stillMounted = true;
+
+    async function loadSavedIdeaForRerun() {
+      const params = new URLSearchParams(window.location.search);
+      const rerunId = params.get("rerun");
+
+      if (!rerunId) {
+        return;
+      }
+
+      try {
+        setErrorMessage("");
+        setRerunNotice("");
+
+        const supabase = getSupabaseClient();
+        const {
+          data: { session },
+        } = await supabase.auth.getSession();
+
+        if (!session?.access_token) {
+          window.location.href = "/login";
+          return;
+        }
+
+        const response = await fetch(`/api/reports/${rerunId}`, {
+          headers: {
+            authorization: `Bearer ${session.access_token}`,
+          },
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(data.error || "Could not load saved idea.");
+        }
+
+        if (!stillMounted) {
+          return;
+        }
+
+        const savedReport = data.report as {
+          title?: string | null;
+          content?: unknown;
+        };
+
+        const content = decodeMaybeJson(savedReport.content);
+        const contentObject = isPlainObject(content) ? content : null;
+        const ideanatorRaw = contentObject?.ideanator;
+        const ideanatorReport = isPlainObject(ideanatorRaw) ? ideanatorRaw : null;
+
+        const savedIdeaName =
+          getStringField(ideanatorReport, "ideaName") ||
+          savedReport.title ||
+          "";
+
+        const savedIdeaKind = getSelectValue(
+          getStringField(ideanatorReport, "ideaKind"),
+          ideaKinds,
+          ideaKinds[0]
+        );
+
+        const savedPrimaryNeed = getSelectValue(
+          getStringField(ideanatorReport, "primaryNeed"),
+          needs,
+          needs[0]
+        );
+
+        const submittedText =
+          typeof contentObject?.submittedText === "string"
+            ? contentObject.submittedText
+            : "";
+
+        setIdeaName(savedIdeaName);
+        setIdeaKind(savedIdeaKind);
+        setPrimaryNeed(savedPrimaryNeed);
+        setIdeaText(submittedText);
+        setCurrentRun(null);
+        setCopied(false);
+        setSavingDiagnosis(false);
+        setSavedId("");
+        setSaveMessage("");
+        setRerunNotice(
+          "Loaded your saved idea. Change whatever needs changing, then put it back on the lift."
+        );
+        setStage("intake");
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      } catch (error) {
+        if (!stillMounted) {
+          return;
+        }
+
+        setErrorMessage(
+          error instanceof Error
+            ? error.message
+            : "Could not load saved idea."
+        );
+        setStage("intake");
+      }
+    }
+
+    loadSavedIdeaForRerun();
+
+    return () => {
+      stillMounted = false;
+    };
+  }, []);
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -1016,6 +1174,14 @@ export default function IdeanatorPage() {
           margin-bottom: 20px;
         }
 
+        .intake-rerun-box {
+          margin-bottom: 24px;
+        }
+
+        .intake-rerun-box p {
+          margin-bottom: 0;
+        }
+
         .save-box span {
           display: block;
           color: #dcfce7;
@@ -1224,5 +1390,6 @@ function ResultCard({ title, body }: { title: string; body: string }) {
     </article>
   );
 }
+
 
 
