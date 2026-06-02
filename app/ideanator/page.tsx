@@ -865,9 +865,9 @@ export default function IdeanatorPage() {
           min-height: 100vh;
           margin-top: -92px;
           background:
-            radial-gradient(circle at top left, rgba(245, 158, 11, 0.24), transparent 34rem),
-            radial-gradient(circle at bottom right, rgba(125, 211, 252, 0.13), transparent 30rem),
-            linear-gradient(135deg, #241a10 0%, #191612 46%, #151716 100%);
+            radial-gradient(circle at top left, rgba(245, 158, 11, 0.34), transparent 36rem),
+            radial-gradient(circle at bottom right, rgba(255, 202, 118, 0.13), transparent 32rem),
+            linear-gradient(135deg, #332313 0%, #242018 46%, #1c211e 100%);
           color: #f5f1e8;
           padding: 120px 28px 28px;
           font-family:
@@ -936,7 +936,7 @@ export default function IdeanatorPage() {
         .loading-card,
         .results-card {
           border: 1px solid rgba(255, 255, 255, 0.14);
-          background: rgba(31, 29, 25, 0.92);
+          background: rgba(43, 38, 30, 0.92);
           box-shadow: 0 24px 80px rgba(0, 0, 0, 0.45);
           border-radius: 32px;
           padding: clamp(24px, 5vw, 56px);
@@ -1064,13 +1064,16 @@ export default function IdeanatorPage() {
         .primary-button,
         .secondary-button,
         .ghost-button {
+          position: relative;
+          overflow: hidden;
           border-radius: 999px;
           font-weight: 900;
           transition:
             transform 160ms ease,
             opacity 160ms ease,
             border-color 160ms ease,
-            background 160ms ease;
+            background 160ms ease,
+            box-shadow 160ms ease;
         }
 
         .primary-button:hover,
@@ -1080,23 +1083,59 @@ export default function IdeanatorPage() {
         }
 
         .primary-button {
-          background: #f0b35f;
+          background:
+            radial-gradient(circle at 18px 50%, #fff3c4 0 4px, transparent 5px),
+            linear-gradient(180deg, #ffd27a 0%, #f0b35f 52%, #c98438 100%);
           color: #18100a;
-          padding: 14px 22px;
+          padding: 14px 22px 14px 34px;
+          border: 1px solid rgba(255, 241, 190, 0.7);
+          box-shadow:
+            0 0 0 1px rgba(255, 208, 122, 0.18),
+            0 0 22px rgba(240, 179, 95, 0.28),
+            inset 0 1px 0 rgba(255, 255, 255, 0.42),
+            inset 0 -10px 18px rgba(120, 71, 20, 0.18);
+        }
+
+        .primary-button:hover {
+          box-shadow:
+            0 0 0 1px rgba(255, 224, 150, 0.24),
+            0 0 34px rgba(240, 179, 95, 0.44),
+            inset 0 1px 0 rgba(255, 255, 255, 0.5),
+            inset 0 -10px 18px rgba(120, 71, 20, 0.16);
         }
 
         .secondary-button {
-          background: rgba(255, 255, 255, 0.09);
+          background:
+            radial-gradient(circle at 18px 50%, rgba(255, 220, 143, 0.8) 0 3px, transparent 4px),
+            rgba(255, 255, 255, 0.09);
           color: #fff7ea;
-          padding: 14px 22px;
-          border: 1px solid rgba(255, 255, 255, 0.16);
+          padding: 14px 22px 14px 34px;
+          border: 1px solid rgba(255, 221, 159, 0.22);
+          box-shadow:
+            0 0 18px rgba(240, 179, 95, 0.08),
+            inset 0 1px 0 rgba(255, 255, 255, 0.08);
+        }
+
+        .secondary-button:hover {
+          border-color: rgba(240, 179, 95, 0.72);
+          box-shadow:
+            0 0 24px rgba(240, 179, 95, 0.2),
+            inset 0 1px 0 rgba(255, 255, 255, 0.12);
         }
 
         .ghost-button {
-          background: transparent;
+          background:
+            radial-gradient(circle at 16px 50%, rgba(255, 220, 143, 0.72) 0 3px, transparent 4px),
+            rgba(255, 255, 255, 0.04);
           color: #f5f1e8;
-          border: 1px solid rgba(255, 255, 255, 0.18);
-          padding: 10px 15px;
+          border: 1px solid rgba(255, 221, 159, 0.2);
+          padding: 10px 15px 10px 31px;
+          box-shadow: 0 0 16px rgba(240, 179, 95, 0.08);
+        }
+
+        .ghost-button:hover {
+          border-color: rgba(240, 179, 95, 0.62);
+          box-shadow: 0 0 24px rgba(240, 179, 95, 0.18);
         }
 
         .section-heading {
@@ -1419,6 +1458,7 @@ function ResultCard({ title, body }: { title: string; body: string }) {
     </article>
   );
 }
+
 
 
 

@@ -118,10 +118,31 @@ export default function RootLayout({
             border-color: rgba(255, 255, 255, 0.35);
           }
 
-          .hovel-global-nav-ideanator .hovel-global-nav-primary {
-            background: #f0b35f;
-            color: #18100a;
+          .hovel-global-nav-ideanator .hovel-global-nav-link {
+            border-color: rgba(255, 215, 135, 0.28);
+            background:
+              radial-gradient(circle at 13px 50%, rgba(255, 231, 167, 0.72) 0 2px, transparent 3px),
+              #17120d;
+            padding-left: 20px;
+            box-shadow: 0 0 16px rgba(240, 179, 95, 0.08);
           }
+
+          .hovel-global-nav-ideanator .hovel-global-nav-link:hover {
+            box-shadow: 0 0 24px rgba(240, 179, 95, 0.18);
+          }
+
+          .hovel-global-nav-ideanator .hovel-global-nav-primary {
+            background:
+              radial-gradient(circle at 13px 50%, #fff3c4 0 3px, transparent 4px),
+              linear-gradient(180deg, #ffd27a 0%, #f0b35f 56%, #c98438 100%);
+            color: #18100a;
+            border-color: rgba(255, 241, 190, 0.62);
+            box-shadow:
+              0 0 24px rgba(240, 179, 95, 0.3),
+              inset 0 1px 0 rgba(255, 255, 255, 0.38);
+          }
+
+          /* IDEANATOR LIGHT BULB NAV PASS */
 
           .hovel-global-nav-primary:hover {
             color: #000000;
@@ -365,4 +386,5 @@ export default function RootLayout({
     </html>
   );
 }
+
 
