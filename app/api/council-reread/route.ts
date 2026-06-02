@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from "next/server";
+﻿import { NextRequest, NextResponse } from "next/server";
 import Anthropic from "@anthropic-ai/sdk";
 import { createClient } from "@supabase/supabase-js";
 import { checkDailyUsageLimit, countWords, logUsageEvent } from "../../../lib/usage";
@@ -93,14 +93,14 @@ export async function POST(req: NextRequest) {
     const limitCheck = await checkDailyUsageLimit({
       userId: user.id,
       userEmail: user.email || null,
-      tool: "council",
+      tool: "council-reread",
       dailyLimit: rereadDailyLimit,
     });
 
     if (!limitCheck.allowed) {
       await logUsageEvent({
         userId: userIdForLog,
-        tool: "council",
+        tool: "council-reread",
         status: "rejected",
         inputChars,
         inputWords,
@@ -252,7 +252,7 @@ export async function POST(req: NextRequest) {
 
     await logUsageEvent({
       userId: userIdForLog,
-      tool: "council",
+      tool: "council-reread",
       status: "started",
       inputChars,
       inputWords,
@@ -402,7 +402,7 @@ Now deliver the Council Re-Read report using the required format.`;
     if (saveReportError || !savedReport) {
       await logUsageEvent({
         userId: userIdForLog,
-        tool: "council",
+        tool: "council-reread",
         status: "failed",
         inputChars,
         inputWords,
@@ -460,7 +460,7 @@ Now deliver the Council Re-Read report using the required format.`;
 
     await logUsageEvent({
       userId: userIdForLog,
-      tool: "council",
+      tool: "council-reread",
       status: "succeeded",
       inputChars,
       inputWords,
@@ -484,7 +484,7 @@ Now deliver the Council Re-Read report using the required format.`;
 
     await logUsageEvent({
       userId: userIdForLog,
-      tool: "council",
+      tool: "council-reread",
       status: "failed",
       inputChars,
       inputWords,
@@ -502,3 +502,4 @@ Now deliver the Council Re-Read report using the required format.`;
     );
   }
 }
+

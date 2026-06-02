@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+﻿import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import HelpLink from "./components/HelpLink";
 import FeedbackLink from "./components/FeedbackLink";
@@ -7,7 +7,8 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: "HOVEL EDITOR",
-  description: "A rough-edged writing diagnostics workshop for The Council, SPHINX, and saved reports.",
+  description:
+    "A rough-edged writing diagnostics workshop for The Council, SPHINX, Projects, and Re-Read reports.",
 };
 
 export default function RootLayout({
@@ -20,29 +21,19 @@ export default function RootLayout({
       <body suppressHydrationWarning>
         <HovelManifestoFloat />
 
-        <a
-          href="/sphinx"
-          className="hovel-sphinx-link"
-          aria-label="Open Sphinx"
-        >
-          SPHINX
-        </a>
+        <nav className="hovel-global-nav" aria-label="Hovel Editor navigation">
+          <a href="/sphinx" className="hovel-global-nav-link hovel-global-nav-primary">
+            SPHINX
+          </a>
 
-        <a
-          href="/projects"
-          className="hovel-projects-link"
-          aria-label="Open Projects"
-        >
-          PROJECTS
-        </a>
+          <a href="/projects" className="hovel-global-nav-link">
+            PROJECTS
+          </a>
 
-        <a
-          href="/reread"
-          className="hovel-reread-link"
-          aria-label="Open Council Re-Read"
-        >
-          RE-READ
-        </a>
+          <a href="/reread" className="hovel-global-nav-link">
+            RE-READ
+          </a>
+        </nav>
 
         {children}
 
@@ -50,85 +41,61 @@ export default function RootLayout({
         <FeedbackLink />
 
         <style>{`
-          .hovel-sphinx-link {
+          .hovel-global-nav {
             position: fixed;
             top: 18px;
             right: 18px;
             z-index: 10000;
-            display: inline-flex;
+            display: flex;
             align-items: center;
-            justify-content: center;
-            border: 1px solid rgba(255,255,255,0.35);
-            background: #facc15;
-            color: #000000;
+            gap: 8px;
+            padding: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.16);
             border-radius: 999px;
-            padding: 12px 18px;
-            font-family: monospace;
-            font-size: 13px;
-            font-weight: 900;
-            letter-spacing: 0.16em;
-            text-transform: uppercase;
-            text-decoration: none;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.65);
+            background: rgba(14, 13, 11, 0.88);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.55);
+            backdrop-filter: blur(14px);
           }
 
-          .hovel-sphinx-link:hover {
-            filter: brightness(1.08);
-          }
-
-          .hovel-projects-link {
-            position: fixed;
-            top: 72px;
-            right: 18px;
-            z-index: 10000;
+          .hovel-global-nav-link {
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            border: 1px solid rgba(255,255,255,0.22);
-            background: #11100e;
-            color: #facc15;
-            border-radius: 999px;
-            padding: 12px 18px;
-            font-family: monospace;
-            font-size: 12px;
-            font-weight: 900;
-            letter-spacing: 0.14em;
-            text-transform: uppercase;
-            text-decoration: none;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.55);
-          }
-
-          .hovel-projects-link:hover {
-            filter: brightness(1.08);
-            border-color: #facc15;
-          }
-
-          .hovel-reread-link {
-            position: fixed;
-            top: 126px;
-            right: 18px;
-            z-index: 10000;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            border: 1px solid rgba(200,147,90,0.45);
-            background: #1a130c;
+            min-height: 38px;
+            border: 1px solid rgba(200, 147, 90, 0.38);
+            background: #17120d;
             color: #f0ece4;
             border-radius: 999px;
-            padding: 12px 18px;
+            padding: 0 14px;
             font-family: monospace;
-            font-size: 12px;
+            font-size: 11px;
             font-weight: 900;
-            letter-spacing: 0.14em;
+            letter-spacing: 0.13em;
             text-transform: uppercase;
             text-decoration: none;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.55);
+            white-space: nowrap;
+            transition:
+              filter 140ms ease,
+              border-color 140ms ease,
+              color 140ms ease,
+              background 140ms ease;
           }
 
-          .hovel-reread-link:hover {
+          .hovel-global-nav-link:hover {
             filter: brightness(1.08);
             border-color: #facc15;
             color: #facc15;
+          }
+
+          .hovel-global-nav-primary {
+            background: #facc15;
+            color: #000000;
+            border-color: rgba(255, 255, 255, 0.35);
+          }
+
+          .hovel-global-nav-primary:hover {
+            color: #000000;
+            border-color: #f0ece4;
           }
 
           .hovel-feedback-link {
@@ -147,7 +114,7 @@ export default function RootLayout({
             letter-spacing: 0.14em;
             text-transform: uppercase;
             text-decoration: none;
-            box-shadow: 0 18px 55px rgba(0,0,0,0.35);
+            box-shadow: 0 18px 55px rgba(0, 0, 0, 0.35);
           }
 
           .hovel-feedback-link:hover {
@@ -170,36 +137,29 @@ export default function RootLayout({
             letter-spacing: 0.16em;
             text-transform: uppercase;
             text-decoration: none;
-            box-shadow: 0 18px 55px rgba(0,0,0,0.45);
+            box-shadow: 0 18px 55px rgba(0, 0, 0, 0.45);
           }
 
           .hovel-help-link:hover {
             filter: brightness(1.08);
           }
 
-          @media (max-width: 640px) {
-            .hovel-sphinx-link {
-              top: 12px;
-              right: 12px;
-              padding: 10px 14px;
-              font-size: 11px;
-              letter-spacing: 0.12em;
+          @media (max-width: 760px) {
+            .hovel-global-nav {
+              top: 10px;
+              right: 10px;
+              left: 10px;
+              justify-content: center;
+              gap: 6px;
+              padding: 7px;
+              border-radius: 22px;
             }
 
-            .hovel-projects-link {
-              top: 60px;
-              right: 12px;
-              padding: 10px 14px;
+            .hovel-global-nav-link {
+              min-height: 34px;
+              padding: 0 10px;
               font-size: 10px;
-              letter-spacing: 0.11em;
-            }
-
-            .hovel-reread-link {
-              top: 108px;
-              right: 12px;
-              padding: 10px 14px;
-              font-size: 10px;
-              letter-spacing: 0.11em;
+              letter-spacing: 0.08em;
             }
 
             .hovel-feedback-link {
@@ -217,11 +177,16 @@ export default function RootLayout({
               letter-spacing: 0.12em;
             }
           }
+
+          @media (max-width: 420px) {
+            .hovel-global-nav-link {
+              padding: 0 8px;
+              font-size: 9px;
+              letter-spacing: 0.06em;
+            }
+          }
         `}</style>
       </body>
     </html>
   );
 }
-
-
-

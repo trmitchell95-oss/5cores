@@ -132,6 +132,7 @@ export async function GET(
         reportCount: safeReports.length,
         eventCount: safeEvents.length,
         succeededCouncilRuns: safeEvents.filter((event) => event.tool === "council" && event.status === "succeeded").length,
+        succeededCouncilRereadRuns: safeEvents.filter((event) => event.tool === "council-reread" && event.status === "succeeded").length,
         succeededSphinxRuns: safeEvents.filter((event) => event.tool === "sphinx" && event.status === "succeeded").length,
         succeededSphinxSaves: safeEvents.filter((event) => event.tool === "sphinx_save" && event.status === "succeeded").length,
         problemCount: safeEvents.filter((event) => event.status === "failed" || event.status === "rejected").length,
@@ -152,3 +153,4 @@ export async function GET(
     );
   }
 }
+

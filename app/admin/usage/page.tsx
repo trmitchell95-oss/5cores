@@ -27,6 +27,7 @@ type AdminUser = {
   lastActivityAt: string | null;
   reportCount: number;
   councilRuns: number;
+  councilRereadRuns: number;
   sphinxRuns: number;
   sphinxSaveRuns: number;
   problemCount: number;
@@ -91,6 +92,7 @@ function statusClass(status: string) {
 
 function toolLabel(tool: string) {
   if (tool === "council") return "The Council";
+  if (tool === "council-reread") return "Council Re-Read";
   if (tool === "sphinx") return "Sphinx";
   if (tool === "sphinx_save") return "Sphinx Save";
   return tool;
@@ -641,6 +643,7 @@ export default function AdminUsagePage() {
                       <th>Last Activity</th>
                       <th>Reports</th>
                       <th>The Council</th>
+                      <th>Re-Read</th>
                       <th>Sphinx</th>
                       <th>Sphinx Saves</th>
                       <th>Problems</th>
@@ -660,6 +663,7 @@ export default function AdminUsagePage() {
                         <td className="mono">{formatDate(user.lastActivityAt)}</td>
                         <td className="mono">{formatNumber(user.reportCount)}</td>
                         <td className="mono">{formatNumber(user.councilRuns)}</td>
+                        <td className="mono">{formatNumber(user.councilRereadRuns)}</td>
                         <td className="mono">{formatNumber(user.sphinxRuns)}</td>
                         <td className="mono">{formatNumber(user.sphinxSaveRuns)}</td>
                         <td className="mono">{formatNumber(user.problemCount)}</td>
@@ -737,6 +741,7 @@ export default function AdminUsagePage() {
     </main>
   );
 }
+
 
 
 

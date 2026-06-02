@@ -189,6 +189,10 @@ export async function GET(req: NextRequest) {
           (event) => event.tool === "council" && event.status === "succeeded"
         ).length;
 
+        const councilRereadRuns = userEvents.filter(
+          (event) => event.tool === "council-reread" && event.status === "succeeded"
+        ).length;
+
         const sphinxRuns = userEvents.filter(
           (event) => event.tool === "sphinx" && event.status === "succeeded"
         ).length;
@@ -223,6 +227,7 @@ export async function GET(req: NextRequest) {
           lastActivityAt,
           reportCount: userReports.length,
           councilRuns,
+          councilRereadRuns,
           sphinxRuns,
           sphinxSaveRuns,
           problemCount,
@@ -264,3 +269,4 @@ export async function GET(req: NextRequest) {
     );
   }
 }
+

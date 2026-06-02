@@ -36,6 +36,7 @@ type UserDetailResponse = {
     reportCount: number;
     eventCount: number;
     succeededCouncilRuns: number;
+    succeededCouncilRereadRuns: number;
     succeededSphinxRuns: number;
     succeededSphinxSaves: number;
     problemCount: number;
@@ -63,13 +64,16 @@ function formatNumber(value: number | null | undefined) {
 
 function toolLabel(tool: string) {
   if (tool === "council") return "The Council";
+  if (tool === "council-reread") return "Council Re-Read";
   if (tool === "sphinx") return "Sphinx";
   if (tool === "sphinx_save") return "Sphinx Save";
   return tool;
 }
 
 function reportTypeLabel(type: string | null) {
-  return type === "sphinx" ? "Sphinx" : "The Council";
+  if (type === "sphinx") return "Sphinx";
+  if (type === "council-reread") return "Council Re-Read";
+  return "The Council";
 }
 
 export default function AdminUserDetailPage() {
@@ -258,7 +262,7 @@ export default function AdminUserDetailPage() {
 
         .summary-grid {
           display: grid;
-          grid-template-columns: repeat(6, minmax(0, 1fr));
+          grid-template-columns: repeat(7, minmax(0, 1fr));
           gap: 14px;
           margin-bottom: 22px;
         }
@@ -408,6 +412,7 @@ export default function AdminUserDetailPage() {
             <section className="summary-grid">
               <div className="card"><div className="card-label">Reports</div><div className="card-value">{formatNumber(data.summary.reportCount)}</div><div className="card-note">Saved reports.</div></div>
               <div className="card"><div className="card-label">The Council</div><div className="card-value">{formatNumber(data.summary.succeededCouncilRuns)}</div><div className="card-note">Succeeded council runs.</div></div>
+              <div className="card"><div className="card-label">Re-Read</div><div className="card-value">{formatNumber(data.summary.succeededCouncilRereadRuns)}</div><div className="card-note">Succeeded Re-Read runs.</div></div>
               <div className="card"><div className="card-label">Sphinx</div><div className="card-value">{formatNumber(data.summary.succeededSphinxRuns)}</div><div className="card-note">Succeeded Sphinx runs.</div></div>
               <div className="card"><div className="card-label">Sphinx Saves</div><div className="card-value">{formatNumber(data.summary.succeededSphinxSaves)}</div><div className="card-note">Saved Sphinx reports.</div></div>
               <div className="card"><div className="card-label">Input Words</div><div className="card-value">{formatNumber(data.summary.totalInputWords)}</div><div className="card-note">Tracked word volume.</div></div>
@@ -461,4 +466,5 @@ export default function AdminUserDetailPage() {
     </main>
   );
 }
+
 

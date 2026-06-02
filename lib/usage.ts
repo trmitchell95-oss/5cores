@@ -1,8 +1,8 @@
-import { createClient } from "@supabase/supabase-js";
+﻿import { createClient } from "@supabase/supabase-js";
 
 type UsageStatus = "started" | "succeeded" | "failed" | "rejected";
 
-type UsageTool = "council" | "sphinx" | "sphinx_save";
+type UsageTool = "council" | "council-reread" | "sphinx" | "sphinx_save";
 
 type UsageEvent = {
   userId?: string | null;
@@ -192,3 +192,4 @@ export async function logUsageEvent(event: UsageEvent) {
     );
   }
 }
+
