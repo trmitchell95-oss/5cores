@@ -2,7 +2,6 @@
 import type { ReactNode } from "react";
 import HelpLink from "./components/HelpLink";
 import FeedbackLink from "./components/FeedbackLink";
-import HovelManifestoFloat from "./start/HovelManifestoFloat";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -19,8 +18,6 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body suppressHydrationWarning>
-        <HovelManifestoFloat />
-
         <nav className="hovel-global-nav" aria-label="Hovel Editor navigation">
           <a href="/" className="hovel-global-nav-mark" aria-label="Hovel Editor home">
             5C
@@ -262,5 +259,6 @@ export default function RootLayout({
     </html>
   );
 }
+
 
 
