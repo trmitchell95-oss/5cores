@@ -478,7 +478,7 @@ export default function SavedReportPage() {
         } = await supabase.auth.getSession();
 
         if (!session) {
-          window.location.href = "/login";
+          window.location.href = `/login?next=${encodeURIComponent(window.location.pathname + window.location.search)}`;
           return;
         }
 
@@ -569,7 +569,7 @@ export default function SavedReportPage() {
     } = await supabase.auth.getSession();
 
     if (!session?.access_token) {
-      window.location.href = "/login";
+      window.location.href = `/login?next=${encodeURIComponent(window.location.pathname + window.location.search)}`;
       return "";
     }
 
@@ -1297,6 +1297,7 @@ export default function SavedReportPage() {
     </main>
   );
 }
+
 
 
 

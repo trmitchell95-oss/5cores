@@ -92,7 +92,7 @@ export default function SavedIdeasPage() {
       } = await supabase.auth.getSession();
 
       if (!session?.access_token) {
-        window.location.href = "/login";
+        window.location.href = `/login?next=${encodeURIComponent(window.location.pathname + window.location.search)}`;
         return;
       }
 
@@ -647,6 +647,7 @@ export default function SavedIdeasPage() {
     </main>
   );
 }
+
 
 
 

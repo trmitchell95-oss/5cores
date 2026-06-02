@@ -1,12 +1,55 @@
 ﻿"use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { createClient } from "@supabase/supabase-js";
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 );
+
+function isIdeanatorHost() {
+  if (typeof window === "undefined") return false;
+
+  const host = window.location.hostname.toLowerCase();
+
+  return host === "theideanator.com" || host === "www.theideanator.com";
+}
+
+function getDefaultDestination() {
+  return isIdeanatorHost() ? "/idea" : "/dashboard";
+}
+
+function getSafeNextPath() {
+  if (typeof window === "undefined") return "/dashboard";
+
+  const params = new URLSearchParams(window.location.search);
+  const next = params.get("next") || "";
+
+  if (!next) {
+    return getDefaultDestination();
+  }
+
+  try {
+    const decoded = decodeURIComponent(next);
+
+    if (!decoded.startsWith("/") || decoded.startsWith("//")) {
+      return getDefaultDestination();
+    }
+
+    return decoded;
+  } catch {
+    return getDefaultDestination();
+  }
+}
+
+function getLoginProductLabel() {
+  return isIdeanatorHost() ? "The Ideanator" : "HOVEL Editor";
+}
+
+function getHomeHref() {
+  return isIdeanatorHost() ? "/idea" : "/";
+}
 
 export default function LoginPage() {
   const [mode, setMode] = useState<"signin" | "signup" | "forgot">("signin");
@@ -17,20 +60,31 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
+  const [destination, setDestination] = useState("/dashboard");
+  const [productLabel, setProductLabel] = useState("HOVEL Editor");
+  const [homeHref, setHomeHref] = useState("/");
 
   useEffect(() => {
+    const nextDestination = getSafeNextPath();
+
+    setDestination(nextDestination);
+    setProductLabel(getLoginProductLabel());
+    setHomeHref(getHomeHref());
+
     async function checkSession() {
       const {
         data: { session },
       } = await supabase.auth.getSession();
 
       if (session) {
-        window.location.href = "/dashboard";
+        window.location.href = nextDestination;
       }
     }
 
     checkSession();
   }, []);
+
+  const isIdeanatorLogin = useMemo(() => productLabel === "The Ideanator", [productLabel]);
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -86,7 +140,7 @@ export default function LoginPage() {
           return;
         }
 
-        window.location.href = "/dashboard";
+        window.location.href = destination;
         return;
       }
 
@@ -141,7 +195,17 @@ export default function LoginPage() {
   }
 
   return (
-    <div style={{ minHeight: "100vh", background: "#0e0d0b", color: "#f0ece4", fontFamily: "Georgia, serif" }}>
+    <div
+      className={isIdeanatorLogin ? "login-shell idea-login" : "login-shell"}
+      style={{
+        minHeight: "100vh",
+        background: isIdeanatorLogin
+          ? "linear-gradient(135deg, #332313 0%, #242018 46%, #1c211e 100%)"
+          : "#0e0d0b",
+        color: "#f0ece4",
+        fontFamily: "Georgia, serif",
+      }}
+    >
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=DM+Sans:wght@300;400;500&family=IBM+Plex+Mono:wght@400;500&display=swap');
 
@@ -169,6 +233,13 @@ export default function LoginPage() {
           padding: 36px;
         }
 
+        .idea-login .card {
+          background: rgba(43, 38, 30, 0.94);
+          border-color: rgba(255, 221, 159, 0.22);
+          border-radius: 28px;
+          box-shadow: 0 24px 80px rgba(0, 0, 0, 0.42);
+        }
+
         .back-link {
           display: inline-block;
           font-family: 'IBM Plex Mono', monospace;
@@ -178,6 +249,10 @@ export default function LoginPage() {
           text-decoration: none;
           text-transform: uppercase;
           margin-bottom: 28px;
+        }
+
+        .idea-login .back-link {
+          color: rgba(245, 241, 232, 0.58);
         }
 
         .back-link:hover {
@@ -191,6 +266,10 @@ export default function LoginPage() {
           color: #c8935a;
           text-transform: uppercase;
           margin-bottom: 12px;
+        }
+
+        .idea-login .eyebrow {
+          color: #f0b35f;
         }
 
         .title {
@@ -210,11 +289,21 @@ export default function LoginPage() {
           margin-bottom: 28px;
         }
 
+        .idea-login .subtitle {
+          color: #ddd5c7;
+        }
+
         .tabs {
           display: grid;
           grid-template-columns: 1fr 1fr;
           border: 1px solid #2a2520;
           margin-bottom: 22px;
+        }
+
+        .idea-login .tabs {
+          border-color: rgba(255, 221, 159, 0.2);
+          border-radius: 16px;
+          overflow: hidden;
         }
 
         .tab {
@@ -234,6 +323,11 @@ export default function LoginPage() {
           color: #0e0d0b;
         }
 
+        .idea-login .tab.active {
+          background: #f0b35f;
+          color: #18100a;
+        }
+
         .field {
           margin-bottom: 16px;
         }
@@ -248,6 +342,10 @@ export default function LoginPage() {
           margin-bottom: 7px;
         }
 
+        .idea-login .label {
+          color: #bdb4a8;
+        }
+
         .input {
           width: 100%;
           background: #0e0d0b;
@@ -259,8 +357,19 @@ export default function LoginPage() {
           outline: none;
         }
 
+        .idea-login .input {
+          border-color: rgba(255, 221, 159, 0.18);
+          background: rgba(0, 0, 0, 0.22);
+          border-radius: 14px;
+        }
+
         .input:focus {
           border-color: #c8935a;
+        }
+
+        .idea-login .input:focus {
+          border-color: #f0b35f;
+          box-shadow: 0 0 0 4px rgba(240, 179, 95, 0.13);
         }
 
         .password-wrap {
@@ -285,6 +394,13 @@ export default function LoginPage() {
           text-transform: uppercase;
           padding: 8px 10px;
           cursor: pointer;
+        }
+
+        .idea-login .password-toggle {
+          color: #f0b35f;
+          border-color: rgba(255, 221, 159, 0.2);
+          background: rgba(255, 255, 255, 0.04);
+          border-radius: 10px;
         }
 
         .password-toggle:hover {
@@ -314,6 +430,21 @@ export default function LoginPage() {
           cursor: pointer;
         }
 
+        .idea-login .button {
+          background:
+            radial-gradient(circle at 18px 50%, #fff3c4 0 4px, transparent 5px),
+            linear-gradient(180deg, #ffd27a 0%, #f0b35f 52%, #c98438 100%);
+          color: #18100a;
+          border: 1px solid rgba(255, 241, 190, 0.7);
+          border-radius: 999px;
+          padding-left: 34px;
+          font-weight: 900;
+          box-shadow:
+            0 0 0 1px rgba(255, 208, 122, 0.18),
+            0 0 22px rgba(240, 179, 95, 0.28),
+            inset 0 1px 0 rgba(255, 255, 255, 0.42);
+        }
+
         .button:disabled {
           opacity: 0.5;
           cursor: not-allowed;
@@ -339,8 +470,16 @@ export default function LoginPage() {
           padding: 0;
         }
 
+        .idea-login .text-link {
+          color: rgba(245, 241, 232, 0.58);
+        }
+
         .text-link:hover {
           color: #c8935a;
+        }
+
+        .idea-login .text-link:hover {
+          color: #f0b35f;
         }
 
         .error,
@@ -372,6 +511,10 @@ export default function LoginPage() {
           margin-top: 20px;
         }
 
+        .idea-login .note {
+          color: rgba(245, 241, 232, 0.5);
+        }
+
         .terms-link {
           display: inline-block;
           margin-top: 8px;
@@ -383,6 +526,10 @@ export default function LoginPage() {
           text-decoration: none;
         }
 
+        .idea-login .terms-link {
+          color: #f0b35f;
+        }
+
         .terms-link:hover {
           text-decoration: underline;
         }
@@ -390,9 +537,13 @@ export default function LoginPage() {
 
       <div className="wrap">
         <div className="card">
-          <a className="back-link" href="/">Back to Home</a>
+          <a className="back-link" href={homeHref}>
+            Back to {productLabel}
+          </a>
 
-          <div className="eyebrow">The Council Beta Access</div>
+          <div className="eyebrow">
+            {isIdeanatorLogin ? "The Ideanator Access" : "The Council Beta Access"}
+          </div>
 
           <div className="title">
             {mode === "signin" ? "Sign In" : mode === "signup" ? "Create Account" : "Reset Password"}
@@ -403,7 +554,9 @@ export default function LoginPage() {
               ? "Enter your email and we will send you a password reset link."
               : mode === "signup"
                 ? "Create a beta account with your invite code."
-                : "Sign in to submit manuscripts, run the council, and reopen saved reports."}
+                : isIdeanatorLogin
+                  ? "Sign in to save ideas, reopen reports, and keep working them back on the lift."
+                  : "Sign in to submit manuscripts, run the council, and reopen saved reports."}
           </div>
 
           {mode !== "forgot" && (
@@ -516,7 +669,7 @@ export default function LoginPage() {
           {message && <div className="message">{message}</div>}
 
           <div className="note">
-            Beta access is free for now. New accounts require an invite code. Each account keeps its own dashboard and saved report history.
+            Beta access is free for now. New accounts require an invite code. One account can use HOVEL Editor and The Ideanator, but each product keeps its own front door.
             <br />
             <a className="terms-link" href="/beta-terms">Beta Terms / Privacy</a>
           </div>
@@ -525,4 +678,3 @@ export default function LoginPage() {
     </div>
   );
 }
-

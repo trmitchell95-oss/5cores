@@ -272,7 +272,7 @@ export default function IdeanatorPage() {
         } = await supabase.auth.getSession();
 
         if (!session?.access_token) {
-          window.location.href = "/login";
+          window.location.href = `/login?next=${encodeURIComponent(window.location.pathname + window.location.search)}`;
           return;
         }
 
@@ -509,7 +509,7 @@ export default function IdeanatorPage() {
       } = await supabase.auth.getSession();
 
       if (!session?.access_token) {
-        window.location.href = "/login";
+        window.location.href = `/login?next=${encodeURIComponent(window.location.pathname + window.location.search)}`;
         return;
       }
 
@@ -1548,6 +1548,7 @@ function ResultCard({ title, body }: { title: string; body: string }) {
     </article>
   );
 }
+
 
 
 
