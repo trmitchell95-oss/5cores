@@ -641,12 +641,13 @@ export default function SavedIdeasPage() {
         </section>
 
         <div className="backdoor-link">
-          Need manuscript tools? <a href="/dashboard">Open HOVEL Editor.</a>
+          Need manuscript tools? <a href="https://www.hoveleditor.com/dashboard">Open HOVEL Editor.</a>
         </div>
       </div>
     </main>
   );
 }
+
 
 
 
