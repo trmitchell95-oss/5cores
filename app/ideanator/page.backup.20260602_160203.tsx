@@ -389,21 +389,6 @@ export default function IdeanatorPage() {
     loadSavedRigs(false);
   }, []);
 
-  useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const requestedRigId = params.get("openRig");
-
-    if (!requestedRigId || savedRigs.length === 0 || activeRigId === requestedRigId) {
-      return;
-    }
-
-    const matchedRig = savedRigs.find((rig) => rig.id === requestedRigId);
-
-    if (matchedRig) {
-      openSavedRig(matchedRig);
-    }
-  }, [savedRigs, activeRigId]);
-
   async function copyToClipboard(label: string, value: string) {
     try {
       setError("");
@@ -1238,6 +1223,5 @@ export default function IdeanatorPage() {
     </main>
   );
 }
-
 
 
