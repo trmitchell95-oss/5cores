@@ -542,7 +542,7 @@ export default function Dashboard() {
 
         .tool-grid {
           display: grid;
-          grid-template-columns: repeat(5, minmax(0, 1fr));
+          grid-template-columns: repeat(4, minmax(0, 1fr));
           gap: 16px;
           margin-bottom: 22px;
         }
@@ -938,12 +938,6 @@ export default function Dashboard() {
           padding: 22px !important;
         }
 
-        @media (max-width: 1200px) {
-          .tool-grid {
-            grid-template-columns: repeat(3, minmax(0, 1fr));
-          }
-        }
-
         @media (max-width: 900px) {
           .hero-grid,
           .tool-grid,
@@ -1061,9 +1055,6 @@ export default function Dashboard() {
               <a className="secondary-btn" href="/sphinx">
                 Run SPHINX
               </a>
-              <a className="secondary-btn" href="/ideanator">
-                Open Ideanator
-              </a>
               <a className="secondary-btn" href="#saved-reports">
                 Saved Reports
               </a>
@@ -1155,18 +1146,6 @@ export default function Dashboard() {
             </a>
           </article>
 
-          <article className="tool-card">
-            <div>
-              <div className="tool-number">05</div>
-              <div className="tool-title">Ideanator</div>
-              <p className="tool-text">
-                Best for raw ideas, inventions, pitches, grant angles, product concepts, and half-formed little bastards that need a thinking rig before they become real work.
-              </p>
-            </div>
-            <a className="tool-link" href="/ideanator">
-              Open Ideanator
-            </a>
-          </article>
 
         </section>
 
@@ -1311,7 +1290,6 @@ export default function Dashboard() {
     </main>
   );
 }
-
 
 
 
