@@ -1,0 +1,471 @@
+﻿"use client";
+
+import { useEffect, useState } from "react";
+import Link from "next/link";
+import { useParams } from "next/navigation";
+import { createClient } from "@supabase/supabase-js";
+
+type UserReport = {
+  id: string;
+  created_at: string;
+  title: string | null;
+  report_type: string | null;
+};
+
+type UsageEvent = {
+  id: string;
+  created_at: string;
+  tool: string;
+  status: string;
+  input_chars: number;
+  input_words: number;
+  model: string | null;
+  title: string | null;
+  error_message: string | null;
+};
+
+type UserDetailResponse = {
+  adminEmail: string;
+  user: {
+    id: string;
+    email: string;
+    created_at: string | null;
+    last_sign_in_at: string | null;
+  };
+  summary: {
+    reportCount: number;
+    eventCount: number;
+    succeededCouncilRuns: number;
+    succeededCouncilRereadRuns: number;
+    succeededSphinxRuns: number;
+    succeededSphinxSaves: number;
+    problemCount: number;
+    totalInputChars: number;
+    totalInputWords: number;
+    lastActivityAt: string | null;
+  };
+  reports: UserReport[];
+  events: UsageEvent[];
+};
+
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+);
+
+function formatDate(value: string | null) {
+  if (!value) return "None yet";
+  return new Date(value).toLocaleString();
+}
+
+function formatNumber(value: number | null | undefined) {
+  return Number(value || 0).toLocaleString();
+}
+
+function toolLabel(tool: string) {
+  if (tool === "council") return "The Council";
+  if (tool === "council-reread") return "Council Re-Read";
+  if (tool === "sphinx") return "Sphinx";
+  if (tool === "sphinx_save") return "Sphinx Save";
+  return tool;
+}
+
+function reportTypeLabel(type: string | null) {
+  if (type === "sphinx") return "Sphinx";
+  if (type === "council-reread") return "Council Re-Read";
+  return "The Council";
+}
+
+export default function AdminUserDetailPage() {
+  const params = useParams<{ id: string }>();
+  const id = typeof params?.id === "string" ? params.id : "";
+
+  const [data, setData] = useState<UserDetailResponse | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+
+  async function loadUser() {
+    try {
+      setLoading(true);
+      setError("");
+
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+
+      if (!session?.access_token) {
+        window.location.href = "/login";
+        return;
+      }
+
+      const response = await fetch(`/api/admin/users/${id}`, {
+        headers: {
+          authorization: `Bearer ${session.access_token}`,
+        },
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.error || "Could not load beta user.");
+      }
+
+      setData(result);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Something went wrong.");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  useEffect(() => {
+    if (id) loadUser();
+  }, [id]);
+
+  return (
+    <main className="admin-shell">
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=DM+Sans:wght@300;400;500;700&family=IBM+Plex+Mono:wght@400;500;700&display=swap');
+
+        body {
+          margin: 0;
+          background: #0e0d0b;
+        }
+
+        .admin-shell {
+          min-height: 100vh;
+          background:
+            radial-gradient(circle at top left, rgba(200,147,90,0.13), transparent 34rem),
+            #0e0d0b;
+          color: #f0ece4;
+          font-family: 'DM Sans', sans-serif;
+        }
+
+        .wrap {
+          max-width: 1200px;
+          margin: 0 auto;
+          padding: 34px 24px 90px;
+        }
+
+        .topbar,
+        .hero,
+        .card,
+        .panel {
+          border: 1px solid #26211c;
+          background: rgba(18, 16, 13, 0.9);
+          box-shadow: 0 24px 80px rgba(0, 0, 0, 0.2);
+        }
+
+        .topbar {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          gap: 14px;
+          border-radius: 24px;
+          padding: 16px 18px;
+          margin-bottom: 22px;
+        }
+
+        .brand {
+          display: flex;
+          align-items: center;
+          gap: 12px;
+        }
+
+        .brand-mark {
+          width: 42px;
+          height: 42px;
+          border-radius: 15px;
+          background: #c8935a;
+          color: #0e0d0b;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-family: 'IBM Plex Mono', monospace;
+          font-weight: 800;
+        }
+
+        .brand-main {
+          font-family: 'IBM Plex Mono', monospace;
+          font-size: 12px;
+          font-weight: 800;
+          letter-spacing: 0.18em;
+          text-transform: uppercase;
+        }
+
+        .brand-sub {
+          color: #7b7168;
+          font-size: 12px;
+          margin-top: 3px;
+        }
+
+        .nav-actions {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 10px;
+        }
+
+        .nav-link,
+        .refresh-btn {
+          border-radius: 14px;
+          border: 1px solid #302a24;
+          background: #11100e;
+          color: #9a9186;
+          padding: 12px 14px;
+          font-family: 'IBM Plex Mono', monospace;
+          font-size: 10px;
+          font-weight: 800;
+          letter-spacing: 0.12em;
+          text-transform: uppercase;
+          text-decoration: none;
+          cursor: pointer;
+        }
+
+        .nav-link:hover,
+        .refresh-btn:hover {
+          color: #c8935a;
+          border-color: #c8935a;
+        }
+
+        .hero {
+          border-radius: 30px;
+          padding: 34px;
+          margin-bottom: 22px;
+        }
+
+        .eyebrow {
+          font-family: 'IBM Plex Mono', monospace;
+          font-size: 11px;
+          font-weight: 800;
+          letter-spacing: 0.24em;
+          color: #c8935a;
+          text-transform: uppercase;
+          margin-bottom: 12px;
+        }
+
+        .title {
+          font-family: 'Cormorant Garamond', serif;
+          font-size: clamp(42px, 7vw, 76px);
+          line-height: 0.94;
+          font-weight: 700;
+          margin: 0;
+          overflow-wrap: anywhere;
+        }
+
+        .subtitle {
+          color: #aaa096;
+          line-height: 1.7;
+          max-width: 820px;
+          margin-top: 18px;
+          font-weight: 300;
+        }
+
+        .summary-grid {
+          display: grid;
+          grid-template-columns: repeat(7, minmax(0, 1fr));
+          gap: 14px;
+          margin-bottom: 22px;
+        }
+
+        .card {
+          border-radius: 22px;
+          padding: 20px;
+        }
+
+        .card-label,
+        th {
+          font-family: 'IBM Plex Mono', monospace;
+          font-size: 10px;
+          font-weight: 800;
+          letter-spacing: 0.16em;
+          text-transform: uppercase;
+          color: #7b7168;
+        }
+
+        .card-value {
+          font-family: 'Cormorant Garamond', serif;
+          font-size: 34px;
+          line-height: 1;
+          font-weight: 700;
+        }
+
+        .card-note {
+          margin-top: 10px;
+          color: #8f867b;
+          font-size: 12px;
+          line-height: 1.45;
+        }
+
+        .panel {
+          border-radius: 28px;
+          padding: 22px;
+          margin-bottom: 22px;
+        }
+
+        .panel-title {
+          font-family: 'Cormorant Garamond', serif;
+          font-size: 32px;
+          line-height: 1;
+          font-weight: 700;
+          border-bottom: 1px solid #2a2520;
+          padding-bottom: 16px;
+          margin-bottom: 16px;
+        }
+
+        .table-wrap {
+          overflow-x: auto;
+        }
+
+        table {
+          width: 100%;
+          border-collapse: collapse;
+          min-width: 850px;
+        }
+
+        th {
+          text-align: left;
+          padding: 12px 10px;
+          border-bottom: 1px solid #2a2520;
+        }
+
+        td {
+          padding: 14px 10px;
+          border-bottom: 1px solid #211d19;
+          vertical-align: top;
+          color: #d7d0c8;
+          font-size: 13px;
+          line-height: 1.45;
+        }
+
+        .mono {
+          font-family: 'IBM Plex Mono', monospace;
+          font-size: 11px;
+        }
+
+        .error-box,
+        .loading-box {
+          border-radius: 18px;
+          padding: 18px;
+          margin-bottom: 22px;
+        }
+
+        .error-box {
+          border: 1px solid #5a2020;
+          background: #2a1010;
+          color: #f0a0a0;
+        }
+
+        .loading-box {
+          border: 1px solid #26211c;
+          background: rgba(18,16,13,0.9);
+          color: #9a9186;
+        }
+
+        @media (max-width: 1100px) {
+          .summary-grid {
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+          }
+        }
+
+        @media (max-width: 700px) {
+          .summary-grid {
+            grid-template-columns: 1fr;
+          }
+        }
+      `}</style>
+
+      <div className="wrap">
+        <nav className="topbar">
+          <div className="brand">
+            <div className="brand-mark">5C</div>
+            <div>
+              <div className="brand-main">The Council Admin</div>
+              <div className="brand-sub">Beta user detail</div>
+            </div>
+          </div>
+
+          <div className="nav-actions">
+            <Link href="/admin/usage" className="nav-link">Back to Speedometer</Link>
+            <Link href="/dashboard" className="nav-link">Dashboard</Link>
+            <button className="refresh-btn" type="button" onClick={loadUser}>
+              Refresh
+            </button>
+          </div>
+        </nav>
+
+        {loading && <div className="loading-box">Loading beta user...</div>}
+        {error && <div className="error-box">{error}</div>}
+
+        {!loading && data && (
+          <>
+            <section className="hero">
+              <div className="eyebrow">Beta User</div>
+              <h1 className="title">{data.user.email}</h1>
+              <p className="subtitle">
+                Created: {formatDate(data.user.created_at)} • Last sign-in: {formatDate(data.user.last_sign_in_at)} • Last activity: {formatDate(data.summary.lastActivityAt)}
+              </p>
+              <p className="subtitle">
+                Admin note: this shows usage/report metadata only. It does not expose another user's manuscript or report contents.
+              </p>
+            </section>
+
+            <section className="summary-grid">
+              <div className="card"><div className="card-label">Reports</div><div className="card-value">{formatNumber(data.summary.reportCount)}</div><div className="card-note">Saved reports.</div></div>
+              <div className="card"><div className="card-label">The Council</div><div className="card-value">{formatNumber(data.summary.succeededCouncilRuns)}</div><div className="card-note">Succeeded council runs.</div></div>
+              <div className="card"><div className="card-label">Re-Read</div><div className="card-value">{formatNumber(data.summary.succeededCouncilRereadRuns)}</div><div className="card-note">Succeeded Re-Read runs.</div></div>
+              <div className="card"><div className="card-label">Sphinx</div><div className="card-value">{formatNumber(data.summary.succeededSphinxRuns)}</div><div className="card-note">Succeeded Sphinx runs.</div></div>
+              <div className="card"><div className="card-label">Sphinx Saves</div><div className="card-value">{formatNumber(data.summary.succeededSphinxSaves)}</div><div className="card-note">Saved Sphinx reports.</div></div>
+              <div className="card"><div className="card-label">Input Words</div><div className="card-value">{formatNumber(data.summary.totalInputWords)}</div><div className="card-note">Tracked word volume.</div></div>
+              <div className="card"><div className="card-label">Problems</div><div className="card-value">{formatNumber(data.summary.problemCount)}</div><div className="card-note">Failed or rejected events.</div></div>
+            </section>
+
+            <section className="panel">
+              <div className="panel-title">Recent reports</div>
+              <div className="table-wrap">
+                <table>
+                  <thead><tr><th>Created</th><th>Type</th><th>Title</th></tr></thead>
+                  <tbody>
+                    {data.reports.map((report) => (
+                      <tr key={report.id}>
+                        <td className="mono">{formatDate(report.created_at)}</td>
+                        <td>{reportTypeLabel(report.report_type)}</td>
+                        <td>{report.title || "Untitled Report"}</td>
+                      </tr>
+                    ))}
+                    {data.reports.length === 0 && <tr><td colSpan={3}>No saved reports yet.</td></tr>}
+                  </tbody>
+                </table>
+              </div>
+            </section>
+
+            <section className="panel">
+              <div className="panel-title">Recent activity</div>
+              <div className="table-wrap">
+                <table>
+                  <thead><tr><th>Time</th><th>Tool</th><th>Status</th><th>Size</th><th>Model</th><th>Title</th><th>Error</th></tr></thead>
+                  <tbody>
+                    {data.events.map((event) => (
+                      <tr key={event.id}>
+                        <td className="mono">{formatDate(event.created_at)}</td>
+                        <td>{toolLabel(event.tool)}</td>
+                        <td>{event.status}</td>
+                        <td className="mono">{formatNumber(event.input_chars)} chars<br />{formatNumber(event.input_words)} words</td>
+                        <td className="mono">{event.model || "None"}</td>
+                        <td>{event.title || "Untitled"}</td>
+                        <td>{event.error_message || ""}</td>
+                      </tr>
+                    ))}
+                    {data.events.length === 0 && <tr><td colSpan={7}>No tracked activity yet.</td></tr>}
+                  </tbody>
+                </table>
+              </div>
+            </section>
+          </>
+        )}
+      </div>
+    </main>
+  );
+}
+
+
+
