@@ -96,19 +96,13 @@ export default function ProductNav() {
   }
 
   const authLink = authReady && signedIn ? (
-    <>
-      <a href="/account" className="hovel-global-nav-link">
-        ACCOUNT
-      </a>
-
-      <a
-        href={isIdeanator ? "/idea" : "/"}
-        className="hovel-global-nav-link"
-        onClick={handleSignOut}
-      >
-        SIGN OUT
-      </a>
-    </>
+    <a
+      href={isIdeanator ? "/idea" : "/"}
+      className="hovel-global-nav-link"
+      onClick={handleSignOut}
+    >
+      SIGN OUT
+    </a>
   ) : (
     <a href={loginHref} className="hovel-global-nav-link">
       SIGN IN
@@ -180,5 +174,4 @@ export default function ProductNav() {
     </nav>
   );
 }
-
 
