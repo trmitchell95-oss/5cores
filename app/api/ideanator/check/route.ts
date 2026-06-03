@@ -1,7 +1,7 @@
 ﻿import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 import Anthropic from "@anthropic-ai/sdk";
-import { checkDailyUsageLimit, countWords, logUsageEvent } from "../../../../../lib/usage";
+import { checkDailyUsageLimit, countWords, logUsageEvent } from "../../../../lib/usage";
 
 export const runtime = "nodejs";
 
@@ -429,3 +429,4 @@ export async function POST(request: NextRequest) {
     );
   }
 }
+
