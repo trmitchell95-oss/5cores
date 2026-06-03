@@ -1109,15 +1109,9 @@ export default function SavedReportPage() {
                 Back on the Lift
               </Link>
             )}
-            {isIdeanatorSavedReport(report) ? (
-              <Link href={`/ideanator?ideaReport=${encodeURIComponent(id)}`} className="nav-link">
-                Build Rig
-              </Link>
-            ) : (
-              <Link href="/idea" className="nav-link">
-                Open Ideanator
-              </Link>
-            )}
+            <Link href="/idea" className="nav-link">
+              Open Ideanator
+            </Link>
 
             {!isIdeanatorSavedReport(report) && (
               <Link href="/sphinx" className="nav-link">
@@ -1303,7 +1297,6 @@ export default function SavedReportPage() {
     </main>
   );
 }
-
 
 
 

@@ -623,12 +623,6 @@ export default function SavedIdeasPage() {
                       >
                         Open Idea Report
                       </a>
-                      <a
-                        className="small-link"
-                        href={`/ideanator?ideaReport=${encodeURIComponent(report.id)}`}
-                      >
-                        Build Rig
-                      </a>
 
                       {parentReportId && (
                         <a
@@ -653,7 +647,6 @@ export default function SavedIdeasPage() {
     </main>
   );
 }
-
 
 
 
