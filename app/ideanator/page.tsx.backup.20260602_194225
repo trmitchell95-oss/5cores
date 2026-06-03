@@ -14,17 +14,6 @@ type Blueprint = {
   promptStrategy: string;
 };
 
-type RigReadiness = {
-  verdict: "CLEARED FOR THE ROAD" | "BACK ON THE LIFT" | "DO NOT DRIVE THIS BASTARD YET";
-  score: number;
-  summary: string;
-  why: string[];
-  biggestRisk: string;
-  fixNext: string[];
-  reusable: boolean;
-  nextAction: string;
-};
-
 type SavedRig = {
   id: string;
   created_at: string;
@@ -35,10 +24,6 @@ type SavedRig = {
   actual_prompt: string | null;
   latest_output: string | null;
   is_archived: boolean;
-  readiness_verdict?: RigReadiness["verdict"] | null;
-  readiness_score?: number | null;
-  readiness_report?: RigReadiness | null;
-  readiness_checked_at?: string | null;
 };
 
 type TextBlueprintField =
@@ -202,34 +187,6 @@ ${actualPrompt || ""}
 ${output || ""}`;
 }
 
-function formatRigReadinessForCopy(readiness: RigReadiness) {
-  return `# Rig Readiness Check
-
-## Verdict
-${readiness.verdict}
-
-## Score
-${readiness.score}/100
-
-## Summary
-${readiness.summary}
-
-## Why
-${readiness.why.length ? readiness.why.map((item) => `- ${item}`).join("\n") : "- No reasons supplied."}
-
-## Biggest Risk
-${readiness.biggestRisk}
-
-## Fix Next
-${readiness.fixNext.length ? readiness.fixNext.map((item) => `- ${item}`).join("\n") : "- No fixes supplied."}
-
-## Reusable
-${readiness.reusable ? "Yes" : "Not yet"}
-
-## Next Action
-${readiness.nextAction}`;
-}
-
 function renderInlineFormatting(text: string): ReactNode[] {
   const parts = text.split(/(\*\*[^*]+\*\*)/g);
 
@@ -362,11 +319,9 @@ export default function IdeanatorPage() {
   const [blueprint, setBlueprint] = useState<Blueprint>(emptyBlueprint);
   const [showPrompt, setShowPrompt] = useState(false);
   const [output, setOutput] = useState("");
-  const [readinessReport, setReadinessReport] = useState<RigReadiness | null>(null);
   const [savedRigs, setSavedRigs] = useState<SavedRig[]>([]);
   const [loadingBlueprint, setLoadingBlueprint] = useState(false);
   const [runningRig, setRunningRig] = useState(false);
-  const [checkingRig, setCheckingRig] = useState(false);
   const [savingRig, setSavingRig] = useState(false);
   const [updatingRig, setUpdatingRig] = useState(false);
   const [loadingRigs, setLoadingRigs] = useState(false);
@@ -516,7 +471,6 @@ export default function IdeanatorPage() {
       setError("");
       setMessage("");
       setOutput("");
-      setReadinessReport(null);
       setActiveRigId("");
 
       const token = await getSessionToken();
@@ -575,7 +529,6 @@ export default function IdeanatorPage() {
       setError("");
       setMessage("");
       setOutput("");
-      setReadinessReport(null);
 
       if (!fog.trim()) {
         setError("Dump the idea first. The rig cannot run on vibes and dust.");
@@ -622,87 +575,6 @@ export default function IdeanatorPage() {
       setError(err instanceof Error ? err.message : "Something went wrong while running the rig.");
     } finally {
       setRunningRig(false);
-    }
-  }
-
-  async function checkRigReadiness() {
-    try {
-      setCheckingRig(true);
-      setError("");
-      setMessage("");
-
-      if (!fog.trim()) {
-        setError("The rig needs fog/source material before it can be checked.");
-        return;
-      }
-
-      if (!blueprint.purpose.trim()) {
-        setError("Generate or fill in the blueprint before checking the rig.");
-        return;
-      }
-
-      const token = await getSessionToken();
-
-      if (!token) {
-        return;
-      }
-
-      const response = await fetch("/api/ideanator/check", {
-        method: "POST",
-        headers: {
-          "content-type": "application/json",
-          authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          fog,
-          blueprint,
-          output,
-        }),
-      });
-
-      const result = await response.json();
-
-      if (!response.ok || !result.ok) {
-        throw new Error(result.error || "Could not check rig readiness.");
-      }
-
-      const readiness = result.readiness as RigReadiness;
-
-      setReadinessReport(readiness);
-
-      if (activeRigId) {
-        const saveResponse = await fetch("/api/ideanator/rigs", {
-          method: "PATCH",
-          headers: {
-            "content-type": "application/json",
-            authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({
-            id: activeRigId,
-            readinessReport: readiness,
-          }),
-        });
-
-        const saveResult = await saveResponse.json();
-
-        if (saveResponse.ok && saveResult.ok && saveResult.rig) {
-          const updatedRig = saveResult.rig as SavedRig;
-
-          setSavedRigs((current) =>
-            current.map((rig) => (rig.id === updatedRig.id ? updatedRig : rig))
-          );
-
-          setMessage("Rig readiness check complete and saved to the open rig.");
-        } else {
-          setMessage("Rig readiness check complete. It showed on screen, but did not save to the open rig.");
-        }
-      } else {
-        setMessage("Rig readiness check complete. Save the rig first if you want this status stored.");
-      }
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Something went wrong while checking the rig.");
-    } finally {
-      setCheckingRig(false);
     }
   }
 
@@ -825,7 +697,6 @@ export default function IdeanatorPage() {
       rigName: nextBlueprint.rigName || rig.rig_name || "Untitled Thinking Rig",
     });
     setOutput(rig.latest_output || "");
-    setReadinessReport(rig.readiness_report || null);
     setActiveRigId(rig.id);
     setShowPrompt(true);
     setError("");
@@ -1082,7 +953,7 @@ export default function IdeanatorPage() {
             <div>
               <h2 className="font-bold">Thinking Rig Controls</h2>
               <p className="text-sm text-neutral-400">
-                Generate or review the blueprint, inspect the portable prompt, run the rig, check readiness, then update or save the pattern.
+                Generate the blueprint, inspect the real prompt, run the rig, then update or save the pattern.
               </p>
             </div>
 
@@ -1108,14 +979,6 @@ export default function IdeanatorPage() {
                 className="rounded-xl border border-neutral-700 px-4 py-3 font-bold text-neutral-100 transition hover:border-neutral-500 disabled:cursor-not-allowed disabled:opacity-60"
               >
                 {runningRig ? "Running..." : "Run Rig"}
-              </button>
-
-              <button
-                onClick={checkRigReadiness}
-                disabled={checkingRig}
-                className="rounded-xl border border-emerald-500 px-4 py-3 font-bold text-emerald-300 transition hover:bg-emerald-500 hover:text-neutral-950 disabled:cursor-not-allowed disabled:opacity-60"
-              >
-                {checkingRig ? "Checking..." : "Check Rig"}
               </button>
 
               {activeRigId && (
@@ -1147,83 +1010,13 @@ export default function IdeanatorPage() {
           </div>
         </section>
 
-        {readinessReport && (
-          <section className="rounded-3xl border border-emerald-900 bg-emerald-950/30 p-5 shadow-xl">
-            <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-              <div>
-                <p className="text-sm font-semibold uppercase tracking-[0.25em] text-emerald-300">
-                  Rig Readiness
-                </p>
-                <h2 className="mt-2 text-3xl font-black tracking-tight text-neutral-50">
-                  {readinessReport.verdict}
-                </h2>
-                <p className="mt-2 text-lg font-black text-emerald-200">
-                  Score: {readinessReport.score}/100
-                </p>
-                <p className="mt-3 max-w-4xl text-sm leading-7 text-neutral-200">
-                  {readinessReport.summary}
-                </p>
-              </div>
-
-              <button
-                type="button"
-                onClick={() =>
-                  copyToClipboard("Rig Readiness Check", formatRigReadinessForCopy(readinessReport))
-                }
-                className="rounded-xl border border-emerald-500 px-3 py-2 text-sm font-bold text-emerald-300 transition hover:bg-emerald-500 hover:text-neutral-950"
-              >
-                Copy Check
-              </button>
-            </div>
-
-            <div className="mt-5 grid gap-4 lg:grid-cols-2">
-              <div className="rounded-2xl border border-neutral-800 bg-neutral-950 p-4">
-                <h3 className="font-black text-neutral-50">Why</h3>
-                <ul className="mt-3 ml-5 list-disc space-y-2 text-neutral-200">
-                  {readinessReport.why.length ? (
-                    readinessReport.why.map((item, index) => <li key={index}>{item}</li>)
-                  ) : (
-                    <li>No reasons supplied.</li>
-                  )}
-                </ul>
-              </div>
-
-              <div className="rounded-2xl border border-neutral-800 bg-neutral-950 p-4">
-                <h3 className="font-black text-neutral-50">Fix Next</h3>
-                <ul className="mt-3 ml-5 list-disc space-y-2 text-neutral-200">
-                  {readinessReport.fixNext.length ? (
-                    readinessReport.fixNext.map((item, index) => <li key={index}>{item}</li>)
-                  ) : (
-                    <li>No fixes supplied.</li>
-                  )}
-                </ul>
-              </div>
-            </div>
-
-            <div className="mt-4 rounded-2xl border border-neutral-800 bg-neutral-950 p-4 text-neutral-200">
-              <p>
-                <strong className="text-neutral-50">Biggest risk:</strong>{" "}
-                {readinessReport.biggestRisk}
-              </p>
-              <p className="mt-3">
-                <strong className="text-neutral-50">Reusable:</strong>{" "}
-                {readinessReport.reusable ? "Yes" : "Not yet"}
-              </p>
-              <p className="mt-3">
-                <strong className="text-neutral-50">Next action:</strong>{" "}
-                {readinessReport.nextAction}
-              </p>
-            </div>
-          </section>
-        )}
-
         {showPrompt && (
           <section className="rounded-3xl border border-neutral-800 bg-neutral-900 p-5 shadow-xl">
             <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
               <div>
                 <h2 className="text-xl font-bold">Portable Prompt Preview</h2>
                 <p className="mt-1 text-sm text-neutral-400">
-                  This is the portable rig prompt. The user can take this into another AI room if they want. The exact rig run is assembled server-side.
+                  This is the portable rig prompt. The user can take this into another AI room if they want.
                 </p>
               </div>
 
@@ -1445,7 +1238,6 @@ export default function IdeanatorPage() {
     </main>
   );
 }
-
 
 
 
