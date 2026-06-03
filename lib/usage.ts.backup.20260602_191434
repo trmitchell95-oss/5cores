@@ -10,8 +10,7 @@ type UsageTool =
   | "ideanator"
   | "ideanator_check"
   | "ideanator_blueprint"
-  | "ideanator_run"
-  | "ideanator_rig_check";
+  | "ideanator_run";
 
 type UsageEvent = {
   userId?: string | null;
@@ -201,8 +200,6 @@ export async function logUsageEvent(event: UsageEvent) {
     );
   }
 }
-
-
 
 
 

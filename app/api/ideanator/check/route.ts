@@ -6,7 +6,6 @@ import { checkDailyUsageLimit, countWords, logUsageEvent } from "../../../../../
 export const runtime = "nodejs";
 
 const client = new Anthropic();
-
 const DEFAULT_MODEL = "claude-sonnet-4-6";
 const CHECK_MAX_CHARS = 130000;
 
@@ -21,10 +20,6 @@ type Blueprint = {
   promptStrategy?: string;
 };
 
-type AuthResult =
-  | { ok: true; userId: string; userEmail: string | null }
-  | { ok: false; status: number; error: string };
-
 type RigReadiness = {
   verdict: "CLEARED FOR THE ROAD" | "BACK ON THE LIFT" | "DO NOT DRIVE THIS BASTARD YET";
   score: number;
@@ -36,13 +31,13 @@ type RigReadiness = {
   nextAction: string;
 };
 
+type AuthResult =
+  | { ok: true; userId: string; userEmail: string | null }
+  | { ok: false; status: number; error: string };
+
 function getBearerToken(request: NextRequest) {
   const authHeader = request.headers.get("authorization") || "";
-
-  if (!authHeader.toLowerCase().startsWith("bearer ")) {
-    return "";
-  }
-
+  if (!authHeader.toLowerCase().startsWith("bearer ")) return "";
   return authHeader.slice(7).trim();
 }
 
@@ -50,11 +45,7 @@ async function requireUser(request: NextRequest): Promise<AuthResult> {
   const token = getBearerToken(request);
 
   if (!token) {
-    return {
-      ok: false,
-      status: 401,
-      error: "Sign in before checking a rig. The garage door is locked.",
-    };
+    return { ok: false, status: 401, error: "Sign in before checking a rig." };
   }
 
   const supabase = createClient(
@@ -71,11 +62,7 @@ async function requireUser(request: NextRequest): Promise<AuthResult> {
   const { data, error } = await supabase.auth.getUser(token);
 
   if (error || !data.user) {
-    return {
-      ok: false,
-      status: 401,
-      error: "Your login session expired. Sign in again before checking the rig.",
-    };
+    return { ok: false, status: 401, error: "Your login session expired. Sign in again." };
   }
 
   return {
@@ -112,9 +99,7 @@ function cleanStringArray(value: unknown) {
 }
 
 function cleanBlueprint(value: unknown): Blueprint {
-  if (!value || typeof value !== "object" || Array.isArray(value)) {
-    return {};
-  }
+  if (!value || typeof value !== "object" || Array.isArray(value)) return {};
 
   const record = value as Record<string, unknown>;
 
@@ -186,26 +171,20 @@ function coerceReadiness(raw: unknown): RigReadiness {
 function buildSystemPrompt() {
   return `You are The Ideanator Rig Readiness Inspector.
 
-You are checking whether a thinking rig is ready to reuse.
+You check whether a thinking rig is ready to reuse.
 
-You are not praising.
-You are not writing the final output.
-You are not being cute.
-You are inspecting the rig like a practical mechanic.
-
-Return only valid JSON.
-No markdown.
-No commentary outside JSON.
+Return only valid JSON. No markdown. No commentary outside JSON.
 
 Allowed verdicts:
 - CLEARED FOR THE ROAD
 - BACK ON THE LIFT
 - DO NOT DRIVE THIS BASTARD YET
 
-Use:
-- CLEARED FOR THE ROAD only when the rig has a clear purpose, audience, output type, constraints, source material, and can probably be reused without confusion.
-- BACK ON THE LIFT when it is promising but needs tightening.
-- DO NOT DRIVE THIS BASTARD YET when it is too vague, contradictory, risky, empty, or likely to produce bad output.
+Use CLEARED FOR THE ROAD only when the rig has a clear purpose, audience, output type, constraints, source material, and can probably be reused without confusion.
+
+Use BACK ON THE LIFT when it is promising but needs tightening.
+
+Use DO NOT DRIVE THIS BASTARD YET when it is too vague, contradictory, risky, empty, or likely to produce bad output.
 
 JSON shape:
 {
@@ -224,7 +203,7 @@ Rules:
 - Be blunt but useful.
 - Do not claim legal, patent, medical, financial, regulatory, market, or investment certainty.
 - Treat missing specificity as a real weakness.
-- Tell the user what to fix next, not just what is wrong.`;
+- Tell the user what to fix next.`;
 }
 
 function buildUserPrompt({
@@ -327,18 +306,6 @@ export async function POST(request: NextRequest) {
     inputWords = countWords(`${fog}\n${output}`);
 
     if (!fog.trim()) {
-      await logUsageEvent({
-        userId: userIdForLog,
-        tool: "ideanator_rig_check",
-        status: "rejected",
-        inputChars,
-        inputWords,
-        model,
-        title: titleForLog,
-        errorMessage: "No fog supplied.",
-        meta: { stage: "rig_check_validation" },
-      });
-
       return NextResponse.json(
         { ok: false, error: "The rig needs fog/source material before it can be checked." },
         { status: 400 }
@@ -346,18 +313,6 @@ export async function POST(request: NextRequest) {
     }
 
     if (!blueprint.purpose) {
-      await logUsageEvent({
-        userId: userIdForLog,
-        tool: "ideanator_rig_check",
-        status: "rejected",
-        inputChars,
-        inputWords,
-        model,
-        title: titleForLog,
-        errorMessage: "No blueprint purpose supplied.",
-        meta: { stage: "rig_check_validation" },
-      });
-
       return NextResponse.json(
         { ok: false, error: "The rig needs a blueprint before it can be checked." },
         { status: 400 }
@@ -365,18 +320,6 @@ export async function POST(request: NextRequest) {
     }
 
     if (inputChars > CHECK_MAX_CHARS) {
-      await logUsageEvent({
-        userId: userIdForLog,
-        tool: "ideanator_rig_check",
-        status: "rejected",
-        inputChars,
-        inputWords,
-        model,
-        title: titleForLog,
-        errorMessage: "Rig check input exceeded beta limit.",
-        meta: { stage: "rig_check_validation", limit: CHECK_MAX_CHARS },
-      });
-
       return NextResponse.json(
         {
           ok: false,
@@ -400,28 +343,8 @@ export async function POST(request: NextRequest) {
     });
 
     if (!limitCheck.allowed) {
-      await logUsageEvent({
-        userId: userIdForLog,
-        tool: "ideanator_rig_check",
-        status: "rejected",
-        inputChars,
-        inputWords,
-        model,
-        title: titleForLog,
-        errorMessage: limitCheck.message || "Daily rig check limit reached.",
-        meta: {
-          stage: "rig_check_daily_limit",
-          used: limitCheck.used,
-          limit: limitCheck.limit,
-          resetAt: limitCheck.resetAt,
-        },
-      });
-
       return NextResponse.json(
-        {
-          ok: false,
-          error: "You have hit the daily rig check beta limit. Try again tomorrow.",
-        },
+        { ok: false, error: "You have hit the daily rig check beta limit. Try again tomorrow." },
         { status: 429 }
       );
     }
@@ -434,10 +357,7 @@ export async function POST(request: NextRequest) {
       inputWords,
       model,
       title: titleForLog,
-      meta: {
-        stage: "rig_check",
-        hasOutput: Boolean(output),
-      },
+      meta: { stage: "rig_check", hasOutput: Boolean(output) },
     });
 
     const message = await client.messages.create({
@@ -447,11 +367,7 @@ export async function POST(request: NextRequest) {
       messages: [
         {
           role: "user",
-          content: buildUserPrompt({
-            fog,
-            blueprint,
-            output,
-          }),
+          content: buildUserPrompt({ fog, blueprint, output }),
         },
       ],
     });
@@ -468,8 +384,7 @@ export async function POST(request: NextRequest) {
       throw new Error("Claude returned an empty readiness check.");
     }
 
-    const parsed = extractJsonObject(text);
-    const readiness = coerceReadiness(parsed);
+    const readiness = coerceReadiness(extractJsonObject(text));
 
     await logUsageEvent({
       userId: userIdForLog,
@@ -486,10 +401,7 @@ export async function POST(request: NextRequest) {
       },
     });
 
-    return NextResponse.json({
-      ok: true,
-      readiness,
-    });
+    return NextResponse.json({ ok: true, readiness });
   } catch (error) {
     console.error("Ideanator rig check error:", error);
 
