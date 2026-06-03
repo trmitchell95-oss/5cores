@@ -118,40 +118,8 @@ function cleanBlueprint(value: unknown): Blueprint {
   };
 }
 
-function cleanReadinessVerdict(value: unknown) {
-  const cleaned = cleanInline(value, "", 80).toUpperCase();
-
-  if (
-    cleaned === "CLEARED FOR THE ROAD" ||
-    cleaned === "BACK ON THE LIFT" ||
-    cleaned === "DO NOT DRIVE THIS BASTARD YET"
-  ) {
-    return cleaned;
-  }
-
-  return "";
-}
-
-function cleanReadinessScore(value: unknown) {
-  const score = Number(value);
-
-  if (!Number.isFinite(score)) {
-    return null;
-  }
-
-  return Math.max(0, Math.min(100, Math.round(score)));
-}
-
-function cleanReadinessReport(value: unknown) {
-  if (!value || typeof value !== "object" || Array.isArray(value)) {
-    return null;
-  }
-
-  return value as Record<string, unknown>;
-}
-
 function selectFields() {
-  return "id,user_id,created_at,updated_at,rig_name,fog,blueprint,actual_prompt,latest_output,source,is_archived,readiness_verdict,readiness_score,readiness_report,readiness_checked_at";
+  return "id,user_id,created_at,updated_at,rig_name,fog,blueprint,actual_prompt,latest_output,source,is_archived";
 }
 
 export async function GET(request: NextRequest) {
@@ -339,23 +307,6 @@ export async function PATCH(request: NextRequest) {
       updatePayload.latest_output = cleanText(body.latestOutput, 120000);
     }
 
-    if (body.readinessReport) {
-      const readinessReport = cleanReadinessReport(body.readinessReport);
-      const readinessVerdict = cleanReadinessVerdict(
-        readinessReport ? readinessReport.verdict : ""
-      );
-      const readinessScore = cleanReadinessScore(
-        readinessReport ? readinessReport.score : null
-      );
-
-      if (readinessReport && readinessVerdict) {
-        updatePayload.readiness_report = readinessReport;
-        updatePayload.readiness_verdict = readinessVerdict;
-        updatePayload.readiness_score = readinessScore;
-        updatePayload.readiness_checked_at = new Date().toISOString();
-      }
-    }
-
     if (Object.keys(updatePayload).length === 0) {
       return NextResponse.json(
         {
@@ -403,4 +354,3 @@ export async function PATCH(request: NextRequest) {
     );
   }
 }
-

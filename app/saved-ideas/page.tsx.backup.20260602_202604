@@ -26,9 +26,6 @@ type SavedRig = {
   actual_prompt: string | null;
   latest_output: string | null;
   is_archived: boolean;
-  readiness_verdict?: string | null;
-  readiness_score?: number | null;
-  readiness_checked_at?: string | null;
 };
 
 function getSupabaseClient() {
@@ -691,41 +688,6 @@ export default function SavedIdeasPage() {
           max-width: 820px;
         }
 
-        .status-badge {
-          display: inline-flex;
-          align-items: center;
-          width: fit-content;
-          margin-top: 12px;
-          border-radius: 999px;
-          padding: 8px 11px;
-          border: 1px solid #302a24;
-          background: #11100e;
-          color: #d8d0c5;
-          font-family: 'IBM Plex Mono', monospace;
-          font-size: 10px;
-          font-weight: 900;
-          letter-spacing: 0.08em;
-          text-transform: uppercase;
-        }
-
-        .status-cleared {
-          border-color: #2f6b3f;
-          color: #98d8aa;
-          background: #0a1a0e;
-        }
-
-        .status-lift {
-          border-color: #7a5522;
-          color: #f0b35f;
-          background: #1f1609;
-        }
-
-        .status-danger {
-          border-color: #5a2020;
-          color: #f0a0a0;
-          background: #2a1010;
-        }
-
         .actions {
           display: flex;
           gap: 9px;
@@ -831,7 +793,7 @@ export default function SavedIdeasPage() {
         </header>
 
         <section className="hero">
-          <div className="eyebrow">Rig Library</div>
+          <div className="eyebrow">Idea Reports</div>
           <h1 className="title">The rig library.</h1>
           <p className="subtitle">
             These are the thinking patterns you saved. Open one back in the workbench,
@@ -858,7 +820,7 @@ export default function SavedIdeasPage() {
           </div>
 
           {loading ? (
-            <div className="empty">Loading saved rigs...</div>
+            <div className="empty">Loading saved idea reports...</div>
           ) : filteredRigs.length === 0 ? (
             <div className="empty">
               No saved rigs yet. Build one in the Rig Workbench, run it, and save the pattern.
@@ -869,15 +831,6 @@ export default function SavedIdeasPage() {
                 const blueprint = coerceBlueprint(rig.blueprint);
                 const rigName = blueprint.rigName || rig.rig_name || "Untitled Thinking Rig";
                 const packet = formatFullRigPacket(rig);
-                const readinessVerdict = rig.readiness_verdict || "";
-                const statusClass =
-                  readinessVerdict === "CLEARED FOR THE ROAD"
-                    ? "status-cleared"
-                    : readinessVerdict === "DO NOT DRIVE THIS BASTARD YET"
-                      ? "status-danger"
-                      : readinessVerdict === "BACK ON THE LIFT"
-                        ? "status-lift"
-                        : "";
 
                 return (
                   <article className="rig-card" key={rig.id}>
@@ -892,15 +845,6 @@ export default function SavedIdeasPage() {
                             blueprint.outputType ||
                             "No purpose saved yet. Open this rig to inspect the bones."}
                         </p>
-
-                        {readinessVerdict && (
-                          <div className={`status-badge ${statusClass}`}>
-                            {readinessVerdict}
-                            {typeof rig.readiness_score === "number"
-                              ? ` · ${rig.readiness_score}/100`
-                              : ""}
-                          </div>
-                        )}
                       </div>
 
                       <div className="actions">
@@ -963,7 +907,6 @@ export default function SavedIdeasPage() {
     </main>
   );
 }
-
 
 
 
