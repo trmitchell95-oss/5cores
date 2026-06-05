@@ -814,10 +814,10 @@ export default function SavedIdeasPage() {
 
       <div className="wrap">
         <header className="topbar">
-          <nav className="nav">
-            <Link href="/dashboard">Dashboard</Link>
+          <nav className="nav" aria-label="Rig library shortcuts">
+            <Link href="/idea">Idea Check</Link>
             <Link href="/ideanator">Rig Workbench</Link>
-            <Link href="/">Home</Link>
+            <Link href="/idea/saved">Idea Reports</Link>
           </nav>
 
           <button
@@ -963,6 +963,7 @@ export default function SavedIdeasPage() {
     </main>
   );
 }
+
 
 
 
