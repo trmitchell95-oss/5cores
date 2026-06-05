@@ -95,7 +95,7 @@ export default function ProductNav() {
       const supabase = getSupabaseClient();
       await supabase.auth.signOut();
     } finally {
-      window.location.href = isIdeanator ? "/idea" : "/";
+      window.location.href = isIdeanator ? "/the-ideanator" : "/";
     }
   }
 
@@ -137,7 +137,7 @@ export default function ProductNav() {
         className="hovel-global-nav hovel-global-nav-ideanator"
         aria-label="Ideanator navigation"
       >
-        <a href="/idea" className="hovel-global-nav-mark" aria-label="Ideanator home">
+        <a href="/the-ideanator" className="hovel-global-nav-mark" aria-label="Ideanator home">
           ID
         </a>
 
@@ -188,3 +188,4 @@ export default function ProductNav() {
     </nav>
   );
 }
+
