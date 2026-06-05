@@ -440,6 +440,13 @@ export default function Dashboard() {
           margin-top: 28px;
         }
 
+        .hero-primary-actions,
+        .hero-secondary-actions {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 12px;
+        }
+
         .primary-btn,
         .secondary-btn {
           display: inline-flex;
@@ -460,6 +467,7 @@ export default function Dashboard() {
           background: #c8a96e;
           color: #0e0d0b;
           border: 1px solid #c8a96e;
+          box-shadow: 0 16px 38px rgba(200, 169, 110, 0.18);
         }
 
         .primary-btn:hover {
@@ -553,6 +561,13 @@ export default function Dashboard() {
           display: flex;
           flex-direction: column;
           justify-content: space-between;
+        }
+
+        .tool-card.primary-tool {
+          border-color: rgba(200, 169, 110, 0.52);
+          background:
+            linear-gradient(135deg, rgba(200, 169, 110, 0.13), rgba(18, 16, 13, 0.86)),
+            #12100d;
         }
 
         .tool-number {
@@ -962,7 +977,7 @@ export default function Dashboard() {
 
         @media (max-width: 650px) {
           .page-wrap {
-            padding: 18px 14px 70px;
+            padding: 12px 14px 70px;
           }
 
           .topbar {
@@ -985,16 +1000,83 @@ export default function Dashboard() {
           }
 
           .hero-card {
-            padding: 24px;
+            padding: 22px;
           }
 
           .hero-actions {
             flex-direction: column;
+            gap: 14px;
+            margin-top: 22px;
+          }
+
+          .hero-primary-actions,
+          .hero-secondary-actions {
+            width: 100%;
+          }
+
+          .hero-primary-actions {
+            display: grid;
+            grid-template-columns: 1fr;
+          }
+
+          .hero-secondary-actions {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 8px;
           }
 
           .primary-btn,
           .secondary-btn {
             width: 100%;
+          }
+
+          .secondary-btn {
+            min-height: 44px !important;
+            padding: 12px 10px !important;
+            font-size: 10px !important;
+            letter-spacing: 0.08em !important;
+          }
+
+          .tool-grid {
+            gap: 10px;
+          }
+
+          .tool-card {
+            display: grid;
+            grid-template-columns: 34px minmax(0, 1fr);
+            gap: 0 12px;
+            align-items: start;
+            min-height: auto;
+            padding: 16px !important;
+          }
+
+          .tool-card > div {
+            min-width: 0;
+          }
+
+          .tool-number {
+            grid-row: 1 / span 2;
+            margin-bottom: 0;
+          }
+
+          .tool-title {
+            font-size: 25px !important;
+            line-height: 1.05 !important;
+            margin-bottom: 6px;
+          }
+
+          .tool-text {
+            font-size: 14px !important;
+            line-height: 1.5 !important;
+          }
+
+          .tool-link {
+            grid-column: 2;
+            min-height: 42px !important;
+            margin-top: 12px;
+            padding: 11px 12px !important;
+            font-size: 10px !important;
+            letter-spacing: 0.08em !important;
           }
 
           .reports-head {
@@ -1010,6 +1092,20 @@ export default function Dashboard() {
           .view-link {
             width: 100%;
             text-align: center;
+          }
+
+          .how-grid {
+            gap: 10px;
+          }
+
+          .how-card {
+            padding: 16px;
+          }
+        }
+
+        @media (max-width: 390px) {
+          .hero-secondary-actions {
+            grid-template-columns: 1fr;
           }
         }
       `}</style>
@@ -1049,24 +1145,28 @@ export default function Dashboard() {
             </p>
 
             <div className="hero-actions">
-              <a className="primary-btn" href="/submit">
-                Run The Council
-              </a>
-              <a className="secondary-btn" href="/projects">
-                Open Projects
-              </a>
-              <a className="secondary-btn" href="/reread">
-                Council Re-Read
-              </a>
-              <a className="secondary-btn" href="/sphinx">
-                Run SPHINX
-              </a>
-              <a className="secondary-btn" href="/ideanator">
-                Open Ideanator
-              </a>
-              <a className="secondary-btn" href="#saved-reports">
-                Saved Reports
-              </a>
+              <div className="hero-primary-actions">
+                <a className="primary-btn" href="/submit">
+                  Run The Council
+                </a>
+              </div>
+              <div className="hero-secondary-actions">
+                <a className="secondary-btn" href="/projects">
+                  Open Projects
+                </a>
+                <a className="secondary-btn" href="/reread">
+                  Council Re-Read
+                </a>
+                <a className="secondary-btn" href="/sphinx">
+                  Run SPHINX
+                </a>
+                <a className="secondary-btn" href="/ideanator">
+                  Open Ideanator
+                </a>
+                <a className="secondary-btn" href="#saved-reports">
+                  Saved Reports
+                </a>
+              </div>
             </div>
           </div>
 
@@ -1103,7 +1203,7 @@ export default function Dashboard() {
         </section>
 
         <section className="tool-grid">
-          <article className="tool-card">
+          <article className="tool-card primary-tool">
             <div>
               <div className="tool-number">01</div>
               <div className="tool-title">Full Diagnosis</div>

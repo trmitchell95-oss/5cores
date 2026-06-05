@@ -23,12 +23,13 @@ export default function RootLayout({
 
         {children}
 
-        <a href="/beta-terms" className="hovel-beta-terms-link">
-          Beta Terms
-        </a>
-
-        <HelpLink />
-        <FeedbackLink />
+        <div className="hovel-support-dock" aria-label="Support links">
+          <HelpLink />
+          <FeedbackLink />
+          <a href="/beta-terms" className="hovel-beta-terms-link">
+            Beta Terms
+          </a>
+        </div>
 
         <style>{`
           body {
@@ -169,6 +170,10 @@ export default function RootLayout({
             text-decoration: underline;
           }
 
+          .hovel-support-dock {
+            display: contents;
+          }
+
           .hovel-feedback-link {
             position: fixed;
             right: 22px;
@@ -217,17 +222,25 @@ export default function RootLayout({
 
           @media (max-width: 860px) {
             body {
-              padding-top: 86px;
+              padding-top: 78px;
             }
 
             .hovel-global-nav {
               top: 10px;
               right: 10px;
               left: 10px;
-              justify-content: center;
+              justify-content: flex-start;
               gap: 6px;
               padding: 7px;
               border-radius: 22px;
+              overflow-x: auto;
+              overflow-y: hidden;
+              scrollbar-width: none;
+              -webkit-overflow-scrolling: touch;
+            }
+
+            .hovel-global-nav::-webkit-scrollbar {
+              display: none;
             }
 
             .hovel-global-nav-mark {
@@ -246,28 +259,28 @@ export default function RootLayout({
 
             .hovel-feedback-link {
               right: 14px;
-              bottom: 14px;
+              bottom: 18px;
               padding: 10px 13px;
               font-size: 10px;
             }
 
             .hovel-help-link {
               left: 14px;
-              bottom: 74px;
+              bottom: 18px;
               padding: 10px 15px;
               font-size: 10px;
               letter-spacing: 0.12em;
             }
 
             .hovel-beta-terms-link {
-              bottom: 18px;
+              bottom: 24px;
               font-size: 9px;
             }
           }
           @media (max-width: 520px) {
             body {
-              padding-top: 96px;
-              padding-bottom: 84px;
+              padding-top: 74px;
+              padding-bottom: 90px;
             }
 
             .hovel-global-nav {
@@ -282,18 +295,13 @@ export default function RootLayout({
               overflow-y: hidden;
               padding: 6px;
               border-radius: 18px;
-              scrollbar-width: none;
-              -webkit-overflow-scrolling: touch;
-            }
-
-            .hovel-global-nav::-webkit-scrollbar {
-              display: none;
+              box-shadow: 0 14px 38px rgba(0, 0, 0, 0.42);
             }
 
             .hovel-global-nav-mark {
-              width: 38px;
-              height: 38px;
-              min-width: 38px;
+              width: 36px;
+              height: 36px;
+              min-width: 36px;
               flex: 0 0 auto;
               border-radius: 12px;
               font-size: 10px;
@@ -302,32 +310,67 @@ export default function RootLayout({
             .hovel-global-nav-link {
               width: auto;
               min-width: max-content;
-              min-height: 38px;
+              min-height: 36px;
               flex: 0 0 auto;
-              padding: 0 10px;
+              padding: 0 9px;
               font-size: 9px;
               letter-spacing: 0.04em;
               border-radius: 13px;
             }
 
-            .hovel-beta-terms-link {
-              display: none;
+            .hovel-support-dock {
+              position: fixed;
+              left: 10px;
+              right: 10px;
+              bottom: 10px;
+              z-index: 9999;
+              display: grid;
+              grid-template-columns: 1fr 1fr 1fr;
+              gap: 6px;
+              padding: 6px;
+              border: 1px solid rgba(255, 255, 255, 0.12);
+              border-radius: 18px;
+              background: rgba(14, 13, 11, 0.92);
+              box-shadow: 0 18px 55px rgba(0, 0, 0, 0.48);
+              backdrop-filter: blur(14px);
             }
 
+            .hovel-beta-terms-link,
             .hovel-help-link {
-              left: 12px;
-              bottom: 12px;
+              position: static;
+              transform: none;
+              display: inline-flex;
+              align-items: center;
+              justify-content: center;
+              min-height: 38px;
+              border: 1px solid #4b3a1f;
+              border-radius: 13px;
+              background: #17120d;
+              color: #d8d0c5;
               padding: 10px 13px;
               font-size: 9px;
               letter-spacing: 0.08em;
+              text-align: center;
+              box-shadow: none;
             }
 
             .hovel-feedback-link {
-              right: 12px;
-              bottom: 12px;
+              position: static;
+              display: inline-flex;
+              align-items: center;
+              justify-content: center;
+              min-height: 38px;
+              border-radius: 13px;
               padding: 10px 13px;
               font-size: 9px;
               letter-spacing: 0.08em;
+              text-align: center;
+              box-shadow: none;
+            }
+
+            .hovel-beta-terms-link:hover {
+              color: #c8935a;
+              text-decoration: none;
             }
 
             .home-shell .page-wrap,
@@ -343,12 +386,12 @@ export default function RootLayout({
             .ideanator-page {
               padding-left: 12px !important;
               padding-right: 12px !important;
-              padding-bottom: 110px !important;
+              padding-bottom: 104px !important;
             }
           }
           @media (max-width: 370px) {
             body {
-              padding-top: 128px;
+              padding-top: 76px;
             }
 
             .hovel-global-nav-link {
