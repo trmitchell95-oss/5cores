@@ -7,15 +7,17 @@ import { createClient } from "@supabase/supabase-js";
 function isIdeanatorPath(pathname: string, product: string) {
   return (
     product === "idea" ||
+    product === "ideanator" ||
     pathname === "/idea" ||
     pathname.startsWith("/idea/") ||
     pathname === "/ideas" ||
     pathname === "/ideanator" ||
-    pathname === "/the-ideanator" ||
     pathname.startsWith("/ideanator/") ||
-    pathname === "/rigs" || pathname === "/saved-ideas" ||
-    pathname.startsWith("/rigs/") || pathname.startsWith("/saved-ideas/") ||
-    pathname.endsWith("/compare")
+    pathname === "/the-ideanator" ||
+    pathname === "/rigs" ||
+    pathname.startsWith("/rigs/") ||
+    pathname === "/saved-ideas" ||
+    pathname.startsWith("/saved-ideas/")
   );
 }
 
@@ -89,10 +91,12 @@ export default function ProductNav() {
   async function handleSignOut(event: MouseEvent<HTMLAnchorElement>) {
     event.preventDefault();
 
-    const supabase = getSupabaseClient();
-    await supabase.auth.signOut();
-
-    window.location.href = isIdeanator ? "/idea" : "/";
+    try {
+      const supabase = getSupabaseClient();
+      await supabase.auth.signOut();
+    } finally {
+      window.location.href = isIdeanator ? "/idea" : "/";
+    }
   }
 
   const authLink = authReady && signedIn ? (
@@ -118,11 +122,15 @@ export default function ProductNav() {
   if (isIdeanator) {
     const rigWorkbenchActive =
       pathname === "/ideanator" || pathname.startsWith("/ideanator/");
-    const ideaCheckActive =
-      pathname === "/idea" || pathname === "/the-ideanator";
     const ideaReportsActive = pathname === "/idea/saved";
+    const ideaCheckActive =
+      (pathname === "/idea" || pathname.startsWith("/idea/")) &&
+      !ideaReportsActive;
     const rigLibraryActive =
-      pathname === "/rigs" || pathname === "/saved-ideas" || pathname.startsWith("/rigs/") || pathname.startsWith("/saved-ideas/");
+      pathname === "/rigs" ||
+      pathname.startsWith("/rigs/") ||
+      pathname === "/saved-ideas" ||
+      pathname.startsWith("/saved-ideas/");
 
     return (
       <nav
@@ -133,20 +141,20 @@ export default function ProductNav() {
           ID
         </a>
 
-        <a href="/ideanator" className={navClass(rigWorkbenchActive)}>
-          RIG WORKBENCH
+        <a href="/idea?start=intake" className={navClass(ideaCheckActive)}>
+          CHECK
         </a>
 
-        <a href="/idea?start=intake" className={navClass(ideaCheckActive)}>
-          IDEA CHECK
+        <a href="/ideanator" className={navClass(rigWorkbenchActive)}>
+          RIGS
         </a>
 
         <a href="/idea/saved" className={navClass(ideaReportsActive)}>
-          IDEA REPORTS
+          REPORTS
         </a>
 
-        <a href="/rigs" className={navClass(rigLibraryActive)}>
-          RIG LIBRARY
+        <a href="/saved-ideas" className={navClass(rigLibraryActive)}>
+          LIBRARY
         </a>
 
         {authLink}
@@ -180,5 +188,3 @@ export default function ProductNav() {
     </nav>
   );
 }
-
-

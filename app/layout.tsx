@@ -264,10 +264,9 @@ export default function RootLayout({
               font-size: 9px;
             }
           }
-
           @media (max-width: 520px) {
             body {
-              padding-top: 124px;
+              padding-top: 96px;
               padding-bottom: 84px;
             }
 
@@ -275,58 +274,40 @@ export default function RootLayout({
               top: 8px;
               left: 8px;
               right: 8px;
-              display: grid;
-              grid-template-columns: 38px repeat(2, minmax(0, 1fr));
-              grid-auto-rows: 40px;
-              align-items: stretch;
-              justify-content: stretch;
+              display: flex;
+              align-items: center;
+              justify-content: flex-start;
               gap: 6px;
+              overflow-x: auto;
+              overflow-y: hidden;
               padding: 6px;
               border-radius: 18px;
+              scrollbar-width: none;
+              -webkit-overflow-scrolling: touch;
+            }
+
+            .hovel-global-nav::-webkit-scrollbar {
+              display: none;
             }
 
             .hovel-global-nav-mark {
-              width: 100%;
-              height: 40px;
+              width: 38px;
+              height: 38px;
+              min-width: 38px;
+              flex: 0 0 auto;
               border-radius: 12px;
               font-size: 10px;
-              grid-column: 1;
-              grid-row: 1 / span 2;
             }
 
             .hovel-global-nav-link {
-              width: 100%;
-              min-height: 40px;
-              padding: 0 6px;
+              width: auto;
+              min-width: max-content;
+              min-height: 38px;
+              flex: 0 0 auto;
+              padding: 0 10px;
               font-size: 9px;
               letter-spacing: 0.04em;
               border-radius: 13px;
-            }
-
-            .hovel-global-nav-link:nth-of-type(2) {
-              grid-column: 2;
-              grid-row: 1;
-            }
-
-            .hovel-global-nav-link:nth-of-type(3) {
-              grid-column: 3;
-              grid-row: 1;
-            }
-
-            .hovel-global-nav-link:nth-of-type(4) {
-              grid-column: 2;
-              grid-row: 2;
-            }
-
-            .hovel-global-nav-link:nth-of-type(5) {
-              grid-column: 3;
-              grid-row: 2;
-            }
-
-            /* Ideanator-specific mobile nav */
-            .hovel-global-nav-ideanator .hovel-global-nav-link:nth-of-type(4) {
-              grid-column: 2 / span 2;
-              grid-row: 2;
             }
 
             .hovel-beta-terms-link {
@@ -365,7 +346,6 @@ export default function RootLayout({
               padding-bottom: 110px !important;
             }
           }
-
           @media (max-width: 370px) {
             body {
               padding-top: 128px;
@@ -386,5 +366,6 @@ export default function RootLayout({
     </html>
   );
 }
+
 
 
