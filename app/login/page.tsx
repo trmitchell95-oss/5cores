@@ -535,32 +535,32 @@ export default function LoginPage() {
         }
       `}</style>
 
-      <div className="wrap">
-        <div className="card">
-          <a className="back-link" href={homeHref}>
+      <div className="ideanator-login-shell wrap">
+        <div className="ideanator-login-shell card">
+          <a className="ideanator-login-shell back-link" href={homeHref}>
             Back to {productLabel}
           </a>
 
-          <div className="eyebrow">
+          <div className="ideanator-login-shell eyebrow">
             {isIdeanatorLogin ? "The Ideanator Access" : "The Council Beta Access"}
           </div>
 
-          <div className="title">
+          <div className="ideanator-login-shell title">
             {mode === "signin" ? "Sign In" : mode === "signup" ? "Create Account" : "Reset Password"}
           </div>
 
-          <div className="subtitle">
+          <div className="ideanator-login-shell subtitle">
             {mode === "forgot"
               ? "Enter your email and we will send you a password reset link."
               : mode === "signup"
                 ? "Create a beta account with your invite code."
                 : isIdeanatorLogin
-                  ? "Sign in to save ideas, reopen reports, and keep working them back on the lift."
+                  ? "Sign in to save ideas, reopen reports, and keep working from where you left off."
                   : "Sign in to submit manuscripts, run the council, and reopen saved reports."}
           </div>
 
           {mode !== "forgot" && (
-            <div className="tabs">
+            <div className="ideanator-login-shell tabs">
               <button
                 type="button"
                 className={`tab ${mode === "signin" ? "active" : ""}`}
@@ -580,10 +580,10 @@ export default function LoginPage() {
           )}
 
           <form onSubmit={handleSubmit}>
-            <div className="field">
-              <label className="label">Email</label>
+            <div className="ideanator-login-shell field">
+              <label className="ideanator-login-shell label">Email</label>
               <input
-                className="input"
+                className="ideanator-login-shell input"
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
@@ -593,11 +593,11 @@ export default function LoginPage() {
             </div>
 
             {mode !== "forgot" && (
-              <div className="field">
-                <label className="label">Password</label>
-                <div className="password-wrap">
+              <div className="ideanator-login-shell field">
+                <label className="ideanator-login-shell label">Password</label>
+                <div className="ideanator-login-shell password-wrap">
                   <input
-                    className="input"
+                    className="ideanator-login-shell input"
                     type={showPassword ? "text" : "password"}
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
@@ -605,7 +605,7 @@ export default function LoginPage() {
                     placeholder="Minimum 6 characters"
                   />
                   <button
-                    className="password-toggle"
+                    className="ideanator-login-shell password-toggle"
                     type="button"
                     onClick={() => setShowPassword((current) => !current)}
                     disabled={loading}
@@ -618,23 +618,23 @@ export default function LoginPage() {
             )}
 
             {mode === "signup" && (
-              <div className="field">
-                <label className="label">Beta Invite Code</label>
+              <div className="ideanator-login-shell field">
+                <label className="ideanator-login-shell label">Beta Invite Code</label>
                 <input
-                  className="input"
+                  className="ideanator-login-shell input"
                   type="text"
                   value={inviteCode}
                   onChange={(e) => setInviteCode(e.target.value)}
                   disabled={loading}
                   placeholder="Enter invite code"
                 />
-                <div className="invite-help">
+                <div className="ideanator-login-shell invite-help">
                   New beta accounts require an invite code. Existing users can still sign in normally.
                 </div>
               </div>
             )}
 
-            <button className="button" type="submit" disabled={loading}>
+            <button className="ideanator-login-shell button" type="submit" disabled={loading}>
               {loading
                 ? "Working..."
                 : mode === "signin"
@@ -645,36 +645,37 @@ export default function LoginPage() {
             </button>
           </form>
 
-          <div className="link-row">
+          <div className="ideanator-login-shell link-row">
             {mode === "signin" && (
-              <button className="text-link" type="button" onClick={() => switchMode("forgot")}>
+              <button className="ideanator-login-shell text-link" type="button" onClick={() => switchMode("forgot")}>
                 Forgot Password?
               </button>
             )}
 
             {mode === "forgot" && (
-              <button className="text-link" type="button" onClick={() => switchMode("signin")}>
+              <button className="ideanator-login-shell text-link" type="button" onClick={() => switchMode("signin")}>
                 Back to Sign In
               </button>
             )}
 
             {mode === "signup" && (
-              <button className="text-link" type="button" onClick={() => switchMode("signin")}>
+              <button className="ideanator-login-shell text-link" type="button" onClick={() => switchMode("signin")}>
                 Already Have an Account?
               </button>
             )}
           </div>
 
-          {error && <div className="error">{error}</div>}
-          {message && <div className="message">{message}</div>}
+          {error && <div className="ideanator-login-shell error">{error}</div>}
+          {message && <div className="ideanator-login-shell message">{message}</div>}
 
-          <div className="note">
+          <div className="ideanator-login-shell note">
             Beta access is free for now. New accounts require an invite code. One account can use HOVEL Editor and The Ideanator, but each product keeps its own front door.
             <br />
-            <a className="terms-link" href="/beta-terms">Beta Terms / Privacy</a>
+            <a className="ideanator-login-shell terms-link" href="/beta-terms">Beta Terms / Privacy</a>
           </div>
         </div>
       </div>
     </div>
   );
 }
+
