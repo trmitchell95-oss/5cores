@@ -367,7 +367,8 @@ export default function ProductNav() {
             <a href="/sphinx" className="he-nav-link he-nav-link-sphinx">Sphinx</a>
             <a href="/projects" className="he-nav-link">Projects</a>
             <a href="/reread" className="he-nav-link">Re-Read</a>
-            <a href="/submit" className="he-nav-link">New Diagnosis</a>`n          <a href="/admin" className="he-nav-link">Admin</a>
+            <a href="/submit" className="he-nav-link">New Diagnosis</a>
+          <a href="/admin" className="he-nav-link">Admin</a>
 
             <div className="he-nav-sep" aria-hidden="true" />
 
@@ -378,3 +379,4 @@ export default function ProductNav() {
     </>
   );
 }
+
