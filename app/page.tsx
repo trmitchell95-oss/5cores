@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
@@ -47,16 +47,7 @@ export default function HomePage() {
   return (
     <main className="home-shell">
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=DM+Sans:wght@300;400;500;700&family=IBM+Plex+Mono:wght@400;500;700&display=swap');
-
-        * {
-          box-sizing: border-box;
-        }
-
-        body {
-          margin: 0;
-          background: #0e0d0b;
-        }
+        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@300;400;500;700&family=IBM+Plex+Mono:wght@400;500;700&display=swap');
 
         .home-shell {
           min-height: 100vh;
@@ -71,109 +62,13 @@ export default function HomePage() {
         .page-wrap {
           max-width: 1180px;
           margin: 0 auto;
-          padding: 34px 24px 90px;
+          padding: 36px 24px 100px;
         }
 
-        .topbar {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          gap: 18px;
-          border: 1px solid #26211c;
-          background: rgba(18, 16, 13, 0.82);
-          padding: 16px 18px;
-          margin-bottom: 34px;
-          border-radius: 22px;
-          box-shadow: 0 24px 70px rgba(0, 0, 0, 0.28);
-        }
-
-        .brand-lockup {
-          display: flex;
-          align-items: center;
-          gap: 12px;
-          min-width: 0;
-        }
-
-        .brand-mark {
-          width: 42px;
-          height: 42px;
-          border-radius: 15px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          background: #c8a96e;
-          color: #0e0d0b;
-          font-family: 'IBM Plex Mono', monospace;
-          font-weight: 700;
-          font-size: 13px;
-          letter-spacing: -0.08em;
-          flex-shrink: 0;
-        }
-
-        .brand-main {
-          font-family: 'IBM Plex Mono', monospace;
-          font-size: 12px;
-          font-weight: 700;
-          letter-spacing: 0.18em;
-          color: #f0ece4;
-          text-transform: uppercase;
-        }
-
-        .brand-sub {
-          margin-top: 3px;
-          font-size: 12px;
-          color: #7b7168;
-        }
-
-        .top-actions {
-          display: flex;
-          align-items: center;
-          justify-content: flex-end;
-          flex-wrap: wrap;
-          gap: 10px;
-        }
-
-        .nav-link,
-        .nav-link-gold {
-          display: inline-flex;
-          align-items: center;
-          justify-content: center;
-          min-height: 42px;
-          border-radius: 14px;
-          font-family: 'IBM Plex Mono', monospace;
-          font-size: 10px;
-          font-weight: 700;
-          letter-spacing: 0.12em;
-          text-transform: uppercase;
-          text-decoration: none;
-          padding: 12px 14px;
-        }
-
-        .nav-link {
-          color: #9a9186;
-          border: 1px solid #302a24;
-          background: #11100e;
-        }
-
-        .nav-link:hover {
-          color: #c8a96e;
-          border-color: #c8a96e;
-        }
-
-        .nav-link-gold {
-          color: #0e0d0b;
-          border: 1px solid #c8a96e;
-          background: #c8a96e;
-        }
-
-        .nav-link-gold:hover {
-          background: #e2bf7e;
-          border-color: #e2bf7e;
-        }
-
+        /* ── Hero ── */
         .hero-grid {
           display: grid;
-          grid-template-columns: minmax(0, 1.38fr) minmax(310px, 0.62fr);
+          grid-template-columns: minmax(0, 1.38fr) minmax(300px, 0.62fr);
           gap: 22px;
           align-items: stretch;
           margin-bottom: 22px;
@@ -192,7 +87,7 @@ export default function HomePage() {
         }
 
         .hero-card {
-          padding: 38px;
+          padding: 40px;
           overflow: hidden;
           position: relative;
         }
@@ -216,12 +111,12 @@ export default function HomePage() {
           letter-spacing: 0.22em;
           color: #c8a96e;
           text-transform: uppercase;
-          margin-bottom: 14px;
+          margin-bottom: 16px;
         }
 
         .heading {
           font-family: 'Cormorant Garamond', serif;
-          font-size: clamp(50px, 8vw, 92px);
+          font-size: clamp(48px, 7vw, 88px);
           line-height: 0.92;
           font-weight: 700;
           margin: 0;
@@ -230,19 +125,32 @@ export default function HomePage() {
         }
 
         .subheading {
-          font-size: 17px;
-          font-weight: 300;
-          color: #aaa096;
-          margin-top: 20px;
-          max-width: 710px;
-          line-height: 1.7;
+          font-size: 18px;
+          font-weight: 400;
+          color: #bdb4aa;
+          margin-top: 22px;
+          max-width: 680px;
+          line-height: 1.72;
+        }
+
+        /* Plain-language hook for non-technical users */
+        .plain-hook {
+          margin-top: 18px;
+          padding: 16px 20px;
+          border: 1px solid #302a24;
+          background: #11100e;
+          border-radius: 16px;
+          font-size: 16px;
+          color: #c8a96e;
+          line-height: 1.6;
+          max-width: 580px;
         }
 
         .hero-actions {
           display: flex;
           flex-wrap: wrap;
           gap: 12px;
-          margin-top: 30px;
+          margin-top: 28px;
         }
 
         .primary-btn,
@@ -250,26 +158,29 @@ export default function HomePage() {
           display: inline-flex;
           align-items: center;
           justify-content: center;
-          min-height: 50px;
+          min-height: 52px;
           border-radius: 15px;
           font-family: 'IBM Plex Mono', monospace;
-          font-size: 11px;
+          font-size: 12px;
           font-weight: 700;
           letter-spacing: 0.12em;
           text-transform: uppercase;
           text-decoration: none;
-          padding: 14px 18px;
+          padding: 14px 22px;
+          transition: all 0.15s;
         }
 
         .primary-btn {
           background: #c8a96e;
           color: #0e0d0b;
           border: 1px solid #c8a96e;
+          box-shadow: 0 8px 24px rgba(200, 169, 110, 0.22);
         }
 
         .primary-btn:hover {
           background: #e2bf7e;
           border-color: #e2bf7e;
+          transform: translateY(-1px);
         }
 
         .secondary-btn {
@@ -283,12 +194,12 @@ export default function HomePage() {
           color: #c8a96e;
         }
 
+        /* ── Side card ── */
         .side-card {
-          padding: 26px;
+          padding: 28px;
           display: flex;
           flex-direction: column;
           justify-content: space-between;
-          min-height: 100%;
         }
 
         .side-label {
@@ -303,22 +214,22 @@ export default function HomePage() {
 
         .side-title {
           font-family: 'Cormorant Garamond', serif;
-          font-size: 38px;
+          font-size: 36px;
           font-weight: 700;
-          line-height: 1;
+          line-height: 1.05;
           color: #f0ece4;
-          margin-bottom: 12px;
+          margin-bottom: 14px;
         }
 
         .side-text {
           color: #9c9288;
-          font-size: 14px;
-          font-weight: 300;
-          line-height: 1.65;
+          font-size: 15px;
+          font-weight: 400;
+          line-height: 1.68;
         }
 
         .verdict-box {
-          margin-top: 22px;
+          margin-top: 24px;
           border-top: 1px solid #26211c;
           padding-top: 18px;
         }
@@ -326,11 +237,12 @@ export default function HomePage() {
         .verdict-line {
           color: #f0ece4;
           font-family: 'Cormorant Garamond', serif;
-          font-size: 25px;
-          line-height: 1.15;
+          font-size: 24px;
+          line-height: 1.2;
           font-weight: 700;
         }
 
+        /* ── Tool cards ── */
         .section-grid {
           display: grid;
           grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -341,12 +253,12 @@ export default function HomePage() {
         .tool-card,
         .how-card,
         .proof-card {
-          padding: 22px;
+          padding: 24px;
         }
 
         .tool-number {
-          width: 34px;
-          height: 34px;
+          width: 36px;
+          height: 36px;
           border-radius: 13px;
           display: flex;
           align-items: center;
@@ -357,7 +269,7 @@ export default function HomePage() {
           font-family: 'IBM Plex Mono', monospace;
           font-size: 11px;
           font-weight: 700;
-          margin-bottom: 16px;
+          margin-bottom: 18px;
         }
 
         .card-title {
@@ -371,9 +283,9 @@ export default function HomePage() {
 
         .card-text {
           color: #9c9288;
-          font-size: 14px;
-          font-weight: 300;
-          line-height: 1.65;
+          font-size: 15px;
+          font-weight: 400;
+          line-height: 1.66;
         }
 
         .tool-link {
@@ -381,17 +293,19 @@ export default function HomePage() {
           display: inline-flex;
           align-items: center;
           justify-content: center;
+          min-height: 46px;
           border: 1px solid #302a24;
           background: #11100e;
           color: #d8d0c5;
           border-radius: 13px;
-          padding: 12px 14px;
+          padding: 12px 16px;
           text-decoration: none;
           font-family: 'IBM Plex Mono', monospace;
-          font-size: 10px;
+          font-size: 11px;
           font-weight: 700;
           letter-spacing: 0.12em;
           text-transform: uppercase;
+          transition: all 0.15s;
         }
 
         .tool-link:hover {
@@ -399,6 +313,7 @@ export default function HomePage() {
           color: #c8a96e;
         }
 
+        /* ── Wide / privacy grid ── */
         .wide-grid {
           display: grid;
           grid-template-columns: minmax(0, 1.1fr) minmax(300px, 0.9fr);
@@ -407,15 +322,15 @@ export default function HomePage() {
         }
 
         .privacy-card {
-          padding: 26px;
+          padding: 28px;
         }
 
         .section-title {
           font-family: 'Cormorant Garamond', serif;
-          font-size: 38px;
+          font-size: 36px;
           line-height: 1;
           font-weight: 700;
-          margin: 0 0 12px;
+          margin: 0 0 14px;
           color: #f0ece4;
         }
 
@@ -430,8 +345,8 @@ export default function HomePage() {
           gap: 10px;
           align-items: flex-start;
           color: #aaa096;
-          font-size: 14px;
-          line-height: 1.55;
+          font-size: 15px;
+          line-height: 1.6;
         }
 
         .mini-dot {
@@ -440,16 +355,17 @@ export default function HomePage() {
           background: #c8a96e;
           border-radius: 50%;
           flex-shrink: 0;
-          margin-top: 7px;
+          margin-top: 8px;
         }
 
+        /* ── CTA banner ── */
         .cta-card {
           border: 1px solid #3a3020;
           background:
             linear-gradient(135deg, rgba(200, 169, 110, 0.16), rgba(18, 16, 13, 0.9)),
             #12100d;
           border-radius: 30px;
-          padding: 34px;
+          padding: 36px;
           box-shadow: 0 24px 80px rgba(0, 0, 0, 0.22);
           display: flex;
           align-items: center;
@@ -459,8 +375,8 @@ export default function HomePage() {
 
         .cta-title {
           font-family: 'Cormorant Garamond', serif;
-          font-size: 42px;
-          line-height: 1;
+          font-size: 40px;
+          line-height: 1.05;
           font-weight: 700;
           color: #f0ece4;
           margin: 0;
@@ -469,11 +385,12 @@ export default function HomePage() {
         .cta-text {
           margin-top: 10px;
           color: #aaa096;
-          font-size: 15px;
-          line-height: 1.6;
-          max-width: 640px;
+          font-size: 16px;
+          line-height: 1.65;
+          max-width: 600px;
         }
 
+        /* ── Responsive ── */
         @media (max-width: 950px) {
           .hero-grid,
           .section-grid,
@@ -484,90 +401,59 @@ export default function HomePage() {
 
         @media (max-width: 650px) {
           .page-wrap {
-            padding: 18px 14px 70px;
+            padding: 20px 16px 80px;
           }
 
-          .topbar {
-            align-items: flex-start;
-            flex-direction: column;
-            border-radius: 18px;
+          .hero-card {
+            padding: 24px;
+            border-radius: 22px;
           }
 
-          .top-actions {
-            width: 100%;
-            justify-content: flex-start;
-          }
-
-          .hero-card,
           .side-card,
           .tool-card,
           .proof-card,
           .privacy-card,
           .how-card,
           .cta-card {
-            border-radius: 22px;
+            border-radius: 20px;
           }
 
-          .hero-card,
-          .cta-card {
-            padding: 24px;
-          }
-
-          .hero-actions,
-          .cta-card {
+          .hero-actions {
             flex-direction: column;
             align-items: stretch;
           }
 
           .primary-btn,
-          .secondary-btn,
-          .nav-link,
-          .nav-link-gold {
+          .secondary-btn {
             width: 100%;
+            text-align: center;
+          }
+
+          .cta-card {
+            flex-direction: column;
+            padding: 24px;
+          }
+
+          .cta-title {
+            font-size: 32px;
           }
         }
       `}</style>
 
       <div className="page-wrap">
-        <header className="topbar">
-          <div className="brand-lockup">
-            <div className="brand-mark">5C</div>
-            <div>
-              <div className="brand-main">HOVEL EDITOR</div>
-              <div className="brand-sub">Manuscript diagnosis engine</div>
-            </div>
-          </div>
-
-          <nav className="top-actions">
-            <Link href="/sphinx" className="nav-link-gold">
-              Sphinx
-            </Link>
-
-            <Link href="/beta-terms" className="nav-link">
-              Beta Terms
-            </Link>
-
-            {!checkingLogin && isLoggedIn ? (
-              <Link href="/dashboard" className="nav-link">
-                Dashboard
-              </Link>
-            ) : (
-              <Link href="/login" className="nav-link">
-                Sign In
-              </Link>
-            )}
-          </nav>
-        </header>
-
         <section className="hero-grid">
           <div className="hero-card">
             <div className="eyebrow">Editorial Council / Beta</div>
             <h1 className="heading">Your manuscript deserves a real diagnosis.</h1>
             <p className="subheading">
-              The Council reads your work through five distinct editorial lenses and tells you what is alive, what is dragging, what is structurally cracked, and what to fix first. It is not a rewrite button. It is a manuscript pressure test.
+              Upload or paste your writing. The Council reads it through five distinct editorial lenses and tells you what is working, what is dragging, and what to fix first.
             </p>
 
-            <div className="hero-actions">
+            <div className="plain-hook">
+              Not a rewrite button. Not a grammar checker. An honest editorial read — for writers who are serious about their work.
+            </div>
+
+            <nav className="hero-actions" aria-label="Primary actions">
               <Link
                 href={isLoggedIn ? "/submit" : "/login"}
                 className="primary-btn"
@@ -585,7 +471,7 @@ export default function HomePage() {
               >
                 {isLoggedIn ? "Open Dashboard" : "Sign In"}
               </Link>
-            </div>
+            </nav>
           </div>
 
           <aside className="side-card">
@@ -593,7 +479,7 @@ export default function HomePage() {
               <div className="side-label">What it is</div>
               <div className="side-title">A diagnostic engine, not a fake editor.</div>
               <p className="side-text">
-                Most AI writing tools try to polish your sentences until everything sounds like beige hotel soap. The Council is built to tell you where the manuscript is actually working and where it is lying to itself.
+                Most AI writing tools try to polish your sentences until everything sounds the same. The Council tells you where your manuscript is actually working — and where it is lying to itself.
               </p>
             </div>
 
@@ -606,12 +492,12 @@ export default function HomePage() {
           </aside>
         </section>
 
-        <section className="section-grid">
+        <section className="section-grid" aria-label="Available tools">
           <article className="tool-card">
             <div className="tool-number">01</div>
             <div className="card-title">The Council Diagnosis</div>
             <p className="card-text">
-              For scenes, chapters, essays, memoirs, children&apos;s books, and serious excerpts that need more than a grammar pass.
+              For manuscripts, chapters, scenes, essays, and serious excerpts. Five editorial lenses. One honest synthesis.
             </p>
             <Link
               href={isLoggedIn ? "/submit" : "/login"}
@@ -625,7 +511,7 @@ export default function HomePage() {
             <div className="tool-number">02</div>
             <div className="card-title">Sphinx</div>
             <p className="card-text">
-              For blurbs, bios, application answers, posts, emails, and anything that smells too polished, too stiff, or too AI.
+              For blurbs, bios, grant answers, posts, and anything that sounds too polished, too stiff, or too AI-generated.
             </p>
             <Link href="/sphinx" className="tool-link">
               Run Sphinx
@@ -636,7 +522,7 @@ export default function HomePage() {
             <div className="tool-number">03</div>
             <div className="card-title">Report Library</div>
             <p className="card-text">
-              Save your reports, reopen old diagnoses, compare revision progress, and stop losing feedback in the digital junk drawer.
+              Save reports, reopen old diagnoses, compare revision progress, and stop losing feedback in your downloads folder.
             </p>
             <Link
               href={isLoggedIn ? "/dashboard" : "/login"}
@@ -647,12 +533,12 @@ export default function HomePage() {
           </article>
         </section>
 
-        <section className="wide-grid">
+        <section className="wide-grid" aria-label="How it works">
           <div className="privacy-card">
             <div className="eyebrow">How it works</div>
             <h2 className="section-title">Five lenses. One usable verdict.</h2>
             <p className="card-text">
-              Each report has a job. Brad protects the voice. Greg finds the drag. Von Clausen checks the architecture. Juniper reads like an outside reader. The Final Editor turns the council into a revision plan.
+              Each report has a job. Brad protects the voice. Greg finds the drag. Von Clausen checks the architecture. Juniper reads like an outside reader. The Final Editor turns the council into a clear revision plan.
             </p>
 
             <div className="mini-list">
@@ -663,12 +549,12 @@ export default function HomePage() {
 
               <div className="mini-item">
                 <span className="mini-dot" />
-                <span>Paste or upload text and run the diagnosis.</span>
+                <span>Paste or upload your manuscript and run the diagnosis.</span>
               </div>
 
               <div className="mini-item">
                 <span className="mini-dot" />
-                <span>Open the saved report and revise from priorities instead of panic.</span>
+                <span>Open the saved report and revise from clear priorities instead of panic.</span>
               </div>
             </div>
           </div>
@@ -677,7 +563,7 @@ export default function HomePage() {
             <div className="eyebrow">Privacy note</div>
             <h2 className="section-title">Your dashboard is tied to your login.</h2>
             <p className="card-text">
-              Saved reports are connected to the signed-in user account. The product is being built with account separation, report history, and practical guardrails before it becomes a public-facing paid tool.
+              Saved reports are connected only to the signed-in user account. The product is being built with account separation and practical guardrails before becoming a public paid tool.
             </p>
 
             <div className="mini-list">
@@ -688,12 +574,12 @@ export default function HomePage() {
 
               <div className="mini-item">
                 <span className="mini-dot" />
-                <span>No pretending every manuscript needs the same kind of feedback.</span>
+                <span>No pretending every manuscript needs the same feedback.</span>
               </div>
 
               <div className="mini-item">
                 <span className="mini-dot" />
-                <span>No unlimited free AI wood chipper mode. We are not idiots.</span>
+                <span>No unlimited free AI wood-chipper mode.</span>
               </div>
             </div>
           </div>
@@ -718,8 +604,3 @@ export default function HomePage() {
     </main>
   );
 }
-
-
-
-
-

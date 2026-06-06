@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useEffect, useMemo, useState } from "react";
 import { createClient } from "@supabase/supabase-js";
@@ -222,15 +222,24 @@ export default function LoginPage() {
           display: flex;
           align-items: center;
           justify-content: center;
-          padding: 40px 24px;
+          padding: 40px 20px;
+        }
+
+        @media (max-width: 520px) {
+          .card {
+            padding: 24px 20px;
+            border-radius: 20px;
+          }
         }
 
         .card {
           width: 100%;
-          max-width: 460px;
+          max-width: 480px;
           background: #161410;
           border: 1px solid #2a2520;
+          border-radius: 24px;
           padding: 36px;
+          box-shadow: 0 24px 70px rgba(0,0,0,0.4);
         }
 
         .idea-login .card {
@@ -274,7 +283,7 @@ export default function LoginPage() {
 
         .title {
           font-family: 'Cormorant Garamond', serif;
-          font-size: 46px;
+          font-size: clamp(36px, 8vw, 50px);
           line-height: 1;
           font-weight: 700;
           color: #f0ece4;
@@ -283,10 +292,10 @@ export default function LoginPage() {
 
         .subtitle {
           font-family: 'DM Sans', sans-serif;
-          font-size: 14px;
-          line-height: 1.6;
+          font-size: 15px;
+          line-height: 1.65;
           color: #9a9186;
-          margin-bottom: 28px;
+          margin-bottom: 26px;
         }
 
         .idea-login .subtitle {
@@ -311,11 +320,13 @@ export default function LoginPage() {
           background: transparent;
           color: #6b6560;
           font-family: 'IBM Plex Mono', monospace;
-          font-size: 11px;
+          font-size: 12px;
           letter-spacing: 0.12em;
           text-transform: uppercase;
-          padding: 12px;
+          padding: 14px 12px;
           cursor: pointer;
+          min-height: 48px;
+          transition: all 0.15s;
         }
 
         .tab.active {
@@ -335,11 +346,12 @@ export default function LoginPage() {
         .label {
           display: block;
           font-family: 'IBM Plex Mono', monospace;
-          font-size: 10px;
+          font-size: 11px;
           letter-spacing: 0.12em;
-          color: #6b6560;
+          color: #8f867b;
           text-transform: uppercase;
-          margin-bottom: 7px;
+          margin-bottom: 8px;
+          font-weight: 700;
         }
 
         .idea-login .label {
@@ -350,11 +362,13 @@ export default function LoginPage() {
           width: 100%;
           background: #0e0d0b;
           border: 1px solid #2a2520;
+          border-radius: 12px;
           color: #f0ece4;
           font-family: 'DM Sans', sans-serif;
-          font-size: 15px;
-          padding: 13px 14px;
+          font-size: 16px;
+          padding: 15px 16px;
           outline: none;
+          min-height: 52px;
         }
 
         .idea-login .input {
@@ -418,16 +432,25 @@ export default function LoginPage() {
 
         .button {
           width: 100%;
-          margin-top: 8px;
-          padding: 14px 20px;
-          border: none;
+          margin-top: 10px;
+          padding: 16px 20px;
+          border: 1px solid #c8935a;
+          border-radius: 14px;
           background: #c8935a;
           color: #0e0d0b;
           font-family: 'IBM Plex Mono', monospace;
-          font-size: 12px;
+          font-size: 13px;
+          font-weight: 900;
           letter-spacing: 0.15em;
           text-transform: uppercase;
           cursor: pointer;
+          min-height: 54px;
+          transition: all 0.15s;
+        }
+
+        .button:hover:not(:disabled) {
+          background: #e2a96a;
+          border-color: #e2a96a;
         }
 
         .idea-login .button {

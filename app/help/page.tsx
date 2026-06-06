@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
@@ -95,9 +95,9 @@ export default function HelpPage() {
 
         .subtitle {
           color: #ddd5c7;
-          line-height: 1.7;
+          line-height: 1.75;
           max-width: 850px;
-          font-size: 18px;
+          font-size: 19px;
         }
 
         .grid {
@@ -132,7 +132,7 @@ export default function HelpPage() {
         .panel p,
         li {
           color: #ddd5c7;
-          line-height: 1.65;
+          line-height: 1.72;
           font-size: 16px;
         }
 
@@ -165,13 +165,18 @@ export default function HelpPage() {
         .button,
         .button-dark {
           border-radius: 14px;
-          padding: 13px 16px;
+          padding: 14px 18px;
           font-family: monospace;
-          font-size: 11px;
+          font-size: 12px;
           font-weight: 900;
           letter-spacing: 0.12em;
           text-transform: uppercase;
           text-decoration: none;
+          min-height: 50px;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          transition: all 0.15s;
         }
 
         .button {

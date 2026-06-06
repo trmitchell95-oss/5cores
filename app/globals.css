@@ -1,4 +1,4 @@
-﻿@import "tailwindcss";
+@import "tailwindcss";
 
 :root {
   --background: #ffffff;
@@ -12,22 +12,8 @@
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
-}
-
 /* =========================================================
-   HOVEL EDITOR / SPHINX MOBILE READABILITY PATCH
-   Makes long reports clearer on phones without changing app logic.
+   HOVEL EDITOR — GLOBAL BASE
    ========================================================= */
 
 html {
@@ -37,9 +23,38 @@ html {
   -moz-osx-font-smoothing: grayscale;
 }
 
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
 body {
+  background:
+    radial-gradient(circle at top left, rgba(245, 158, 11, 0.14), transparent 34rem),
+    linear-gradient(135deg, #332313 0%, #242018 46%, #1c211e 100%);
+  color: #f5f1e8;
   overflow-x: hidden;
 }
+
+body {
+  min-height: 100vh;
+}
+
+a {
+  color: inherit;
+}
+
+pre,
+code {
+  white-space: pre-wrap;
+  overflow-wrap: break-word;
+}
+
+/* =========================================================
+   GLOBAL REPORT / PROSE READABILITY
+   ========================================================= */
 
 main,
 article,
@@ -53,13 +68,13 @@ article,
 .report-content,
 .prose,
 article {
-  line-height: 1.7;
+  line-height: 1.75;
 }
 
 .report-content p,
 .prose p,
 article p {
-  margin-bottom: 1.25rem;
+  margin-bottom: 1.3rem;
 }
 
 .report-content h1,
@@ -91,11 +106,9 @@ article li {
   margin-bottom: 0.65rem;
 }
 
-pre,
-code {
-  white-space: pre-wrap;
-  overflow-wrap: break-word;
-}
+/* =========================================================
+   MOBILE READABILITY — REPORTS & PROSE
+   ========================================================= */
 
 @media (max-width: 700px) {
   body {
@@ -104,8 +117,8 @@ code {
 
   main {
     width: 100%;
-    padding-left: 16px;
-    padding-right: 16px;
+    padding-left: 0;
+    padding-right: 0;
   }
 
   article,
@@ -120,7 +133,7 @@ code {
   .prose,
   article {
     font-size: 17px;
-    line-height: 1.75;
+    line-height: 1.78;
   }
 
   .report-content p,
@@ -163,11 +176,6 @@ code {
 }
 
 @media (max-width: 430px) {
-  main {
-    padding-left: 14px;
-    padding-right: 14px;
-  }
-
   .report-content,
   .prose,
   article {
@@ -176,30 +184,323 @@ code {
   }
 }
 
+/* =========================================================
+   GLOBAL NAV — HOVEL EDITOR
+   The Hovel Editor nav is a full-width sticky bar rendered
+   via inline <style> in ProductNav.tsx (he-nav / he-nav-*).
+   The .hovel-global-nav classes below apply to IDEANATOR only.
+   ========================================================= */
 
-/* HOVEL_GLOBAL_BACKGROUND_GUARD
-   Keeps the floating nav area from flashing white on HOVEL / Ideanator pages. */
-html,
-body {
+/* =========================================================
+   GLOBAL NAV — IDEANATOR VARIANT
+   ========================================================= */
+
+.hovel-global-nav-ideanator {
+  border-color: rgba(240, 179, 95, 0.28);
+  background: rgba(12, 12, 12, 0.9);
+}
+
+.hovel-global-nav-ideanator .hovel-global-nav-mark {
+  background: #f0b35f;
+}
+
+.hovel-global-nav-ideanator .hovel-global-nav-link {
+  border-color: rgba(255, 215, 135, 0.28);
   background:
-    radial-gradient(circle at top left, rgba(245, 158, 11, 0.14), transparent 34rem),
-    linear-gradient(135deg, #332313 0%, #242018 46%, #1c211e 100%);
-  color: #f5f1e8;
+    radial-gradient(circle at 13px 50%, rgba(255, 231, 167, 0.72) 0 2px, transparent 3px),
+    #17120d;
+  padding-left: 20px;
+  box-shadow: 0 0 16px rgba(240, 179, 95, 0.08);
 }
 
-body {
-  min-height: 100vh;
+.hovel-global-nav-ideanator .hovel-global-nav-link:hover {
+  box-shadow: 0 0 24px rgba(240, 179, 95, 0.18);
 }
 
-a {
-  color: inherit;
+.hovel-global-nav-ideanator .hovel-global-nav-primary {
+  background:
+    radial-gradient(circle at 13px 50%, #fff3c4 0 3px, transparent 4px),
+    linear-gradient(180deg, #ffd27a 0%, #f0b35f 56%, #c98438 100%);
+  color: #18100a;
+  border-color: rgba(255, 241, 190, 0.62);
+  box-shadow:
+    0 0 24px rgba(240, 179, 95, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.38);
 }
 
+/* =========================================================
+   SUPPORT DOCK (help / feedback / beta-terms)
+   ========================================================= */
 
-/* === IDEANATOR MIDNIGHT SPARK PASS START ===
-   Focused visual/UX pass for The Ideanator only.
-   Does not alter backend logic, auth, saved reports, APIs, or Supabase.
-*/
+.hovel-support-dock {
+  display: contents;
+}
+
+.hovel-beta-terms-link {
+  position: fixed;
+  left: 50%;
+  bottom: 28px;
+  transform: translateX(-50%);
+  z-index: 9998;
+  color: rgba(240, 236, 228, 0.52);
+  font-family: monospace;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  text-decoration: none;
+}
+
+.hovel-beta-terms-link:hover {
+  color: #c8935a;
+  text-decoration: underline;
+}
+
+.hovel-feedback-link {
+  position: fixed;
+  right: 22px;
+  bottom: 22px;
+  z-index: 9999;
+  border: 1px solid #4b3a1f;
+  background: #c8935a;
+  color: #0e0d0b;
+  border-radius: 999px;
+  padding: 13px 18px;
+  font-family: monospace;
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  text-decoration: none;
+  box-shadow: 0 18px 55px rgba(0, 0, 0, 0.35);
+  min-height: 48px;
+  display: inline-flex;
+  align-items: center;
+}
+
+.hovel-feedback-link:hover {
+  filter: brightness(1.08);
+}
+
+.hovel-help-link {
+  position: fixed;
+  left: 22px;
+  bottom: 84px;
+  z-index: 9999;
+  border: 1px solid #c8935a;
+  background: #c8935a;
+  color: #0e0d0b;
+  border-radius: 999px;
+  padding: 14px 22px;
+  font-family: monospace;
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  text-decoration: none;
+  box-shadow: 0 18px 55px rgba(0, 0, 0, 0.45);
+  min-height: 48px;
+  display: inline-flex;
+  align-items: center;
+}
+
+.hovel-help-link:hover {
+  filter: brightness(1.08);
+}
+
+/* =========================================================
+   RESPONSIVE NAV + DOCK
+   ========================================================= */
+
+@media (max-width: 860px) {
+  .hovel-global-nav {
+    top: 10px;
+    right: 10px;
+    left: 10px;
+    justify-content: flex-start;
+    gap: 6px;
+    padding: 7px;
+    border-radius: 22px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .hovel-global-nav::-webkit-scrollbar {
+    display: none;
+  }
+
+  .hovel-global-nav-mark {
+    width: 34px;
+    height: 34px;
+    border-radius: 12px;
+    font-size: 10px;
+  }
+
+  .hovel-global-nav-link {
+    min-height: 34px;
+    padding: 0 11px;
+    font-size: 10px;
+    letter-spacing: 0.07em;
+  }
+
+  .hovel-feedback-link {
+    right: 14px;
+    bottom: 18px;
+    padding: 11px 14px;
+    font-size: 11px;
+  }
+
+  .hovel-help-link {
+    left: 14px;
+    bottom: 18px;
+    padding: 11px 16px;
+    font-size: 11px;
+    letter-spacing: 0.12em;
+  }
+
+  .hovel-beta-terms-link {
+    bottom: 24px;
+    font-size: 9px;
+  }
+}
+
+@media (max-width: 520px) {
+  body {
+    padding-bottom: 90px;
+  }
+
+  .hovel-global-nav {
+    top: 8px;
+    left: 8px;
+    right: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 6px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding: 6px;
+    border-radius: 18px;
+    box-shadow: 0 14px 38px rgba(0, 0, 0, 0.42);
+  }
+
+  .hovel-global-nav-mark {
+    width: 36px;
+    height: 36px;
+    min-width: 36px;
+    flex: 0 0 auto;
+    border-radius: 12px;
+    font-size: 10px;
+  }
+
+  .hovel-global-nav-link {
+    width: auto;
+    min-width: max-content;
+    min-height: 36px;
+    flex: 0 0 auto;
+    padding: 0 10px;
+    font-size: 10px;
+    letter-spacing: 0.05em;
+    border-radius: 13px;
+  }
+
+  /* Collapse support dock into a bottom bar on small phones */
+  .hovel-support-dock {
+    position: fixed;
+    left: 10px;
+    right: 10px;
+    bottom: 10px;
+    z-index: 9999;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 6px;
+    padding: 6px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 18px;
+    background: rgba(14, 13, 11, 0.92);
+    box-shadow: 0 18px 55px rgba(0, 0, 0, 0.48);
+    backdrop-filter: blur(14px);
+  }
+
+  .hovel-beta-terms-link,
+  .hovel-help-link {
+    position: static;
+    transform: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 42px;
+    border: 1px solid #4b3a1f;
+    border-radius: 13px;
+    background: #17120d;
+    color: #d8d0c5;
+    padding: 10px 13px;
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    text-align: center;
+    box-shadow: none;
+  }
+
+  .hovel-feedback-link {
+    position: static;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 42px;
+    border-radius: 13px;
+    padding: 10px 13px;
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    text-align: center;
+    box-shadow: none;
+  }
+
+  .hovel-beta-terms-link:hover {
+    color: #c8935a;
+    text-decoration: none;
+  }
+
+  /* Page shell padding on small phones */
+  .home-shell .page-wrap,
+  .dashboard-shell .page-wrap,
+  .submit-shell .app-wrap,
+  .projects-shell,
+  .reread-shell,
+  .report-shell .page-wrap,
+  .help-shell,
+  .terms-shell .wrap,
+  .sphinx-shell,
+  .compare-shell .wrap {
+    padding-left: 14px !important;
+    padding-right: 14px !important;
+    padding-bottom: 108px !important;
+  }
+
+  /* Ideanator still uses the fixed pill nav - keep its padding */
+  .ideanator-page {
+    padding-left: 14px !important;
+    padding-right: 14px !important;
+    padding-bottom: 108px !important;
+  }
+}
+
+@media (max-width: 370px) {
+  .hovel-global-nav-link {
+    font-size: 9px;
+    letter-spacing: 0.03em;
+    padding: 0 7px;
+  }
+
+  .hovel-global-nav-mark {
+    font-size: 9px;
+  }
+}
+
+/* =========================================================
+   IDEANATOR — FULL VISUAL PASS
+   ========================================================= */
 
 :root {
   --idea-bg-0: #020617;
@@ -219,7 +520,6 @@ a {
   --idea-success: #34d399;
 }
 
-/* Global nav gets a separate Ideanator identity when ProductNav marks it. */
 .hovel-global-nav-ideanator {
   border-color: rgba(34, 211, 238, 0.36) !important;
   background:
@@ -258,7 +558,6 @@ a {
   border-color: rgba(165, 243, 252, 0.75) !important;
 }
 
-/* Ideanator route shells. */
 .ideanator-page,
 .ideanator-workbench,
 .idea-saved-shell,
@@ -275,7 +574,6 @@ a {
   text-rendering: optimizeLegibility;
 }
 
-/* Idea Check cards and panels. */
 .ideanator-page .hero-card,
 .ideanator-page .intake-card,
 .ideanator-page .loading-card,
@@ -341,7 +639,6 @@ a {
   color: #f8fdff !important;
 }
 
-/* Inputs: bigger, calmer, clearer. */
 .ideanator-page input,
 .ideanator-page select,
 .ideanator-page textarea,
@@ -376,7 +673,6 @@ a {
   line-height: 1.7 !important;
 }
 
-/* Primary actions: cyan spark. */
 .ideanator-page .primary-button,
 .idea-saved-shell .primary-link,
 .idea-help-shell .button,
@@ -407,7 +703,6 @@ a {
     inset 0 1px 0 rgba(255, 255, 255, 0.5) !important;
 }
 
-/* Secondary actions and utility buttons. */
 .ideanator-page .secondary-button,
 .ideanator-page .ghost-button,
 .idea-saved-shell .secondary-link,
@@ -441,7 +736,6 @@ a {
   box-shadow: 0 0 24px rgba(34, 211, 238, 0.12) !important;
 }
 
-/* Chips, badges, result boxes. */
 .ideanator-page .kicker,
 .ideanator-page .verdict-row .active-verdict,
 .idea-saved-shell .chip.gold,
@@ -505,7 +799,6 @@ a {
   color: #bbf7d0 !important;
 }
 
-/* Tailwind-heavy Rig Workbench specific polish. */
 .ideanator-workbench {
   padding-top: 1.5rem !important;
 }
@@ -537,7 +830,6 @@ a {
   color: var(--idea-text) !important;
 }
 
-/* Bottom support dock on Ideanator pages. */
 .ideanator-page ~ .hovel-support-dock .hovel-help-link,
 .ideanator-page ~ .hovel-support-dock .hovel-feedback-link,
 .ideanator-page ~ .hovel-support-dock .hovel-beta-terms-link,
@@ -627,7 +919,7 @@ a {
   .saved-ideas-shell a,
   .saved-ideas-shell button {
     width: 100%;
-    min-height: 46px;
+    min-height: 48px;
   }
 
   .ideanator-workbench {
@@ -640,8 +932,3 @@ a {
     min-height: 260px !important;
   }
 }
-
-/* === IDEANATOR MIDNIGHT SPARK PASS END === */
-
-
-

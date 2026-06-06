@@ -875,7 +875,7 @@ export default function SubmitPage() {
         }
 
         .textarea {
-          min-height: 430px;
+          min-height: 440px;
           resize: vertical;
           font-family: 'DM Sans', sans-serif;
           font-size: 15px;
@@ -893,6 +893,11 @@ export default function SubmitPage() {
 
         .title-input::placeholder,
         .concern-input::placeholder,
+        .textarea {
+          font-size: 16px !important;
+          line-height: 1.75 !important;
+        }
+
         .textarea::placeholder {
           color: #5a5448;
         }

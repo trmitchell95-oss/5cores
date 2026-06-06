@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useEffect, useState } from "react";
 import { createClient } from "@supabase/supabase-js";
@@ -264,108 +264,7 @@ export default function Dashboard() {
         .page-wrap {
           max-width: 1180px;
           margin: 0 auto;
-          padding: 34px 24px 90px;
-        }
-
-        .topbar {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          gap: 18px;
-          border: 1px solid #26211c;
-          background: rgba(18, 16, 13, 0.82);
-          padding: 16px 18px;
-          margin-bottom: 34px;
-          border-radius: 22px;
-          box-shadow: 0 24px 70px rgba(0, 0, 0, 0.28);
-        }
-
-        .brand-lockup {
-          display: flex;
-          align-items: center;
-          gap: 12px;
-          min-width: 0;
-        }
-
-        .brand-mark {
-          width: 42px;
-          height: 42px;
-          border-radius: 15px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          background: #c8a96e;
-          color: #0e0d0b;
-          font-family: 'IBM Plex Mono', monospace;
-          font-weight: 700;
-          font-size: 13px;
-          letter-spacing: -0.08em;
-          flex-shrink: 0;
-        }
-
-        .brand-main {
-          font-family: 'IBM Plex Mono', monospace;
-          font-size: 12px;
-          font-weight: 700;
-          letter-spacing: 0.18em;
-          color: #f0ece4;
-          text-transform: uppercase;
-        }
-
-        .brand-sub {
-          margin-top: 3px;
-          font-size: 12px;
-          color: #7b7168;
-          white-space: nowrap;
-          overflow: hidden;
-          text-overflow: ellipsis;
-        }
-
-        .user-row {
-          display: flex;
-          align-items: center;
-          gap: 12px;
-          flex-wrap: wrap;
-          justify-content: flex-end;
-        }
-
-        .user-email {
-          font-family: 'IBM Plex Mono', monospace;
-          font-size: 11px;
-          color: #8a8177;
-          max-width: 240px;
-          overflow: hidden;
-          text-overflow: ellipsis;
-          white-space: nowrap;
-        }
-
-        .admin-btn,
-        .signout-btn {
-          font-family: 'IBM Plex Mono', monospace;
-          font-size: 11px;
-          letter-spacing: 0.08em;
-          color: #8a8177;
-          background: #11100e;
-          border: 1px solid #302a24;
-          border-radius: 12px;
-          padding: 10px 13px;
-          cursor: pointer;
-          text-transform: uppercase;
-          text-decoration: none;
-          display: inline-flex;
-          align-items: center;
-          justify-content: center;
-        }
-
-        .admin-btn:hover,
-        .signout-btn:hover {
-          color: #f0ece4;
-          border-color: #6b6560;
-        }
-
-        .admin-btn {
-          color: #c8a96e;
-          border-color: #3a3020;
+          padding: 32px 24px 90px;
         }
 
         .hero-grid {
@@ -693,12 +592,18 @@ export default function Dashboard() {
 
         .library-controls {
           display: grid;
-          grid-template-columns: minmax(0, 1fr) 220px auto;
+          grid-template-columns: minmax(0, 1fr) 200px auto;
           gap: 12px;
           align-items: center;
           margin-bottom: 18px;
           padding-bottom: 18px;
           border-bottom: 1px solid #26211c;
+        }
+
+        @media (max-width: 760px) {
+          .library-controls {
+            grid-template-columns: 1fr;
+          }
         }
 
         .library-input,
@@ -813,19 +718,19 @@ export default function Dashboard() {
 
         .report-title {
           font-family: 'Cormorant Garamond', serif;
-          font-size: 25px;
+          font-size: 28px;
           color: #f0ece4;
           font-weight: 700;
-          margin-bottom: 5px;
+          margin-bottom: 6px;
           overflow-wrap: anywhere;
-          line-height: 1.1;
+          line-height: 1.12;
         }
 
         .report-date {
           font-family: 'IBM Plex Mono', monospace;
-          font-size: 10px;
-          color: #5f574f;
-          margin-bottom: 11px;
+          font-size: 11px;
+          color: #6b6258;
+          margin-bottom: 12px;
         }
 
         .chips {
@@ -836,12 +741,12 @@ export default function Dashboard() {
 
         .chip {
           font-family: 'IBM Plex Mono', monospace;
-          font-size: 9px;
+          font-size: 10px;
           letter-spacing: 0.08em;
           color: #9a9186;
           border: 1px solid #2a2520;
           background: #100f0d;
-          padding: 6px 8px;
+          padding: 6px 10px;
           border-radius: 999px;
           text-transform: uppercase;
         }
@@ -855,7 +760,7 @@ export default function Dashboard() {
         .view-link {
           flex-shrink: 0;
           font-family: 'IBM Plex Mono', monospace;
-          font-size: 10px;
+          font-size: 11px;
           letter-spacing: 0.12em;
           color: #c8a96e;
           text-decoration: none;
@@ -863,7 +768,12 @@ export default function Dashboard() {
           border: 1px solid #302a24;
           background: #11100e;
           border-radius: 13px;
-          padding: 12px 14px;
+          padding: 13px 16px;
+          min-height: 48px;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          transition: all 0.15s;
         }
 
         .view-link:hover {
@@ -871,12 +781,11 @@ export default function Dashboard() {
           background: #1c1710;
         }
 
-        /* Dashboard beta readability pass */
+        /* Dashboard readability pass */
         .dashboard-shell {
           font-size: 17px;
         }
 
-        .brand-sub,
         .subheading,
         .status-muted,
         .tool-text,
@@ -894,13 +803,10 @@ export default function Dashboard() {
         .chip,
         .latest-link,
         .tool-link,
-        .admin-btn,
-        .signout-btn,
         .primary-btn,
         .secondary-btn,
         .library-btn,
-        .show-more-btn,
-        .user-email {
+        .show-more-btn {
           font-size: 12px !important;
           letter-spacing: 0.11em !important;
         }
@@ -909,8 +815,6 @@ export default function Dashboard() {
         .secondary-btn,
         .tool-link,
         .view-link,
-        .admin-btn,
-        .signout-btn,
         .library-btn,
         .show-more-btn {
           min-height: 52px !important;
@@ -977,18 +881,7 @@ export default function Dashboard() {
 
         @media (max-width: 650px) {
           .page-wrap {
-            padding: 12px 14px 70px;
-          }
-
-          .topbar {
-            align-items: flex-start;
-            flex-direction: column;
-            border-radius: 18px;
-          }
-
-          .user-row {
-            justify-content: flex-start;
-            width: 100%;
+            padding: 20px 14px 70px;
           }
 
           .hero-card,
@@ -1111,31 +1004,6 @@ export default function Dashboard() {
       `}</style>
 
       <div className="page-wrap">
-        <header className="topbar">
-          <div className="brand-lockup">
-            <div className="brand-mark">HE</div>
-            <div>
-              <div className="brand-main">HOVEL EDITOR</div>
-              <div className="brand-sub">Manuscript memory dashboard</div>
-            </div>
-          </div>
-
-          <div className="user-row">
-            {user?.email && <span className="user-email">{user.email}</span>}
-            {isAdmin && (
-              <a className="admin-btn" href="/admin/usage">
-                Admin Usage
-              </a>
-            )}
-            <a className="signout-btn" href="/beta-terms">
-              Beta Terms
-            </a>
-            <button className="signout-btn" onClick={handleSignOut}>
-              Sign Out
-            </button>
-          </div>
-        </header>
-
         <section className="hero-grid">
           <div className="hero-card">
             <div className="eyebrow">Start Here</div>
