@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -12,7 +12,7 @@ export default function FeedbackLink() {
     pathname === "/ideanator" ||
     pathname.startsWith("/ideanator/") ||
     pathname === "/saved-ideas" ||
-    pathname === "/ideanator-login";
+    pathname === "/ideanator-login" || pathname === "/beta-terms";
 
   const from = encodeURIComponent(pathname || "/");
   const feedbackHref = isIdeanator
@@ -30,3 +30,4 @@ export default function FeedbackLink() {
     </Link>
   );
 }
+
