@@ -227,7 +227,7 @@ function redirectToLogin() {
 }
 
 export default function IdeanatorPage() {
-  const [stage, setStage] = useState<Stage>("landing");
+  const [stage, setStage] = useState<Stage>("intake");
   const [ideaName, setIdeaName] = useState("");
   const [ideaText, setIdeaText] = useState("");
   const [ideaKind, setIdeaKind] = useState(ideaKinds[0]);
@@ -465,7 +465,7 @@ export default function IdeanatorPage() {
     setRerunSourceTitle("");
     setPreviousVerdict("");
     setRerunNotice("");
-    setStage("landing");
+    setStage("intake");
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
@@ -479,7 +479,7 @@ export default function IdeanatorPage() {
     setRerunSourceTitle("");
     setPreviousVerdict("");
     setRerunNotice("");
-    setStage("landing");
+    setStage("intake");
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
@@ -587,7 +587,7 @@ export default function IdeanatorPage() {
       <section className="shell">
         <header className="topbar">
           <div>
-            <p className="eyebrow">HOVEL IDEAS PRESENTS</p>
+            <p className="eyebrow">RAW IDEA IN. CLEARER PATH OUT.</p>
             <h1>THE IDEANATOR</h1>
           </div>
 
@@ -637,7 +637,7 @@ export default function IdeanatorPage() {
 
             <div className="promise-grid">
               <article>
-                <span>The Spark</span>
+                <span>What Has Heat</span>
                 <p>What is actually alive in the idea.</p>
               </article>
 
@@ -674,7 +674,7 @@ export default function IdeanatorPage() {
           <section className="intake-card">
             <div className="section-heading">
               <p className="eyebrow">IDEA INTAKE</p>
-              <h2>Tell us what is rattling around in there.</h2>
+              <h2>Throw the messy version in here.</h2>
               <p>
                 No pitch-deck voice. No founder fog. Paste the napkin sketch,
                 the messy concept doc, the product notes, the flow map, or the
@@ -684,7 +684,7 @@ export default function IdeanatorPage() {
             </div>
 
             <div className="long-doc-note">
-              <span>Long idea documents are allowed.</span>
+              <span>Messy is allowed.</span>
               <p>
                 This bay can handle serious concept notes, invention details,
                 diagram explanations, market thoughts, feature lists, and messy
@@ -694,7 +694,7 @@ export default function IdeanatorPage() {
             </div>
 
             <div className="beta-run-note">
-              <span>Beta run limit</span>
+              <span>Beta limit</span>
               <p>
                 The showroom is public, but the engine is behind sign-in. Beta users
                 currently get 5 Ideanator runs per day so the app does not get fed
@@ -711,16 +711,16 @@ export default function IdeanatorPage() {
 
             <form onSubmit={handleSubmit} className="idea-form">
               <label>
-                <span>Idea name</span>
+                <span>Name the idea</span>
                 <input
                   value={ideaName}
                   onChange={(event) => setIdeaName(event.target.value)}
-                  placeholder="Optional. Blank becomes Untitled Little Bastard."
+                  placeholder="Optional. Leave it blank if the idea does not have a name yet."
                 />
               </label>
 
               <label>
-                <span>What kind of idea is it?</span>
+                <span>What kind of thing is this?</span>
                 <select
                   value={ideaKind}
                   onChange={(event) => setIdeaKind(event.target.value)}
@@ -734,7 +734,7 @@ export default function IdeanatorPage() {
               </label>
 
               <label>
-                <span>What do you need from it?</span>
+                <span>What do you want to know?</span>
                 <select
                   value={primaryNeed}
                   onChange={(event) => setPrimaryNeed(event.target.value)}
@@ -748,11 +748,11 @@ export default function IdeanatorPage() {
               </label>
 
               <label className="full-width">
-                <span>What is the idea?</span>
+                <span>Throw your raw idea in here.</span>
                 <textarea
                   value={ideaText}
                   onChange={(event) => setIdeaText(event.target.value)}
-                  placeholder="Dump the chaos here. Half-thoughts, diagrams explained in text, feature maps, invention notes, founder rambling, and serious idea documents are allowed. Lying to yourself is discouraged."
+                  placeholder="Paste the messy version here. Half-thoughts, notes, product ideas, story seeds, invention details, and confused rambling are all allowed."
                 />
 
                 <div className={`idea-limit-note ${ideaTooLong ? "over-limit" : ""}`}>
@@ -766,13 +766,13 @@ export default function IdeanatorPage() {
               </label>
 
               <div className="intake-preview full-width">
-                <span>Current label</span>
+                <span>Current idea name</span>
                 <strong>{liveDisplayName}</strong>
               </div>
 
               <div className="form-actions full-width">
                 <button className="secondary-button" type="button" onClick={returnToLanding}>
-                  Back
+                  Clear / Start Over
                 </button>
 
                 <button
@@ -844,8 +844,11 @@ export default function IdeanatorPage() {
 
             <div className="report-actions">
               <div>
-                <span>Take this thing with you.</span>
-                <p>Copy it, download it, or save it to your Ideanator saved idea reports.</p>
+                <span>Your next move</span>
+                <p>
+                  Save this if it is worth keeping. Revise it if the read exposed a better version.
+                  Build a rig later when you want to turn the idea into a reusable prompt or working structure.
+                </p>
               </div>
 
               <div className="report-action-buttons">
@@ -873,34 +876,34 @@ export default function IdeanatorPage() {
             </div>
 
             <div className="cards-grid">
-              <ResultCard title="The Spark" body={currentRun.report.spark} />
+              <ResultCard title="What Has Heat" body={currentRun.report.spark} />
 
               <ResultCard
-                title="The Plain-English Version"
+                title="The Simple Version"
                 body={currentRun.report.plainEnglishVersion}
               />
 
               <ResultCard
-                title="The Strongest Use Case"
+                title="What’s Strong"
                 body={currentRun.report.strongestUseCase}
               />
 
-              <ResultCard title="The Weak Spots" body={currentRun.report.weakSpots} />
+              <ResultCard title="What Needs Work" body={currentRun.report.weakSpots} />
 
-              <ResultCard title="The Audience" body={currentRun.report.audience} />
+              <ResultCard title="Who It’s For" body={currentRun.report.audience} />
 
               <ResultCard
-                title="The Money / Value Path"
+                title="The Value Path"
                 body={currentRun.report.moneyValuePath}
               />
 
               <ResultCard
-                title="The Part You Are Probably Avoiding"
+                title="What You Might Be Avoiding"
                 body={currentRun.report.avoidance}
               />
 
               <ResultCard
-                title="Next Three Moves"
+                title="Your Next Three Moves"
                 body={currentRun.report.nextThreeMoves
                   .map((move, index) => `${index + 1}. ${move}`)
                   .join(" ")}
@@ -922,11 +925,11 @@ export default function IdeanatorPage() {
 
             <div className="form-actions">
               <button className="secondary-button" type="button" onClick={returnToIntake}>
-                Edit the idea
+                Revise This Idea
               </button>
 
               <button className="primary-button" type="button" onClick={resetRun}>
-                Run another idea
+                Test Another Idea
               </button>
             </div>
           </section>
@@ -1582,6 +1585,7 @@ function ResultCard({ title, body }: { title: string; body: string }) {
     </article>
   );
 }
+
 
 
 
