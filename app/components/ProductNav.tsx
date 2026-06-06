@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useEffect, useState, type MouseEvent } from "react";
 import { usePathname } from "next/navigation";
@@ -109,7 +109,7 @@ export default function ProductNav() {
     }
   }
 
-  // ── Ideanator: keep the existing floating pill style ──────────────────────
+  // â”€â”€ Ideanator: keep the existing floating pill style â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   if (isIdeanator) {
     const rigWorkbenchActive =
       pathname === "/ideanator" || pathname.startsWith("/ideanator/");
@@ -173,7 +173,7 @@ export default function ProductNav() {
     );
   }
 
-  // ── Hovel Editor: full-width sticky bar (replaces the old floating pill) ──
+  // â”€â”€ Hovel Editor: full-width sticky bar (replaces the old floating pill) â”€â”€
   const authLink =
     authReady && signedIn ? (
       <>
@@ -367,7 +367,7 @@ export default function ProductNav() {
             <a href="/sphinx" className="he-nav-link he-nav-link-sphinx">Sphinx</a>
             <a href="/projects" className="he-nav-link">Projects</a>
             <a href="/reread" className="he-nav-link">Re-Read</a>
-            <a href="/submit" className="he-nav-link">New Diagnosis</a>
+            <a href="/submit" className="he-nav-link">New Diagnosis</a>`n          <a href="/admin" className="he-nav-link">Admin</a>
 
             <div className="he-nav-sep" aria-hidden="true" />
 
