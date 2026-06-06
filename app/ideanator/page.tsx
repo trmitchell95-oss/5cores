@@ -5,121 +5,121 @@ import { createClient } from "@supabase/supabase-js";
 import JSZip from "jszip";
 
 type Blueprint = {
-  rigName: string;
-  purpose: string;
-  audience: string;
-  outputType: string;
-  tone: string;
-  constraints: string[];
-  missingPieces: string[];
-  promptStrategy: string;
+ rigName: string;
+ purpose: string;
+ audience: string;
+ outputType: string;
+ tone: string;
+ constraints: string[];
+ missingPieces: string[];
+ promptStrategy: string;
 };
 
 type RigReadiness = {
-  verdict: "CLEARED FOR THE ROAD" | "BACK ON THE LIFT" | "DO NOT DRIVE THIS BASTARD YET";
-  score: number;
-  summary: string;
-  why: string[];
-  biggestRisk: string;
-  fixNext: string[];
-  reusable: boolean;
-  nextAction: string;
+ verdict: "CLEARED FOR THE ROAD" | "BACK ON THE LIFT" | "NOT READY YET";
+ score: number;
+ summary: string;
+ why: string[];
+ biggestRisk: string;
+ fixNext: string[];
+ reusable: boolean;
+ nextAction: string;
 };
 
 type SavedRig = {
-  id: string;
-  created_at: string;
-  updated_at: string;
-  rig_name: string;
-  fog: string | null;
-  blueprint: Blueprint | Record<string, unknown> | null;
-  actual_prompt: string | null;
-  latest_output: string | null;
-  is_archived: boolean;
-  readiness_verdict?: RigReadiness["verdict"] | null;
-  readiness_score?: number | null;
-  readiness_report?: RigReadiness | null;
-  readiness_checked_at?: string | null;
+ id: string;
+ created_at: string;
+ updated_at: string;
+ rig_name: string;
+ fog: string | null;
+ blueprint: Blueprint | Record<string, unknown> | null;
+ actual_prompt: string | null;
+ latest_output: string | null;
+ is_archived: boolean;
+ readiness_verdict?: RigReadiness["verdict"] | null;
+ readiness_score?: number | null;
+ readiness_report?: RigReadiness | null;
+ readiness_checked_at?: string | null;
 };
 
 type TextBlueprintField =
-  | "rigName"
-  | "purpose"
-  | "audience"
-  | "outputType"
-  | "tone"
-  | "promptStrategy";
+ | "rigName"
+ | "purpose"
+ | "audience"
+ | "outputType"
+ | "tone"
+ | "promptStrategy";
 
 const emptyBlueprint: Blueprint = {
-  rigName: "",
-  purpose: "",
-  audience: "",
-  outputType: "",
-  tone: "",
-  constraints: [],
-  missingPieces: [],
-  promptStrategy: "",
+ rigName: "",
+ purpose: "",
+ audience: "",
+ outputType: "",
+ tone: "",
+ constraints: [],
+ missingPieces: [],
+ promptStrategy: "",
 };
 
 function getSupabaseClient() {
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+ const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+ const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
-  if (!supabaseUrl || !supabaseAnonKey) {
-    throw new Error("Missing Supabase browser settings.");
-  }
+ if (!supabaseUrl || !supabaseAnonKey) {
+ throw new Error("Missing Supabase browser settings.");
+ }
 
-  return createClient(supabaseUrl, supabaseAnonKey);
+ return createClient(supabaseUrl, supabaseAnonKey);
 }
 
 function cleanString(value: unknown) {
-  return typeof value === "string" ? value : "";
+ return typeof value === "string" ? value : "";
 }
 
 function cleanStringArray(value: unknown) {
-  if (!Array.isArray(value)) return [];
+ if (!Array.isArray(value)) return [];
 
-  return value
-    .filter((item): item is string => typeof item === "string")
-    .map((item) => item.trim())
-    .filter(Boolean);
+ return value
+ .filter((item): item is string => typeof item === "string")
+ .map((item) => item.trim())
+ .filter(Boolean);
 }
 
 function coerceBlueprint(value: unknown): Blueprint {
-  if (!value || typeof value !== "object" || Array.isArray(value)) {
-    return emptyBlueprint;
-  }
+ if (!value || typeof value !== "object" || Array.isArray(value)) {
+ return emptyBlueprint;
+ }
 
-  const record = value as Record<string, unknown>;
+ const record = value as Record<string, unknown>;
 
-  return {
-    rigName: cleanString(record.rigName),
-    purpose: cleanString(record.purpose),
-    audience: cleanString(record.audience),
-    outputType: cleanString(record.outputType),
-    tone: cleanString(record.tone),
-    constraints: cleanStringArray(record.constraints),
-    missingPieces: cleanStringArray(record.missingPieces),
-    promptStrategy: cleanString(record.promptStrategy),
-  };
+ return {
+ rigName: cleanString(record.rigName),
+ purpose: cleanString(record.purpose),
+ audience: cleanString(record.audience),
+ outputType: cleanString(record.outputType),
+ tone: cleanString(record.tone),
+ constraints: cleanStringArray(record.constraints),
+ missingPieces: cleanStringArray(record.missingPieces),
+ promptStrategy: cleanString(record.promptStrategy),
+ };
 }
 
 function formatDate(value: string) {
-  try {
-    return new Date(value).toLocaleString(undefined, {
-      month: "short",
-      day: "numeric",
-      year: "numeric",
-      hour: "numeric",
-      minute: "2-digit",
-    });
-  } catch {
-    return value;
-  }
+ try {
+ return new Date(value).toLocaleString(undefined, {
+ month: "short",
+ day: "numeric",
+ year: "numeric",
+ hour: "numeric",
+ minute: "2-digit",
+ });
+ } catch {
+ return value;
+ }
 }
 
 function assemblePrompt(fog: string, blueprint: Blueprint) {
-  return `You are The Ideanator, a thinking partner for turning messy human ideas into usable structure.
+ return `You are The Ideanator, a thinking partner for turning messy human ideas into usable structure.
 
 RIG NAME:
 ${blueprint.rigName || "[Not set]"}
@@ -147,7 +147,7 @@ Help the user turn the raw fog into a clear, useful next step. Be practical, hon
 }
 
 function formatBlueprintForCopy(blueprint: Blueprint) {
-  return `# ${blueprint.rigName || "Untitled Thinking Rig"}
+ return `# ${blueprint.rigName || "Untitled Thinking Rig"}
 
 ## Purpose
 ${blueprint.purpose || ""}
@@ -172,17 +172,17 @@ ${blueprint.promptStrategy || ""}`;
 }
 
 function formatFullRigPacket({
-  fog,
-  blueprint,
-  actualPrompt,
-  output,
+ fog,
+ blueprint,
+ actualPrompt,
+ output,
 }: {
-  fog: string;
-  blueprint: Blueprint;
-  actualPrompt: string;
-  output: string;
+ fog: string;
+ blueprint: Blueprint;
+ actualPrompt: string;
+ output: string;
 }) {
-  return `# Ideanator Rig Packet
+ return `# Ideanator Rig Packet
 
 ## Raw Fog
 ${fog || ""}
@@ -204,7 +204,7 @@ ${output || ""}`;
 }
 
 function formatRigReadinessForCopy(readiness: RigReadiness) {
-  return `# Rig Readiness Check
+ return `# Rig Readiness Check
 
 ## Verdict
 ${readiness.verdict}
@@ -232,236 +232,236 @@ ${readiness.nextAction}`;
 }
 
 function renderInlineFormatting(text: string): ReactNode[] {
-  const parts = text.split(/(\*\*[^*]+\*\*)/g);
+ const parts = text.split(/(\*\*[^*]+\*\*)/g);
 
-  return parts.map((part, index) => {
-    if (part.startsWith("**") && part.endsWith("**")) {
-      return (
-        <strong key={index} className="font-black text-neutral-50">
-          {part.slice(2, -2)}
-        </strong>
-      );
-    }
+ return parts.map((part, index) => {
+ if (part.startsWith("**") && part.endsWith("**")) {
+ return (
+ <strong key={index} className="font-black text-neutral-50">
+ {part.slice(2, -2)}
+ </strong>
+ );
+ }
 
-    return <span key={index}>{part}</span>;
-  });
+ return <span key={index}>{part}</span>;
+ });
 }
 
 function cleanMarkdownLine(line: string) {
-  return line
-    .replace(/^#{1,6}\s*/, "")
-    .replace(/\*\*/g, "")
-    .trim();
+ return line
+ .replace(/^#{1,6}\s*/, "")
+ .replace(/\*\*/g, "")
+ .trim();
 }
 
 function renderReportMarkdown(text: string) {
-  const lines = text.split("\n");
-  const elements: ReactNode[] = [];
-  let listItems: string[] = [];
-  let paragraphLines: string[] = [];
+ const lines = text.split("\n");
+ const elements: ReactNode[] = [];
+ let listItems: string[] = [];
+ let paragraphLines: string[] = [];
 
-  function flushParagraph() {
-    if (!paragraphLines.length) return;
+ function flushParagraph() {
+ if (!paragraphLines.length) return;
 
-    const paragraph = paragraphLines.join(" ").trim();
+ const paragraph = paragraphLines.join(" ").trim();
 
-    if (paragraph) {
-      elements.push(
-        <p key={`p-${elements.length}`} className="mb-4 leading-8 text-neutral-200">
-          {renderInlineFormatting(paragraph)}
-        </p>
-      );
-    }
+ if (paragraph) {
+ elements.push(
+ <p key={`p-${elements.length}`} className="mb-4 leading-8 text-neutral-200">
+ {renderInlineFormatting(paragraph)}
+ </p>
+ );
+ }
 
-    paragraphLines = [];
-  }
+ paragraphLines = [];
+ }
 
-  function flushList() {
-    if (!listItems.length) return;
+ function flushList() {
+ if (!listItems.length) return;
 
-    elements.push(
-      <ul key={`ul-${elements.length}`} className="mb-5 ml-5 list-disc space-y-2 text-neutral-200">
-        {listItems.map((item, index) => (
-          <li key={index} className="leading-7">
-            {renderInlineFormatting(item)}
-          </li>
-        ))}
-      </ul>
-    );
+ elements.push(
+ <ul key={`ul-${elements.length}`} className="mb-5 ml-5 list-disc space-y-2 text-neutral-200">
+ {listItems.map((item, index) => (
+ <li key={index} className="leading-7">
+ {renderInlineFormatting(item)}
+ </li>
+ ))}
+ </ul>
+ );
 
-    listItems = [];
-  }
+ listItems = [];
+ }
 
-  lines.forEach((rawLine) => {
-    const line = rawLine.trim();
+ lines.forEach((rawLine) => {
+ const line = rawLine.trim();
 
-    if (!line) {
-      flushParagraph();
-      flushList();
-      return;
-    }
+ if (!line) {
+ flushParagraph();
+ flushList();
+ return;
+ }
 
-    if (line.startsWith("# ")) {
-      flushParagraph();
-      flushList();
+ if (line.startsWith("# ")) {
+ flushParagraph();
+ flushList();
 
-      elements.push(
-        <h1 key={`h1-${elements.length}`} className="mb-5 mt-2 text-3xl font-black tracking-tight text-amber-300 sm:text-4xl">
-          {cleanMarkdownLine(line)}
-        </h1>
-      );
-      return;
-    }
+ elements.push(
+ <h1 key={`h1-${elements.length}`} className="mb-5 mt-2 text-3xl font-black tracking-tight text-amber-300 sm:text-4xl">
+ {cleanMarkdownLine(line)}
+ </h1>
+ );
+ return;
+ }
 
-    if (line.startsWith("## ")) {
-      flushParagraph();
-      flushList();
+ if (line.startsWith("## ")) {
+ flushParagraph();
+ flushList();
 
-      elements.push(
-        <h2 key={`h2-${elements.length}`} className="mb-3 mt-8 border-t border-neutral-800 pt-6 text-2xl font-black text-neutral-50">
-          {cleanMarkdownLine(line)}
-        </h2>
-      );
-      return;
-    }
+ elements.push(
+ <h2 key={`h2-${elements.length}`} className="mb-3 mt-8 border-t border-neutral-800 pt-6 text-2xl font-black text-neutral-50">
+ {cleanMarkdownLine(line)}
+ </h2>
+ );
+ return;
+ }
 
-    if (line.startsWith("### ")) {
-      flushParagraph();
-      flushList();
+ if (line.startsWith("### ")) {
+ flushParagraph();
+ flushList();
 
-      elements.push(
-        <h3 key={`h3-${elements.length}`} className="mb-3 mt-6 text-xl font-black text-amber-200">
-          {cleanMarkdownLine(line)}
-        </h3>
-      );
-      return;
-    }
+ elements.push(
+ <h3 key={`h3-${elements.length}`} className="mb-3 mt-6 text-xl font-black text-amber-200">
+ {cleanMarkdownLine(line)}
+ </h3>
+ );
+ return;
+ }
 
-    if (line.startsWith("- ") || line.startsWith("* ")) {
-      flushParagraph();
-      listItems.push(line.slice(2).trim());
-      return;
-    }
+ if (line.startsWith("- ") || line.startsWith("* ")) {
+ flushParagraph();
+ listItems.push(line.slice(2).trim());
+ return;
+ }
 
-    if (/^\d+\.\s+/.test(line)) {
-      flushParagraph();
-      listItems.push(line.replace(/^\d+\.\s+/, "").trim());
-      return;
-    }
+ if (/^\d+\.\s+/.test(line)) {
+ flushParagraph();
+ listItems.push(line.replace(/^\d+\.\s+/, "").trim());
+ return;
+ }
 
-    paragraphLines.push(line);
-  });
+ paragraphLines.push(line);
+ });
 
-  flushParagraph();
-  flushList();
+ flushParagraph();
+ flushList();
 
-  return elements;
+ return elements;
 }
 
 type IdeaReportLike = {
-  id?: string;
-  title?: string | null;
-  content?: unknown;
-  intake?: unknown;
+ id?: string;
+ title?: string | null;
+ content?: unknown;
+ intake?: unknown;
 };
 
 function isPlainObject(value: unknown): value is Record<string, unknown> {
-  return typeof value === "object" && value !== null && !Array.isArray(value);
+ return typeof value === "object" && value !== null && !Array.isArray(value);
 }
 
 function decodeMaybeJson(value: unknown): unknown {
-  let current = value;
+ let current = value;
 
-  for (let index = 0; index < 3; index += 1) {
-    if (typeof current !== "string") {
-      return current;
-    }
+ for (let index = 0; index < 3; index += 1) {
+ if (typeof current !== "string") {
+ return current;
+ }
 
-    const trimmed = current.trim();
+ const trimmed = current.trim();
 
-    if (!trimmed) {
-      return "";
-    }
+ if (!trimmed) {
+ return "";
+ }
 
-    const looksJson =
-      (trimmed.startsWith("{") && trimmed.endsWith("}")) ||
-      (trimmed.startsWith("[") && trimmed.endsWith("]")) ||
-      (trimmed.startsWith("\"") && trimmed.endsWith("\""));
+ const looksJson =
+ (trimmed.startsWith("{") && trimmed.endsWith("}")) ||
+ (trimmed.startsWith("[") && trimmed.endsWith("]")) ||
+ (trimmed.startsWith("\"") && trimmed.endsWith("\""));
 
-    if (!looksJson) {
-      return current;
-    }
+ if (!looksJson) {
+ return current;
+ }
 
-    try {
-      current = JSON.parse(trimmed);
-    } catch {
-      return current;
-    }
-  }
+ try {
+ current = JSON.parse(trimmed);
+ } catch {
+ return current;
+ }
+ }
 
-  return current;
+ return current;
 }
 
 function getIdeaReportString(value: Record<string, unknown>, key: string) {
-  const field = value[key];
-  return typeof field === "string" ? field.trim() : "";
+ const field = value[key];
+ return typeof field === "string" ? field.trim() : "";
 }
 
 function getIdeaReportMoves(value: Record<string, unknown>) {
-  const rawMoves = value.nextThreeMoves;
+ const rawMoves = value.nextThreeMoves;
 
-  if (!Array.isArray(rawMoves)) {
-    return [];
-  }
+ if (!Array.isArray(rawMoves)) {
+ return [];
+ }
 
-  return rawMoves
-    .filter((move): move is string => typeof move === "string")
-    .map((move) => move.trim())
-    .filter(Boolean)
-    .slice(0, 3);
+ return rawMoves
+ .filter((move): move is string => typeof move === "string")
+ .map((move) => move.trim())
+ .filter(Boolean)
+ .slice(0, 3);
 }
 
 function extractSubmittedText({
-  contentObject,
-  intakeObject,
+ contentObject,
+ intakeObject,
 }: {
-  contentObject: Record<string, unknown>;
-  intakeObject: Record<string, unknown>;
+ contentObject: Record<string, unknown>;
+ intakeObject: Record<string, unknown>;
 }) {
-  const possibleKeys = [
-    "submittedText",
-    "rawIdea",
-    "idea",
-    "ideaText",
-    "problem",
-    "description",
-    "sourceText",
-    "originalText",
-  ];
+ const possibleKeys = [
+ "submittedText",
+ "rawIdea",
+ "idea",
+ "ideaText",
+ "problem",
+ "description",
+ "sourceText",
+ "originalText",
+ ];
 
-  for (const key of possibleKeys) {
-    const fromContent = getIdeaReportString(contentObject, key);
-    if (fromContent) return fromContent;
+ for (const key of possibleKeys) {
+ const fromContent = getIdeaReportString(contentObject, key);
+ if (fromContent) return fromContent;
 
-    const fromIntake = getIdeaReportString(intakeObject, key);
-    if (fromIntake) return fromIntake;
-  }
+ const fromIntake = getIdeaReportString(intakeObject, key);
+ if (fromIntake) return fromIntake;
+ }
 
-  return "";
+ return "";
 }
 
 function buildFogFromIdeaReport({
-  title,
-  submittedText,
-  ideanator,
+ title,
+ submittedText,
+ ideanator,
 }: {
-  title: string;
-  submittedText: string;
-  ideanator: Record<string, unknown>;
+ title: string;
+ submittedText: string;
+ ideanator: Record<string, unknown>;
 }) {
-  const moves = getIdeaReportMoves(ideanator);
+ const moves = getIdeaReportMoves(ideanator);
 
-  return `SOURCE: Saved Idea Check Report
+ return `SOURCE: Saved Idea Check Report
 
 IDEA NAME:
 ${getIdeaReportString(ideanator, "ideaName") || title || "Untitled Idea"}
@@ -511,1375 +511,1378 @@ Turn this saved Idea Check report into a reusable thinking rig. The rig should h
 }
 
 function buildBlueprintFromIdeaReport({
-  title,
-  ideanator,
+ title,
+ ideanator,
 }: {
-  title: string;
-  ideanator: Record<string, unknown>;
+ title: string;
+ ideanator: Record<string, unknown>;
 }): Blueprint {
-  const ideaName = getIdeaReportString(ideanator, "ideaName") || title || "Untitled Idea";
-  const ideaKind = getIdeaReportString(ideanator, "ideaKind") || "Idea";
-  const verdict = getIdeaReportString(ideanator, "verdict") || "No verdict";
-  const strongestUseCase = getIdeaReportString(ideanator, "strongestUseCase");
-  const weakSpots = getIdeaReportString(ideanator, "weakSpots");
-  const audience = getIdeaReportString(ideanator, "audience");
-  const moneyValuePath = getIdeaReportString(ideanator, "moneyValuePath");
-  const avoidance = getIdeaReportString(ideanator, "avoidance");
-  const moves = getIdeaReportMoves(ideanator);
+ const ideaName = getIdeaReportString(ideanator, "ideaName") || title || "Untitled Idea";
+ const ideaKind = getIdeaReportString(ideanator, "ideaKind") || "Idea";
+ const verdict = getIdeaReportString(ideanator, "verdict") || "No verdict";
+ const strongestUseCase = getIdeaReportString(ideanator, "strongestUseCase");
+ const weakSpots = getIdeaReportString(ideanator, "weakSpots");
+ const audience = getIdeaReportString(ideanator, "audience");
+ const moneyValuePath = getIdeaReportString(ideanator, "moneyValuePath");
+ const avoidance = getIdeaReportString(ideanator, "avoidance");
+ const moves = getIdeaReportMoves(ideanator);
 
-  return {
-    rigName: `${ideaName} Development Rig`,
-    purpose: `Turn the saved Idea Check report for ${ideaName} into a reusable working structure for developing, explaining, testing, or pitching the idea.`,
-    audience: audience || "A smart but unfamiliar reader who needs to understand why this idea matters.",
-    outputType: `${ideaKind} development / pitch / next-step output`,
-    tone: "Clear, practical, human, direct, and honest.",
-    constraints: [
-      `Respect the original Idea Check verdict: ${verdict}.`,
-      "Do not erase the weak spots. Use them as design pressure.",
-      "Do not turn the idea into generic startup language.",
-      "Preserve the useful mess, but convert it into practical next steps.",
-      "Do not invent customers, legal claims, patent claims, revenue, technical certainty, or market proof.",
-    ],
-    missingPieces: [
-      strongestUseCase ? `Validate strongest use case: ${strongestUseCase}` : "Clarify the strongest use case.",
-      weakSpots ? `Address weak spots: ${weakSpots}` : "Identify the biggest weak spots.",
-      moneyValuePath ? `Clarify value path: ${moneyValuePath}` : "Clarify the value path.",
-      avoidance ? `Confront likely avoidance: ${avoidance}` : "Name the part the user may be avoiding.",
-      ...moves.map((move) => `Next move: ${move}`),
-    ].slice(0, 8),
-    promptStrategy:
-      "Use the saved Idea Check report as source material. Preserve the diagnosis, then turn it into a practical reusable rig that can produce pitches, plans, explanations, grant answers, product notes, or next-step work without losing the original insight.",
-  };
+ return {
+ rigName: `${ideaName} Development Rig`,
+ purpose: `Turn the saved Idea Check report for ${ideaName} into a reusable working structure for developing, explaining, testing, or pitching the idea.`,
+ audience: audience || "A smart but unfamiliar reader who needs to understand why this idea matters.",
+ outputType: `${ideaKind} development / pitch / next-step output`,
+ tone: "Clear, practical, human, direct, and honest.",
+ constraints: [
+ `Respect the original Idea Check verdict: ${verdict}.`,
+ "Do not erase the weak spots. Use them as design pressure.",
+ "Do not turn the idea into generic startup language.",
+ "Preserve the useful mess, but convert it into practical next steps.",
+ "Do not invent customers, legal claims, patent claims, revenue, technical certainty, or market proof.",
+ ],
+ missingPieces: [
+ strongestUseCase ? `Validate strongest use case: ${strongestUseCase}` : "Clarify the strongest use case.",
+ weakSpots ? `Address weak spots: ${weakSpots}` : "Identify the biggest weak spots.",
+ moneyValuePath ? `Clarify value path: ${moneyValuePath}` : "Clarify the value path.",
+ avoidance ? `Confront likely avoidance: ${avoidance}` : "Name the part the user may be avoiding.",
+ ...moves.map((move) => `Next move: ${move}`),
+ ].slice(0, 8),
+ promptStrategy:
+ "Use the saved Idea Check report as source material. Preserve the diagnosis, then turn it into a practical reusable rig that can produce pitches, plans, explanations, grant answers, product notes, or next-step work without losing the original insight.",
+ };
 }
 
 function extractDocxParagraphText(paragraph: Element) {
-  const pieces: string[] = [];
+ const pieces: string[] = [];
 
-  function walk(node: Node) {
-    if (node.nodeType !== Node.ELEMENT_NODE) return;
+ function walk(node: Node) {
+ if (node.nodeType !== Node.ELEMENT_NODE) return;
 
-    const element = node as Element;
-    const name = element.nodeName;
+ const element = node as Element;
+ const name = element.nodeName;
 
-    if (name === "w:t") {
-      pieces.push(element.textContent || "");
-      return;
-    }
+ if (name === "w:t") {
+ pieces.push(element.textContent || "");
+ return;
+ }
 
-    if (name === "w:tab") {
-      pieces.push("\t");
-      return;
-    }
+ if (name === "w:tab") {
+ pieces.push("\t");
+ return;
+ }
 
-    if (name === "w:br" || name === "w:cr") {
-      pieces.push("\n");
-      return;
-    }
+ if (name === "w:br" || name === "w:cr") {
+ pieces.push("\n");
+ return;
+ }
 
-    Array.from(element.childNodes).forEach(walk);
-  }
+ Array.from(element.childNodes).forEach(walk);
+ }
 
-  Array.from(paragraph.childNodes).forEach(walk);
+ Array.from(paragraph.childNodes).forEach(walk);
 
-  return pieces.join("").replace(/\u00a0/g, " ").trimEnd();
+ return pieces.join("").replace(/\u00a0/g, " ").trimEnd();
 }
 
 async function readDocxFile(file: File) {
-  const arrayBuffer = await file.arrayBuffer();
-  const zip = await JSZip.loadAsync(arrayBuffer);
-  const documentFile = zip.file("word/document.xml");
+ const arrayBuffer = await file.arrayBuffer();
+ const zip = await JSZip.loadAsync(arrayBuffer);
+ const documentFile = zip.file("word/document.xml");
 
-  if (!documentFile) {
-    throw new Error("Could not find readable document text inside the Word file.");
-  }
+ if (!documentFile) {
+ throw new Error("Could not find readable document text inside the Word file.");
+ }
 
-  const xmlText = await documentFile.async("string");
-  const parser = new DOMParser();
-  const xml = parser.parseFromString(xmlText, "application/xml");
+ const xmlText = await documentFile.async("string");
+ const parser = new DOMParser();
+ const xml = parser.parseFromString(xmlText, "application/xml");
 
-  if (xml.getElementsByTagName("parsererror").length > 0) {
-    throw new Error("Could not parse the Word document.");
-  }
+ if (xml.getElementsByTagName("parsererror").length > 0) {
+ throw new Error("Could not parse the Word document.");
+ }
 
-  const paragraphs = Array.from(xml.getElementsByTagName("w:p"));
+ const paragraphs = Array.from(xml.getElementsByTagName("w:p"));
 
-  const extractedText = paragraphs
-    .map(extractDocxParagraphText)
-    .map((line) => line.trim())
-    .filter(Boolean)
-    .join("\n\n");
+ const extractedText = paragraphs
+ .map(extractDocxParagraphText)
+ .map((line) => line.trim())
+ .filter(Boolean)
+ .join("\n\n");
 
-  if (!extractedText.trim()) {
-    throw new Error("The Word document did not contain readable text.");
-  }
+ if (!extractedText.trim()) {
+ throw new Error("The Word document did not contain readable text.");
+ }
 
-  return extractedText;
+ return extractedText;
 }
 export default function IdeanatorPage() {
-  const [fog, setFog] = useState("");
-  const [blueprint, setBlueprint] = useState<Blueprint>(emptyBlueprint);
-  const [showPrompt, setShowPrompt] = useState(false);
-  const [output, setOutput] = useState("");
-  const [readinessReport, setReadinessReport] = useState<RigReadiness | null>(null);
-  const [savedRigs, setSavedRigs] = useState<SavedRig[]>([]);
-  const [loadingBlueprint, setLoadingBlueprint] = useState(false);
-  const [runningRig, setRunningRig] = useState(false);
-  const [checkingRig, setCheckingRig] = useState(false);
-  const [savingRig, setSavingRig] = useState(false);
-  const [updatingRig, setUpdatingRig] = useState(false);
-  const [loadingRigs, setLoadingRigs] = useState(false);
-  const [archivingRigId, setArchivingRigId] = useState("");
-  const [activeRigId, setActiveRigId] = useState("");
-  const [error, setError] = useState("");
-  const [message, setMessage] = useState("");
-
-  const actualPrompt = useMemo(() => assemblePrompt(fog, blueprint), [fog, blueprint]);
-  const blueprintCopy = useMemo(() => formatBlueprintForCopy(blueprint), [blueprint]);
-  const fullRigPacket = useMemo(
-    () => formatFullRigPacket({ fog, blueprint, actualPrompt, output }),
-    [fog, blueprint, actualPrompt, output]
-  );
-
-  async function getSessionToken() {
-    const supabase = getSupabaseClient();
-
-    const {
-      data: { session },
-    } = await supabase.auth.getSession();
-
-    if (!session?.access_token) {
-      window.location.href = "/login";
-      return "";
-    }
-
-    return session.access_token;
-  }
-
-  async function loadSavedRigs(showLoadedMessage = false) {
-    try {
-      setLoadingRigs(true);
-      setError("");
-
-      const token = await getSessionToken();
-
-      if (!token) return;
-
-      const response = await fetch("/api/ideanator/rigs", {
-        headers: {
-          authorization: `Bearer ${token}`,
-        },
-      });
-
-      const result = await response.json();
-
-      if (!response.ok || !result.ok) {
-        throw new Error(result.error || "Could not load saved rigs.");
-      }
-
-      setSavedRigs(result.rigs || []);
-
-      if (showLoadedMessage) {
-        setMessage("Saved rigs refreshed.");
-      }
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Could not load saved rigs.");
-    } finally {
-      setLoadingRigs(false);
-    }
-  }
-
-  useEffect(() => {
-    loadSavedRigs(false);
-  }, []);
-
-  useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const ideaReportId = params.get("ideaReport");
-
-    if (!ideaReportId) {
-      return;
-    }
-
-    buildRigFromIdeaReport(ideaReportId);
-  }, []);
-
-  useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const requestedRigId = params.get("openRig");
-
-    if (!requestedRigId || savedRigs.length === 0 || activeRigId === requestedRigId) {
-      return;
-    }
-
-    const matchedRig = savedRigs.find((rig) => rig.id === requestedRigId);
-
-    if (matchedRig) {
-      openSavedRig(matchedRig);
-    }
-  }, [savedRigs, activeRigId]);
-
-  async function copyToClipboard(label: string, value: string) {
-    try {
-      setError("");
-      setMessage("");
-
-      if (!value.trim()) {
-        setError(`Nothing to copy yet for ${label}.`);
-        return;
-      }
-
-      await navigator.clipboard.writeText(value);
-      setMessage(`${label} copied.`);
-    } catch {
-      setError("Could not copy automatically. Select the text and copy it manually.");
-    }
-  }
-
-  function slugifyFileName(value: string) {
-    return (
-      value
-        .toLowerCase()
-        .replace(/[^a-z0-9]+/g, "-")
-        .replace(/^-+|-+$/g, "")
-        .slice(0, 80) || "ideanator-rig"
-    );
-  }
-
-  function downloadTextFile(
-    label: string,
-    filename: string,
-    value: string,
-    mimeType = "text/markdown;charset=utf-8"
-  ) {
-    try {
-      setError("");
-      setMessage("");
-
-      if (!value.trim()) {
-        setError(`Nothing to download yet for ${label}.`);
-        return;
-      }
-
-      const safeFileName = filename.trim() || "ideanator-export.md";
-      const blob = new Blob([value], { type: mimeType });
-      const url = window.URL.createObjectURL(blob);
-      const anchor = document.createElement("a");
-
-      anchor.href = url;
-      anchor.download = safeFileName;
-      document.body.appendChild(anchor);
-      anchor.click();
-      anchor.remove();
-
-      window.URL.revokeObjectURL(url);
-
-      setMessage(`${label} downloaded.`);
-    } catch {
-      setError("Could not download the file.");
-    }
-  }
-
-  async function buildRigFromIdeaReport(reportId: string) {
-    try {
-      setLoadingBlueprint(true);
-      setError("");
-      setMessage("");
-      setOutput("");
-      setReadinessReport(null);
-      setActiveRigId("");
-
-      const token = await getSessionToken();
-
-      if (!token) {
-        return;
-      }
-
-      const response = await fetch(`/api/reports/${encodeURIComponent(reportId)}`, {
-        headers: {
-          authorization: `Bearer ${token}`,
-        },
-      });
-
-      const result = await response.json();
-
-      if (!response.ok) {
-        throw new Error(result.error || "Could not load the saved idea report.");
-      }
-
-      const savedReport = (result.report || result.savedReport || result.data || result) as IdeaReportLike;
-      const title = savedReport.title || "Untitled Idea";
-
-      const decodedContent = decodeMaybeJson(savedReport.content);
-      const contentObject = isPlainObject(decodedContent) ? decodedContent : {};
-
-      const decodedIntake = decodeMaybeJson(savedReport.intake);
-      const intakeObject = isPlainObject(decodedIntake) ? decodedIntake : {};
-
-      const contentIdeanator = contentObject.ideanator;
-      const intakeIdeanator = intakeObject.ideanator;
-
-      const ideanator =
-        isPlainObject(contentIdeanator)
-          ? contentIdeanator
-          : isPlainObject(intakeIdeanator)
-            ? intakeIdeanator
-            : {
-                ...contentObject,
-                ...intakeObject,
-              };
-
-      const submittedText = extractSubmittedText({
-        contentObject,
-        intakeObject,
-      });
-
-      if (Object.keys(ideanator).length === 0 && !submittedText) {
-        throw new Error("That saved report did not contain usable Ideanator source material.");
-      }
-
-      setFog(
-        buildFogFromIdeaReport({
-          title,
-          submittedText,
-          ideanator,
-        })
-      );
-
-      setBlueprint(
-        buildBlueprintFromIdeaReport({
-          title,
-          ideanator,
-        })
-      );
-
-      setShowPrompt(true);
-      setMessage("Built a starter rig from the saved Idea Check report. Review the blueprint, then run the rig.");
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Could not build rig from saved idea report.");
-    } finally {
-      setLoadingBlueprint(false);
-    }
-  }
-
-  async function handleFogFileUpload(event: ChangeEvent<HTMLInputElement>) {
-    try {
-      setError("");
-      setMessage("");
-
-      const file = event.target.files?.[0];
-
-      if (!file) {
-        return;
-      }
-
-      const lowerName = file.name.toLowerCase();
-
-      const isTextFile =
-        lowerName.endsWith(".txt") ||
-        lowerName.endsWith(".md") ||
-        file.type === "text/plain" ||
-        file.type === "text/markdown";
-
-      const isDocxFile =
-        lowerName.endsWith(".docx") ||
-        file.type === "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
-
-      if (!isTextFile && !isDocxFile) {
-        setError("For uploads, use .txt, .md, or .docx files. PDF can wait in the haunted hallway.");
-        event.target.value = "";
-        return;
-      }
-
-      const maxBytes = isDocxFile ? 1200000 : 250000;
-
-      if (file.size > maxBytes) {
-        setError(
-          isDocxFile
-            ? "That DOCX is too large for this upload pass. Keep it under 1.2 MB for now."
-            : "That file is too large for this upload pass. Keep TXT/MD files under 250 KB for now."
-        );
-        event.target.value = "";
-        return;
-      }
-
-      const rawText = isDocxFile ? await readDocxFile(file) : await file.text();
-
-      const cleaned = rawText
-        .replace(/\r\n/g, "\n")
-        .replace(/[ \t]+\n/g, "\n")
-        .replace(/\n{5,}/g, "\n\n\n")
-        .trim();
-
-      if (!cleaned) {
-        setError("That file did not contain readable text.");
-        event.target.value = "";
-        return;
-      }
-
-      setFog((current) => {
-        if (!current.trim()) {
-          return `UPLOADED FILE: ${file.name}\n\n${cleaned}`;
-        }
-
-        return `${current.trim()}\n\n---\n\nUPLOADED FILE: ${file.name}\n\n${cleaned}`;
-      });
-
-      setOutput("");
-      setReadinessReport(null);
-      setActiveRigId("");
-      setMessage(`Loaded ${file.name} into the fog box.`);
-      event.target.value = "";
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Could not read that file.");
-      event.target.value = "";
-    }
-  }
-  async function generateBlueprint() {
-    try {
-      setLoadingBlueprint(true);
-      setError("");
-      setMessage("");
-      setOutput("");
-      setReadinessReport(null);
-      setActiveRigId("");
-
-      const token = await getSessionToken();
-
-      if (!token) {
-        return;
-      }
-
-      const response = await fetch("/api/ideanator/blueprint", {
-        method: "POST",
-        headers: {
-          "content-type": "application/json",
-          authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          fog,
-        }),
-      });
-
-      const result = await response.json();
-
-      if (!response.ok || !result.ok) {
-        throw new Error(result.error || "Could not generate blueprint.");
-      }
-
-      setBlueprint(result.blueprint || emptyBlueprint);
-      setShowPrompt(true);
-      setMessage("Blueprint generated.");
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Something went wrong.");
-    } finally {
-      setLoadingBlueprint(false);
-    }
-  }
-
-  function updateBlueprintField(field: TextBlueprintField, value: string) {
-    setBlueprint((current) => ({
-      ...current,
-      [field]: value,
-    }));
-  }
-
-  function updateListField(field: "constraints" | "missingPieces", value: string) {
-    setBlueprint((current) => ({
-      ...current,
-      [field]: value
-        .split("\n")
-        .map((item) => item.trim())
-        .filter(Boolean),
-    }));
-  }
-
-  async function runRigPreview() {
-    try {
-      setRunningRig(true);
-      setError("");
-      setMessage("");
-      setOutput("");
-      setReadinessReport(null);
-
-      if (!fog.trim()) {
-        setError("Dump the idea first. The rig cannot run on vibes and dust.");
-        return;
-      }
-
-      if (!blueprint.purpose.trim()) {
-        setError("Generate or fill in the blueprint first.");
-        return;
-      }
-
-      const token = await getSessionToken();
-
-      if (!token) {
-        return;
-      }
-
-      const response = await fetch("/api/ideanator/run", {
-        method: "POST",
-        headers: {
-          "content-type": "application/json",
-          authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          fog,
-          blueprint,
-          actualPrompt,
-        }),
-      });
-
-      const result = await response.json();
-
-      if (!response.ok || !result.ok) {
-        throw new Error(result.error || "Could not run rig.");
-      }
-
-      setOutput(result.output || "");
-      setMessage(
-        activeRigId
-          ? "Rig ran successfully. Click Update Open Rig to save these changes."
-          : "Rig ran successfully."
-      );
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Something went wrong while running the rig.");
-    } finally {
-      setRunningRig(false);
-    }
-  }
-
-  async function checkRigReadiness() {
-    try {
-      setCheckingRig(true);
-      setError("");
-      setMessage("");
-
-      if (!fog.trim()) {
-        setError("The rig needs fog/source material before it can be checked.");
-        return;
-      }
-
-      if (!blueprint.purpose.trim()) {
-        setError("Generate or fill in the blueprint before checking the rig.");
-        return;
-      }
-
-      const token = await getSessionToken();
-
-      if (!token) {
-        return;
-      }
-
-      const response = await fetch("/api/ideanator/check", {
-        method: "POST",
-        headers: {
-          "content-type": "application/json",
-          authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          fog,
-          blueprint,
-          output,
-        }),
-      });
-
-      const result = await response.json();
-
-      if (!response.ok || !result.ok) {
-        throw new Error(result.error || "Could not check rig readiness.");
-      }
-
-      const readiness = result.readiness as RigReadiness;
-
-      setReadinessReport(readiness);
-
-      if (activeRigId) {
-        const saveResponse = await fetch("/api/ideanator/rigs", {
-          method: "PATCH",
-          headers: {
-            "content-type": "application/json",
-            authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({
-            id: activeRigId,
-            readinessReport: readiness,
-          }),
-        });
-
-        const saveResult = await saveResponse.json();
-
-        if (saveResponse.ok && saveResult.ok && saveResult.rig) {
-          const updatedRig = saveResult.rig as SavedRig;
-
-          setSavedRigs((current) =>
-            current.map((rig) => (rig.id === updatedRig.id ? updatedRig : rig))
-          );
-
-          setMessage("Rig readiness check complete and saved to the open rig.");
-        } else {
-          setMessage("Rig readiness check complete. It showed on screen, but did not save to the open rig.");
-        }
-      } else {
-        setMessage("Rig readiness check complete. Save the rig first if you want this status stored.");
-      }
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Something went wrong while checking the rig.");
-    } finally {
-      setCheckingRig(false);
-    }
-  }
-
-  async function saveRigAsNew() {
-    try {
-      setSavingRig(true);
-      setError("");
-      setMessage("");
-
-      const rigName = blueprint.rigName || blueprint.outputType || "Untitled Thinking Rig";
-
-      if (!blueprint.purpose.trim()) {
-        setError("Generate or fill in the blueprint before saving a rig.");
-        return;
-      }
-
-      const token = await getSessionToken();
-
-      if (!token) {
-        return;
-      }
-
-      const response = await fetch("/api/ideanator/rigs", {
-        method: "POST",
-        headers: {
-          "content-type": "application/json",
-          authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          rigName,
-          fog,
-          blueprint,
-          actualPrompt,
-          latestOutput: output,
-        }),
-      });
-
-      const result = await response.json();
-
-      if (!response.ok || !result.ok) {
-        throw new Error(result.error || "Could not save rig.");
-      }
-
-      const savedRig = result.rig as SavedRig;
-
-      setSavedRigs((current) => [savedRig, ...current]);
-      setActiveRigId(savedRig.id);
-      setMessage("Saved as a new rig.");
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Could not save rig.");
-    } finally {
-      setSavingRig(false);
-    }
-  }
-
-
-  async function updateOpenRig() {
-    try {
-      setUpdatingRig(true);
-      setError("");
-      setMessage("");
-
-      if (!activeRigId) {
-        setError("Open a saved rig first, or use Save as New Rig.");
-        return;
-      }
-
-      if (!blueprint.purpose.trim()) {
-        setError("The open rig needs a blueprint before it can be updated.");
-        return;
-      }
-
-      const token = await getSessionToken();
-
-      if (!token) {
-        return;
-      }
-
-      const response = await fetch("/api/ideanator/rigs", {
-        method: "PATCH",
-        headers: {
-          "content-type": "application/json",
-          authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          id: activeRigId,
-          rigName: blueprint.rigName || "Untitled Thinking Rig",
-          fog,
-          blueprint,
-          actualPrompt,
-          latestOutput: output,
-        }),
-      });
-
-      const result = await response.json();
-
-      if (!response.ok || !result.ok) {
-        throw new Error(result.error || "Could not update open rig.");
-      }
-
-      const updatedRig = result.rig as SavedRig;
-
-      setSavedRigs((current) =>
-        current.map((rig) => (rig.id === updatedRig.id ? updatedRig : rig))
-      );
-
-      setMessage("Open rig updated.");
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Could not update open rig.");
-    } finally {
-      setUpdatingRig(false);
-    }
-  }
-  function openSavedRig(rig: SavedRig) {
-    const nextBlueprint = coerceBlueprint(rig.blueprint);
-
-    setFog(rig.fog || "");
-    setBlueprint({
-      ...nextBlueprint,
-      rigName: nextBlueprint.rigName || rig.rig_name || "Untitled Thinking Rig",
-    });
-    setOutput(rig.latest_output || "");
-    setReadinessReport(rig.readiness_report || null);
-    setActiveRigId(rig.id);
-    setShowPrompt(true);
-    setError("");
-    setMessage(`Opened ${rig.rig_name || "saved rig"}.`);
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  }
-
-  async function archiveSavedRig(rig: SavedRig) {
-    try {
-      setArchivingRigId(rig.id);
-      setError("");
-      setMessage("");
-
-      const token = await getSessionToken();
-
-      if (!token) return;
-
-      const response = await fetch("/api/ideanator/rigs", {
-        method: "PATCH",
-        headers: {
-          "content-type": "application/json",
-          authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          id: rig.id,
-          isArchived: true,
-        }),
-      });
-
-      const result = await response.json();
-
-      if (!response.ok || !result.ok) {
-        throw new Error(result.error || "Could not archive rig.");
-      }
-
-      setSavedRigs((current) => current.filter((item) => item.id !== rig.id));
-
-      if (activeRigId === rig.id) {
-        setActiveRigId("");
-      }
-
-      setMessage("Rig archived.");
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Could not archive rig.");
-    } finally {
-      setArchivingRigId("");
-    }
-  }
-
-  return (
-    <main className="ideanator-workbench min-h-screen bg-neutral-950 px-4 py-6 text-neutral-100 sm:px-6 lg:px-8">
-      <div className="mx-auto flex max-w-7xl flex-col gap-6">
-        <section className="rounded-3xl border border-neutral-800 bg-neutral-900/70 p-6 shadow-2xl">
-          <p className="text-sm font-semibold uppercase tracking-[0.3em] text-amber-400">
-            The Ideanator
-          </p>
-          <h1 className="mt-3 text-3xl font-black tracking-tight sm:text-5xl">
-            Fog in. Thinking Rig out.
-          </h1>
-          <p className="mt-4 max-w-3xl text-base leading-7 text-neutral-300">
-            Drop the messy idea on the left. The blueprint forms on the right.
-            This is not a prompt builder. It is a thinking prosthetic.
-          </p>
-        </section>
-
-        {error && (
-          <section className="rounded-2xl border border-red-900 bg-red-950/60 p-4 text-red-200">
-            {error}
-          </section>
-        )}
-
-        {message && (
-          <section className="rounded-2xl border border-emerald-900 bg-emerald-950/50 p-4 text-emerald-200">
-            {message}
-          </section>
-        )}
-
-        <section className="grid gap-6 lg:grid-cols-[1fr_1fr]">
-          <div className="rounded-3xl border border-neutral-800 bg-neutral-900 p-5 shadow-xl">
-            <div className="mb-4 flex items-center justify-between gap-4">
-              <div>
-                <h2 className="text-xl font-bold">The Fog</h2>
-                <p className="text-sm text-neutral-400">
-                  Messy thoughts, fragments, panic, notes, half-formed brilliance.
-                </p>
-
-                <label className="mt-3 inline-flex cursor-pointer items-center justify-center rounded-xl border border-neutral-700 px-3 py-2 text-xs font-black uppercase tracking-[0.12em] text-neutral-100 transition hover:border-amber-400 hover:text-amber-300">
-                  Upload TXT / MD / DOCX
-                  <input
-                    type="file"
-                    accept=".txt,.md,.docx,text/plain,text/markdown,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-                    onChange={handleFogFileUpload}
-                    className="hidden"
-                  />
-                </label>
-              </div>
-              <span className="rounded-full bg-neutral-800 px-3 py-1 text-xs text-neutral-300">
-                Left pane
-              </span>
-            </div>
-
-            <textarea
-              value={fog}
-              onChange={(event) => setFog(event.target.value)}
-              placeholder="Tell me the idea badly. Seriously. Dump the mess here."
-              className="min-h-[420px] w-full resize-none rounded-2xl border border-neutral-700 bg-neutral-950 p-4 text-base leading-7 text-neutral-100 outline-none transition focus:border-amber-400"
-            />
-          </div>
-
-          <div className="rounded-3xl border border-neutral-800 bg-neutral-900 p-5 shadow-xl">
-            <div className="mb-4 flex items-center justify-between gap-4">
-              <div>
-                <h2 className="text-xl font-bold">The Blueprint</h2>
-                <p className="text-sm text-neutral-400">
-                  The system taking notes, not showing off.
-                </p>
-              </div>
-              <span className="rounded-full bg-neutral-800 px-3 py-1 text-xs text-neutral-300">
-                Right pane
-              </span>
-            </div>
-
-            <div className="mb-4 flex flex-wrap gap-3">
-              <button
-                type="button"
-                onClick={() => copyToClipboard("Blueprint", blueprintCopy)}
-                className="rounded-xl border border-neutral-700 px-3 py-2 text-sm font-bold text-neutral-100 transition hover:border-amber-400 hover:text-amber-300"
-              >
-                Copy Blueprint
-              </button>
-
-              <button
-                type="button"
-                onClick={() => copyToClipboard("Portable Prompt", actualPrompt)}
-                className="rounded-xl border border-neutral-700 px-3 py-2 text-sm font-bold text-neutral-100 transition hover:border-amber-400 hover:text-amber-300"
-              >
-                Copy Portable Prompt
-              </button>
-
-              <button
-                type="button"
-                onClick={() =>
-                  downloadTextFile(
-                    "Blueprint JSON",
-                    `${slugifyFileName(blueprint.rigName || "ideanator-rig")}-blueprint.json`,
-                    JSON.stringify(blueprint, null, 2),
-                    "application/json;charset=utf-8"
-                  )
-                }
-                className="rounded-xl border border-neutral-700 px-3 py-2 text-sm font-bold text-neutral-100 transition hover:border-amber-400 hover:text-amber-300"
-              >
-                Download Blueprint
-              </button>
-
-              {activeRigId && (
-                <span className="rounded-xl border border-emerald-900 bg-emerald-950/40 px-3 py-2 text-sm font-bold text-emerald-200">
-                  Opened Saved Rig
-                </span>
-              )}
-            </div>
-
-            <div className="space-y-4">
-              <label className="block">
-                <span className="mb-1 block text-sm font-semibold text-neutral-300">
-                  Rig Name
-                </span>
-                <input
-                  value={blueprint.rigName}
-                  onChange={(event) => updateBlueprintField("rigName", event.target.value)}
-                  placeholder="Example: School Safety Pitch Rig"
-                  className="w-full rounded-xl border border-neutral-700 bg-neutral-950 px-4 py-3 outline-none transition focus:border-amber-400"
-                />
-              </label>
-
-              <label className="block">
-                <span className="mb-1 block text-sm font-semibold text-neutral-300">
-                  Purpose
-                </span>
-                <input
-                  value={blueprint.purpose}
-                  onChange={(event) => updateBlueprintField("purpose", event.target.value)}
-                  placeholder="What is this trying to do?"
-                  className="w-full rounded-xl border border-neutral-700 bg-neutral-950 px-4 py-3 outline-none transition focus:border-amber-400"
-                />
-              </label>
-
-              <label className="block">
-                <span className="mb-1 block text-sm font-semibold text-neutral-300">
-                  Audience
-                </span>
-                <input
-                  value={blueprint.audience}
-                  onChange={(event) => updateBlueprintField("audience", event.target.value)}
-                  placeholder="Who is this for?"
-                  className="w-full rounded-xl border border-neutral-700 bg-neutral-950 px-4 py-3 outline-none transition focus:border-amber-400"
-                />
-              </label>
-
-              <label className="block">
-                <span className="mb-1 block text-sm font-semibold text-neutral-300">
-                  Output Type
-                </span>
-                <input
-                  value={blueprint.outputType}
-                  onChange={(event) => updateBlueprintField("outputType", event.target.value)}
-                  placeholder="Pitch, email, grant answer, product plan, etc."
-                  className="w-full rounded-xl border border-neutral-700 bg-neutral-950 px-4 py-3 outline-none transition focus:border-amber-400"
-                />
-              </label>
-
-              <label className="block">
-                <span className="mb-1 block text-sm font-semibold text-neutral-300">
-                  Tone
-                </span>
-                <input
-                  value={blueprint.tone}
-                  onChange={(event) => updateBlueprintField("tone", event.target.value)}
-                  placeholder="How should this sound?"
-                  className="w-full rounded-xl border border-neutral-700 bg-neutral-950 px-4 py-3 outline-none transition focus:border-amber-400"
-                />
-              </label>
-
-              <label className="block">
-                <span className="mb-1 block text-sm font-semibold text-neutral-300">
-                  Constraints
-                </span>
-                <textarea
-                  value={blueprint.constraints.join("\n")}
-                  onChange={(event) => updateListField("constraints", event.target.value)}
-                  placeholder="One constraint per line."
-                  className="min-h-[110px] w-full resize-none rounded-xl border border-neutral-700 bg-neutral-950 px-4 py-3 outline-none transition focus:border-amber-400"
-                />
-              </label>
-
-              <label className="block">
-                <span className="mb-1 block text-sm font-semibold text-neutral-300">
-                  Missing Pieces
-                </span>
-                <textarea
-                  value={blueprint.missingPieces.join("\n")}
-                  onChange={(event) => updateListField("missingPieces", event.target.value)}
-                  placeholder="One missing piece per line."
-                  className="min-h-[110px] w-full resize-none rounded-xl border border-neutral-700 bg-neutral-950 px-4 py-3 outline-none transition focus:border-amber-400"
-                />
-              </label>
-
-              <label className="block">
-                <span className="mb-1 block text-sm font-semibold text-neutral-300">
-                  Prompt Strategy
-                </span>
-                <textarea
-                  value={blueprint.promptStrategy}
-                  onChange={(event) => updateBlueprintField("promptStrategy", event.target.value)}
-                  placeholder="How should the AI approach this?"
-                  className="min-h-[130px] w-full resize-none rounded-xl border border-neutral-700 bg-neutral-950 px-4 py-3 outline-none transition focus:border-amber-400"
-                />
-              </label>
-            </div>
-          </div>
-        </section>
-
-        <section className="rounded-3xl border border-neutral-800 bg-neutral-900/95 p-4 shadow-2xl">
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-            <div>
-              <h2 className="font-bold">Thinking Rig Controls</h2>
-              <p className="text-sm text-neutral-400">
-                Generate or review the blueprint, inspect the portable prompt, run the rig, check readiness, then update or save the pattern.
-              </p>
-            </div>
-
-            <div className="flex flex-wrap gap-3">
-              <button
-                onClick={generateBlueprint}
-                disabled={loadingBlueprint}
-                className="rounded-xl bg-amber-400 px-4 py-3 font-bold text-neutral-950 transition hover:bg-amber-300 disabled:cursor-not-allowed disabled:opacity-60"
-              >
-                {loadingBlueprint ? "Thinking..." : "Generate Blueprint"}
-              </button>
-
-              <button
-                onClick={() => setShowPrompt((current) => !current)}
-                className="rounded-xl border border-neutral-700 px-4 py-3 font-bold text-neutral-100 transition hover:border-neutral-500"
-              >
-                {showPrompt ? "Hide Portable Prompt" : "Show Portable Prompt"}
-              </button>
-
-              <button
-                onClick={runRigPreview}
-                disabled={runningRig}
-                className="rounded-xl border border-neutral-700 px-4 py-3 font-bold text-neutral-100 transition hover:border-neutral-500 disabled:cursor-not-allowed disabled:opacity-60"
-              >
-                {runningRig ? "Running..." : "Run Rig"}
-              </button>
-
-              <button
-                onClick={checkRigReadiness}
-                disabled={checkingRig}
-                className="rounded-xl border border-emerald-500 px-4 py-3 font-bold text-emerald-300 transition hover:bg-emerald-500 hover:text-neutral-950 disabled:cursor-not-allowed disabled:opacity-60"
-              >
-                {checkingRig ? "Checking..." : "Check Rig"}
-              </button>
-
-              {activeRigId && (
-                <button
-                  onClick={updateOpenRig}
-                  disabled={updatingRig}
-                  className="rounded-xl border border-emerald-500 px-4 py-3 font-bold text-emerald-300 transition hover:bg-emerald-500 hover:text-neutral-950 disabled:cursor-not-allowed disabled:opacity-60"
-                >
-                  {updatingRig ? "Updating..." : "Update Open Rig"}
-                </button>
-              )}
-
-              <button
-                onClick={saveRigAsNew}
-                disabled={savingRig}
-                className="rounded-xl border border-amber-400 px-4 py-3 font-bold text-amber-300 transition hover:bg-amber-400 hover:text-neutral-950 disabled:cursor-not-allowed disabled:opacity-60"
-              >
-                {savingRig ? "Saving..." : "Save as New Rig"}
-              </button>
-
-              <button
-                onClick={() => loadSavedRigs(true)}
-                disabled={loadingRigs}
-                className="rounded-xl border border-neutral-700 px-4 py-3 font-bold text-neutral-100 transition hover:border-neutral-500 disabled:cursor-not-allowed disabled:opacity-60"
-              >
-                {loadingRigs ? "Refreshing..." : "Refresh Rigs"}
-              </button>
-            </div>
-          </div>
-        </section>
-
-        {readinessReport && (
-          <section className="rounded-3xl border border-emerald-900 bg-emerald-950/30 p-5 shadow-xl">
-            <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-              <div>
-                <p className="text-sm font-semibold uppercase tracking-[0.25em] text-emerald-300">
-                  Rig Readiness
-                </p>
-                <h2 className="mt-2 text-3xl font-black tracking-tight text-neutral-50">
-                  {readinessReport.verdict}
-                </h2>
-                <p className="mt-2 text-lg font-black text-emerald-200">
-                  Score: {readinessReport.score}/100
-                </p>
-                <p className="mt-3 max-w-4xl text-sm leading-7 text-neutral-200">
-                  {readinessReport.summary}
-                </p>
-              </div>
-
-              <button
-                type="button"
-                onClick={() =>
-                  copyToClipboard("Rig Readiness Check", formatRigReadinessForCopy(readinessReport))
-                }
-                className="rounded-xl border border-emerald-500 px-3 py-2 text-sm font-bold text-emerald-300 transition hover:bg-emerald-500 hover:text-neutral-950"
-              >
-                Copy Check
-              </button>
-            </div>
-
-            <div className="mt-5 grid gap-4 lg:grid-cols-2">
-              <div className="rounded-2xl border border-neutral-800 bg-neutral-950 p-4">
-                <h3 className="font-black text-neutral-50">Why</h3>
-                <ul className="mt-3 ml-5 list-disc space-y-2 text-neutral-200">
-                  {readinessReport.why.length ? (
-                    readinessReport.why.map((item, index) => <li key={index}>{item}</li>)
-                  ) : (
-                    <li>No reasons supplied.</li>
-                  )}
-                </ul>
-              </div>
-
-              <div className="rounded-2xl border border-neutral-800 bg-neutral-950 p-4">
-                <h3 className="font-black text-neutral-50">Fix Next</h3>
-                <ul className="mt-3 ml-5 list-disc space-y-2 text-neutral-200">
-                  {readinessReport.fixNext.length ? (
-                    readinessReport.fixNext.map((item, index) => <li key={index}>{item}</li>)
-                  ) : (
-                    <li>No fixes supplied.</li>
-                  )}
-                </ul>
-              </div>
-            </div>
-
-            <div className="mt-4 rounded-2xl border border-neutral-800 bg-neutral-950 p-4 text-neutral-200">
-              <p>
-                <strong className="text-neutral-50">Biggest risk:</strong>{" "}
-                {readinessReport.biggestRisk}
-              </p>
-              <p className="mt-3">
-                <strong className="text-neutral-50">Reusable:</strong>{" "}
-                {readinessReport.reusable ? "Yes" : "Not yet"}
-              </p>
-              <p className="mt-3">
-                <strong className="text-neutral-50">Next action:</strong>{" "}
-                {readinessReport.nextAction}
-              </p>
-            </div>
-          </section>
-        )}
-
-        {showPrompt && (
-          <section className="rounded-3xl border border-neutral-800 bg-neutral-900 p-5 shadow-xl">
-            <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-              <div>
-                <h2 className="text-xl font-bold">Portable Prompt Preview</h2>
-                <p className="mt-1 text-sm text-neutral-400">
-                  This is the portable rig prompt. The user can take this into another AI room if they want. The exact rig run is assembled server-side.
-                </p>
-              </div>
-
-              <button
-                type="button"
-                onClick={() => copyToClipboard("Portable Prompt", actualPrompt)}
-                className="rounded-xl border border-neutral-700 px-3 py-2 text-sm font-bold text-neutral-100 transition hover:border-amber-400 hover:text-amber-300"
-              >
-                Copy Prompt
-              </button>
-
-              <button
-                type="button"
-                onClick={() =>
-                  downloadTextFile(
-                    "Portable Prompt",
-                    `${slugifyFileName(blueprint.rigName || "ideanator-rig")}-prompt.md`,
-                    actualPrompt
-                  )
-                }
-                className="rounded-xl border border-neutral-700 px-3 py-2 text-sm font-bold text-neutral-100 transition hover:border-amber-400 hover:text-amber-300"
-              >
-                Download Prompt
-              </button>
-            </div>
-
-            <pre className="mt-4 max-h-[420px] overflow-auto whitespace-pre-wrap rounded-2xl border border-neutral-800 bg-neutral-950 p-4 text-sm leading-6 text-neutral-200">
-              {actualPrompt}
-            </pre>
-          </section>
-        )}
-
-        {output && (
-          <section className="rounded-3xl border border-neutral-800 bg-neutral-900 p-5 shadow-xl">
-            <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-              <div>
-                <p className="text-sm font-semibold uppercase tracking-[0.25em] text-amber-400">
-                  Rig Output
-                </p>
-                <h2 className="mt-2 text-3xl font-black tracking-tight text-neutral-50">
-                  {blueprint.rigName || "Finished Output"}
-                </h2>
-                <p className="mt-2 max-w-3xl text-sm leading-6 text-neutral-400">
-                  Formatted report view. Copy the output, the prompt, or the full rig packet.
-                </p>
-              </div>
-
-              <div className="flex flex-wrap gap-3">
-                <button
-                  type="button"
-                  onClick={() => copyToClipboard("Rig Output", output)}
-                  className="rounded-xl border border-neutral-700 px-3 py-2 text-sm font-bold text-neutral-100 transition hover:border-amber-400 hover:text-amber-300"
-                >
-                  Copy Output
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() =>
-                    downloadTextFile(
-                      "Rig Output",
-                      `${slugifyFileName(blueprint.rigName || "ideanator-rig")}-output.md`,
-                      output
-                    )
-                  }
-                  className="rounded-xl border border-neutral-700 px-3 py-2 text-sm font-bold text-neutral-100 transition hover:border-amber-400 hover:text-amber-300"
-                >
-                  Download Output
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => copyToClipboard("Full Rig Packet", fullRigPacket)}
-                  className="rounded-xl border border-amber-400 px-3 py-2 text-sm font-bold text-amber-300 transition hover:bg-amber-400 hover:text-neutral-950"
-                >
-                  Copy Full Rig Packet
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() =>
-                    downloadTextFile(
-                      "Full Rig Packet",
-                      `${slugifyFileName(blueprint.rigName || "ideanator-rig")}-packet.md`,
-                      fullRigPacket
-                    )
-                  }
-                  className="rounded-xl border border-amber-400 px-3 py-2 text-sm font-bold text-amber-300 transition hover:bg-amber-400 hover:text-neutral-950"
-                >
-                  Download Packet
-                </button>
-              </div>
-            </div>
-
-            <article className="mt-5 rounded-2xl border border-neutral-800 bg-neutral-950 p-5 shadow-inner sm:p-7">
-              <div className="mx-auto max-w-5xl">
-                {renderReportMarkdown(output)}
-              </div>
-            </article>
-          </section>
-        )}
-
-        <section className="rounded-3xl border border-neutral-800 bg-neutral-900 p-5 shadow-xl">
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-            <div>
-              <h2 className="text-xl font-bold">Saved Rigs</h2>
-              <p className="mt-1 text-sm text-neutral-400">
-                These are saved to your account. Open one, reuse it, copy it, or archive it.
-              </p>
-            </div>
-
-            <button
-              onClick={() => loadSavedRigs(true)}
-              disabled={loadingRigs}
-              className="rounded-xl border border-neutral-700 px-3 py-2 text-sm font-bold text-neutral-100 transition hover:border-amber-400 hover:text-amber-300 disabled:cursor-not-allowed disabled:opacity-60"
-            >
-              {loadingRigs ? "Loading..." : "Refresh"}
-            </button>
-          </div>
-
-          {loadingRigs && (
-            <p className="mt-4 rounded-2xl border border-neutral-800 bg-neutral-950 p-4 text-neutral-400">
-              Loading saved rigs...
-            </p>
-          )}
-
-          {!loadingRigs && savedRigs.length === 0 && (
-            <p className="mt-4 rounded-2xl border border-neutral-800 bg-neutral-950 p-4 text-neutral-400">
-              No saved rigs yet. Build one, run it, then save the pattern.
-            </p>
-          )}
-
-          {savedRigs.length > 0 && (
-            <div className="mt-4 grid gap-3">
-              {savedRigs.map((rig) => {
-                const rigBlueprint = coerceBlueprint(rig.blueprint);
-                const isActive = activeRigId === rig.id;
-
-                return (
-                  <article
-                    key={rig.id}
-                    className={`rounded-2xl border p-4 ${
-                      isActive
-                        ? "border-amber-400 bg-amber-950/20"
-                        : "border-neutral-800 bg-neutral-950"
-                    }`}
-                  >
-                    <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-                      <div>
-                        <h3 className="text-lg font-black text-neutral-50">
-                          {rig.rig_name || rigBlueprint.rigName || "Untitled Thinking Rig"}
-                        </h3>
-
-                        <p className="mt-1 text-sm leading-6 text-neutral-400">
-                          {rigBlueprint.outputType || "No output type saved."}
-                        </p>
-
-                        <p className="mt-2 text-xs uppercase tracking-[0.14em] text-neutral-500">
-                          Updated {formatDate(rig.updated_at)}
-                        </p>
-
-                        {isActive && (
-                          <p className="mt-2 text-sm font-bold text-amber-300">
-                            Currently open
-                          </p>
-                        )}
-                      </div>
-
-                      <div className="flex flex-wrap gap-2">
-                        <button
-                          type="button"
-                          onClick={() => openSavedRig(rig)}
-                          className="rounded-xl bg-amber-400 px-3 py-2 text-sm font-black text-neutral-950 transition hover:bg-amber-300"
-                        >
-                          Open
-                        </button>
-
-                        <button
-                          type="button"
-                          onClick={() =>
-                            copyToClipboard(
-                              "Saved Rig Packet",
-                              formatFullRigPacket({
-                                fog: rig.fog || "",
-                                blueprint: {
-                                  ...rigBlueprint,
-                                  rigName:
-                                    rigBlueprint.rigName ||
-                                    rig.rig_name ||
-                                    "Untitled Thinking Rig",
-                                },
-                                actualPrompt: rig.actual_prompt || "",
-                                output: rig.latest_output || "",
-                              })
-                            )
-                          }
-                          className="rounded-xl border border-neutral-700 px-3 py-2 text-sm font-bold text-neutral-100 transition hover:border-amber-400 hover:text-amber-300"
-                        >
-                          Copy Packet
-                        </button>
-
-                        <button
-                          type="button"
-                          onClick={() => archiveSavedRig(rig)}
-                          disabled={archivingRigId === rig.id}
-                          className="rounded-xl border border-red-900 px-3 py-2 text-sm font-bold text-red-200 transition hover:bg-red-950 disabled:cursor-not-allowed disabled:opacity-60"
-                        >
-                          {archivingRigId === rig.id ? "Archiving..." : "Archive"}
-                        </button>
-                      </div>
-                    </div>
-                  </article>
-                );
-              })}
-            </div>
-          )}
-        </section>
-      </div>
-    </main>
-  );
+ const [fog, setFog] = useState("");
+ const [blueprint, setBlueprint] = useState<Blueprint>(emptyBlueprint);
+ const [showPrompt, setShowPrompt] = useState(false);
+ const [output, setOutput] = useState("");
+ const [readinessReport, setReadinessReport] = useState<RigReadiness | null>(null);
+ const [savedRigs, setSavedRigs] = useState<SavedRig[]>([]);
+ const [loadingBlueprint, setLoadingBlueprint] = useState(false);
+ const [runningRig, setRunningRig] = useState(false);
+ const [checkingRig, setCheckingRig] = useState(false);
+ const [savingRig, setSavingRig] = useState(false);
+ const [updatingRig, setUpdatingRig] = useState(false);
+ const [loadingRigs, setLoadingRigs] = useState(false);
+ const [archivingRigId, setArchivingRigId] = useState("");
+ const [activeRigId, setActiveRigId] = useState("");
+ const [error, setError] = useState("");
+ const [message, setMessage] = useState("");
+
+ const actualPrompt = useMemo(() => assemblePrompt(fog, blueprint), [fog, blueprint]);
+ const blueprintCopy = useMemo(() => formatBlueprintForCopy(blueprint), [blueprint]);
+ const fullRigPacket = useMemo(
+ () => formatFullRigPacket({ fog, blueprint, actualPrompt, output }),
+ [fog, blueprint, actualPrompt, output]
+ );
+
+ async function getSessionToken() {
+ const supabase = getSupabaseClient();
+
+ const {
+ data: { session },
+ } = await supabase.auth.getSession();
+
+ if (!session?.access_token) {
+ window.location.href = "/login";
+ return "";
+ }
+
+ return session.access_token;
+ }
+
+ async function loadSavedRigs(showLoadedMessage = false) {
+ try {
+ setLoadingRigs(true);
+ setError("");
+
+ const token = await getSessionToken();
+
+ if (!token) return;
+
+ const response = await fetch("/api/ideanator/rigs", {
+ headers: {
+ authorization: `Bearer ${token}`,
+ },
+ });
+
+ const result = await response.json();
+
+ if (!response.ok || !result.ok) {
+ throw new Error(result.error || "Could not load saved rigs.");
+ }
+
+ setSavedRigs(result.rigs || []);
+
+ if (showLoadedMessage) {
+ setMessage("Saved rigs refreshed.");
+ }
+ } catch (err) {
+ setError(err instanceof Error ? err.message : "Could not load saved rigs.");
+ } finally {
+ setLoadingRigs(false);
+ }
+ }
+
+ useEffect(() => {
+ loadSavedRigs(false);
+ }, []);
+
+ useEffect(() => {
+ const params = new URLSearchParams(window.location.search);
+ const ideaReportId = params.get("ideaReport");
+
+ if (!ideaReportId) {
+ return;
+ }
+
+ buildRigFromIdeaReport(ideaReportId);
+ }, []);
+
+ useEffect(() => {
+ const params = new URLSearchParams(window.location.search);
+ const requestedRigId = params.get("openRig");
+
+ if (!requestedRigId || savedRigs.length === 0 || activeRigId === requestedRigId) {
+ return;
+ }
+
+ const matchedRig = savedRigs.find((rig) => rig.id === requestedRigId);
+
+ if (matchedRig) {
+ openSavedRig(matchedRig);
+ }
+ }, [savedRigs, activeRigId]);
+
+ async function copyToClipboard(label: string, value: string) {
+ try {
+ setError("");
+ setMessage("");
+
+ if (!value.trim()) {
+ setError(`Nothing to copy yet for ${label}.`);
+ return;
+ }
+
+ await navigator.clipboard.writeText(value);
+ setMessage(`${label} copied.`);
+ } catch {
+ setError("Could not copy automatically. Select the text and copy it manually.");
+ }
+ }
+
+ function slugifyFileName(value: string) {
+ return (
+ value
+ .toLowerCase()
+ .replace(/[^a-z0-9]+/g, "-")
+ .replace(/^-+|-+$/g, "")
+ .slice(0, 80) || "ideanator-rig"
+ );
+ }
+
+ function downloadTextFile(
+ label: string,
+ filename: string,
+ value: string,
+ mimeType = "text/markdown;charset=utf-8"
+ ) {
+ try {
+ setError("");
+ setMessage("");
+
+ if (!value.trim()) {
+ setError(`Nothing to download yet for ${label}.`);
+ return;
+ }
+
+ const safeFileName = filename.trim() || "ideanator-export.md";
+ const blob = new Blob([value], { type: mimeType });
+ const url = window.URL.createObjectURL(blob);
+ const anchor = document.createElement("a");
+
+ anchor.href = url;
+ anchor.download = safeFileName;
+ document.body.appendChild(anchor);
+ anchor.click();
+ anchor.remove();
+
+ window.URL.revokeObjectURL(url);
+
+ setMessage(`${label} downloaded.`);
+ } catch {
+ setError("Could not download the file.");
+ }
+ }
+
+ async function buildRigFromIdeaReport(reportId: string) {
+ try {
+ setLoadingBlueprint(true);
+ setError("");
+ setMessage("");
+ setOutput("");
+ setReadinessReport(null);
+ setActiveRigId("");
+
+ const token = await getSessionToken();
+
+ if (!token) {
+ return;
+ }
+
+ const response = await fetch(`/api/reports/${encodeURIComponent(reportId)}`, {
+ headers: {
+ authorization: `Bearer ${token}`,
+ },
+ });
+
+ const result = await response.json();
+
+ if (!response.ok) {
+ throw new Error(result.error || "Could not load the saved idea report.");
+ }
+
+ const savedReport = (result.report || result.savedReport || result.data || result) as IdeaReportLike;
+ const title = savedReport.title || "Untitled Idea";
+
+ const decodedContent = decodeMaybeJson(savedReport.content);
+ const contentObject = isPlainObject(decodedContent) ? decodedContent : {};
+
+ const decodedIntake = decodeMaybeJson(savedReport.intake);
+ const intakeObject = isPlainObject(decodedIntake) ? decodedIntake : {};
+
+ const contentIdeanator = contentObject.ideanator;
+ const intakeIdeanator = intakeObject.ideanator;
+
+ const ideanator =
+ isPlainObject(contentIdeanator)
+ ? contentIdeanator
+ : isPlainObject(intakeIdeanator)
+ ? intakeIdeanator
+ : {
+ ...contentObject,
+ ...intakeObject,
+ };
+
+ const submittedText = extractSubmittedText({
+ contentObject,
+ intakeObject,
+ });
+
+ if (Object.keys(ideanator).length === 0 && !submittedText) {
+ throw new Error("That saved report did not contain usable Ideanator source material.");
+ }
+
+ setFog(
+ buildFogFromIdeaReport({
+ title,
+ submittedText,
+ ideanator,
+ })
+ );
+
+ setBlueprint(
+ buildBlueprintFromIdeaReport({
+ title,
+ ideanator,
+ })
+ );
+
+ setShowPrompt(true);
+ setMessage("Built a starter rig from the saved Idea Check report. Review the blueprint, then run the rig.");
+ window.scrollTo({ top: 0, behavior: "smooth" });
+ } catch (err) {
+ setError(err instanceof Error ? err.message : "Could not build rig from saved idea report.");
+ } finally {
+ setLoadingBlueprint(false);
+ }
+ }
+
+ async function handleFogFileUpload(event: ChangeEvent<HTMLInputElement>) {
+ try {
+ setError("");
+ setMessage("");
+
+ const file = event.target.files?.[0];
+
+ if (!file) {
+ return;
+ }
+
+ const lowerName = file.name.toLowerCase();
+
+ const isTextFile =
+ lowerName.endsWith(".txt") ||
+ lowerName.endsWith(".md") ||
+ file.type === "text/plain" ||
+ file.type === "text/markdown";
+
+ const isDocxFile =
+ lowerName.endsWith(".docx") ||
+ file.type === "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
+
+ if (!isTextFile && !isDocxFile) {
+ setError("For uploads, use .txt, .md, or .docx files. PDF can wait in the haunted hallway.");
+ event.target.value = "";
+ return;
+ }
+
+ const maxBytes = isDocxFile ? 1200000 : 250000;
+
+ if (file.size > maxBytes) {
+ setError(
+ isDocxFile
+ ? "That DOCX is too large for this upload pass. Keep it under 1.2 MB for now."
+ : "That file is too large for this upload pass. Keep TXT/MD files under 250 KB for now."
+ );
+ event.target.value = "";
+ return;
+ }
+
+ const rawText = isDocxFile ? await readDocxFile(file) : await file.text();
+
+ const cleaned = rawText
+ .replace(/\r\n/g, "\n")
+ .replace(/[ \t]+\n/g, "\n")
+ .replace(/\n{5,}/g, "\n\n\n")
+ .trim();
+
+ if (!cleaned) {
+ setError("That file did not contain readable text.");
+ event.target.value = "";
+ return;
+ }
+
+ setFog((current) => {
+ if (!current.trim()) {
+ return `UPLOADED FILE: ${file.name}\n\n${cleaned}`;
+ }
+
+ return `${current.trim()}\n\n---\n\nUPLOADED FILE: ${file.name}\n\n${cleaned}`;
+ });
+
+ setOutput("");
+ setReadinessReport(null);
+ setActiveRigId("");
+ setMessage(`Loaded ${file.name} into the fog box.`);
+ event.target.value = "";
+ } catch (err) {
+ setError(err instanceof Error ? err.message : "Could not read that file.");
+ event.target.value = "";
+ }
+ }
+ async function generateBlueprint() {
+ try {
+ setLoadingBlueprint(true);
+ setError("");
+ setMessage("");
+ setOutput("");
+ setReadinessReport(null);
+ setActiveRigId("");
+
+ const token = await getSessionToken();
+
+ if (!token) {
+ return;
+ }
+
+ const response = await fetch("/api/ideanator/blueprint", {
+ method: "POST",
+ headers: {
+ "content-type": "application/json",
+ authorization: `Bearer ${token}`,
+ },
+ body: JSON.stringify({
+ fog,
+ }),
+ });
+
+ const result = await response.json();
+
+ if (!response.ok || !result.ok) {
+ throw new Error(result.error || "Could not generate blueprint.");
+ }
+
+ setBlueprint(result.blueprint || emptyBlueprint);
+ setShowPrompt(true);
+ setMessage("Blueprint generated.");
+ } catch (err) {
+ setError(err instanceof Error ? err.message : "Something went wrong.");
+ } finally {
+ setLoadingBlueprint(false);
+ }
+ }
+
+ function updateBlueprintField(field: TextBlueprintField, value: string) {
+ setBlueprint((current) => ({
+ ...current,
+ [field]: value,
+ }));
+ }
+
+ function updateListField(field: "constraints" | "missingPieces", value: string) {
+ setBlueprint((current) => ({
+ ...current,
+ [field]: value
+ .split("\n")
+ .map((item) => item.trim())
+ .filter(Boolean),
+ }));
+ }
+
+ async function runRigPreview() {
+ try {
+ setRunningRig(true);
+ setError("");
+ setMessage("");
+ setOutput("");
+ setReadinessReport(null);
+
+ if (!fog.trim()) {
+ setError("Dump the idea first. The rig cannot run on vibes and dust.");
+ return;
+ }
+
+ if (!blueprint.purpose.trim()) {
+ setError("Generate or fill in the blueprint first.");
+ return;
+ }
+
+ const token = await getSessionToken();
+
+ if (!token) {
+ return;
+ }
+
+ const response = await fetch("/api/ideanator/run", {
+ method: "POST",
+ headers: {
+ "content-type": "application/json",
+ authorization: `Bearer ${token}`,
+ },
+ body: JSON.stringify({
+ fog,
+ blueprint,
+ actualPrompt,
+ }),
+ });
+
+ const result = await response.json();
+
+ if (!response.ok || !result.ok) {
+ throw new Error(result.error || "Could not run rig.");
+ }
+
+ setOutput(result.output || "");
+ setMessage(
+ activeRigId
+ ? "Rig ran successfully. Click Update Open Rig to save these changes."
+ : "Rig ran successfully."
+ );
+ } catch (err) {
+ setError(err instanceof Error ? err.message : "Something went wrong while running the rig.");
+ } finally {
+ setRunningRig(false);
+ }
+ }
+
+ async function checkRigReadiness() {
+ try {
+ setCheckingRig(true);
+ setError("");
+ setMessage("");
+
+ if (!fog.trim()) {
+ setError("The rig needs fog/source material before it can be checked.");
+ return;
+ }
+
+ if (!blueprint.purpose.trim()) {
+ setError("Generate or fill in the blueprint before checking the rig.");
+ return;
+ }
+
+ const token = await getSessionToken();
+
+ if (!token) {
+ return;
+ }
+
+ const response = await fetch("/api/ideanator/check", {
+ method: "POST",
+ headers: {
+ "content-type": "application/json",
+ authorization: `Bearer ${token}`,
+ },
+ body: JSON.stringify({
+ fog,
+ blueprint,
+ output,
+ }),
+ });
+
+ const result = await response.json();
+
+ if (!response.ok || !result.ok) {
+ throw new Error(result.error || "Could not check rig readiness.");
+ }
+
+ const readiness = result.readiness as RigReadiness;
+
+ setReadinessReport(readiness);
+
+ if (activeRigId) {
+ const saveResponse = await fetch("/api/ideanator/rigs", {
+ method: "PATCH",
+ headers: {
+ "content-type": "application/json",
+ authorization: `Bearer ${token}`,
+ },
+ body: JSON.stringify({
+ id: activeRigId,
+ readinessReport: readiness,
+ }),
+ });
+
+ const saveResult = await saveResponse.json();
+
+ if (saveResponse.ok && saveResult.ok && saveResult.rig) {
+ const updatedRig = saveResult.rig as SavedRig;
+
+ setSavedRigs((current) =>
+ current.map((rig) => (rig.id === updatedRig.id ? updatedRig : rig))
+ );
+
+ setMessage("Rig readiness check complete and saved to the open rig.");
+ } else {
+ setMessage("Rig readiness check complete. It showed on screen, but did not save to the open rig.");
+ }
+ } else {
+ setMessage("Rig readiness check complete. Save the rig first if you want this status stored.");
+ }
+ } catch (err) {
+ setError(err instanceof Error ? err.message : "Something went wrong while checking the rig.");
+ } finally {
+ setCheckingRig(false);
+ }
+ }
+
+ async function saveRigAsNew() {
+ try {
+ setSavingRig(true);
+ setError("");
+ setMessage("");
+
+ const rigName = blueprint.rigName || blueprint.outputType || "Untitled Thinking Rig";
+
+ if (!blueprint.purpose.trim()) {
+ setError("Generate or fill in the blueprint before saving a rig.");
+ return;
+ }
+
+ const token = await getSessionToken();
+
+ if (!token) {
+ return;
+ }
+
+ const response = await fetch("/api/ideanator/rigs", {
+ method: "POST",
+ headers: {
+ "content-type": "application/json",
+ authorization: `Bearer ${token}`,
+ },
+ body: JSON.stringify({
+ rigName,
+ fog,
+ blueprint,
+ actualPrompt,
+ latestOutput: output,
+ }),
+ });
+
+ const result = await response.json();
+
+ if (!response.ok || !result.ok) {
+ throw new Error(result.error || "Could not save rig.");
+ }
+
+ const savedRig = result.rig as SavedRig;
+
+ setSavedRigs((current) => [savedRig, ...current]);
+ setActiveRigId(savedRig.id);
+ setMessage("Saved as a new rig.");
+ } catch (err) {
+ setError(err instanceof Error ? err.message : "Could not save rig.");
+ } finally {
+ setSavingRig(false);
+ }
+ }
+
+
+ async function updateOpenRig() {
+ try {
+ setUpdatingRig(true);
+ setError("");
+ setMessage("");
+
+ if (!activeRigId) {
+ setError("Open a saved rig first, or use Save as New Rig.");
+ return;
+ }
+
+ if (!blueprint.purpose.trim()) {
+ setError("The open rig needs a blueprint before it can be updated.");
+ return;
+ }
+
+ const token = await getSessionToken();
+
+ if (!token) {
+ return;
+ }
+
+ const response = await fetch("/api/ideanator/rigs", {
+ method: "PATCH",
+ headers: {
+ "content-type": "application/json",
+ authorization: `Bearer ${token}`,
+ },
+ body: JSON.stringify({
+ id: activeRigId,
+ rigName: blueprint.rigName || "Untitled Thinking Rig",
+ fog,
+ blueprint,
+ actualPrompt,
+ latestOutput: output,
+ }),
+ });
+
+ const result = await response.json();
+
+ if (!response.ok || !result.ok) {
+ throw new Error(result.error || "Could not update open rig.");
+ }
+
+ const updatedRig = result.rig as SavedRig;
+
+ setSavedRigs((current) =>
+ current.map((rig) => (rig.id === updatedRig.id ? updatedRig : rig))
+ );
+
+ setMessage("Open rig updated.");
+ } catch (err) {
+ setError(err instanceof Error ? err.message : "Could not update open rig.");
+ } finally {
+ setUpdatingRig(false);
+ }
+ }
+ function openSavedRig(rig: SavedRig) {
+ const nextBlueprint = coerceBlueprint(rig.blueprint);
+
+ setFog(rig.fog || "");
+ setBlueprint({
+ ...nextBlueprint,
+ rigName: nextBlueprint.rigName || rig.rig_name || "Untitled Thinking Rig",
+ });
+ setOutput(rig.latest_output || "");
+ setReadinessReport(rig.readiness_report || null);
+ setActiveRigId(rig.id);
+ setShowPrompt(true);
+ setError("");
+ setMessage(`Opened ${rig.rig_name || "saved rig"}.`);
+ window.scrollTo({ top: 0, behavior: "smooth" });
+ }
+
+ async function archiveSavedRig(rig: SavedRig) {
+ try {
+ setArchivingRigId(rig.id);
+ setError("");
+ setMessage("");
+
+ const token = await getSessionToken();
+
+ if (!token) return;
+
+ const response = await fetch("/api/ideanator/rigs", {
+ method: "PATCH",
+ headers: {
+ "content-type": "application/json",
+ authorization: `Bearer ${token}`,
+ },
+ body: JSON.stringify({
+ id: rig.id,
+ isArchived: true,
+ }),
+ });
+
+ const result = await response.json();
+
+ if (!response.ok || !result.ok) {
+ throw new Error(result.error || "Could not archive rig.");
+ }
+
+ setSavedRigs((current) => current.filter((item) => item.id !== rig.id));
+
+ if (activeRigId === rig.id) {
+ setActiveRigId("");
+ }
+
+ setMessage("Rig archived.");
+ } catch (err) {
+ setError(err instanceof Error ? err.message : "Could not archive rig.");
+ } finally {
+ setArchivingRigId("");
+ }
+ }
+
+ return (
+ <main className="ideanator-workbench min-h-screen bg-neutral-950 px-4 py-6 text-neutral-100 sm:px-6 lg:px-8">
+ <div className="mx-auto flex max-w-7xl flex-col gap-6">
+ <section className="rounded-3xl border border-neutral-800 bg-neutral-900/70 p-6 shadow-2xl">
+ <p className="text-sm font-semibold uppercase tracking-[0.3em] text-amber-400">
+ The Ideanator
+ </p>
+ <h1 className="mt-3 text-3xl font-black tracking-tight sm:text-5xl">
+ Fog in. Thinking Rig out.
+ </h1>
+ <p className="mt-4 max-w-3xl text-base leading-7 text-neutral-300">
+ Drop the messy idea on the left. The blueprint forms on the right.
+ This is not a prompt builder. It is a thinking prosthetic.
+ </p>
+ </section>
+
+ {error && (
+ <section className="rounded-2xl border border-red-900 bg-red-950/60 p-4 text-red-200">
+ {error}
+ </section>
+ )}
+
+ {message && (
+ <section className="rounded-2xl border border-emerald-900 bg-emerald-950/50 p-4 text-emerald-200">
+ {message}
+ </section>
+ )}
+
+ <section className="grid gap-6 lg:grid-cols-[1fr_1fr]">
+ <div className="rounded-3xl border border-neutral-800 bg-neutral-900 p-5 shadow-xl">
+ <div className="mb-4 flex items-center justify-between gap-4">
+ <div>
+ <h2 className="text-xl font-bold">The Fog</h2>
+ <p className="text-sm text-neutral-400">
+ Messy thoughts, fragments, panic, notes, half-formed brilliance.
+ </p>
+
+ <label className="mt-3 inline-flex cursor-pointer items-center justify-center rounded-xl border border-neutral-700 px-3 py-2 text-xs font-black uppercase tracking-[0.12em] text-neutral-100 transition hover:border-amber-400 hover:text-amber-300">
+ Upload TXT / MD / DOCX
+ <input
+ type="file"
+ accept=".txt,.md,.docx,text/plain,text/markdown,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+ onChange={handleFogFileUpload}
+ className="hidden"
+ />
+ </label>
+ </div>
+ <span className="rounded-full bg-neutral-800 px-3 py-1 text-xs text-neutral-300">
+ Left pane
+ </span>
+ </div>
+
+ <textarea
+ value={fog}
+ onChange={(event) => setFog(event.target.value)}
+ placeholder="Tell me the idea badly. Seriously. Dump the mess here."
+ className="min-h-[420px] w-full resize-none rounded-2xl border border-neutral-700 bg-neutral-950 p-4 text-base leading-7 text-neutral-100 outline-none transition focus:border-amber-400"
+ />
+ </div>
+
+ <div className="rounded-3xl border border-neutral-800 bg-neutral-900 p-5 shadow-xl">
+ <div className="mb-4 flex items-center justify-between gap-4">
+ <div>
+ <h2 className="text-xl font-bold">The Blueprint</h2>
+ <p className="text-sm text-neutral-400">
+ The system taking notes, not showing off.
+ </p>
+ </div>
+ <span className="rounded-full bg-neutral-800 px-3 py-1 text-xs text-neutral-300">
+ Right pane
+ </span>
+ </div>
+
+ <div className="mb-4 flex flex-wrap gap-3">
+ <button
+ type="button"
+ onClick={() => copyToClipboard("Blueprint", blueprintCopy)}
+ className="rounded-xl border border-neutral-700 px-3 py-2 text-sm font-bold text-neutral-100 transition hover:border-amber-400 hover:text-amber-300"
+ >
+ Copy Blueprint
+ </button>
+
+ <button
+ type="button"
+ onClick={() => copyToClipboard("Portable Prompt", actualPrompt)}
+ className="rounded-xl border border-neutral-700 px-3 py-2 text-sm font-bold text-neutral-100 transition hover:border-amber-400 hover:text-amber-300"
+ >
+ Copy Portable Prompt
+ </button>
+
+ <button
+ type="button"
+ onClick={() =>
+ downloadTextFile(
+ "Blueprint JSON",
+ `${slugifyFileName(blueprint.rigName || "ideanator-rig")}-blueprint.json`,
+ JSON.stringify(blueprint, null, 2),
+ "application/json;charset=utf-8"
+ )
+ }
+ className="rounded-xl border border-neutral-700 px-3 py-2 text-sm font-bold text-neutral-100 transition hover:border-amber-400 hover:text-amber-300"
+ >
+ Download Blueprint
+ </button>
+
+ {activeRigId && (
+ <span className="rounded-xl border border-emerald-900 bg-emerald-950/40 px-3 py-2 text-sm font-bold text-emerald-200">
+ Opened Saved Rig
+ </span>
+ )}
+ </div>
+
+ <div className="space-y-4">
+ <label className="block">
+ <span className="mb-1 block text-sm font-semibold text-neutral-300">
+ Rig Name
+ </span>
+ <input
+ value={blueprint.rigName}
+ onChange={(event) => updateBlueprintField("rigName", event.target.value)}
+ placeholder="Example: School Safety Pitch Rig"
+ className="w-full rounded-xl border border-neutral-700 bg-neutral-950 px-4 py-3 outline-none transition focus:border-amber-400"
+ />
+ </label>
+
+ <label className="block">
+ <span className="mb-1 block text-sm font-semibold text-neutral-300">
+ Purpose
+ </span>
+ <input
+ value={blueprint.purpose}
+ onChange={(event) => updateBlueprintField("purpose", event.target.value)}
+ placeholder="What is this trying to do?"
+ className="w-full rounded-xl border border-neutral-700 bg-neutral-950 px-4 py-3 outline-none transition focus:border-amber-400"
+ />
+ </label>
+
+ <label className="block">
+ <span className="mb-1 block text-sm font-semibold text-neutral-300">
+ Audience
+ </span>
+ <input
+ value={blueprint.audience}
+ onChange={(event) => updateBlueprintField("audience", event.target.value)}
+ placeholder="Who is this for?"
+ className="w-full rounded-xl border border-neutral-700 bg-neutral-950 px-4 py-3 outline-none transition focus:border-amber-400"
+ />
+ </label>
+
+ <label className="block">
+ <span className="mb-1 block text-sm font-semibold text-neutral-300">
+ Output Type
+ </span>
+ <input
+ value={blueprint.outputType}
+ onChange={(event) => updateBlueprintField("outputType", event.target.value)}
+ placeholder="Pitch, email, grant answer, product plan, etc."
+ className="w-full rounded-xl border border-neutral-700 bg-neutral-950 px-4 py-3 outline-none transition focus:border-amber-400"
+ />
+ </label>
+
+ <label className="block">
+ <span className="mb-1 block text-sm font-semibold text-neutral-300">
+ Tone
+ </span>
+ <input
+ value={blueprint.tone}
+ onChange={(event) => updateBlueprintField("tone", event.target.value)}
+ placeholder="How should this sound?"
+ className="w-full rounded-xl border border-neutral-700 bg-neutral-950 px-4 py-3 outline-none transition focus:border-amber-400"
+ />
+ </label>
+
+ <label className="block">
+ <span className="mb-1 block text-sm font-semibold text-neutral-300">
+ Constraints
+ </span>
+ <textarea
+ value={blueprint.constraints.join("\n")}
+ onChange={(event) => updateListField("constraints", event.target.value)}
+ placeholder="One constraint per line."
+ className="min-h-[110px] w-full resize-none rounded-xl border border-neutral-700 bg-neutral-950 px-4 py-3 outline-none transition focus:border-amber-400"
+ />
+ </label>
+
+ <label className="block">
+ <span className="mb-1 block text-sm font-semibold text-neutral-300">
+ Missing Pieces
+ </span>
+ <textarea
+ value={blueprint.missingPieces.join("\n")}
+ onChange={(event) => updateListField("missingPieces", event.target.value)}
+ placeholder="One missing piece per line."
+ className="min-h-[110px] w-full resize-none rounded-xl border border-neutral-700 bg-neutral-950 px-4 py-3 outline-none transition focus:border-amber-400"
+ />
+ </label>
+
+ <label className="block">
+ <span className="mb-1 block text-sm font-semibold text-neutral-300">
+ Prompt Strategy
+ </span>
+ <textarea
+ value={blueprint.promptStrategy}
+ onChange={(event) => updateBlueprintField("promptStrategy", event.target.value)}
+ placeholder="How should the AI approach this?"
+ className="min-h-[130px] w-full resize-none rounded-xl border border-neutral-700 bg-neutral-950 px-4 py-3 outline-none transition focus:border-amber-400"
+ />
+ </label>
+ </div>
+ </div>
+ </section>
+
+ <section className="rounded-3xl border border-neutral-800 bg-neutral-900/95 p-4 shadow-2xl">
+ <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+ <div>
+ <h2 className="font-bold">Thinking Rig Controls</h2>
+ <p className="text-sm text-neutral-400">
+ Generate or review the blueprint, inspect the portable prompt, run the rig, check readiness, then update or save the pattern.
+ </p>
+ </div>
+
+ <div className="flex flex-wrap gap-3">
+ <button
+ onClick={generateBlueprint}
+ disabled={loadingBlueprint}
+ className="rounded-xl bg-amber-400 px-4 py-3 font-bold text-neutral-950 transition hover:bg-amber-300 disabled:cursor-not-allowed disabled:opacity-60"
+ >
+ {loadingBlueprint ? "Thinking..." : "Generate Blueprint"}
+ </button>
+
+ <button
+ onClick={() => setShowPrompt((current) => !current)}
+ className="rounded-xl border border-neutral-700 px-4 py-3 font-bold text-neutral-100 transition hover:border-neutral-500"
+ >
+ {showPrompt ? "Hide Portable Prompt" : "Show Portable Prompt"}
+ </button>
+
+ <button
+ onClick={runRigPreview}
+ disabled={runningRig}
+ className="rounded-xl border border-neutral-700 px-4 py-3 font-bold text-neutral-100 transition hover:border-neutral-500 disabled:cursor-not-allowed disabled:opacity-60"
+ >
+ {runningRig ? "Running..." : "Run Rig"}
+ </button>
+
+ <button
+ onClick={checkRigReadiness}
+ disabled={checkingRig}
+ className="rounded-xl border border-emerald-500 px-4 py-3 font-bold text-emerald-300 transition hover:bg-emerald-500 hover:text-neutral-950 disabled:cursor-not-allowed disabled:opacity-60"
+ >
+ {checkingRig ? "Checking..." : "Check Rig"}
+ </button>
+
+ {activeRigId && (
+ <button
+ onClick={updateOpenRig}
+ disabled={updatingRig}
+ className="rounded-xl border border-emerald-500 px-4 py-3 font-bold text-emerald-300 transition hover:bg-emerald-500 hover:text-neutral-950 disabled:cursor-not-allowed disabled:opacity-60"
+ >
+ {updatingRig ? "Updating..." : "Update Open Rig"}
+ </button>
+ )}
+
+ <button
+ onClick={saveRigAsNew}
+ disabled={savingRig}
+ className="rounded-xl border border-amber-400 px-4 py-3 font-bold text-amber-300 transition hover:bg-amber-400 hover:text-neutral-950 disabled:cursor-not-allowed disabled:opacity-60"
+ >
+ {savingRig ? "Saving..." : "Save as New Rig"}
+ </button>
+
+ <button
+ onClick={() => loadSavedRigs(true)}
+ disabled={loadingRigs}
+ className="rounded-xl border border-neutral-700 px-4 py-3 font-bold text-neutral-100 transition hover:border-neutral-500 disabled:cursor-not-allowed disabled:opacity-60"
+ >
+ {loadingRigs ? "Refreshing..." : "Refresh Rigs"}
+ </button>
+ </div>
+ </div>
+ </section>
+
+ {readinessReport && (
+ <section className="rounded-3xl border border-emerald-900 bg-emerald-950/30 p-5 shadow-xl">
+ <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+ <div>
+ <p className="text-sm font-semibold uppercase tracking-[0.25em] text-emerald-300">
+ Rig Readiness
+ </p>
+ <h2 className="mt-2 text-3xl font-black tracking-tight text-neutral-50">
+ {readinessReport.verdict}
+ </h2>
+ <p className="mt-2 text-lg font-black text-emerald-200">
+ Score: {readinessReport.score}/100
+ </p>
+ <p className="mt-3 max-w-4xl text-sm leading-7 text-neutral-200">
+ {readinessReport.summary}
+ </p>
+ </div>
+
+ <button
+ type="button"
+ onClick={() =>
+ copyToClipboard("Rig Readiness Check", formatRigReadinessForCopy(readinessReport))
+ }
+ className="rounded-xl border border-emerald-500 px-3 py-2 text-sm font-bold text-emerald-300 transition hover:bg-emerald-500 hover:text-neutral-950"
+ >
+ Copy Check
+ </button>
+ </div>
+
+ <div className="mt-5 grid gap-4 lg:grid-cols-2">
+ <div className="rounded-2xl border border-neutral-800 bg-neutral-950 p-4">
+ <h3 className="font-black text-neutral-50">Why</h3>
+ <ul className="mt-3 ml-5 list-disc space-y-2 text-neutral-200">
+ {readinessReport.why.length ? (
+ readinessReport.why.map((item, index) => <li key={index}>{item}</li>)
+ ) : (
+ <li>No reasons supplied.</li>
+ )}
+ </ul>
+ </div>
+
+ <div className="rounded-2xl border border-neutral-800 bg-neutral-950 p-4">
+ <h3 className="font-black text-neutral-50">Fix Next</h3>
+ <ul className="mt-3 ml-5 list-disc space-y-2 text-neutral-200">
+ {readinessReport.fixNext.length ? (
+ readinessReport.fixNext.map((item, index) => <li key={index}>{item}</li>)
+ ) : (
+ <li>No fixes supplied.</li>
+ )}
+ </ul>
+ </div>
+ </div>
+
+ <div className="mt-4 rounded-2xl border border-neutral-800 bg-neutral-950 p-4 text-neutral-200">
+ <p>
+ <strong className="text-neutral-50">Biggest risk:</strong>{" "}
+ {readinessReport.biggestRisk}
+ </p>
+ <p className="mt-3">
+ <strong className="text-neutral-50">Reusable:</strong>{" "}
+ {readinessReport.reusable ? "Yes" : "Not yet"}
+ </p>
+ <p className="mt-3">
+ <strong className="text-neutral-50">Next action:</strong>{" "}
+ {readinessReport.nextAction}
+ </p>
+ </div>
+ </section>
+ )}
+
+ {showPrompt && (
+ <section className="rounded-3xl border border-neutral-800 bg-neutral-900 p-5 shadow-xl">
+ <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+ <div>
+ <h2 className="text-xl font-bold">Portable Prompt Preview</h2>
+ <p className="mt-1 text-sm text-neutral-400">
+ This is the portable rig prompt. The user can take this into another AI room if they want. The exact rig run is assembled server-side.
+ </p>
+ </div>
+
+ <button
+ type="button"
+ onClick={() => copyToClipboard("Portable Prompt", actualPrompt)}
+ className="rounded-xl border border-neutral-700 px-3 py-2 text-sm font-bold text-neutral-100 transition hover:border-amber-400 hover:text-amber-300"
+ >
+ Copy Prompt
+ </button>
+
+ <button
+ type="button"
+ onClick={() =>
+ downloadTextFile(
+ "Portable Prompt",
+ `${slugifyFileName(blueprint.rigName || "ideanator-rig")}-prompt.md`,
+ actualPrompt
+ )
+ }
+ className="rounded-xl border border-neutral-700 px-3 py-2 text-sm font-bold text-neutral-100 transition hover:border-amber-400 hover:text-amber-300"
+ >
+ Download Prompt
+ </button>
+ </div>
+
+ <pre className="mt-4 max-h-[420px] overflow-auto whitespace-pre-wrap rounded-2xl border border-neutral-800 bg-neutral-950 p-4 text-sm leading-6 text-neutral-200">
+ {actualPrompt}
+ </pre>
+ </section>
+ )}
+
+ {output && (
+ <section className="rounded-3xl border border-neutral-800 bg-neutral-900 p-5 shadow-xl">
+ <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+ <div>
+ <p className="text-sm font-semibold uppercase tracking-[0.25em] text-amber-400">
+ Rig Output
+ </p>
+ <h2 className="mt-2 text-3xl font-black tracking-tight text-neutral-50">
+ {blueprint.rigName || "Finished Output"}
+ </h2>
+ <p className="mt-2 max-w-3xl text-sm leading-6 text-neutral-400">
+ Formatted report view. Copy the output, the prompt, or the full rig packet.
+ </p>
+ </div>
+
+ <div className="flex flex-wrap gap-3">
+ <button
+ type="button"
+ onClick={() => copyToClipboard("Rig Output", output)}
+ className="rounded-xl border border-neutral-700 px-3 py-2 text-sm font-bold text-neutral-100 transition hover:border-amber-400 hover:text-amber-300"
+ >
+ Copy Output
+ </button>
+
+ <button
+ type="button"
+ onClick={() =>
+ downloadTextFile(
+ "Rig Output",
+ `${slugifyFileName(blueprint.rigName || "ideanator-rig")}-output.md`,
+ output
+ )
+ }
+ className="rounded-xl border border-neutral-700 px-3 py-2 text-sm font-bold text-neutral-100 transition hover:border-amber-400 hover:text-amber-300"
+ >
+ Download Output
+ </button>
+
+ <button
+ type="button"
+ onClick={() => copyToClipboard("Full Rig Packet", fullRigPacket)}
+ className="rounded-xl border border-amber-400 px-3 py-2 text-sm font-bold text-amber-300 transition hover:bg-amber-400 hover:text-neutral-950"
+ >
+ Copy Full Rig Packet
+ </button>
+
+ <button
+ type="button"
+ onClick={() =>
+ downloadTextFile(
+ "Full Rig Packet",
+ `${slugifyFileName(blueprint.rigName || "ideanator-rig")}-packet.md`,
+ fullRigPacket
+ )
+ }
+ className="rounded-xl border border-amber-400 px-3 py-2 text-sm font-bold text-amber-300 transition hover:bg-amber-400 hover:text-neutral-950"
+ >
+ Download Packet
+ </button>
+ </div>
+ </div>
+
+ <article className="mt-5 rounded-2xl border border-neutral-800 bg-neutral-950 p-5 shadow-inner sm:p-7">
+ <div className="mx-auto max-w-5xl">
+ {renderReportMarkdown(output)}
+ </div>
+ </article>
+ </section>
+ )}
+
+ <section className="rounded-3xl border border-neutral-800 bg-neutral-900 p-5 shadow-xl">
+ <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+ <div>
+ <h2 className="text-xl font-bold">Saved Rigs</h2>
+ <p className="mt-1 text-sm text-neutral-400">
+ These are saved to your account. Open one, reuse it, copy it, or archive it.
+ </p>
+ </div>
+
+ <button
+ onClick={() => loadSavedRigs(true)}
+ disabled={loadingRigs}
+ className="rounded-xl border border-neutral-700 px-3 py-2 text-sm font-bold text-neutral-100 transition hover:border-amber-400 hover:text-amber-300 disabled:cursor-not-allowed disabled:opacity-60"
+ >
+ {loadingRigs ? "Loading..." : "Refresh"}
+ </button>
+ </div>
+
+ {loadingRigs && (
+ <p className="mt-4 rounded-2xl border border-neutral-800 bg-neutral-950 p-4 text-neutral-400">
+ Loading saved rigs...
+ </p>
+ )}
+
+ {!loadingRigs && savedRigs.length === 0 && (
+ <p className="mt-4 rounded-2xl border border-neutral-800 bg-neutral-950 p-4 text-neutral-400">
+ No saved rigs yet. Build one, run it, then save the pattern.
+ </p>
+ )}
+
+ {savedRigs.length > 0 && (
+ <div className="mt-4 grid gap-3">
+ {savedRigs.map((rig) => {
+ const rigBlueprint = coerceBlueprint(rig.blueprint);
+ const isActive = activeRigId === rig.id;
+
+ return (
+ <article
+ key={rig.id}
+ className={`rounded-2xl border p-4 ${
+ isActive
+ ? "border-amber-400 bg-amber-950/20"
+ : "border-neutral-800 bg-neutral-950"
+ }`}
+ >
+ <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+ <div>
+ <h3 className="text-lg font-black text-neutral-50">
+ {rig.rig_name || rigBlueprint.rigName || "Untitled Thinking Rig"}
+ </h3>
+
+ <p className="mt-1 text-sm leading-6 text-neutral-400">
+ {rigBlueprint.outputType || "No output type saved."}
+ </p>
+
+ <p className="mt-2 text-xs uppercase tracking-[0.14em] text-neutral-500">
+ Updated {formatDate(rig.updated_at)}
+ </p>
+
+ {isActive && (
+ <p className="mt-2 text-sm font-bold text-amber-300">
+ Currently open
+ </p>
+ )}
+ </div>
+
+ <div className="flex flex-wrap gap-2">
+ <button
+ type="button"
+ onClick={() => openSavedRig(rig)}
+ className="rounded-xl bg-amber-400 px-3 py-2 text-sm font-black text-neutral-950 transition hover:bg-amber-300"
+ >
+ Open
+ </button>
+
+ <button
+ type="button"
+ onClick={() =>
+ copyToClipboard(
+ "Saved Rig Packet",
+ formatFullRigPacket({
+ fog: rig.fog || "",
+ blueprint: {
+ ...rigBlueprint,
+ rigName:
+ rigBlueprint.rigName ||
+ rig.rig_name ||
+ "Untitled Thinking Rig",
+ },
+ actualPrompt: rig.actual_prompt || "",
+ output: rig.latest_output || "",
+ })
+ )
+ }
+ className="rounded-xl border border-neutral-700 px-3 py-2 text-sm font-bold text-neutral-100 transition hover:border-amber-400 hover:text-amber-300"
+ >
+ Copy Packet
+ </button>
+
+ <button
+ type="button"
+ onClick={() => archiveSavedRig(rig)}
+ disabled={archivingRigId === rig.id}
+ className="rounded-xl border border-red-900 px-3 py-2 text-sm font-bold text-red-200 transition hover:bg-red-950 disabled:cursor-not-allowed disabled:opacity-60"
+ >
+ {archivingRigId === rig.id ? "Archiving..." : "Archive"}
+ </button>
+ </div>
+ </div>
+ </article>
+ );
+ })}
+ </div>
+ )}
+ </section>
+ </div>
+ </main>
+ );
 }
+
+
+
 
 
 
