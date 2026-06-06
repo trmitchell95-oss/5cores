@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
@@ -159,7 +159,7 @@ export default function FeedbackPage() {
         }
 
         .feedback-card {
-          border: 1px solid #26211c;
+          border: 1px solid #15324f;
           border-radius: 28px;
           padding: 32px;
           background: rgba(18,16,13,0.95);
@@ -167,8 +167,8 @@ export default function FeedbackPage() {
 
         .idea-feedback .feedback-card,
         .idea-feedback .form-card {
-          border-color: rgba(255, 221, 159, 0.2) !important;
-          background: rgba(43, 38, 30, 0.92) !important;
+          border-color: rgba(87, 232, 255, 0.22) !important;
+          background: rgba(5, 12, 24, 0.92) !important;
         }
 
         .top-link {
@@ -178,7 +178,7 @@ export default function FeedbackPage() {
         }
 
         .idea-feedback .top-link {
-          color: #f0b35f;
+          color: #22d3ee;
         }
 
         .eyebrow {
@@ -191,7 +191,7 @@ export default function FeedbackPage() {
         }
 
         .idea-feedback .eyebrow {
-          color: #f0b35f;
+          color: #22d3ee;
         }
 
         .title {
@@ -202,13 +202,13 @@ export default function FeedbackPage() {
         }
 
         .subtitle {
-          color: #aaa096;
+          color: #a8c7d8;
           line-height: 1.7;
           margin-top: 18px;
         }
 
         .idea-feedback .subtitle {
-          color: #ddd5c7;
+          color: #dbeafe;
         }
 
         .field-label {
@@ -229,7 +229,7 @@ export default function FeedbackPage() {
           border-radius: 12px;
           background: #0e0d0b;
           color: #f0ece4;
-          border: 1px solid #302a24;
+          border: 1px solid #183a5f;
           box-sizing: border-box;
         }
 
@@ -254,8 +254,8 @@ export default function FeedbackPage() {
 
         .idea-feedback .submit-button {
           background:
-            radial-gradient(circle at 18px 50%, #fff3c4 0 4px, transparent 5px),
-            linear-gradient(180deg, #ffd27a 0%, #f0b35f 52%, #c98438 100%);
+            radial-gradient(circle at 18px 50%, #cffafe 0 4px, transparent 5px),
+            linear-gradient(180deg, #ffd27a 0%, #22d3ee 52%, #0ea5e9 100%);
           border-radius: 999px;
           color: #18100a;
         }
@@ -297,7 +297,7 @@ export default function FeedbackPage() {
         {!hasSession ? (
           <section
             style={{
-              border: "1px solid #4a3520",
+              border: "1px solid #1f4f73",
               borderRadius: 22,
               padding: 24,
               marginTop: 22,
@@ -307,7 +307,7 @@ export default function FeedbackPage() {
           >
             You need to sign in before sending feedback.
             <br />
-            <Link href={loginHref} style={{ display: "inline-block", marginTop: 14, color: "#f0b35f" }}>
+            <Link href={loginHref} style={{ display: "inline-block", marginTop: 14, color: "#22d3ee" }}>
               Sign In
             </Link>
           </section>
@@ -315,7 +315,7 @@ export default function FeedbackPage() {
           <section
             className="form-card"
             style={{
-              border: "1px solid #26211c",
+              border: "1px solid #15324f",
               borderRadius: 24,
               padding: 26,
               marginTop: 22,
@@ -415,6 +415,7 @@ export default function FeedbackPage() {
     </main>
   );
 }
+
 
 
 

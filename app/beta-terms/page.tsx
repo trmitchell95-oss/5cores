@@ -70,7 +70,7 @@ export default function BetaTermsPage() {
           align-items: center;
           gap: 14px;
           flex-wrap: wrap;
-          border: 1px solid #26211c;
+          border: 1px solid #15324f;
           background: rgba(18, 16, 13, 0.86);
           border-radius: 22px;
           padding: 16px 18px;
@@ -80,8 +80,8 @@ export default function BetaTermsPage() {
         .idea-terms .topbar,
         .idea-terms .hero,
         .idea-terms .section-card {
-          border-color: rgba(255, 221, 159, 0.2);
-          background: rgba(43, 38, 30, 0.9);
+          border-color: rgba(87, 232, 255, 0.22);
+          background: rgba(5, 12, 24, 0.92);
         }
 
         .brand {
@@ -97,7 +97,7 @@ export default function BetaTermsPage() {
           display: flex;
           align-items: center;
           justify-content: center;
-          background: #c8a96e;
+          background: #57e8ff;
           color: #0e0d0b;
           font-family: 'IBM Plex Mono', monospace;
           font-weight: 800;
@@ -106,10 +106,10 @@ export default function BetaTermsPage() {
 
         .idea-terms .brand-mark {
           background:
-            radial-gradient(circle at 14px 50%, #fff3c4 0 4px, transparent 5px),
-            linear-gradient(180deg, #ffd27a 0%, #f0b35f 52%, #c98438 100%);
+            radial-gradient(circle at 14px 50%, #cffafe 0 4px, transparent 5px),
+            linear-gradient(180deg, #ffd27a 0%, #22d3ee 52%, #0ea5e9 100%);
           color: #18100a;
-          box-shadow: 0 0 22px rgba(240, 179, 95, 0.28);
+          box-shadow: 0 0 22px rgba(34, 211, 238, 0.28);
         }
 
         .brand-main {
@@ -142,8 +142,8 @@ export default function BetaTermsPage() {
           justify-content: center;
           min-height: 42px;
           border-radius: 14px;
-          border: 1px solid #302a24;
-          background: #11100e;
+          border: 1px solid #183a5f;
+          background: #050b18;
           color: #9a9186;
           text-decoration: none;
           font-family: 'IBM Plex Mono', monospace;
@@ -155,23 +155,23 @@ export default function BetaTermsPage() {
         }
 
         .idea-terms .nav-link {
-          border-color: rgba(255, 221, 159, 0.22);
+          border-color: rgba(87, 232, 255, 0.24);
           color: #d8cfc0;
           background:
-            radial-gradient(circle at 13px 50%, rgba(255, 231, 167, 0.72) 0 2px, transparent 3px),
+            radial-gradient(circle at 13px 50%, rgba(125, 211, 252, 0.62) 0 2px, transparent 3px),
             #17120d;
           padding-left: 22px;
         }
 
         .nav-link:hover {
-          color: #c8a96e;
-          border-color: #c8a96e;
+          color: #57e8ff;
+          border-color: #57e8ff;
         }
 
         .hero,
         .section-card {
-          border: 1px solid #26211c;
-          background: rgba(18, 16, 13, 0.9);
+          border: 1px solid #15324f;
+          background: rgba(3, 7, 18, 0.92);
           border-radius: 28px;
           box-shadow: 0 24px 80px rgba(0, 0, 0, 0.22);
         }
@@ -186,14 +186,14 @@ export default function BetaTermsPage() {
           font-size: 11px;
           font-weight: 800;
           letter-spacing: 0.24em;
-          color: #c8a96e;
+          color: #57e8ff;
           text-transform: uppercase;
           margin-bottom: 14px;
         }
 
         .idea-terms .eyebrow,
         .idea-terms .dot {
-          color: #f0b35f;
+          color: #22d3ee;
         }
 
         .title {
@@ -206,7 +206,7 @@ export default function BetaTermsPage() {
 
         .subtitle {
           margin-top: 18px;
-          color: #aaa096;
+          color: #a8c7d8;
           font-size: 16px;
           line-height: 1.7;
           max-width: 760px;
@@ -216,7 +216,7 @@ export default function BetaTermsPage() {
         .idea-terms .subtitle,
         .idea-terms .body-text,
         .idea-terms .plain-item {
-          color: #ddd5c7;
+          color: #dbeafe;
         }
 
         .section-card {
@@ -233,7 +233,7 @@ export default function BetaTermsPage() {
         }
 
         .body-text {
-          color: #aaa096;
+          color: #a8c7d8;
           font-size: 15px;
           line-height: 1.75;
           font-weight: 300;
@@ -250,7 +250,7 @@ export default function BetaTermsPage() {
           display: flex;
           gap: 10px;
           align-items: flex-start;
-          color: #aaa096;
+          color: #a8c7d8;
           font-size: 14px;
           line-height: 1.6;
         }
@@ -259,26 +259,26 @@ export default function BetaTermsPage() {
           width: 7px;
           height: 7px;
           border-radius: 50%;
-          background: #c8a96e;
+          background: #57e8ff;
           flex-shrink: 0;
           margin-top: 8px;
         }
 
         .idea-terms .dot {
-          background: #f0b35f;
-          box-shadow: 0 0 10px rgba(240, 179, 95, 0.32);
+          background: #22d3ee;
+          box-shadow: 0 0 10px rgba(34, 211, 238, 0.30);
         }
 
         .warning {
-          border-color: #4a3520;
+          border-color: #1f4f73;
           background:
-            linear-gradient(135deg, rgba(200, 169, 110, 0.12), rgba(18, 16, 13, 0.9)),
+            linear-gradient(135deg, rgba(34, 211, 238, 0.12), rgba(3, 7, 18, 0.92)),
             #12100d;
         }
 
         .idea-terms .warning {
           background:
-            linear-gradient(135deg, rgba(240, 179, 95, 0.13), rgba(43, 38, 30, 0.92)),
+            linear-gradient(135deg, rgba(34, 211, 238, 0.14), rgba(5, 12, 24, 0.92)),
             #211b12;
         }
 
@@ -290,7 +290,7 @@ export default function BetaTermsPage() {
         }
 
         .idea-terms .small-note {
-          color: rgba(245, 241, 232, 0.52);
+          color: rgba(219, 234, 254, 0.70);
         }
 
         @media (max-width: 650px) {
@@ -409,5 +409,6 @@ export default function BetaTermsPage() {
     </main>
   );
 }
+
 
 
