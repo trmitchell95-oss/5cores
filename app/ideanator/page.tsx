@@ -1301,7 +1301,7 @@ export default function IdeanatorPage() {
   }
 
   return (
-    <main className="min-h-screen bg-neutral-950 px-4 py-6 text-neutral-100 sm:px-6 lg:px-8">
+    <main className="ideanator-workbench min-h-screen bg-neutral-950 px-4 py-6 text-neutral-100 sm:px-6 lg:px-8">
       <div className="mx-auto flex max-w-7xl flex-col gap-6">
         <section className="rounded-3xl border border-neutral-800 bg-neutral-900/70 p-6 shadow-2xl">
           <p className="text-sm font-semibold uppercase tracking-[0.3em] text-amber-400">
@@ -1880,6 +1880,7 @@ export default function IdeanatorPage() {
     </main>
   );
 }
+
 
 
 

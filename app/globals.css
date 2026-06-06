@@ -194,3 +194,452 @@ body {
 a {
   color: inherit;
 }
+
+
+/* === IDEANATOR MIDNIGHT SPARK PASS START ===
+   Focused visual/UX pass for The Ideanator only.
+   Does not alter backend logic, auth, saved reports, APIs, or Supabase.
+*/
+
+:root {
+  --idea-bg-0: #020617;
+  --idea-bg-1: #07111f;
+  --idea-bg-2: #0b1728;
+  --idea-panel: rgba(8, 18, 32, 0.92);
+  --idea-panel-soft: rgba(13, 27, 48, 0.82);
+  --idea-border: rgba(125, 211, 252, 0.22);
+  --idea-border-hot: rgba(34, 211, 238, 0.52);
+  --idea-text: #eaf7ff;
+  --idea-muted: #9fb4c7;
+  --idea-cyan: #22d3ee;
+  --idea-cyan-soft: #67e8f9;
+  --idea-ember: #f59e0b;
+  --idea-ember-soft: #fbbf24;
+  --idea-danger: #fb7185;
+  --idea-success: #34d399;
+}
+
+/* Global nav gets a separate Ideanator identity when ProductNav marks it. */
+.hovel-global-nav-ideanator {
+  border-color: rgba(34, 211, 238, 0.36) !important;
+  background:
+    radial-gradient(circle at 10% 0%, rgba(34, 211, 238, 0.14), transparent 22rem),
+    rgba(2, 6, 23, 0.94) !important;
+  box-shadow:
+    0 20px 60px rgba(0, 0, 0, 0.58),
+    0 0 32px rgba(34, 211, 238, 0.08) !important;
+}
+
+.hovel-global-nav-ideanator .hovel-global-nav-mark {
+  background: linear-gradient(135deg, var(--idea-cyan), var(--idea-ember-soft)) !important;
+  color: #020617 !important;
+}
+
+.hovel-global-nav-ideanator .hovel-global-nav-link {
+  border-color: rgba(125, 211, 252, 0.28) !important;
+  background:
+    radial-gradient(circle at 13px 50%, rgba(34, 211, 238, 0.72) 0 2px, transparent 3px),
+    rgba(8, 18, 32, 0.94) !important;
+  color: #dff8ff !important;
+  box-shadow: 0 0 16px rgba(34, 211, 238, 0.06) !important;
+}
+
+.hovel-global-nav-ideanator .hovel-global-nav-link:hover {
+  border-color: rgba(34, 211, 238, 0.78) !important;
+  color: #67e8f9 !important;
+  box-shadow: 0 0 24px rgba(34, 211, 238, 0.18) !important;
+}
+
+.hovel-global-nav-ideanator .hovel-global-nav-primary {
+  background:
+    radial-gradient(circle at 13px 50%, #ecfeff 0 3px, transparent 4px),
+    linear-gradient(180deg, #67e8f9 0%, #22d3ee 58%, #0891b2 100%) !important;
+  color: #020617 !important;
+  border-color: rgba(165, 243, 252, 0.75) !important;
+}
+
+/* Ideanator route shells. */
+.ideanator-page,
+.ideanator-workbench,
+.idea-saved-shell,
+.idea-help-shell,
+.saved-ideas-shell,
+.ideanator-switchboard {
+  min-height: 100vh;
+  color: var(--idea-text) !important;
+  background:
+    radial-gradient(circle at 12% 4%, rgba(34, 211, 238, 0.22), transparent 32rem),
+    radial-gradient(circle at 88% 16%, rgba(245, 158, 11, 0.15), transparent 28rem),
+    radial-gradient(circle at 50% 100%, rgba(20, 184, 166, 0.12), transparent 34rem),
+    linear-gradient(135deg, #020617 0%, #06101d 46%, #0b1728 100%) !important;
+  text-rendering: optimizeLegibility;
+}
+
+/* Idea Check cards and panels. */
+.ideanator-page .hero-card,
+.ideanator-page .intake-card,
+.ideanator-page .loading-card,
+.ideanator-page .results-card,
+.idea-saved-shell .hero,
+.idea-saved-shell .summary-card,
+.idea-saved-shell .library-card,
+.idea-saved-shell .empty-box,
+.idea-help-shell .hero,
+.idea-help-shell .panel,
+.idea-help-shell .card,
+.saved-ideas-shell .hero,
+.saved-ideas-shell .panel,
+.saved-ideas-shell .rig-card,
+.ideanator-switchboard .switch-hero,
+.ideanator-switchboard .switch-note,
+.ideanator-switchboard .switch-helper {
+  border: 1px solid var(--idea-border) !important;
+  background:
+    linear-gradient(180deg, rgba(13, 27, 48, 0.94), rgba(5, 12, 24, 0.94)) !important;
+  box-shadow:
+    0 28px 90px rgba(0, 0, 0, 0.48),
+    inset 0 1px 0 rgba(255, 255, 255, 0.045),
+    0 0 40px rgba(34, 211, 238, 0.05) !important;
+}
+
+.ideanator-page .eyebrow,
+.idea-saved-shell .eyebrow,
+.idea-help-shell .eyebrow,
+.idea-help-shell .mini-label,
+.saved-ideas-shell .eyebrow,
+.ideanator-switchboard .switch-eyebrow {
+  color: var(--idea-cyan-soft) !important;
+  letter-spacing: 0.18em !important;
+}
+
+.ideanator-page h1,
+.ideanator-page h2,
+.idea-saved-shell h1,
+.idea-saved-shell h2,
+.idea-help-shell h1,
+.idea-help-shell h2,
+.saved-ideas-shell .title,
+.ideanator-switchboard h1 {
+  color: var(--idea-text) !important;
+  letter-spacing: -0.055em !important;
+}
+
+.ideanator-page p,
+.idea-saved-shell p,
+.idea-help-shell p,
+.idea-help-shell li,
+.saved-ideas-shell p,
+.ideanator-switchboard p {
+  color: var(--idea-muted) !important;
+}
+
+.ideanator-page strong,
+.idea-saved-shell strong,
+.idea-help-shell strong,
+.saved-ideas-shell strong,
+.ideanator-switchboard strong {
+  color: #f8fdff !important;
+}
+
+/* Inputs: bigger, calmer, clearer. */
+.ideanator-page input,
+.ideanator-page select,
+.ideanator-page textarea,
+.idea-saved-shell input,
+.saved-ideas-shell input,
+.ideanator-workbench input,
+.ideanator-workbench select,
+.ideanator-workbench textarea {
+  border-color: rgba(125, 211, 252, 0.22) !important;
+  background: rgba(2, 6, 23, 0.72) !important;
+  color: var(--idea-text) !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.035) !important;
+}
+
+.ideanator-page input:focus,
+.ideanator-page select:focus,
+.ideanator-page textarea:focus,
+.idea-saved-shell input:focus,
+.saved-ideas-shell input:focus,
+.ideanator-workbench input:focus,
+.ideanator-workbench select:focus,
+.ideanator-workbench textarea:focus {
+  border-color: var(--idea-cyan) !important;
+  box-shadow:
+    0 0 0 4px rgba(34, 211, 238, 0.12),
+    0 0 26px rgba(34, 211, 238, 0.10) !important;
+}
+
+.ideanator-page textarea,
+.ideanator-workbench textarea {
+  font-size: 16px !important;
+  line-height: 1.7 !important;
+}
+
+/* Primary actions: cyan spark. */
+.ideanator-page .primary-button,
+.idea-saved-shell .primary-link,
+.idea-help-shell .button,
+.saved-ideas-shell .primary-btn,
+.ideanator-switchboard .switch-helper-button,
+.ideanator-workbench [class*="bg-amber-400"] {
+  border: 1px solid rgba(165, 243, 252, 0.72) !important;
+  background:
+    radial-gradient(circle at 18px 50%, #ecfeff 0 4px, transparent 5px),
+    linear-gradient(180deg, #67e8f9 0%, #22d3ee 54%, #0891b2 100%) !important;
+  color: #020617 !important;
+  box-shadow:
+    0 0 0 1px rgba(34, 211, 238, 0.16),
+    0 0 30px rgba(34, 211, 238, 0.24),
+    inset 0 1px 0 rgba(255, 255, 255, 0.42) !important;
+}
+
+.ideanator-page .primary-button:hover,
+.idea-saved-shell .primary-link:hover,
+.idea-help-shell .button:hover,
+.saved-ideas-shell .primary-btn:hover,
+.ideanator-workbench [class*="bg-amber-400"]:hover {
+  transform: translateY(-1px);
+  filter: brightness(1.08);
+  box-shadow:
+    0 0 0 1px rgba(34, 211, 238, 0.24),
+    0 0 42px rgba(34, 211, 238, 0.34),
+    inset 0 1px 0 rgba(255, 255, 255, 0.5) !important;
+}
+
+/* Secondary actions and utility buttons. */
+.ideanator-page .secondary-button,
+.ideanator-page .ghost-button,
+.idea-saved-shell .secondary-link,
+.idea-saved-shell .refresh-button,
+.idea-saved-shell .small-link,
+.idea-help-shell .button-dark,
+.saved-ideas-shell .small-btn,
+.saved-ideas-shell .ghost-btn,
+.saved-ideas-shell .danger-btn,
+.ideanator-workbench [class*="border-neutral-700"],
+.ideanator-workbench [class*="border-amber-400"] {
+  border-color: rgba(125, 211, 252, 0.26) !important;
+  background:
+    radial-gradient(circle at 16px 50%, rgba(34, 211, 238, 0.64) 0 3px, transparent 4px),
+    rgba(8, 18, 32, 0.72) !important;
+  color: #dff8ff !important;
+}
+
+.ideanator-page .secondary-button:hover,
+.ideanator-page .ghost-button:hover,
+.idea-saved-shell .secondary-link:hover,
+.idea-saved-shell .refresh-button:hover,
+.idea-saved-shell .small-link:hover,
+.idea-help-shell .button-dark:hover,
+.saved-ideas-shell .small-btn:hover,
+.saved-ideas-shell .ghost-btn:hover,
+.ideanator-workbench [class*="border-neutral-700"]:hover,
+.ideanator-workbench [class*="border-amber-400"]:hover {
+  border-color: rgba(34, 211, 238, 0.78) !important;
+  color: var(--idea-cyan-soft) !important;
+  box-shadow: 0 0 24px rgba(34, 211, 238, 0.12) !important;
+}
+
+/* Chips, badges, result boxes. */
+.ideanator-page .kicker,
+.ideanator-page .verdict-row .active-verdict,
+.idea-saved-shell .chip.gold,
+.saved-ideas-shell .status-good {
+  background: rgba(34, 211, 238, 0.18) !important;
+  border-color: rgba(34, 211, 238, 0.55) !important;
+  color: #a5f3fc !important;
+}
+
+.ideanator-page .refusal-box,
+.ideanator-page .long-doc-note,
+.ideanator-page .beta-run-note,
+.ideanator-page .intake-preview,
+.ideanator-page .submitted-box,
+.ideanator-page .report-actions,
+.ideanator-page .result-card,
+.idea-help-shell .callout,
+.saved-ideas-shell .rig-copy,
+.ideanator-workbench [class*="bg-neutral-950"],
+.ideanator-workbench [class*="bg-neutral-900"],
+.ideanator-workbench [class*="bg-neutral-800"] {
+  border-color: rgba(125, 211, 252, 0.18) !important;
+  background: rgba(2, 6, 23, 0.54) !important;
+}
+
+.ideanator-page .result-card h3,
+.ideanator-page .submitted-box span,
+.ideanator-page .intake-preview span,
+.ideanator-page .report-actions span,
+.saved-ideas-shell .rig-title,
+.idea-saved-shell .idea-title,
+.idea-saved-shell .latest-title {
+  color: #ecfeff !important;
+}
+
+.ideanator-page .verdict-badge {
+  border-color: rgba(245, 158, 11, 0.46) !important;
+  background:
+    radial-gradient(circle at top right, rgba(245, 158, 11, 0.16), transparent 12rem),
+    rgba(2, 6, 23, 0.66) !important;
+}
+
+.ideanator-page .verdict-badge strong {
+  color: #fbbf24 !important;
+}
+
+.ideanator-page .error-box,
+.idea-saved-shell .error-box,
+.saved-ideas-shell .notice-bad,
+.ideanator-workbench [class*="border-red"] {
+  border-color: rgba(251, 113, 133, 0.48) !important;
+  background: rgba(76, 5, 25, 0.34) !important;
+  color: #fecdd3 !important;
+}
+
+.ideanator-page .save-box,
+.saved-ideas-shell .notice-good,
+.ideanator-workbench [class*="border-emerald"] {
+  border-color: rgba(52, 211, 153, 0.42) !important;
+  background: rgba(6, 78, 59, 0.26) !important;
+  color: #bbf7d0 !important;
+}
+
+/* Tailwind-heavy Rig Workbench specific polish. */
+.ideanator-workbench {
+  padding-top: 1.5rem !important;
+}
+
+.ideanator-workbench .mx-auto {
+  max-width: 1280px !important;
+}
+
+.ideanator-workbench [class*="rounded-3xl"],
+.ideanator-workbench [class*="rounded-2xl"] {
+  border-color: rgba(125, 211, 252, 0.18) !important;
+  box-shadow:
+    0 22px 70px rgba(0, 0, 0, 0.42),
+    inset 0 1px 0 rgba(255, 255, 255, 0.04) !important;
+}
+
+.ideanator-workbench [class*="text-amber"] {
+  color: var(--idea-cyan-soft) !important;
+}
+
+.ideanator-workbench [class*="text-neutral-400"],
+.ideanator-workbench [class*="text-neutral-300"],
+.ideanator-workbench [class*="text-neutral-200"] {
+  color: var(--idea-muted) !important;
+}
+
+.ideanator-workbench [class*="text-neutral-50"],
+.ideanator-workbench [class*="font-black"] {
+  color: var(--idea-text) !important;
+}
+
+/* Bottom support dock on Ideanator pages. */
+.ideanator-page ~ .hovel-support-dock .hovel-help-link,
+.ideanator-page ~ .hovel-support-dock .hovel-feedback-link,
+.ideanator-page ~ .hovel-support-dock .hovel-beta-terms-link,
+.ideanator-workbench ~ .hovel-support-dock .hovel-help-link,
+.ideanator-workbench ~ .hovel-support-dock .hovel-feedback-link,
+.ideanator-workbench ~ .hovel-support-dock .hovel-beta-terms-link,
+.idea-saved-shell ~ .hovel-support-dock .hovel-help-link,
+.idea-saved-shell ~ .hovel-support-dock .hovel-feedback-link,
+.idea-saved-shell ~ .hovel-support-dock .hovel-beta-terms-link,
+.idea-help-shell ~ .hovel-support-dock .hovel-help-link,
+.idea-help-shell ~ .hovel-support-dock .hovel-feedback-link,
+.idea-help-shell ~ .hovel-support-dock .hovel-beta-terms-link,
+.saved-ideas-shell ~ .hovel-support-dock .hovel-help-link,
+.saved-ideas-shell ~ .hovel-support-dock .hovel-feedback-link,
+.saved-ideas-shell ~ .hovel-support-dock .hovel-beta-terms-link,
+.ideanator-switchboard ~ .hovel-support-dock .hovel-help-link,
+.ideanator-switchboard ~ .hovel-support-dock .hovel-feedback-link,
+.ideanator-switchboard ~ .hovel-support-dock .hovel-beta-terms-link {
+  border-color: rgba(125, 211, 252, 0.24) !important;
+  background: rgba(8, 18, 32, 0.92) !important;
+  color: #dff8ff !important;
+}
+
+@media (max-width: 760px) {
+  .ideanator-page,
+  .idea-saved-shell,
+  .idea-help-shell,
+  .saved-ideas-shell,
+  .ideanator-switchboard {
+    padding-left: 12px !important;
+    padding-right: 12px !important;
+  }
+
+  .ideanator-page .hero-card,
+  .ideanator-page .intake-card,
+  .ideanator-page .loading-card,
+  .ideanator-page .results-card,
+  .idea-saved-shell .hero,
+  .idea-saved-shell .summary-card,
+  .idea-saved-shell .library-card,
+  .idea-help-shell .hero,
+  .idea-help-shell .panel,
+  .idea-help-shell .card,
+  .saved-ideas-shell .hero,
+  .saved-ideas-shell .panel,
+  .saved-ideas-shell .rig-card,
+  .ideanator-switchboard .switch-hero {
+    border-radius: 22px !important;
+    padding: 18px !important;
+  }
+
+  .ideanator-page h1,
+  .idea-saved-shell h1,
+  .idea-help-shell h1,
+  .saved-ideas-shell .title,
+  .ideanator-switchboard h1 {
+    font-size: clamp(2.35rem, 12vw, 3.4rem) !important;
+    line-height: 0.95 !important;
+  }
+
+  .ideanator-page h2,
+  .idea-saved-shell h2,
+  .idea-help-shell h2 {
+    font-size: clamp(1.85rem, 9vw, 2.55rem) !important;
+    line-height: 1 !important;
+  }
+
+  .ideanator-page .hero-actions,
+  .ideanator-page .form-actions,
+  .ideanator-page .report-action-buttons,
+  .idea-saved-shell .hero-actions,
+  .idea-saved-shell .idea-actions,
+  .idea-help-shell .button-row,
+  .saved-ideas-shell .actions,
+  .saved-ideas-shell .toolbar {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    width: 100% !important;
+  }
+
+  .ideanator-page button,
+  .ideanator-page a.primary-button,
+  .ideanator-page a.secondary-button,
+  .idea-saved-shell a,
+  .idea-saved-shell button,
+  .idea-help-shell a,
+  .saved-ideas-shell a,
+  .saved-ideas-shell button {
+    width: 100%;
+    min-height: 46px;
+  }
+
+  .ideanator-workbench {
+    padding-left: 12px !important;
+    padding-right: 12px !important;
+    padding-bottom: 112px !important;
+  }
+
+  .ideanator-workbench textarea {
+    min-height: 260px !important;
+  }
+}
+
+/* === IDEANATOR MIDNIGHT SPARK PASS END === */
+

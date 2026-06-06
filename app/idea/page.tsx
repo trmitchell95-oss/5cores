@@ -131,7 +131,7 @@ ${report.ideaKind}
 ASKED FOR
 ${report.primaryNeed}
 
-BRUTAL VERDICT
+THE GUT READ
 ${report.verdict}
 
 WHAT YOU DROPPED IN
@@ -592,7 +592,7 @@ export default function IdeanatorPage() {
           </div>
 
           <button className="ghost-button" type="button" onClick={returnToLanding}>
-            Reset the lift
+            Reset
           </button>
         </header>
 
@@ -619,7 +619,7 @@ export default function IdeanatorPage() {
                 <strong>Good.</strong>
               </p>
 
-              <p>Drop it in.</p>
+              <p>Drop the Idea.</p>
             </div>
 
             <div className="refusal-box">
@@ -652,7 +652,7 @@ export default function IdeanatorPage() {
               </article>
 
               <article>
-                <span>The Brutal Verdict</span>
+                <span>The The Gut Read</span>
                 <p>
                   Greenlight, Workbench, Distraction, Beautiful Mess, or
                   Dangerously Good.
@@ -662,7 +662,7 @@ export default function IdeanatorPage() {
 
             <div className="hero-actions">
               <button className="primary-button" type="button" onClick={returnToIntake}>
-                Drop it in
+                Drop the Idea
               </button>
 
               <p>We will put it on the lift.</p>
@@ -704,7 +704,7 @@ export default function IdeanatorPage() {
 
             {errorMessage && (
               <div className="error-box">
-                <span>The lift jammed.</span>
+                <span>The spark jammed.</span>
                 <p>{errorMessage}</p>
               </div>
             )}
@@ -780,7 +780,7 @@ export default function IdeanatorPage() {
                   type="submit"
                   disabled={!ideaText.trim() || ideaTooLong}
                 >
-                  Put it on the lift
+                  Test This Idea
                 </button>
               </div>
             </form>
@@ -791,7 +791,7 @@ export default function IdeanatorPage() {
           <section className="loading-card">
             <div className="spinner" />
 
-            <h2>The little bastard is on the lift.</h2>
+            <h2>The spark is in the chamber.</h2>
 
             <p>
               We are sending it through the shop now. Frame, spark, tires,
@@ -816,7 +816,7 @@ export default function IdeanatorPage() {
               </div>
 
               <div className="verdict-badge">
-                <span>Brutal Verdict</span>
+                <span>The Gut Read</span>
                 <strong>{currentRun.report.verdict}</strong>
               </div>
             </div>
@@ -837,7 +837,7 @@ export default function IdeanatorPage() {
 
             {errorMessage && (
               <div className="error-box results-error">
-                <span>The lift jammed.</span>
+                <span>The spark jammed.</span>
                 <p>{errorMessage}</p>
               </div>
             )}
@@ -1582,6 +1582,7 @@ function ResultCard({ title, body }: { title: string; body: string }) {
     </article>
   );
 }
+
 
 
 
