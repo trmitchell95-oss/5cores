@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
@@ -289,7 +289,7 @@ export default function FeedbackPage() {
 
           <p className="subtitle">
             {isIdeanator
-              ? "Found a bug, got confused, liked an idea report, hated a verdict, or thought of a feature? Send it here. This helps turn The Ideanator from a clever little bastard into something people can actually use."
+              ? "Found a bug, got confused, liked an idea report, hated a verdict, or thought of a feature? Send it here. This helps turn The Ideanator from a useful working tool into something people can actually use."
               : "Found a bug, got confused, liked a report, hated a report, or thought of a feature? Send it here. This helps turn the beta from a neat machine into something people can actually use."}
           </p>
         </section>
@@ -415,4 +415,6 @@ export default function FeedbackPage() {
     </main>
   );
 }
+
+
 

@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useEffect, useMemo, useState, type ChangeEvent, type ReactNode } from "react";
 import { createClient } from "@supabase/supabase-js";
@@ -886,7 +886,7 @@ export default function IdeanatorPage() {
  file.type === "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
 
  if (!isTextFile && !isDocxFile) {
- setError("For uploads, use .txt, .md, or .docx files. PDF can wait in the haunted hallway.");
+ setError("For uploads, use .txt, .md, or .docx files. PDF can wait in the later pass.");
  event.target.value = "";
  return;
  }
@@ -1880,6 +1880,8 @@ export default function IdeanatorPage() {
  </main>
  );
 }
+
+
 
 
 

@@ -1,4 +1,4 @@
-﻿import Link from "next/link";
+import Link from "next/link";
 
 export default function IdeaHelpPage() {
  return (
@@ -379,7 +379,7 @@ export default function IdeaHelpPage() {
 
  <div className="callout">
  This is a beta workshop, not a legal vault, patent opinion, investor guarantee,
- therapist, accountant, or magic money machine.
+ therapist, accountant, or guaranteed success machine.
  </div>
  </section>
 
@@ -400,5 +400,6 @@ export default function IdeaHelpPage() {
  </main>
  );
 }
+
 
 
