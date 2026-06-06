@@ -44,3 +44,5 @@ backup-before-*
 
 .env.local
 .vercel
+
+.env.local
