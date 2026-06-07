@@ -5,6 +5,8 @@ import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { createClient } from "@supabase/supabase-js";
+import MarkdownReport from "@/components/MarkdownReport";
+import { markdownToPlainText } from "@/lib/markdownToPlainText";
 
 type SavedReport = {
   id: string;
@@ -547,12 +549,14 @@ export default function SavedReportPage() {
     : singleReportText;
 
   const displayTitle = report?.title || "Saved Report";
-  const exportText = `# ${displayTitle}\n\n${report?.created_at ? `Saved: ${formatDate(report.created_at)}\n\n` : ""}${copyText}`;
+  const markdownExportText = `# ${displayTitle}\n\n${report?.created_at ? `Saved: ${formatDate(report.created_at)}\n\n` : ""}${copyText}`;
+  const plainExportText = markdownToPlainText(markdownExportText);
+  const cleanCopyText = markdownToPlainText(copyText);
 
   async function copyFullReport() {
     if (!copyText) return;
 
-    await navigator.clipboard.writeText(copyText);
+    await navigator.clipboard.writeText(cleanCopyText);
     setCopied(true);
 
     setTimeout(() => {
@@ -662,8 +666,7 @@ export default function SavedReportPage() {
 
     downloadTextFile(
       `${safeFileName(displayTitle)}.md`,
-      exportText,
-      "text/markdown;charset=utf-8"
+      markdownExportText, "text/markdown;charset=utf-8"
     );
   }
 
@@ -672,8 +675,7 @@ export default function SavedReportPage() {
 
     downloadTextFile(
       `${safeFileName(displayTitle)}.txt`,
-      exportText,
-      "text/plain;charset=utf-8"
+      plainExportText, "text/plain;charset=utf-8"
     );
   }
   return (
@@ -1131,7 +1133,7 @@ export default function SavedReportPage() {
               className="action-btn"
               type="button"
             >
-              {copied ? "Copied" : "Copy Report"}
+              {copied ? "Copied" : "Copy clean text"}
             </button>
           </div>
         </div>
@@ -1287,9 +1289,7 @@ export default function SavedReportPage() {
             )}
 
             <div className="report-body">
-              {blocks.map((block, index) => (
-                <ReportBlock key={`${block.type}-${index}`} block={block} />
-              ))}
+              <MarkdownReport content={activeText} showCopyControls={false} />
             </div>
           </article>
         )}
@@ -1303,6 +1303,8 @@ export default function SavedReportPage() {
     </main>
   );
 }
+
+
 
 
 
