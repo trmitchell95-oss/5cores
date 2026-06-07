@@ -1,5 +1,7 @@
 ﻿"use client";
 
+import MarkdownReport from "@/components/MarkdownReport";
+
 import { useState, useRef } from "react";
 
 const PERSONAS = [
@@ -227,15 +229,12 @@ export default function Home() {
                 </div>
 
                 {activeReport ? (
-                  <div
-                    className="report-content"
-                    dangerouslySetInnerHTML={{ __html: "<p class='para'>" + renderMarkdown(activeReport) + "</p>" }}
-                  />
-                ) : (
-                  <div className="empty-state">
-                    <div className="empty-label">Loading...</div>
-                  </div>
-                )}
+                    <MarkdownReport content={activeReport} showCopyControls={true} />
+                  ) : (
+                    <div className="empty-state">
+                      <div className="empty-label">Loading...</div>
+                    </div>
+                  )}
               </div>
             )}
           </div>
@@ -244,4 +243,5 @@ export default function Home() {
     </div>
   );
 }
+
 
