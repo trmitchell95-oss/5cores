@@ -1,11 +1,19 @@
-"use client";
+﻿"use client";
 
 import { useEffect, useMemo, useState } from "react";
 import { createClient } from "@supabase/supabase-js";
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+  {
+    auth: {
+      flowType: "implicit",
+      persistSession: true,
+      autoRefreshToken: true,
+      detectSessionInUrl: true,
+    },
+  }
 );
 
 function isIdeanatorHost() {
@@ -52,12 +60,9 @@ function getHomeHref() {
 }
 
 export default function LoginPage() {
-  const [mode, setMode] = useState<"signin" | "signup" | "forgot">("signin");
   const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [inviteCode, setInviteCode] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [checkingSession, setCheckingSession] = useState(true);
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
   const [destination, setDestination] = useState("/dashboard");
@@ -66,18 +71,29 @@ export default function LoginPage() {
 
   useEffect(() => {
     const nextDestination = getSafeNextPath();
+    const params = new URLSearchParams(window.location.search);
+    const urlError = params.get("error") || "";
 
     setDestination(nextDestination);
     setProductLabel(getLoginProductLabel());
     setHomeHref(getHomeHref());
 
-    async function checkSession() {
-      const {
-        data: { session },
-      } = await supabase.auth.getSession();
+    if (urlError) {
+      setError(urlError);
+    }
 
-      if (session) {
-        window.location.href = nextDestination;
+    async function checkSession() {
+      try {
+        const {
+          data: { session },
+        } = await supabase.auth.getSession();
+
+        if (session?.access_token) {
+          window.location.href = nextDestination;
+          return;
+        }
+      } finally {
+        setCheckingSession(false);
       }
     }
 
@@ -89,109 +105,41 @@ export default function LoginPage() {
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
 
+    const cleanEmail = email.trim().toLowerCase();
+
     setLoading(true);
     setError("");
     setMessage("");
 
-    if (!email.trim()) {
+    if (!cleanEmail) {
       setError("Enter your email address.");
       setLoading(false);
       return;
     }
 
     try {
-      if (mode === "forgot") {
-        const { error } = await supabase.auth.resetPasswordForEmail(email.trim(), {
-          redirectTo: `${window.location.origin}/reset-password`,
-        });
+      const emailRedirectTo = `${window.location.origin}/auth/callback?next=${encodeURIComponent(destination)}`;
 
-        if (error) {
-          setError(error.message);
-          setLoading(false);
-          return;
-        }
-
-        setMessage("Password reset email sent. Check your inbox and follow the link.");
-        setLoading(false);
-        return;
-      }
-
-      if (!password.trim()) {
-        setError("Enter your password.");
-        setLoading(false);
-        return;
-      }
-
-      if (password.length < 6) {
-        setError("Password must be at least 6 characters.");
-        setLoading(false);
-        return;
-      }
-
-      if (mode === "signin") {
-        const { error } = await supabase.auth.signInWithPassword({
-          email: email.trim(),
-          password,
-        });
-
-        if (error) {
-          setError(error.message);
-          setLoading(false);
-          return;
-        }
-
-        window.location.href = destination;
-        return;
-      }
-
-      if (!inviteCode.trim()) {
-        setError("Enter the beta invite code.");
-        setLoading(false);
-        return;
-      }
-
-      const response = await fetch("/api/auth/signup", {
-        method: "POST",
-        headers: {
-          "content-type": "application/json",
+      const { error } = await supabase.auth.signInWithOtp({
+        email: cleanEmail,
+        options: {
+          emailRedirectTo,
+          shouldCreateUser: true,
         },
-        body: JSON.stringify({
-          email: email.trim(),
-          password,
-          inviteCode,
-        }),
       });
 
-      const data = await response.json();
-
-      if (!response.ok) {
-        setError(data.error || "Could not create account.");
+      if (error) {
+        setError(error.message || "Could not send magic link.");
         setLoading(false);
         return;
       }
 
-      setMessage(
-        data.message ||
-          "Account created. Check your email if confirmation is required, then sign in."
-      );
-      setMode("signin");
-      setPassword("");
-      setInviteCode("");
-      setShowPassword(false);
+      setMessage("Magic link sent. Check your email, click the link, and you will land back inside the app.");
       setLoading(false);
     } catch {
-      setError("Something went wrong. Try again.");
+      setError("Something went wrong sending the magic link. Try again.");
       setLoading(false);
     }
-  }
-
-  function switchMode(nextMode: "signin" | "signup" | "forgot") {
-    setMode(nextMode);
-    setError("");
-    setMessage("");
-    setPassword("");
-    setInviteCode("");
-    setShowPassword(false);
   }
 
   return (
@@ -225,16 +173,9 @@ export default function LoginPage() {
           padding: 40px 20px;
         }
 
-        @media (max-width: 520px) {
-          .card {
-            padding: 24px 20px;
-            border-radius: 20px;
-          }
-        }
-
         .card {
           width: 100%;
-          max-width: 480px;
+          max-width: 500px;
           background: #161410;
           border: 1px solid #2a2520;
           border-radius: 24px;
@@ -265,7 +206,7 @@ export default function LoginPage() {
         }
 
         .back-link:hover {
-          color: #9a9186;
+          color: #c8935a;
         }
 
         .eyebrow {
@@ -283,7 +224,7 @@ export default function LoginPage() {
 
         .title {
           font-family: 'Cormorant Garamond', serif;
-          font-size: clamp(36px, 8vw, 50px);
+          font-size: clamp(40px, 8vw, 58px);
           line-height: 1;
           font-weight: 700;
           color: #f0ece4;
@@ -300,43 +241,6 @@ export default function LoginPage() {
 
         .idea-login .subtitle {
           color: #ddd5c7;
-        }
-
-        .tabs {
-          display: grid;
-          grid-template-columns: 1fr 1fr;
-          border: 1px solid #2a2520;
-          margin-bottom: 22px;
-        }
-
-        .idea-login .tabs {
-          border-color: rgba(255, 221, 159, 0.2);
-          border-radius: 16px;
-          overflow: hidden;
-        }
-
-        .tab {
-          border: none;
-          background: transparent;
-          color: #6b6560;
-          font-family: 'IBM Plex Mono', monospace;
-          font-size: 12px;
-          letter-spacing: 0.12em;
-          text-transform: uppercase;
-          padding: 14px 12px;
-          cursor: pointer;
-          min-height: 48px;
-          transition: all 0.15s;
-        }
-
-        .tab.active {
-          background: #c8935a;
-          color: #0e0d0b;
-        }
-
-        .idea-login .tab.active {
-          background: #f0b35f;
-          color: #18100a;
         }
 
         .field {
@@ -386,50 +290,6 @@ export default function LoginPage() {
           box-shadow: 0 0 0 4px rgba(240, 179, 95, 0.13);
         }
 
-        .password-wrap {
-          position: relative;
-        }
-
-        .password-wrap .input {
-          padding-right: 86px;
-        }
-
-        .password-toggle {
-          position: absolute;
-          right: 8px;
-          top: 50%;
-          transform: translateY(-50%);
-          border: 1px solid #2a2520;
-          background: #161410;
-          color: #c8935a;
-          font-family: 'IBM Plex Mono', monospace;
-          font-size: 10px;
-          letter-spacing: 0.08em;
-          text-transform: uppercase;
-          padding: 8px 10px;
-          cursor: pointer;
-        }
-
-        .idea-login .password-toggle {
-          color: #f0b35f;
-          border-color: rgba(255, 221, 159, 0.2);
-          background: rgba(255, 255, 255, 0.04);
-          border-radius: 10px;
-        }
-
-        .password-toggle:hover {
-          border-color: #c8935a;
-          color: #f0ece4;
-        }
-
-        .invite-help {
-          font-family: 'DM Sans', sans-serif;
-          font-size: 12px;
-          color: #6b6560;
-          line-height: 1.45;
-          margin-top: 7px;
-        }
-
         .button {
           width: 100%;
           margin-top: 10px;
@@ -473,38 +333,6 @@ export default function LoginPage() {
           cursor: not-allowed;
         }
 
-        .link-row {
-          margin-top: 18px;
-          display: flex;
-          justify-content: space-between;
-          gap: 14px;
-          flex-wrap: wrap;
-        }
-
-        .text-link {
-          border: none;
-          background: none;
-          color: #6b6560;
-          font-family: 'IBM Plex Mono', monospace;
-          font-size: 10px;
-          letter-spacing: 0.1em;
-          text-transform: uppercase;
-          cursor: pointer;
-          padding: 0;
-        }
-
-        .idea-login .text-link {
-          color: rgba(245, 241, 232, 0.58);
-        }
-
-        .text-link:hover {
-          color: #c8935a;
-        }
-
-        .idea-login .text-link:hover {
-          color: #f0b35f;
-        }
-
         .error,
         .message {
           margin-top: 18px;
@@ -512,6 +340,7 @@ export default function LoginPage() {
           font-family: 'DM Sans', sans-serif;
           font-size: 13px;
           line-height: 1.5;
+          border-radius: 12px;
         }
 
         .error {
@@ -556,6 +385,13 @@ export default function LoginPage() {
         .terms-link:hover {
           text-decoration: underline;
         }
+
+        @media (max-width: 520px) {
+          .card {
+            padding: 24px 20px;
+            border-radius: 20px;
+          }
+        }
       `}</style>
 
       <div className="ideanator-login-shell wrap">
@@ -565,42 +401,16 @@ export default function LoginPage() {
           </a>
 
           <div className="ideanator-login-shell eyebrow">
-            {isIdeanatorLogin ? "The Ideanator Access" : "The Council Beta Access"}
+            {isIdeanatorLogin ? "The Ideanator Access" : "HOVEL Editor Access"}
           </div>
 
-          <div className="ideanator-login-shell title">
-            {mode === "signin" ? "Sign In" : mode === "signup" ? "Create Account" : "Reset Password"}
-          </div>
+          <div className="ideanator-login-shell title">Email Magic Link</div>
 
           <div className="ideanator-login-shell subtitle">
-            {mode === "forgot"
-              ? "Enter your email and we will send you a password reset link."
-              : mode === "signup"
-                ? "Create a beta account with your invite code."
-                : isIdeanatorLogin
-                  ? "Sign in to save ideas, reopen reports, and keep working from where you left off."
-                  : "Sign in to submit manuscripts, run the council, and reopen saved reports."}
+            {isIdeanatorLogin
+              ? "Enter your email and we will send you a secure link. Click it and you are inside The Ideanator."
+              : "Enter your email and we will send you a secure link. Click it and you are inside HOVEL Editor."}
           </div>
-
-          {mode !== "forgot" && (
-            <div className="ideanator-login-shell tabs">
-              <button
-                type="button"
-                className={`tab ${mode === "signin" ? "active" : ""}`}
-                onClick={() => switchMode("signin")}
-              >
-                Sign In
-              </button>
-
-              <button
-                type="button"
-                className={`tab ${mode === "signup" ? "active" : ""}`}
-                onClick={() => switchMode("signup")}
-              >
-                Sign Up
-              </button>
-            </div>
-          )}
 
           <form onSubmit={handleSubmit}>
             <div className="ideanator-login-shell field">
@@ -610,89 +420,22 @@ export default function LoginPage() {
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                disabled={loading}
+                disabled={loading || checkingSession}
                 placeholder="you@example.com"
+                autoComplete="email"
               />
             </div>
 
-            {mode !== "forgot" && (
-              <div className="ideanator-login-shell field">
-                <label className="ideanator-login-shell label">Password</label>
-                <div className="ideanator-login-shell password-wrap">
-                  <input
-                    className="ideanator-login-shell input"
-                    type={showPassword ? "text" : "password"}
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    disabled={loading}
-                    placeholder="Minimum 6 characters"
-                  />
-                  <button
-                    className="ideanator-login-shell password-toggle"
-                    type="button"
-                    onClick={() => setShowPassword((current) => !current)}
-                    disabled={loading}
-                    aria-label={showPassword ? "Hide password" : "Show password"}
-                  >
-                    {showPassword ? "Hide" : "Show"}
-                  </button>
-                </div>
-              </div>
-            )}
-
-            {mode === "signup" && (
-              <div className="ideanator-login-shell field">
-                <label className="ideanator-login-shell label">Beta Invite Code</label>
-                <input
-                  className="ideanator-login-shell input"
-                  type="text"
-                  value={inviteCode}
-                  onChange={(e) => setInviteCode(e.target.value)}
-                  disabled={loading}
-                  placeholder="Enter invite code"
-                />
-                <div className="ideanator-login-shell invite-help">
-                  New beta accounts require an invite code. Existing users can still sign in normally.
-                </div>
-              </div>
-            )}
-
-            <button className="ideanator-login-shell button" type="submit" disabled={loading}>
-              {loading
-                ? "Working..."
-                : mode === "signin"
-                  ? "Sign In"
-                  : mode === "signup"
-                    ? "Create Account"
-                    : "Send Reset Link"}
+            <button className="ideanator-login-shell button" type="submit" disabled={loading || checkingSession}>
+              {checkingSession ? "Checking..." : loading ? "Sending..." : "Send Magic Link"}
             </button>
           </form>
-
-          <div className="ideanator-login-shell link-row">
-            {mode === "signin" && (
-              <button className="ideanator-login-shell text-link" type="button" onClick={() => switchMode("forgot")}>
-                Forgot Password?
-              </button>
-            )}
-
-            {mode === "forgot" && (
-              <button className="ideanator-login-shell text-link" type="button" onClick={() => switchMode("signin")}>
-                Back to Sign In
-              </button>
-            )}
-
-            {mode === "signup" && (
-              <button className="ideanator-login-shell text-link" type="button" onClick={() => switchMode("signin")}>
-                Already Have an Account?
-              </button>
-            )}
-          </div>
 
           {error && <div className="ideanator-login-shell error">{error}</div>}
           {message && <div className="ideanator-login-shell message">{message}</div>}
 
           <div className="ideanator-login-shell note">
-            Beta access is free for now. New accounts require an invite code. One account can use HOVEL Editor and The Ideanator, but each product keeps its own front door.
+            No password required. One email account can use HOVEL Editor and The Ideanator, but each product keeps its own front door.
             <br />
             <a className="ideanator-login-shell terms-link" href="/beta-terms">Beta Terms / Privacy</a>
           </div>
@@ -701,5 +444,3 @@ export default function LoginPage() {
     </div>
   );
 }
-
-

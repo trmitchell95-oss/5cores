@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
@@ -65,7 +65,7 @@ export default function HomePage() {
           padding: 36px 24px 100px;
         }
 
-        /* ── Hero ── */
+        /* â”€â”€ Hero â”€â”€ */
         .hero-grid {
           display: grid;
           grid-template-columns: minmax(0, 1.38fr) minmax(300px, 0.62fr);
@@ -194,7 +194,7 @@ export default function HomePage() {
           color: #c8a96e;
         }
 
-        /* ── Side card ── */
+        /* â”€â”€ Side card â”€â”€ */
         .side-card {
           padding: 28px;
           display: flex;
@@ -242,7 +242,7 @@ export default function HomePage() {
           font-weight: 700;
         }
 
-        /* ── Tool cards ── */
+        /* â”€â”€ Tool cards â”€â”€ */
         .section-grid {
           display: grid;
           grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -313,7 +313,7 @@ export default function HomePage() {
           color: #c8a96e;
         }
 
-        /* ── Wide / privacy grid ── */
+        /* â”€â”€ Wide / privacy grid â”€â”€ */
         .wide-grid {
           display: grid;
           grid-template-columns: minmax(0, 1.1fr) minmax(300px, 0.9fr);
@@ -358,7 +358,7 @@ export default function HomePage() {
           margin-top: 8px;
         }
 
-        /* ── CTA banner ── */
+        /* â”€â”€ CTA banner â”€â”€ */
         .cta-card {
           border: 1px solid #3a3020;
           background:
@@ -390,7 +390,7 @@ export default function HomePage() {
           max-width: 600px;
         }
 
-        /* ── Responsive ── */
+        /* â”€â”€ Responsive â”€â”€ */
         @media (max-width: 950px) {
           .hero-grid,
           .section-grid,
@@ -450,7 +450,7 @@ export default function HomePage() {
             </p>
 
             <div className="plain-hook">
-              Not a rewrite button. Not a grammar checker. An honest editorial read — for writers who are serious about their work.
+              Not a rewrite button. Not a grammar checker. An honest editorial read â€” for writers who are serious about their work.
             </div>
 
             <nav className="hero-actions" aria-label="Primary actions">
@@ -458,7 +458,7 @@ export default function HomePage() {
                 href={isLoggedIn ? "/submit" : "/login"}
                 className="primary-btn"
               >
-                {isLoggedIn ? "Start Diagnosis" : "Request Beta Access"}
+                {isLoggedIn ? "Start Diagnosis" : "Get Magic Link"}
               </Link>
 
               <Link href="/sphinx" className="secondary-btn">
@@ -479,7 +479,7 @@ export default function HomePage() {
               <div className="side-label">What it is</div>
               <div className="side-title">A diagnostic engine, not a fake editor.</div>
               <p className="side-text">
-                Most AI writing tools try to polish your sentences until everything sounds the same. The Council tells you where your manuscript is actually working — and where it is lying to itself.
+                Most AI writing tools try to polish your sentences until everything sounds the same. The Council tells you where your manuscript is actually working â€” and where it is lying to itself.
               </p>
             </div>
 
@@ -597,10 +597,11 @@ export default function HomePage() {
             href={isLoggedIn ? "/submit" : "/login"}
             className="primary-btn"
           >
-            {isLoggedIn ? "Start Diagnosis" : "Request Beta Access"}
+            {isLoggedIn ? "Start Diagnosis" : "Get Magic Link"}
           </Link>
         </section>
       </div>
     </main>
   );
 }
+
