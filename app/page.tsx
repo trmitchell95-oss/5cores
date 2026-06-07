@@ -450,7 +450,7 @@ export default function HomePage() {
             </p>
 
             <div className="plain-hook">
-              Not a rewrite button. Not a grammar checker. An honest editorial read â€” for writers who are serious about their work.
+              Not a rewrite button. Not a grammar checker. An honest editorial read "” for writers who are serious about their work.
             </div>
 
             <nav className="hero-actions" aria-label="Primary actions">
@@ -479,7 +479,7 @@ export default function HomePage() {
               <div className="side-label">What it is</div>
               <div className="side-title">A diagnostic engine, not a fake editor.</div>
               <p className="side-text">
-                Most AI writing tools try to polish your sentences until everything sounds the same. The Council tells you where your manuscript is actually working â€” and where it is lying to itself.
+                Most AI writing tools try to polish your sentences until everything sounds the same. The Council tells you where your manuscript is actually working "” and where it is lying to itself.
               </p>
             </div>
 
@@ -604,4 +604,5 @@ export default function HomePage() {
     </main>
   );
 }
+
 
