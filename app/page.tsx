@@ -153,6 +153,66 @@ export default function HomePage() {
           margin-top: 28px;
         }
 
+        .start-here-card {
+          margin-top: 24px;
+          border: 1px solid rgba(200, 169, 110, 0.28);
+          background:
+            linear-gradient(135deg, rgba(200, 169, 110, 0.12), rgba(17, 16, 14, 0.82)),
+            #11100e;
+          border-radius: 20px;
+          padding: 20px;
+          max-width: 760px;
+        }
+
+        .start-here-label {
+          font-family: 'IBM Plex Mono', monospace;
+          font-size: 11px;
+          font-weight: 800;
+          letter-spacing: 0.18em;
+          color: #c8a96e;
+          text-transform: uppercase;
+          margin-bottom: 12px;
+        }
+
+        .start-here-title {
+          font-family: 'Cormorant Garamond', serif;
+          font-size: 32px;
+          line-height: 1;
+          color: #f0ece4;
+          margin: 0 0 12px;
+          font-weight: 700;
+        }
+
+        .start-here-steps {
+          display: grid;
+          gap: 10px;
+          margin-top: 14px;
+        }
+
+        .start-here-step {
+          display: grid;
+          grid-template-columns: 34px minmax(0, 1fr);
+          gap: 12px;
+          align-items: start;
+          color: #bdb4aa;
+          line-height: 1.55;
+          font-size: 15px;
+        }
+
+        .start-here-number {
+          width: 30px;
+          height: 30px;
+          border-radius: 999px;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          background: #c8a96e;
+          color: #0e0d0b;
+          font-family: 'IBM Plex Mono', monospace;
+          font-size: 12px;
+          font-weight: 900;
+        }
+
         .primary-btn,
         .secondary-btn {
           display: inline-flex;
@@ -472,6 +532,32 @@ export default function HomePage() {
                 {isLoggedIn ? "Open Dashboard" : "Sign In"}
               </Link>
             </nav>
+
+            <section className="start-here-card" aria-label="Start here">
+              <div className="start-here-label">New here? Sit here first.</div>
+              <h2 className="start-here-title">Run one honest diagnosis.</h2>
+
+              <div className="card-text">
+                Do not explore the whole truck yet. Start with one piece of writing and see if the Council gives you something useful.
+              </div>
+
+              <div className="start-here-steps">
+                <div className="start-here-step">
+                  <span className="start-here-number">1</span>
+                  <span>{isLoggedIn ? "Click Start Diagnosis." : "Click Get Magic Link and sign in with your email."}</span>
+                </div>
+
+                <div className="start-here-step">
+                  <span className="start-here-number">2</span>
+                  <span>Paste one chapter, scene, essay, post, or serious excerpt. You do not need a perfect draft.</span>
+                </div>
+
+                <div className="start-here-step">
+                  <span className="start-here-number">3</span>
+                  <span>Run the Council, read the top fixes, and save the report if it helps.</span>
+                </div>
+              </div>
+            </section>
           </div>
 
           <aside className="side-card">
@@ -604,5 +690,6 @@ export default function HomePage() {
     </main>
   );
 }
+
 
 

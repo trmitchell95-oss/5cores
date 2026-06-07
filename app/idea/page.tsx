@@ -683,6 +683,20 @@ export default function IdeanatorPage() {
  </p>
  </div>
 
+ <div className="first-idea-card">
+ <span>First time in the shop?</span>
+ <p>
+ Do not overthink it. The Ideanator is built for the ugly first version of an idea.
+ Paste the messy thing that keeps circling your head.
+ </p>
+
+ <ol>
+ <li>Name it if it has a name. Leave it blank if it does not.</li>
+ <li>Pick the closest kind of idea. Guessing is fine.</li>
+ <li>Tell us what you want to know, then dump the raw idea in the big box.</li>
+ </ol>
+ </div>
+
  <div className="long-doc-note">
  <span>Messy is allowed.</span>
  <p>
@@ -711,12 +725,15 @@ export default function IdeanatorPage() {
 
  <form onSubmit={handleSubmit} className="idea-form">
  <label>
- <span>Name the idea</span>
+ <span>What should we call this thing?</span>
  <input
  value={ideaName}
  onChange={(event) => setIdeaName(event.target.value)}
- placeholder="Optional. Leave it blank if the idea does not have a name yet."
+ placeholder="Optional. A nickname is enough. Wrist light. School token. Weird dog book."
  />
+ <p className="field-help">
+ No official name needed. This is just so you can find the report later. Leave it blank if the idea is still fog.
+ </p>
  </label>
 
  <label>
@@ -766,7 +783,7 @@ export default function IdeanatorPage() {
  </label>
 
  <div className="intake-preview full-width">
- <span>Current idea name</span>
+ <span>Working title</span>
  <strong>{liveDisplayName}</strong>
  </div>
 
@@ -1236,6 +1253,13 @@ export default function IdeanatorPage() {
  font-weight: 900;
  }
 
+ .field-help {
+ margin: 0;
+ color: #bdb4a8;
+ font-size: 0.88rem;
+ line-height: 1.45;
+ }
+
  input,
  select,
  textarea {
@@ -1308,6 +1332,7 @@ export default function IdeanatorPage() {
  grid-column: 1 / -1;
  }
 
+ .first-idea-card,
  .long-doc-note,
  .beta-run-note,
  .intake-preview,
@@ -1319,6 +1344,37 @@ export default function IdeanatorPage() {
  background: rgba(240, 179, 95, 0.08);
  border-radius: 18px;
  padding: 16px 18px;
+ }
+
+ .first-idea-card {
+ margin-bottom: 24px;
+ border-color: rgba(240, 179, 95, 0.34);
+ background:
+ linear-gradient(135deg, rgba(240, 179, 95, 0.14), rgba(0, 0, 0, 0.12));
+ }
+
+ .first-idea-card span {
+ display: block;
+ color: #fff7ea;
+ font-size: 1rem;
+ font-weight: 900;
+ margin-bottom: 8px;
+ }
+
+ .first-idea-card p {
+ margin-bottom: 10px;
+ color: #d8cfc0;
+ }
+
+ .first-idea-card ol {
+ margin: 12px 0 0;
+ padding-left: 22px;
+ color: #ddd5c7;
+ line-height: 1.65;
+ }
+
+ .first-idea-card li {
+ margin-bottom: 6px;
  }
 
  .long-doc-note {
@@ -1585,6 +1641,8 @@ function ResultCard({ title, body }: { title: string; body: string }) {
  </article>
  );
 }
+
+
 
 
 
