@@ -1,0 +1,960 @@
+/* ============================================================
+   CELA — globals.css additions
+   IMPORT INSTRUCTIONS (Fix 5):
+   Append this entire block to app/globals.css.
+   Do NOT import from page.tsx or any client component.
+   If you prefer a separate file, keep this filename and import
+   it only from app/layout.tsx:
+     import "./globals-cela-additions.css";
+   ============================================================ */
+
+/* ── Scroll margin for fixed nav (Fix 6) ── */
+.cela-section,
+.cela-hero {
+  scroll-margin-top: 80px;
+}
+
+/* ── Tokens ── */
+:root {
+  --cela-ink: #1a1a2e;
+  --cela-ink-soft: #3a3a52;
+  --cela-ink-muted: #6b6b85;
+  --cela-cream: #f7f5f0;
+  --cela-warm-white: #fdfcf9;
+  --cela-alt-bg: #f0ede8;
+  --cela-accent: #2e5e8e;
+  --cela-accent-light: #e8f0f8;
+  --cela-accent-dark: #1a3d5e;
+  --cela-yes: #2d6a4f;
+  --cela-yes-bg: #eaf4f0;
+  --cela-no: #9b2226;
+  --cela-no-bg: #fdf0f0;
+  --cela-border: rgba(26, 26, 46, 0.1);
+  --cela-shadow: 0 2px 20px rgba(26, 26, 46, 0.08);
+  --cela-shadow-lg: 0 8px 40px rgba(26, 26, 46, 0.12);
+  --cela-radius: 12px;
+  --cela-radius-sm: 6px;
+  --cela-nav-h: 68px;
+  --cela-max: 1120px;
+  --cela-font-serif: "DM Serif Display", Georgia, serif;
+  --cela-font-body: "Playfair Display", Georgia, serif;
+}
+
+/* ── Reset helpers ── */
+.cela-root {
+  background: var(--cela-warm-white);
+  color: var(--cela-ink);
+  font-family: var(--cela-font-body);
+  font-size: 17px;
+  line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── Nav ── */
+.cela-nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  height: var(--cela-nav-h);
+  background: transparent;
+  transition: background 0.3s ease, box-shadow 0.3s ease;
+}
+.cela-nav--scrolled {
+  background: rgba(253, 252, 249, 0.96);
+  backdrop-filter: blur(12px);
+  box-shadow: 0 1px 0 var(--cela-border);
+}
+.cela-nav__inner {
+  max-width: var(--cela-max);
+  margin: 0 auto;
+  padding: 0 24px;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.cela-nav__logo {
+  font-family: var(--cela-font-serif);
+  font-size: 1.5rem;
+  font-weight: 400;
+  color: var(--cela-ink);
+  text-decoration: none;
+  letter-spacing: 0.04em;
+}
+.cela-nav__links {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.cela-nav__link {
+  font-size: 0.875rem;
+  color: var(--cela-ink-soft);
+  text-decoration: none;
+  padding: 6px 12px;
+  border-radius: var(--cela-radius-sm);
+  transition: color 0.2s, background 0.2s;
+}
+.cela-nav__link:hover {
+  color: var(--cela-ink);
+  background: var(--cela-alt-bg);
+}
+.cela-nav__hamburger {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+}
+.cela-hamburger-bar {
+  display: block;
+  width: 24px;
+  height: 2px;
+  background: var(--cela-ink);
+  border-radius: 2px;
+  transition: transform 0.2s, opacity 0.2s;
+}
+.cela-nav__drawer {
+  position: absolute;
+  top: var(--cela-nav-h);
+  left: 0;
+  right: 0;
+  background: var(--cela-warm-white);
+  border-bottom: 1px solid var(--cela-border);
+  padding: 16px 24px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  box-shadow: var(--cela-shadow-lg);
+}
+.cela-nav__drawer-link {
+  font-size: 1rem;
+  color: var(--cela-ink-soft);
+  text-decoration: none;
+  padding: 10px 12px;
+  border-radius: var(--cela-radius-sm);
+  transition: color 0.2s, background 0.2s;
+}
+.cela-nav__drawer-link:hover {
+  color: var(--cela-ink);
+  background: var(--cela-alt-bg);
+}
+.cela-nav__drawer-link--cta {
+  margin-top: 8px;
+  background: var(--cela-ink);
+  color: var(--cela-cream) !important;
+  text-align: center;
+  font-weight: 600;
+}
+
+/* ── Buttons ── */
+.cela-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  border-radius: var(--cela-radius-sm);
+  font-family: var(--cela-font-body);
+  font-size: 0.9rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  border: none;
+}
+.cela-btn--primary {
+  background: var(--cela-ink);
+  color: var(--cela-cream);
+  padding: 14px 28px;
+}
+.cela-btn--primary:hover {
+  background: var(--cela-accent-dark);
+  transform: translateY(-1px);
+  box-shadow: var(--cela-shadow);
+}
+.cela-btn--ghost {
+  background: transparent;
+  color: var(--cela-ink);
+  padding: 13px 27px;
+  border: 1.5px solid var(--cela-border);
+}
+.cela-btn--ghost:hover {
+  background: var(--cela-alt-bg);
+  border-color: var(--cela-ink-muted);
+}
+.cela-btn--nav {
+  background: var(--cela-ink);
+  color: var(--cela-cream);
+  padding: 8px 18px;
+  font-size: 0.85rem;
+}
+.cela-btn--nav:hover {
+  background: var(--cela-accent-dark);
+}
+
+/* ── Reveal animation ── */
+.cela-reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+.cela-revealed {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ── Section base ── */
+.cela-section {
+  padding: 100px 24px;
+}
+.cela-section--alt {
+  background: var(--cela-alt-bg);
+}
+.cela-section--promise {
+  background: var(--cela-ink);
+  color: var(--cela-cream);
+}
+.cela-section--promise .cela-label {
+  color: rgba(247, 245, 240, 0.5);
+}
+.cela-section--promise .cela-section__headline,
+.cela-section--promise .cela-section__lead,
+.cela-section--promise .cela-section__body {
+  color: var(--cela-cream);
+}
+.cela-section--pilot {
+  background: var(--cela-accent-light);
+}
+.cela-section--closing {
+  background: var(--cela-ink);
+  color: var(--cela-cream);
+  text-align: center;
+  padding: 120px 24px;
+}
+.cela-section__inner {
+  max-width: var(--cela-max);
+  margin: 0 auto;
+}
+.cela-section__inner--narrow {
+  max-width: 760px;
+}
+
+/* ── Typography ── */
+.cela-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--cela-ink-muted);
+  margin-bottom: 20px;
+}
+.cela-label--small {
+  font-size: 0.7rem;
+  margin-bottom: 12px;
+}
+.cela-section__headline {
+  font-family: var(--cela-font-serif);
+  font-size: clamp(2rem, 4vw, 3rem);
+  font-weight: 400;
+  line-height: 1.2;
+  margin: 0 0 24px;
+  color: var(--cela-ink);
+}
+.cela-section__lead {
+  font-size: 1.2rem;
+  color: var(--cela-ink-soft);
+  max-width: 680px;
+  margin: 0 0 32px;
+  line-height: 1.6;
+}
+.cela-section__body {
+  font-size: 1rem;
+  color: var(--cela-ink-soft);
+  max-width: 680px;
+  margin: 0 0 20px;
+}
+.cela-section__body--center {
+  text-align: center;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* ── Hero ── */
+.cela-hero {
+  min-height: 100vh;
+  padding: calc(var(--cela-nav-h) + 80px) 24px 80px;
+  display: grid;
+  grid-template-columns: 1fr 380px;
+  gap: 60px;
+  align-items: center;
+  max-width: var(--cela-max);
+  margin: 0 auto;
+}
+.cela-hero__eyebrow {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--cela-accent);
+  margin-bottom: 20px;
+}
+.cela-hero__headline {
+  font-family: var(--cela-font-serif);
+  font-size: clamp(2.2rem, 4.5vw, 3.6rem);
+  font-weight: 400;
+  line-height: 1.15;
+  color: var(--cela-ink);
+  margin: 0 0 28px;
+  max-width: 680px;
+}
+.cela-hero__sub {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--cela-accent);
+  margin: 0 0 20px;
+  letter-spacing: -0.01em;
+}
+.cela-hero__body {
+  font-size: 1.05rem;
+  color: var(--cela-ink-soft);
+  max-width: 580px;
+  margin: 0 0 28px;
+  line-height: 1.7;
+}
+.cela-hero__pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 36px;
+}
+.cela-pill {
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 5px 12px;
+  border-radius: 100px;
+  letter-spacing: 0.01em;
+}
+.cela-pill--no {
+  background: var(--cela-no-bg);
+  color: var(--cela-no);
+}
+.cela-pill--yes {
+  background: var(--cela-yes-bg);
+  color: var(--cela-yes);
+}
+.cela-hero__cta-row {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+/* ── Loop visual ── */
+.cela-loop {
+  background: var(--cela-warm-white);
+  border: 1px solid var(--cela-border);
+  border-radius: var(--cela-radius);
+  padding: 32px 24px;
+  box-shadow: var(--cela-shadow-lg);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+}
+.cela-loop__node {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 14px 20px;
+  border-radius: var(--cela-radius-sm);
+  width: 100%;
+  text-align: center;
+  transition: background 0.2s;
+}
+.cela-loop__node:hover {
+  background: var(--cela-alt-bg);
+}
+.cela-loop__node--in {
+  background: var(--cela-accent-light);
+}
+.cela-loop__node--out {
+  background: var(--cela-yes-bg);
+}
+.cela-loop__icon {
+  font-size: 1.4rem;
+  color: var(--cela-accent);
+}
+.cela-loop__node--out .cela-loop__icon {
+  color: var(--cela-yes);
+}
+.cela-loop__label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--cela-ink);
+  letter-spacing: 0.01em;
+}
+.cela-loop__arrow {
+  font-size: 1rem;
+  color: var(--cela-ink-muted);
+  padding: 4px 0;
+}
+
+/* ── Problem cards ── */
+.cela-problem__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 16px;
+  margin: 32px 0 40px;
+}
+.cela-problem__card {
+  background: var(--cela-warm-white);
+  border: 1px solid var(--cela-border);
+  border-radius: var(--cela-radius);
+  padding: 20px 24px;
+  font-style: italic;
+  color: var(--cela-ink-soft);
+  font-size: 1rem;
+  box-shadow: var(--cela-shadow);
+}
+.cela-problem__card--dark {
+  background: var(--cela-ink);
+  color: var(--cela-cream);
+  font-style: normal;
+  font-weight: 500;
+  border-color: transparent;
+}
+.cela-problem__card p {
+  margin: 0;
+}
+
+/* ── Is / Is Not ── */
+.cela-is-not__grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+  margin-top: 40px;
+}
+.cela-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.cela-list li {
+  font-size: 0.95rem;
+  color: var(--cela-ink-soft);
+  padding-left: 24px;
+  position: relative;
+}
+.cela-list li::before {
+  position: absolute;
+  left: 0;
+  font-weight: 700;
+}
+.cela-list--yes li::before {
+  content: "✓";
+  color: var(--cela-yes);
+}
+.cela-list--no li::before {
+  content: "✗";
+  color: var(--cela-no);
+}
+.cela-list li {
+  padding-left: 0;
+}
+.cela-list--yes li {
+  padding-left: 0;
+}
+.cela-list--yes li::before,
+.cela-list--no li::before {
+  content: none;
+}
+.cela-list--yes li {
+  padding: 10px 14px;
+  background: var(--cela-yes-bg);
+  border-radius: var(--cela-radius-sm);
+  color: var(--cela-yes);
+  font-weight: 500;
+}
+.cela-list--no li {
+  padding: 10px 14px;
+  background: var(--cela-no-bg);
+  border-radius: var(--cela-radius-sm);
+  color: var(--cela-no);
+  font-weight: 500;
+}
+
+/* ── Inputs grid ── */
+.cela-inputs__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 16px;
+  margin: 40px 0 60px;
+}
+.cela-input__card {
+  background: var(--cela-warm-white);
+  border: 1px solid var(--cela-border);
+  border-radius: var(--cela-radius);
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  box-shadow: var(--cela-shadow);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.cela-input__card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--cela-shadow-lg);
+}
+.cela-input__icon {
+  font-size: 1.6rem;
+  color: var(--cela-accent);
+}
+.cela-input__name {
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: var(--cela-ink);
+}
+.cela-input__desc {
+  font-size: 0.85rem;
+  color: var(--cela-ink-muted);
+  line-height: 1.5;
+}
+
+/* ── Steps ── */
+.cela-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  border-left: 2px solid var(--cela-border);
+  margin-left: 20px;
+  padding-left: 0;
+}
+.cela-step {
+  display: flex;
+  gap: 32px;
+  padding: 32px 0 32px 40px;
+  position: relative;
+  border-bottom: 1px solid var(--cela-border);
+}
+.cela-step:last-child {
+  border-bottom: none;
+}
+.cela-step::before {
+  content: "";
+  position: absolute;
+  left: -7px;
+  top: 38px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--cela-accent);
+  border: 2px solid var(--cela-warm-white);
+}
+.cela-step__num {
+  font-family: var(--cela-font-serif);
+  font-size: 2rem;
+  color: var(--cela-border);
+  line-height: 1;
+  min-width: 48px;
+  padding-top: 4px;
+}
+.cela-step__content h3 {
+  font-family: var(--cela-font-serif);
+  font-size: 1.3rem;
+  font-weight: 400;
+  color: var(--cela-ink);
+  margin: 0 0 10px;
+}
+.cela-step__content p {
+  font-size: 0.95rem;
+  color: var(--cela-ink-soft);
+  margin: 0;
+  max-width: 560px;
+}
+
+/* ── Promise grid ── */
+.cela-promise__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 12px;
+  margin: 40px 0 40px;
+}
+.cela-promise__item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 18px;
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: var(--cela-radius-sm);
+  font-size: 0.9rem;
+  color: rgba(247, 245, 240, 0.85);
+}
+.cela-promise__icon {
+  font-size: 1rem;
+  color: rgba(247, 245, 240, 0.4);
+  font-weight: 700;
+  min-width: 16px;
+}
+
+/* ── Layers ── */
+.cela-layers {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  margin-top: 48px;
+}
+.cela-layer {
+  display: grid;
+  grid-template-columns: 80px 1fr;
+  gap: 32px;
+  padding: 40px 0;
+  border-top: 1px solid var(--cela-border);
+}
+.cela-layer:last-child {
+  border-bottom: 1px solid var(--cela-border);
+}
+.cela-layer__num {
+  font-family: var(--cela-font-serif);
+  font-size: 2.5rem;
+  color: var(--cela-border);
+  line-height: 1;
+  padding-top: 6px;
+}
+.cela-layer__title {
+  font-family: var(--cela-font-serif);
+  font-size: 1.5rem;
+  font-weight: 400;
+  color: var(--cela-ink);
+  margin: 0 0 4px;
+}
+.cela-layer__sub {
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--cela-accent);
+  margin: 0 0 16px;
+}
+.cela-layer__body p {
+  font-size: 0.95rem;
+  color: var(--cela-ink-soft);
+  margin: 0;
+  max-width: 600px;
+  line-height: 1.7;
+}
+
+/* ── Quote ── */
+.cela-quote {
+  border-left: 3px solid var(--cela-accent);
+  margin: 32px 0;
+  padding: 16px 28px;
+  font-family: var(--cela-font-serif);
+  font-size: 1.3rem;
+  color: var(--cela-ink);
+  font-style: italic;
+  background: var(--cela-accent-light);
+  border-radius: 0 var(--cela-radius-sm) var(--cela-radius-sm) 0;
+  max-width: 680px;
+}
+
+/* ── Forces grid ── */
+.cela-forces__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 16px;
+  margin-top: 40px;
+}
+.cela-force__card {
+  background: var(--cela-warm-white);
+  border: 1px solid var(--cela-border);
+  border-radius: var(--cela-radius);
+  padding: 24px;
+  box-shadow: var(--cela-shadow);
+}
+.cela-force__card h4 {
+  font-family: var(--cela-font-serif);
+  font-size: 1.05rem;
+  font-weight: 400;
+  color: var(--cela-ink);
+  margin: 0 0 10px;
+}
+.cela-force__card p {
+  font-size: 0.875rem;
+  color: var(--cela-ink-soft);
+  margin: 0;
+  line-height: 1.6;
+}
+
+/* ── Pilot ── */
+.cela-pilot__cols {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+  margin: 40px 0;
+}
+.cela-pilot__col h3 {
+  font-family: var(--cela-font-serif);
+  font-size: 1.2rem;
+  font-weight: 400;
+  color: var(--cela-ink);
+  margin: 0 0 16px;
+}
+.cela-pilot__col .cela-list li {
+  background: var(--cela-warm-white);
+  border: 1px solid var(--cela-border);
+  color: var(--cela-ink-soft);
+  padding: 8px 14px;
+  font-size: 0.9rem;
+}
+.cela-pilot__claim {
+  background: var(--cela-ink);
+  color: var(--cela-cream);
+  border-radius: var(--cela-radius);
+  padding: 32px 40px;
+  margin: 40px 0;
+}
+.cela-pilot__claim p {
+  margin: 0 0 12px;
+  font-size: 0.95rem;
+  opacity: 0.8;
+}
+.cela-pilot__claim p:last-child {
+  margin: 0;
+}
+.cela-pilot__claim-line {
+  font-family: var(--cela-font-serif);
+  font-size: 1.5rem !important;
+  opacity: 1 !important;
+  color: var(--cela-cream);
+}
+.cela-pilot__cta {
+  margin-top: 32px;
+}
+
+/* ── CELA Ready ── */
+.cela-ready__items {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin: 40px 0;
+}
+.cela-ready__item {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  font-size: 1rem;
+  color: var(--cela-ink-soft);
+  padding: 14px 20px;
+  background: var(--cela-warm-white);
+  border: 1px solid var(--cela-border);
+  border-radius: var(--cela-radius-sm);
+  box-shadow: var(--cela-shadow);
+}
+.cela-ready__check {
+  font-size: 1rem;
+  color: var(--cela-yes);
+  font-weight: 700;
+  min-width: 20px;
+}
+
+/* ── Closing ── */
+.cela-closing__headline {
+  font-family: var(--cela-font-serif);
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  font-weight: 400;
+  line-height: 1.3;
+  color: var(--cela-cream);
+  margin: 0 0 32px;
+}
+.cela-closing__sub {
+  font-size: 1.1rem;
+  color: rgba(247, 245, 240, 0.7);
+  max-width: 560px;
+  margin: 0 auto 40px;
+  line-height: 1.7;
+}
+.cela-closing__cta-row {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+.cela-section--closing .cela-btn--ghost {
+  border-color: rgba(247, 245, 240, 0.3);
+  color: var(--cela-cream);
+}
+.cela-section--closing .cela-btn--ghost:hover {
+  background: rgba(247, 245, 240, 0.1);
+  border-color: rgba(247, 245, 240, 0.5);
+}
+
+/* ── Footer ── */
+.cela-footer {
+  background: var(--cela-ink);
+  color: rgba(247, 245, 240, 0.6);
+  padding: 48px 24px;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+.cela-footer__inner {
+  max-width: var(--cela-max);
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 40px;
+  align-items: start;
+}
+.cela-footer__logo {
+  font-family: var(--cela-font-serif);
+  font-size: 1.6rem;
+  color: var(--cela-cream);
+  display: block;
+  margin-bottom: 8px;
+}
+.cela-footer__tagline {
+  font-size: 0.8rem;
+  letter-spacing: 0.04em;
+  color: rgba(247, 245, 240, 0.4);
+}
+.cela-footer__links {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.cela-footer__links a {
+  font-size: 0.875rem;
+  color: rgba(247, 245, 240, 0.6);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.cela-footer__links a:hover {
+  color: var(--cela-cream);
+}
+.cela-footer__legal {
+  font-size: 0.78rem;
+  line-height: 1.8;
+  color: rgba(247, 245, 240, 0.35);
+}
+.cela-footer__legal p {
+  margin: 0;
+}
+
+/* ── Hovel Ideas nav link ── */
+.cela-nav__hovel {
+  font-size: 0.78rem;
+  color: var(--cela-ink-muted);
+  text-decoration: none;
+  padding: 6px 10px;
+  border-radius: var(--cela-radius-sm);
+  border: 1px solid var(--cela-border);
+  transition: color 0.2s, border-color 0.2s;
+  white-space: nowrap;
+}
+.cela-nav__hovel:hover {
+  color: var(--cela-ink);
+  border-color: var(--cela-ink-muted);
+}
+.cela-nav__drawer-link--hovel {
+  color: var(--cela-ink-muted) !important;
+  font-size: 0.875rem;
+  border: 1px solid var(--cela-border);
+  text-align: center;
+}
+
+/* ── Product visual cards (Fix 10) ── */
+.cela-product__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 20px;
+  margin-top: 48px;
+}
+.cela-product__card {
+  background: var(--cela-warm-white);
+  border: 1px solid var(--cela-border);
+  border-radius: var(--cela-radius);
+  padding: 32px 28px;
+  box-shadow: var(--cela-shadow);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.cela-product__card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--cela-shadow-lg);
+}
+.cela-product__icon {
+  font-size: 2rem;
+  color: var(--cela-accent);
+  margin-bottom: 16px;
+  line-height: 1;
+}
+.cela-product__title {
+  font-family: var(--cela-font-serif);
+  font-size: 1.2rem;
+  font-weight: 400;
+  color: var(--cela-ink);
+  margin: 0 0 12px;
+}
+.cela-product__desc {
+  font-size: 0.875rem;
+  color: var(--cela-ink-soft);
+  margin: 0;
+  line-height: 1.65;
+}
+
+/* ── Responsive ── */
+@media (max-width: 900px) {
+  .cela-hero {
+    grid-template-columns: 1fr;
+    min-height: auto;
+    padding-top: calc(var(--cela-nav-h) + 48px);
+  }
+  .cela-hero__loop-visual {
+    display: none;
+  }
+  .cela-nav__links {
+    display: none;
+  }
+  .cela-nav__hamburger {
+    display: flex;
+  }
+  .cela-is-not__grid {
+    grid-template-columns: 1fr;
+  }
+  .cela-pilot__cols {
+    grid-template-columns: 1fr;
+  }
+  .cela-footer__inner {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+  .cela-layer {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  .cela-layer__num {
+    font-size: 1.5rem;
+  }
+}
+
+@media (max-width: 600px) {
+  .cela-section {
+    padding: 72px 20px;
+  }
+  .cela-step {
+    flex-direction: column;
+    gap: 12px;
+    padding-left: 28px;
+  }
+  .cela-step__num {
+    font-size: 1.2rem;
+    min-width: auto;
+  }
+  .cela-pilot__claim {
+    padding: 24px;
+  }
+}
