@@ -1,10 +1,9 @@
-﻿import type { Metadata } from "next";
+import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import ProductNav from "./components/ProductNav";
 import HelpLink from "./components/HelpLink";
 import FeedbackLink from "./components/FeedbackLink";
 import "./globals.css";
-import "./globals-cela-additions.css";
 
 export const metadata: Metadata = {
   title: "Hovel Editor",
@@ -35,4 +34,3 @@ export default function RootLayout({
     </html>
   );
 }
-
