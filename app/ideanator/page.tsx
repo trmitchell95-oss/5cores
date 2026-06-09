@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useEffect, useMemo, useState, type ChangeEvent, type ReactNode } from "react";
 import { createClient } from "@supabase/supabase-js";
@@ -648,7 +648,8 @@ export default function IdeanatorPage() {
  } = await supabase.auth.getSession();
 
  if (!session?.access_token) {
- window.location.href = "/login";
+ const loginNext = `${window.location.pathname}${window.location.search}`;
+      window.location.href = `/login?next=${encodeURIComponent(loginNext)}`;
  return "";
  }
 
@@ -1880,6 +1881,7 @@ export default function IdeanatorPage() {
  </main>
  );
 }
+
 
 
 

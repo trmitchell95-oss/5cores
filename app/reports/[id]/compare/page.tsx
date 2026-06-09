@@ -105,7 +105,8 @@ export default function IdeanatorComparePage() {
         } = await supabase.auth.getSession();
 
         if (!session?.access_token) {
-          window.location.href = "/login";
+          const loginNext = `${window.location.pathname}${window.location.search}`;
+      window.location.href = `/login?next=${encodeURIComponent(loginNext)}`;
           return;
         }
 
@@ -523,6 +524,7 @@ ${c.honestRead}`;
     </main>
   );
 }
+
 
 
 
