@@ -16,12 +16,36 @@ const supabase = createClient(
   }
 );
 
-function isIdeanatorHost() {
-  if (typeof window === "undefined") return false;
+function getHostName() {
+  if (typeof window === "undefined") return "";
 
-  const host = window.location.hostname.toLowerCase();
+  return window.location.hostname.toLowerCase();
+}
+
+function isIdeanatorHost() {
+  const host = getHostName();
 
   return host === "theideanator.com" || host === "www.theideanator.com";
+}
+
+function isHovelEditorHost() {
+  const host = getHostName();
+
+  return host === "hoveleditor.com" || host === "www.hoveleditor.com";
+}
+
+function getCanonicalAuthOrigin() {
+  if (typeof window === "undefined") return "";
+
+  if (isIdeanatorHost()) {
+    return "https://theideanator.com";
+  }
+
+  if (isHovelEditorHost()) {
+    return "https://hoveleditor.com";
+  }
+
+  return window.location.origin;
 }
 
 function getDefaultDestination() {
@@ -84,9 +108,12 @@ export default function LoginPage() {
 
     async function checkSession() {
       try {
-        const {
-          data: { session },
-        } = await supabase.auth.getSession();
+        const result = await Promise.race([
+          supabase.auth.getSession(),
+          new Promise<null>((resolve) => setTimeout(() => resolve(null), 2500)),
+        ]);
+
+        const session = result && "data" in result ? result.data.session : null;
 
         if (session?.access_token) {
           window.location.href = nextDestination;
@@ -118,7 +145,7 @@ export default function LoginPage() {
     }
 
     try {
-      const emailRedirectTo = `${window.location.origin}/auth/callback?next=${encodeURIComponent(destination)}`;
+      const emailRedirectTo = `${getCanonicalAuthOrigin()}/auth/callback?next=${encodeURIComponent(destination)}`;
 
       const { error } = await supabase.auth.signInWithOtp({
         email: cleanEmail,
@@ -444,3 +471,4 @@ export default function LoginPage() {
     </div>
   );
 }
+
