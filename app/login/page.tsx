@@ -34,6 +34,20 @@ function isHovelEditorHost() {
   return host === "hoveleditor.com" || host === "www.hoveleditor.com";
 }
 
+function isIdeanatorDestination(destination: string) {
+  return (
+    destination === "/idea" ||
+    destination.startsWith("/idea/") ||
+    destination === "/ideanator" ||
+    destination.startsWith("/ideanator/") ||
+    destination === "/the-ideanator" ||
+    destination === "/saved-ideas" ||
+    destination.startsWith("/saved-ideas/") ||
+    destination === "/rigs" ||
+    destination.startsWith("/rigs/")
+  );
+}
+
 function getCanonicalAuthOrigin() {
   if (typeof window === "undefined") return "";
 
@@ -75,20 +89,6 @@ function getSafeNextPath() {
   }
 }
 
-function isIdeanatorDestination(destination: string) {
-  return (
-    destination === "/idea" ||
-    destination.startsWith("/idea/") ||
-    destination === "/ideanator" ||
-    destination.startsWith("/ideanator/") ||
-    destination === "/the-ideanator" ||
-    destination === "/saved-ideas" ||
-    destination.startsWith("/saved-ideas/") ||
-    destination === "/rigs" ||
-    destination.startsWith("/rigs/")
-  );
-}
-
 function getLoginProductLabel(destination = "") {
   return isIdeanatorHost() || isIdeanatorDestination(destination)
     ? "The Ideanator"
@@ -110,6 +110,8 @@ export default function LoginPage() {
   const [homeHref, setHomeHref] = useState("/");
 
   useEffect(() => {
+    let cancelled = false;
+
     const nextDestination = getSafeNextPath();
     const params = new URLSearchParams(window.location.search);
     const urlError = params.get("error") || "";
@@ -129,21 +131,32 @@ export default function LoginPage() {
           new Promise<null>((resolve) => setTimeout(() => resolve(null), 2500)),
         ]);
 
+        if (cancelled) return;
+
         const session = result && "data" in result ? result.data.session : null;
 
         if (session?.access_token) {
-          window.location.href = nextDestination;
+          window.location.replace(nextDestination);
           return;
         }
       } finally {
-        setCheckingSession(false);
+        if (!cancelled) {
+          setCheckingSession(false);
+        }
       }
     }
 
     checkSession();
+
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
-  const isIdeanatorLogin = useMemo(() => productLabel === "The Ideanator", [productLabel]);
+  const isIdeanatorLogin = useMemo(
+    () => productLabel === "The Ideanator",
+    [productLabel]
+  );
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -177,7 +190,9 @@ export default function LoginPage() {
         return;
       }
 
-      setMessage("Magic link sent. Check your email, click the link, and you will land back inside the app.");
+      setMessage(
+        "Magic link sent. Click it once from this same browser. After that, this browser should keep you signed in."
+      );
       setLoading(false);
     } catch {
       setError("Something went wrong sending the magic link. Try again.");
@@ -440,7 +455,7 @@ export default function LoginPage() {
       <div className="login-wrap">
         <div className="login-card">
           <a className="login-back-link" href={homeHref}>
-            â† Back to {productLabel}
+            &lt;- Back to {productLabel}
           </a>
 
           <div className="login-eyebrow">
@@ -453,7 +468,7 @@ export default function LoginPage() {
 
           <div className="login-subtitle">
             {isIdeanatorLogin
-              ? "Enter your email. We will send you a secure link â€” no password needed. Click it and you are in."
+              ? "Enter your email. We will send you a secure link - no password needed. Click it and you are in."
               : "Enter your email and we will send you a secure link. Click it and you are inside HOVEL Editor."}
           </div>
 
