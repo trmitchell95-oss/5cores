@@ -1,4 +1,4 @@
-﻿import { NextRequest, NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
 const IDEANATOR_HOSTS = new Set([
   "theideanator.com",
@@ -31,8 +31,16 @@ export function proxy(request: NextRequest) {
 
   if (pathname === "/") {
     const url = request.nextUrl.clone();
-    url.pathname = "/idea";
-    return NextResponse.rewrite(url);
+    url.pathname = "/the-ideanator";
+    url.search = "";
+    return NextResponse.redirect(url);
+  }
+
+  if (pathname === "/login" && !request.nextUrl.searchParams.get("next")) {
+    const url = request.nextUrl.clone();
+    url.pathname = "/login";
+    url.searchParams.set("next", "/idea");
+    return NextResponse.redirect(url);
   }
 
   if (pathname === "/help") {
@@ -51,6 +59,7 @@ export function proxy(request: NextRequest) {
 export const config = {
   matcher: [
     "/",
+    "/login",
     "/help",
     "/dashboard/:path*",
     "/sphinx/:path*",
