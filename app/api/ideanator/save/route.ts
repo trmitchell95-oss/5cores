@@ -1,4 +1,4 @@
-﻿import { NextRequest, NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 
 export const runtime = "nodejs";
@@ -150,7 +150,7 @@ export async function POST(req: NextRequest) {
  ideanator: report,
  submittedText,
  }),
- report_type: "council",
+ report_type: "ideanator",
  created_at: new Date().toISOString(),
  user_id: user.id,
  title,

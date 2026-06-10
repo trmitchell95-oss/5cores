@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useEffect, useState, type MouseEvent } from "react";
 import { usePathname } from "next/navigation";
@@ -41,6 +41,7 @@ export default function ProductNav() {
   const [product, setProduct] = useState("");
   const [host, setHost] = useState("");
   const [signedIn, setSignedIn] = useState(false);
+  const [userEmail, setUserEmail] = useState("");
   const [authReady, setAuthReady] = useState(false);
   const [loginHref, setLoginHref] = useState("/login");
 
@@ -58,7 +59,7 @@ export default function ProductNav() {
     setHost(currentHost);
     setLoginHref(
       isIdeanator
-        ? `/ideanator-login?next=${encodeURIComponent(nextPath)}`
+        ? `/login?next=${encodeURIComponent(nextPath)}`
         : `/login?next=${encodeURIComponent(nextPath)}`
     );
 
@@ -75,10 +76,12 @@ export default function ProductNav() {
         if (!stillMounted) return;
 
         setSignedIn(Boolean(session?.access_token));
+        setUserEmail(session?.user?.email || "");
       } catch {
         if (!stillMounted) return;
 
         setSignedIn(false);
+        setUserEmail("");
       } finally {
         if (stillMounted) {
           setAuthReady(true);
@@ -109,71 +112,100 @@ export default function ProductNav() {
     }
   }
 
-  // â”€â”€ Ideanator: keep the existing floating pill style â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // â”€â”€ Ideanator nav â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   if (isIdeanator) {
     const rigWorkbenchActive =
       pathname === "/ideanator" || pathname.startsWith("/ideanator/");
-    const ideaReportsActive = pathname === "/idea/saved";
+    const ideaReportsActive =
+      pathname === "/idea/saved" ||
+      pathname === "/saved-ideas" ||
+      pathname.startsWith("/saved-ideas/") ||
+      pathname === "/rigs" ||
+      pathname.startsWith("/rigs/");
     const ideaCheckActive =
       (pathname === "/idea" || pathname.startsWith("/idea/")) &&
       !ideaReportsActive;
-    const rigLibraryActive =
-      pathname === "/rigs" ||
-      pathname.startsWith("/rigs/") ||
-      pathname === "/saved-ideas" ||
-      pathname.startsWith("/saved-ideas/");
 
     const authLink =
       authReady && signedIn ? (
-        <>
+        <div className="ideanator-nav-account">
+          <span className="ideanator-nav-signed-in">
+            Signed in as {userEmail}
+          </span>
           <a href="/account" className="hovel-global-nav-link">
-            ACCOUNT
+            Account
           </a>
           <a
             href="/idea"
             className="hovel-global-nav-link"
             onClick={handleSignOut}
           >
-            SIGN OUT
+            Sign Out
           </a>
-        </>
-      ) : (
+        </div>
+      ) : authReady ? (
         <a href={loginHref} className="hovel-global-nav-link">
-          SIGN IN
+          Sign In
         </a>
-      );
+      ) : null;
 
     return (
-      <nav
-        className="hovel-global-nav hovel-global-nav-ideanator"
-        aria-label="Ideanator navigation"
-      >
-        <a href="/the-ideanator" className="hovel-global-nav-mark" aria-label="Ideanator home">
-          ID
-        </a>
+      <>
+        <style>{`
+          .ideanator-nav-account {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+          }
 
-        <a href="/idea?start=intake" className={navClass(ideaCheckActive)}>
-          TEST IDEA
-        </a>
+          .ideanator-nav-signed-in {
+            font-size: 11px;
+            color: #f0b35f;
+            font-family: monospace;
+            letter-spacing: 0.05em;
+            white-space: nowrap;
+            opacity: 0.85;
+          }
 
-        <a href="/ideanator" className={navClass(rigWorkbenchActive)}>
-          BUILD
-        </a>
+          @media (max-width: 700px) {
+            .ideanator-nav-signed-in {
+              display: none;
+            }
+          }
+        `}</style>
 
-        <a href="/idea/saved" className={navClass(ideaReportsActive)}>
-          IDEA REPORTS
-        </a>
+        <nav
+          className="hovel-global-nav hovel-global-nav-ideanator"
+          aria-label="Ideanator navigation"
+        >
+          <a href="/the-ideanator" className="hovel-global-nav-mark" aria-label="Ideanator home">
+            ID
+          </a>
 
-        <a href="/saved-ideas" className={navClass(rigLibraryActive)}>
-          SAVED RIGS
-        </a>
+          <a href="/idea?start=intake" className={navClass(ideaCheckActive)}>
+            Test an Idea
+          </a>
 
-        {authLink}
-      </nav>
+          <a href="/ideanator" className={navClass(rigWorkbenchActive)}>
+            Build a Rig
+          </a>
+
+          <a href="/idea/saved" className={navClass(ideaReportsActive)}>
+            My Reports
+          </a>
+
+          <a href="/idea/help" className={navClass(pathname === "/idea/help")}>
+            Help
+          </a>
+
+          {authLink}
+        </nav>
+      </>
     );
   }
 
-  // â”€â”€ Hovel Editor: full-width sticky bar (replaces the old floating pill) â”€â”€
+  // â”€â”€ Hovel Editor nav (unchanged) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   const authLink =
     authReady && signedIn ? (
       <>
@@ -218,7 +250,6 @@ export default function ProductNav() {
           gap: 8px;
         }
 
-        /* Brand mark */
         .he-nav-brand {
           display: flex;
           align-items: center;
@@ -254,7 +285,6 @@ export default function ProductNav() {
           white-space: nowrap;
         }
 
-        /* Nav links */
         .he-nav-links {
           display: flex;
           align-items: center;
@@ -318,7 +348,6 @@ export default function ProductNav() {
           color: #0e0d0b;
         }
 
-        /* Separator */
         .he-nav-sep {
           width: 1px;
           height: 20px;
@@ -327,7 +356,6 @@ export default function ProductNav() {
           margin: 0 4px;
         }
 
-        /* Mobile */
         @media (max-width: 700px) {
           .he-nav-inner {
             height: 56px;
@@ -368,7 +396,7 @@ export default function ProductNav() {
             <a href="/projects" className="he-nav-link">Projects</a>
             <a href="/reread" className="he-nav-link">Re-Read</a>
             <a href="/submit" className="he-nav-link">New Diagnosis</a>
-          <a href="/admin" className="he-nav-link">Admin</a>
+            <a href="/admin" className="he-nav-link">Admin</a>
 
             <div className="he-nav-sep" aria-hidden="true" />
 
@@ -379,5 +407,3 @@ export default function ProductNav() {
     </>
   );
 }
-
-

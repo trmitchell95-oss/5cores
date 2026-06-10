@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useEffect, useMemo, useState } from "react";
 import { createClient } from "@supabase/supabase-js";
@@ -75,12 +75,28 @@ function getSafeNextPath() {
   }
 }
 
-function getLoginProductLabel() {
-  return isIdeanatorHost() ? "The Ideanator" : "HOVEL Editor";
+function isIdeanatorDestination(destination: string) {
+  return (
+    destination === "/idea" ||
+    destination.startsWith("/idea/") ||
+    destination === "/ideanator" ||
+    destination.startsWith("/ideanator/") ||
+    destination === "/the-ideanator" ||
+    destination === "/saved-ideas" ||
+    destination.startsWith("/saved-ideas/") ||
+    destination === "/rigs" ||
+    destination.startsWith("/rigs/")
+  );
 }
 
-function getHomeHref() {
-  return isIdeanatorHost() ? "/idea" : "/";
+function getLoginProductLabel(destination = "") {
+  return isIdeanatorHost() || isIdeanatorDestination(destination)
+    ? "The Ideanator"
+    : "HOVEL Editor";
+}
+
+function getHomeHref(destination = "") {
+  return isIdeanatorHost() || isIdeanatorDestination(destination) ? "/idea" : "/";
 }
 
 export default function LoginPage() {
@@ -99,8 +115,8 @@ export default function LoginPage() {
     const urlError = params.get("error") || "";
 
     setDestination(nextDestination);
-    setProductLabel(getLoginProductLabel());
-    setHomeHref(getHomeHref());
+    setProductLabel(getLoginProductLabel(nextDestination));
+    setHomeHref(getHomeHref(nextDestination));
 
     if (urlError) {
       setError(urlError);
@@ -192,7 +208,7 @@ export default function LoginPage() {
           margin: 0;
         }
 
-        .wrap {
+        .login-wrap {
           min-height: 100vh;
           display: flex;
           align-items: center;
@@ -200,7 +216,7 @@ export default function LoginPage() {
           padding: 40px 20px;
         }
 
-        .card {
+        .login-card {
           width: 100%;
           max-width: 500px;
           background: #161410;
@@ -210,14 +226,14 @@ export default function LoginPage() {
           box-shadow: 0 24px 70px rgba(0,0,0,0.4);
         }
 
-        .idea-login .card {
+        .idea-login .login-card {
           background: rgba(43, 38, 30, 0.94);
           border-color: rgba(255, 221, 159, 0.22);
           border-radius: 28px;
           box-shadow: 0 24px 80px rgba(0, 0, 0, 0.42);
         }
 
-        .back-link {
+        .login-back-link {
           display: inline-block;
           font-family: 'IBM Plex Mono', monospace;
           font-size: 11px;
@@ -228,15 +244,15 @@ export default function LoginPage() {
           margin-bottom: 28px;
         }
 
-        .idea-login .back-link {
+        .idea-login .login-back-link {
           color: rgba(245, 241, 232, 0.58);
         }
 
-        .back-link:hover {
+        .login-back-link:hover {
           color: #c8935a;
         }
 
-        .eyebrow {
+        .login-eyebrow {
           font-family: 'IBM Plex Mono', monospace;
           font-size: 11px;
           letter-spacing: 0.2em;
@@ -245,11 +261,11 @@ export default function LoginPage() {
           margin-bottom: 12px;
         }
 
-        .idea-login .eyebrow {
+        .idea-login .login-eyebrow {
           color: #f0b35f;
         }
 
-        .title {
+        .login-title {
           font-family: 'Cormorant Garamond', serif;
           font-size: clamp(40px, 8vw, 58px);
           line-height: 1;
@@ -258,7 +274,7 @@ export default function LoginPage() {
           margin-bottom: 10px;
         }
 
-        .subtitle {
+        .login-subtitle {
           font-family: 'DM Sans', sans-serif;
           font-size: 15px;
           line-height: 1.65;
@@ -266,15 +282,15 @@ export default function LoginPage() {
           margin-bottom: 26px;
         }
 
-        .idea-login .subtitle {
+        .idea-login .login-subtitle {
           color: #ddd5c7;
         }
 
-        .field {
+        .login-field {
           margin-bottom: 16px;
         }
 
-        .label {
+        .login-label {
           display: block;
           font-family: 'IBM Plex Mono', monospace;
           font-size: 11px;
@@ -285,11 +301,11 @@ export default function LoginPage() {
           font-weight: 700;
         }
 
-        .idea-login .label {
+        .idea-login .login-label {
           color: #bdb4a8;
         }
 
-        .input {
+        .login-input {
           width: 100%;
           background: #0e0d0b;
           border: 1px solid #2a2520;
@@ -302,22 +318,22 @@ export default function LoginPage() {
           min-height: 52px;
         }
 
-        .idea-login .input {
+        .idea-login .login-input {
           border-color: rgba(255, 221, 159, 0.18);
           background: rgba(0, 0, 0, 0.22);
           border-radius: 14px;
         }
 
-        .input:focus {
+        .login-input:focus {
           border-color: #c8935a;
         }
 
-        .idea-login .input:focus {
+        .idea-login .login-input:focus {
           border-color: #f0b35f;
           box-shadow: 0 0 0 4px rgba(240, 179, 95, 0.13);
         }
 
-        .button {
+        .login-button {
           width: 100%;
           margin-top: 10px;
           padding: 16px 20px;
@@ -335,12 +351,12 @@ export default function LoginPage() {
           transition: all 0.15s;
         }
 
-        .button:hover:not(:disabled) {
+        .login-button:hover:not(:disabled) {
           background: #e2a96a;
           border-color: #e2a96a;
         }
 
-        .idea-login .button {
+        .idea-login .login-button {
           background:
             radial-gradient(circle at 18px 50%, #fff3c4 0 4px, transparent 5px),
             linear-gradient(180deg, #ffd27a 0%, #f0b35f 52%, #c98438 100%);
@@ -355,13 +371,13 @@ export default function LoginPage() {
             inset 0 1px 0 rgba(255, 255, 255, 0.42);
         }
 
-        .button:disabled {
+        .login-button:disabled {
           opacity: 0.5;
           cursor: not-allowed;
         }
 
-        .error,
-        .message {
+        .login-error,
+        .login-message {
           margin-top: 18px;
           padding: 14px;
           font-family: 'DM Sans', sans-serif;
@@ -370,19 +386,19 @@ export default function LoginPage() {
           border-radius: 12px;
         }
 
-        .error {
+        .login-error {
           background: #2a1010;
           border-left: 2px solid #b84040;
           color: #d68c8c;
         }
 
-        .message {
+        .login-message {
           background: #0a1a0e;
           border-left: 2px solid #4a9c6a;
           color: #8bc99d;
         }
 
-        .note {
+        .login-note {
           font-family: 'DM Sans', sans-serif;
           font-size: 12px;
           color: #5a5448;
@@ -390,11 +406,11 @@ export default function LoginPage() {
           margin-top: 20px;
         }
 
-        .idea-login .note {
+        .idea-login .login-note {
           color: rgba(245, 241, 232, 0.5);
         }
 
-        .terms-link {
+        .login-terms-link {
           display: inline-block;
           margin-top: 8px;
           color: #c8935a;
@@ -405,45 +421,47 @@ export default function LoginPage() {
           text-decoration: none;
         }
 
-        .idea-login .terms-link {
+        .idea-login .login-terms-link {
           color: #f0b35f;
         }
 
-        .terms-link:hover {
+        .login-terms-link:hover {
           text-decoration: underline;
         }
 
         @media (max-width: 520px) {
-          .card {
+          .login-card {
             padding: 24px 20px;
             border-radius: 20px;
           }
         }
       `}</style>
 
-      <div className="ideanator-login-shell wrap">
-        <div className="ideanator-login-shell card">
-          <a className="ideanator-login-shell back-link" href={homeHref}>
-            Back to {productLabel}
+      <div className="login-wrap">
+        <div className="login-card">
+          <a className="login-back-link" href={homeHref}>
+            â† Back to {productLabel}
           </a>
 
-          <div className="ideanator-login-shell eyebrow">
-            {isIdeanatorLogin ? "The Ideanator Access" : "HOVEL Editor Access"}
+          <div className="login-eyebrow">
+            {isIdeanatorLogin ? "The Ideanator" : "HOVEL Editor"}
           </div>
 
-          <div className="ideanator-login-shell title">Email Magic Link</div>
+          <div className="login-title">
+            {isIdeanatorLogin ? "Sign in to save idea reports." : "Sign In"}
+          </div>
 
-          <div className="ideanator-login-shell subtitle">
+          <div className="login-subtitle">
             {isIdeanatorLogin
-              ? "Enter your email and we will send you a secure link. Click it and you are inside The Ideanator."
+              ? "Enter your email. We will send you a secure link â€” no password needed. Click it and you are in."
               : "Enter your email and we will send you a secure link. Click it and you are inside HOVEL Editor."}
           </div>
 
           <form onSubmit={handleSubmit}>
-            <div className="ideanator-login-shell field">
-              <label className="ideanator-login-shell label">Email</label>
+            <div className="login-field">
+              <label className="login-label">Email</label>
               <input
-                className="ideanator-login-shell input"
+                className="login-input"
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
@@ -453,22 +471,21 @@ export default function LoginPage() {
               />
             </div>
 
-            <button className="ideanator-login-shell button" type="submit" disabled={loading || checkingSession}>
+            <button className="login-button" type="submit" disabled={loading || checkingSession}>
               {checkingSession ? "Checking..." : loading ? "Sending..." : "Send Magic Link"}
             </button>
           </form>
 
-          {error && <div className="ideanator-login-shell error">{error}</div>}
-          {message && <div className="ideanator-login-shell message">{message}</div>}
+          {error && <div className="login-error">{error}</div>}
+          {message && <div className="login-message">{message}</div>}
 
-          <div className="ideanator-login-shell note">
-            No password required. One email account can use HOVEL Editor and The Ideanator, but each product keeps its own front door.
+          <div className="login-note">
+            No password required. One email account works for both The Ideanator and HOVEL Editor.
             <br />
-            <a className="ideanator-login-shell terms-link" href="/beta-terms">Beta Terms / Privacy</a>
+            <a className="login-terms-link" href="/beta-terms">Beta Terms / Privacy</a>
           </div>
         </div>
       </div>
     </div>
   );
 }
-

@@ -1,4 +1,11 @@
-﻿import Link from "next/link";
+import type { Metadata } from "next";
+import Link from "next/link";
+
+export const metadata: Metadata = {
+  title: "The Ideanator",
+  description:
+    "Test raw ideas. The Ideanator gives you an honest read on what you have, what is strong, what needs work, and what to do next.",
+};
 
 const actions = [
  {
@@ -14,7 +21,7 @@ const actions = [
  title: "Open saved idea reports",
  body: "Open ideas you already tested. Reread the result, revise the idea, or keep building from it.",
  href: "/idea/saved",
- cta: "Open Reports",
+ cta: "Open My Reports",
  primary: false,
  },
  {
@@ -40,14 +47,14 @@ export default function IdeanatorSwitchboardPage() {
  <main className="ideanator-switchboard">
  <section className="switch-wrap">
  <header className="switch-hero">
- <p className="switch-eyebrow">HOVEL IDEAS PRESENTS</p>
+ <p className="switch-eyebrow">Beta</p>
  <h1>The Ideanator</h1>
  <p className="switch-subhead">
  Start here when an idea is still messy. Test the idea, save the report, build a reusable rig, or reopen one you already made.
  </p>
 
  <div className="switch-note">
- <strong>Simple version:</strong> Test Idea gives you the honest read. Build a Rig turns that idea into a reusable working pattern.
+ <strong>Simple version:</strong> Test an Idea gives you the honest read. Build a Rig turns that idea into a reusable working pattern.
  </div>
  </header>
 
@@ -354,8 +361,3 @@ export default function IdeanatorSwitchboardPage() {
  </main>
  );
 }
-
-
-
-
-

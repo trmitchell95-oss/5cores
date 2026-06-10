@@ -6,9 +6,12 @@ import FeedbackLink from "./components/FeedbackLink";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Hovel Editor",
+  title: {
+    default: "The Ideanator",
+    template: "%s | The Ideanator",
+  },
   description:
-    "A manuscript diagnostic engine for independent writers. The Council reads your work through five distinct editorial lenses and gives you clear, practical feedback.",
+    "Test raw ideas. The Ideanator gives you an honest read on what you have, what is strong, what needs work, and what to do next.",
 };
 
 export default function RootLayout({

@@ -1,4 +1,4 @@
-﻿export default function LoadingPage() {
+export default function LoadingPage() {
   return (
     <main className="loading-shell">
       <style>{`
@@ -73,10 +73,8 @@
       <section className="card">
         <div className="spinner" />
         <div className="eyebrow">Loading</div>
-        <h1>Warming up the machine.</h1>
-        <p>
-          Give it a second. The little bastard is getting its boots on.
-        </p>
+        <h1>Loading The Ideanatorâ€¦</h1>
+        <p>This should only take a moment.</p>
       </section>
     </main>
   );
