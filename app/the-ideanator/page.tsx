@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+﻿import type { Metadata } from "next";
 import Link from "next/link";
 
 export const metadata: Metadata = {
@@ -95,7 +95,7 @@ export default function IdeanatorSwitchboardPage() {
  background:
  radial-gradient(circle at top left, rgba(245, 158, 11, 0.26), transparent 34rem),
  radial-gradient(circle at bottom right, rgba(255, 202, 118, 0.11), transparent 30rem),
- linear-gradient(135deg, #2f2114 0%, #1a1814 48%, #111413 100%);
+ linear-gradient(135deg, #0b1020 0%, #0b1020 48%, #111827 100%);
  color: #f5f1e8;
  padding: 34px 24px 100px;
  font-family:
@@ -150,7 +150,7 @@ export default function IdeanatorSwitchboardPage() {
 
  .switch-eyebrow {
  margin: 0 0 12px;
- color: #f0b35f;
+ color: #93c5fd;
  font-size: 0.75rem;
  letter-spacing: 0.18em;
  text-transform: uppercase;
@@ -176,7 +176,7 @@ export default function IdeanatorSwitchboardPage() {
  width: fit-content;
  max-width: 820px;
  margin-top: 26px;
- border-left: 5px solid #f0b35f;
+ border-left: 5px solid #93c5fd;
  background: rgba(255, 255, 255, 0.065);
  color: #ddd5c7;
  border-radius: 18px;
@@ -185,7 +185,7 @@ export default function IdeanatorSwitchboardPage() {
  }
 
  .switch-note strong {
- color: #fff7ea;
+ color: #ffffff;
  }
 
  .switch-grid {
@@ -224,7 +224,7 @@ export default function IdeanatorSwitchboardPage() {
  }
 
  .switch-card span {
- color: #f0b35f;
+ color: #93c5fd;
  font-size: 0.72rem;
  font-weight: 900;
  letter-spacing: 0.16em;
@@ -233,7 +233,7 @@ export default function IdeanatorSwitchboardPage() {
 
  .switch-card h2 {
  margin: 18px 0 12px;
- color: #fff7ea;
+ color: #ffffff;
  font-size: clamp(1.55rem, 2.6vw, 2.15rem);
  line-height: 0.96;
  letter-spacing: -0.06em;
@@ -255,7 +255,7 @@ export default function IdeanatorSwitchboardPage() {
  background:
  radial-gradient(circle at 18px 50%, rgba(255, 220, 143, 0.8) 0 3px, transparent 4px),
  rgba(255, 255, 255, 0.08);
- color: #fff7ea;
+ color: #ffffff;
  padding: 12px 17px 12px 34px;
  font-size: 0.78rem;
  letter-spacing: 0.1em;
@@ -264,8 +264,8 @@ export default function IdeanatorSwitchboardPage() {
 
  .switch-card-primary strong {
  background:
- radial-gradient(circle at 18px 50%, #fff3c4 0 3px, transparent 4px),
- linear-gradient(180deg, #ffd27a 0%, #f0b35f 55%, #c98438 100%);
+ radial-gradient(circle at 18px 50%, #dbeafe 0 3px, transparent 4px),
+ linear-gradient(180deg, #dbeafe 0%, #93c5fd 55%, #60a5fa 100%);
  color: #18100a;
  border-color: rgba(255, 241, 190, 0.62);
  }
@@ -281,7 +281,7 @@ export default function IdeanatorSwitchboardPage() {
 
  .switch-helper h2 {
  margin: 0;
- color: #fff7ea;
+ color: #ffffff;
  font-size: clamp(1.7rem, 3vw, 2.5rem);
  letter-spacing: -0.05em;
  }
@@ -302,8 +302,8 @@ export default function IdeanatorSwitchboardPage() {
  border-radius: 999px;
  border: 1px solid rgba(255, 241, 190, 0.62);
  background:
- radial-gradient(circle at 18px 50%, #fff3c4 0 3px, transparent 4px),
- linear-gradient(180deg, #ffd27a 0%, #f0b35f 55%, #c98438 100%);
+ radial-gradient(circle at 18px 50%, #dbeafe 0 3px, transparent 4px),
+ linear-gradient(180deg, #dbeafe 0%, #93c5fd 55%, #60a5fa 100%);
  color: #18100a;
  padding: 13px 20px 13px 34px;
  font-size: 0.78rem;
@@ -361,3 +361,4 @@ export default function IdeanatorSwitchboardPage() {
  </main>
  );
 }
+

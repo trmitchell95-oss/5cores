@@ -6,12 +6,12 @@ import { createClient } from "@supabase/supabase-js";
 import JSZip from "jszip";
 
 const modes = [
-  { value: "GENERAL", label: "General Human Cleanup" },
-  { value: "APPLICATION", label: "Application / Grant Answer" },
-  { value: "AUTHOR", label: "Author Voice" },
-  { value: "MARKETING", label: "Marketing Copy" },
+  { value: "GENERAL", label: "Not sure / general cleanup" },
+  { value: "APPLICATION", label: "Application or grant answer" },
+  { value: "AUTHOR", label: "Book or author voice" },
+  { value: "MARKETING", label: "Ad, flyer, or marketing text" },
   { value: "EMAIL", label: "Email" },
-  { value: "SOCIAL", label: "Social Post" },
+  { value: "SOCIAL", label: "Social post" },
 ];
 
 const SPHINX_MAX_CHARS = 10000;
@@ -25,9 +25,9 @@ const SPHINX_STATUS_MESSAGES = [
 ];
 
 const strictnessOptions = [
-  { value: "STANDARD", label: "Standard" },
-  { value: "BRUTAL", label: "Brutal" },
-  { value: "MURDER MODE", label: "Murder Mode" },
+  { value: "STANDARD", label: "Gentle cleanup" },
+  { value: "BRUTAL", label: "Strong cleanup" },
+  { value: "MURDER MODE", label: "Very strong cleanup" },
 ];
 const SPHINX_SAMPLE_TEXT = `At our organization, we are deeply passionate about leveraging innovative solutions to empower individuals and communities in meaningful and impactful ways. Our mission is rooted in a commitment to excellence, authenticity, and transformative engagement, ensuring that every stakeholder feels seen, heard, and valued throughout the process.
 
@@ -539,7 +539,7 @@ export default function SphinxPage() {
   }
 
   function loadSampleText() {
-    setTitle("SPHINX Sample Text");
+    setTitle("Make my words sound human Sample Text");
     setText(SPHINX_SAMPLE_TEXT);
     setMode("GENERAL");
     setStrictness("BRUTAL");
@@ -588,7 +588,7 @@ export default function SphinxPage() {
         .sphinx-shell .sphinx-rendered-report li {
           font-size: 17px !important;
           line-height: 1.75 !important;
-          color: #f0ece4 !important;
+          color: #eef4ff !important;
         }
 
         .sphinx-shell .sphinx-rendered-report h1 {
@@ -609,7 +609,7 @@ export default function SphinxPage() {
         .sphinx-shell .text-zinc-400,
         .sphinx-shell .text-zinc-500,
         .sphinx-shell .text-zinc-600 {
-          color: #bdb4aa !important;
+          color: #cbd5e1 !important;
         }
 
         .sphinx-shell .text-xs {
@@ -626,10 +626,10 @@ export default function SphinxPage() {
         <nav className="mb-6 flex flex-col gap-3 rounded-3xl border border-zinc-800 bg-zinc-900/80 p-4 shadow-xl md:flex-row md:items-center md:justify-between">
           <div>
             <p className="text-xs font-bold uppercase tracking-[0.25em] text-amber-400">
-              SPHINX Navigation
+              Clean Words
             </p>
             <p className="mt-1 text-sm text-zinc-400">
-              Run Sphinx. If you are logged in, completed reports auto-save to your dashboard.
+              Paste text, clean it up, and save the result.
             </p>
           </div>
 
@@ -638,14 +638,14 @@ export default function SphinxPage() {
               href="/submit"
               className="rounded-xl border border-zinc-700 px-4 py-3 text-sm font-bold text-zinc-200 hover:border-amber-400 hover:text-amber-300"
             >
-              The Council
+              Check Writing
             </Link>
 
             <Link
               href="/dashboard"
               className="rounded-xl border border-zinc-700 px-4 py-3 text-sm font-bold text-zinc-200 hover:border-amber-400 hover:text-amber-300"
             >
-              Dashboard
+              Reports
             </Link>
 
             {!checkingLogin && !isLoggedIn && (
@@ -653,13 +653,13 @@ export default function SphinxPage() {
                 href="/login"
                 className="rounded-xl bg-amber-400 px-4 py-3 text-sm font-black text-zinc-950 hover:bg-amber-300"
               >
-                Log In to Save
+                Sign In to Save
               </Link>
             )}
 
             {!checkingLogin && isLoggedIn && (
               <span className="rounded-xl border border-green-800 bg-green-950/40 px-4 py-3 text-sm font-bold text-green-200">
-                Logged In
+                Signed In
               </span>
             )}
           </div>
@@ -667,11 +667,11 @@ export default function SphinxPage() {
 
         <section className="mb-8 rounded-3xl border border-zinc-800 bg-zinc-900/70 p-8 shadow-2xl">
           <p className="mb-2 text-sm font-semibold uppercase tracking-[0.3em] text-amber-400">
-            HOVEL EDITOR Tool
+            Writing Tool
           </p>
 
           <h1 className="mb-3 text-4xl font-black tracking-tight text-white md:text-5xl">
-            SPHINX
+            Make my words sound human
           </h1>
 
           <p className="max-w-3xl text-lg leading-8 text-zinc-300">
@@ -682,11 +682,32 @@ export default function SphinxPage() {
           </p>
         </section>
 
-        <section className="grid gap-6 lg:grid-cols-2">
+        <section className="simple-sphinx-guide">
+  <h2>Use this page in 3 steps</h2>
+
+  <div className="simple-sphinx-steps">
+    <div>
+      <strong>1. Paste words</strong>
+      <span>Use the big box or upload a file.</span>
+    </div>
+
+    <div>
+      <strong>2. Pick what it is</strong>
+      <span>Email, grant answer, post, bio, or general cleanup.</span>
+    </div>
+
+    <div>
+      <strong>3. Press Clean My Words</strong>
+      <span>Copy the cleaned version when it finishes.</span>
+    </div>
+  </div>
+</section>
+
+<section className="grid gap-6 lg:grid-cols-2">
           <div className="rounded-3xl border border-zinc-800 bg-zinc-900 p-6 shadow-xl">
             <div className="mb-4">
               <h2 className="text-2xl font-bold text-white">
-                Paste Your Text
+                1. Paste or upload text
               </h2>
               <p className="mt-1 text-sm text-zinc-400">
                 Best for blurbs, grant answers, emails, posts, bios, and
@@ -697,7 +718,7 @@ export default function SphinxPage() {
             <input
               value={title}
               onChange={(event) => setTitle(event.target.value)}
-              placeholder="Optional title for saved report"
+              placeholder="Optional name for this cleanup"
               className="mb-4 w-full rounded-2xl border border-zinc-700 bg-zinc-950 p-4 text-base text-zinc-100 outline-none placeholder:text-zinc-600 focus:border-amber-400"
             />
 
@@ -705,15 +726,15 @@ export default function SphinxPage() {
               <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
                 <div>
                   <p className="text-sm font-bold text-zinc-200">
-                    Upload a document
+                    Or upload a file
                   </p>
                   <p className="mt-1 text-xs leading-5 text-zinc-500">
-                    Supports .txt, .md, and modern Word .docx files. Old .doc files and PDFs are not supported yet.
+                    You can upload .txt, .md, or .docx files.
                   </p>
                 </div>
 
                 <label className="inline-flex cursor-pointer items-center justify-center rounded-xl border border-zinc-700 px-4 py-3 text-sm font-bold text-zinc-200 hover:border-amber-400 hover:text-amber-300">
-                  Choose File
+                  Pick File
                   <input
                     type="file"
                     accept=".txt,.md,.docx,text/plain,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
@@ -725,13 +746,13 @@ export default function SphinxPage() {
               </div>
 
               <p className="mt-3 text-xs text-zinc-500">
-                {uploadedFileName ? `Loaded: ${uploadedFileName}` : "Optional. Pasting directly still works."}
+                {uploadedFileName ? `Loaded: ${uploadedFileName}` : "Optional. You can paste instead."}
               </p>
             </div>
             <div className="mb-4 grid gap-3 md:grid-cols-2">
               <label className="block">
                 <span className="mb-2 block text-xs font-bold uppercase tracking-[0.2em] text-zinc-500">
-                  Mode
+                  What kind of writing is this?
                 </span>
                 <select
                   value={mode}
@@ -748,7 +769,7 @@ export default function SphinxPage() {
 
               <label className="block">
                 <span className="mb-2 block text-xs font-bold uppercase tracking-[0.2em] text-zinc-500">
-                  Strictness
+                  How much should we clean it?
                 </span>
                 <select
                   value={strictness}
@@ -767,7 +788,7 @@ export default function SphinxPage() {
             <textarea
               value={text}
               onChange={(event) => setText(event.target.value)}
-              placeholder="Paste something that smells a little too AI in here..."
+              placeholder="Paste the words you want cleaned here."
               className="min-h-[430px] w-full resize-y rounded-2xl border border-zinc-700 bg-zinc-950 p-5 text-base leading-7 text-zinc-100 outline-none placeholder:text-zinc-600 focus:border-amber-400"
             />
 
@@ -783,7 +804,7 @@ export default function SphinxPage() {
                   type="button"
                   className="rounded-xl border border-amber-800 bg-amber-950/30 px-5 py-3 text-sm font-bold text-amber-200 hover:border-amber-400 hover:text-amber-100 disabled:cursor-not-allowed disabled:opacity-50"
                 >
-                  Try Sample Text
+                  Try Example
                 </button>
 
                 <button
@@ -791,7 +812,7 @@ export default function SphinxPage() {
                   type="button"
                   className="rounded-xl border border-zinc-700 px-5 py-3 text-sm font-semibold text-zinc-300 hover:border-zinc-500 hover:text-white"
                 >
-                  Clear
+                  Clear Page
                 </button>
 
                 <button
@@ -801,10 +822,10 @@ export default function SphinxPage() {
                   className="rounded-xl bg-amber-400 px-5 py-3 text-sm font-black text-zinc-950 hover:bg-amber-300 disabled:cursor-not-allowed disabled:opacity-50"
                 >
                   {loading
-                    ? "Running Sphinx..."
+                    ? "Cleaning Words..."
                     : !isLoggedIn
-                      ? "Log in to Run Sphinx"
-                      : "Run Sphinx"}
+                      ? "Sign In to Clean Words"
+                      : "Clean My Words"}
                 </button>
               </div>
             </div>
@@ -831,7 +852,7 @@ export default function SphinxPage() {
                       href={`/reports/${savedId}`}
                       className="font-bold text-amber-300 underline"
                     >
-                      Open saved report
+                      Open Saved Report
                     </a>
                   </>
                 )}
@@ -843,10 +864,10 @@ export default function SphinxPage() {
             <div className="mb-4 flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
               <div>
                 <h2 className="text-2xl font-bold text-white">
-                  Sphinx Report
+                  Cleaned Results
                 </h2>
                 <p className="mt-1 text-sm text-zinc-400">
-                  Diagnosis, rewrite, shorter version, and stronger version.
+                  Read the notes, then copy the cleaner version you like.
                 </p>
               </div>
 
@@ -863,7 +884,7 @@ export default function SphinxPage() {
                       ? "Saving..."
                       : savedId
                         ? "Already Saved"
-                        : "Save Report"}
+                        : "Save Results"}
                 </button>
 
                 <button
@@ -881,7 +902,7 @@ export default function SphinxPage() {
                   type="button"
                   className="rounded-xl border border-zinc-700 px-4 py-3 text-sm font-semibold text-zinc-300 hover:border-amber-400 hover:text-amber-300 disabled:cursor-not-allowed disabled:opacity-50"
                 >
-                  {copied === "report" ? "Copied Report" : "Copy Report"}
+                  {copied === "report" ? "Copied Report" : "Copy Notes"}
                 </button>
               </div>
             </div>
@@ -926,6 +947,10 @@ export default function SphinxPage() {
     </main>
   );
 }
+
+
+
+
 
 
 

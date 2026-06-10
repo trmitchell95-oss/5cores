@@ -273,7 +273,7 @@ export default function AdminInvitesPage() {
       <style>{`
         body {
           margin: 0;
-          background: #0e0d0b;
+          background: #060b16;
         }
 
         .invite-shell {
@@ -281,8 +281,8 @@ export default function AdminInvitesPage() {
           background:
             radial-gradient(circle at top left, rgba(200,147,90,0.13), transparent 34rem),
             radial-gradient(circle at bottom right, rgba(90,124,200,0.1), transparent 32rem),
-            #0e0d0b;
-          color: #f0ece4;
+            #060b16;
+          color: #eef4ff;
           padding: 48px 24px 90px;
           font-family: Arial, sans-serif;
         }
@@ -302,7 +302,7 @@ export default function AdminInvitesPage() {
 
         .top-nav a,
         .text-button {
-          color: #c8935a;
+          color: #93c5fd;
           background: none;
           border: none;
           padding: 0;
@@ -326,7 +326,7 @@ export default function AdminInvitesPage() {
         }
 
         .eyebrow {
-          color: #c8935a;
+          color: #93c5fd;
           font-family: monospace;
           letter-spacing: 0.2em;
           text-transform: uppercase;
@@ -342,13 +342,13 @@ export default function AdminInvitesPage() {
         }
 
         .subtitle {
-          color: #aaa096;
+          color: #cbd5e1;
           line-height: 1.7;
           max-width: 820px;
         }
 
         .summary-line {
-          color: #aaa096;
+          color: #cbd5e1;
           line-height: 1.6;
         }
 
@@ -396,8 +396,8 @@ export default function AdminInvitesPage() {
           width: 100%;
           padding: 14px;
           border-radius: 12px;
-          background: #0e0d0b;
-          color: #f0ece4;
+          background: #060b16;
+          color: #eef4ff;
           border: 1px solid #302a24;
           box-sizing: border-box;
           outline: none;
@@ -413,15 +413,15 @@ export default function AdminInvitesPage() {
         .input:focus,
         .textarea:focus,
         .select:focus {
-          border-color: #c8935a;
+          border-color: #93c5fd;
         }
 
         .primary-button {
           min-height: 48px;
           border-radius: 12px;
           border: none;
-          background: #c8935a;
-          color: #0e0d0b;
+          background: #93c5fd;
+          color: #060b16;
           font-family: monospace;
           font-weight: 900;
           letter-spacing: 0.12em;
@@ -461,7 +461,7 @@ export default function AdminInvitesPage() {
 
         .code {
           font-family: monospace;
-          color: #c8935a;
+          color: #93c5fd;
           font-weight: 900;
           font-size: 17px;
           letter-spacing: 0.04em;
@@ -469,7 +469,7 @@ export default function AdminInvitesPage() {
         }
 
         .label {
-          color: #aaa096;
+          color: #cbd5e1;
           margin-top: 6px;
           line-height: 1.5;
         }
@@ -485,10 +485,10 @@ export default function AdminInvitesPage() {
           border: 1px solid #302a24;
           border-radius: 999px;
           padding: 6px 9px;
-          color: #aaa096;
+          color: #cbd5e1;
           font-family: monospace;
           font-size: 11px;
-          background: #0e0d0b;
+          background: #060b16;
         }
 
         .badge.active {
@@ -507,7 +507,7 @@ export default function AdminInvitesPage() {
         }
 
         .meta {
-          color: #8f867b;
+          color: #cbd5e1;
           font-size: 13px;
           line-height: 1.65;
           margin-top: 12px;
@@ -528,8 +528,8 @@ export default function AdminInvitesPage() {
           cursor: pointer;
           font-family: monospace;
           font-weight: 900;
-          background: #11100e;
-          color: #c8935a;
+          background: #0f172a;
+          color: #93c5fd;
         }
 
         .danger-button {
@@ -842,3 +842,4 @@ function InviteCard({
 const inputStyle: CSSProperties = {
   width: "100%",
 };
+

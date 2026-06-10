@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState, useRef, useEffect } from "react";
 import { createClient } from "@supabase/supabase-js";
@@ -14,7 +14,7 @@ const PERSONAS = [
     key: "brad",
     name: "Brad",
     role: "Voice Guardian",
-    color: "#c8935a",
+    color: "#93c5fd",
     tagline: "Protects what is alive in the manuscript.",
   },
   {
@@ -59,13 +59,13 @@ type ProjectOption = {
 
 const STATUS_MESSAGES = [
   "Reading your manuscript...",
-  "Calling the council...",
-  "Brad is protecting the voice...",
-  "Greg is finding the drag...",
-  "Von Clausen is checking structure...",
-  "Juniper is reading as a reader...",
-  "Final Editor is synthesizing...",
-  "Preparing your reports...",
+  "Checking your writing...",
+  "Checking the voice...",
+  "Finding what slows it down...",
+  "Checking the structure...",
+  "Reading it like a real reader...",
+  "Turning it into useful feedback...",
+  "Preparing your feedback...",
 ];
 const COUNCIL_SAMPLE_MANUSCRIPT = `Mara stood at the edge of the old bridge and thought about everything she had ever lost. The river below moved like a long gray animal, carrying leaves, bottles, and pieces of the storm toward somewhere she could not see. She knew this place mattered. She knew it because her father had brought her here when she was small, back before sickness made him quiet and before everyone in the house learned how to whisper around closed doors.
 
@@ -368,7 +368,7 @@ export default function SubmitPage() {
       }
 
       setSnapshotMessage(
-        `${versionLabel.trim() || "Draft"} saved for future Council Re-Read comparison.`
+        `${versionLabel.trim() || "Draft"} saved for future Compare Drafts comparison.`
       );
     } catch (err) {
       const message =
@@ -559,7 +559,7 @@ export default function SubmitPage() {
 
   function loadSampleManuscript() {
     setManuscript(COUNCIL_SAMPLE_MANUSCRIPT);
-    setTitle("The Council Sample Excerpt");
+    setTitle("Check Writing Sample Excerpt");
     setWritingType("Fiction");
     setAudience("Readers");
     setBiggestConcern("I want to know if the emotion is working or if the scene is overexplaining itself.");
@@ -591,7 +591,7 @@ export default function SubmitPage() {
         .status-subtext {
           font-size: 15px !important;
           line-height: 1.65 !important;
-          color: #bdb4aa !important;
+          color: #cbd5e1 !important;
         }
 
         .field-label,
@@ -649,7 +649,7 @@ export default function SubmitPage() {
 
         body {
           margin: 0;
-          background: #0e0d0b;
+          background: #060b16;
         }
 
         .submit-shell {
@@ -657,8 +657,8 @@ export default function SubmitPage() {
           background:
             radial-gradient(circle at top left, rgba(200, 147, 90, 0.13), transparent 33rem),
             radial-gradient(circle at bottom right, rgba(90, 124, 200, 0.1), transparent 30rem),
-            #0e0d0b;
-          color: #f0ece4;
+            #060b16;
+          color: #eef4ff;
           font-family: 'DM Sans', sans-serif;
         }
 
@@ -683,7 +683,7 @@ export default function SubmitPage() {
           min-height: 42px;
           border: 1px solid #302a24;
           background: rgba(18, 16, 13, 0.8);
-          color: #9a9186;
+          color: #cbd5e1;
           text-decoration: none;
           border-radius: 14px;
           font-family: 'IBM Plex Mono', monospace;
@@ -695,8 +695,8 @@ export default function SubmitPage() {
         }
 
         .back-link:hover {
-          color: #c8935a;
-          border-color: #c8935a;
+          color: #93c5fd;
+          border-color: #93c5fd;
         }
 
         .top-nav-actions {
@@ -710,7 +710,7 @@ export default function SubmitPage() {
         .nav-pill {
           border: 1px solid #302a24;
           background: rgba(18, 16, 13, 0.8);
-          color: #6f665f;
+          color: #94a3b8;
           border-radius: 14px;
           font-family: 'IBM Plex Mono', monospace;
           font-size: 10px;
@@ -733,7 +733,7 @@ export default function SubmitPage() {
           font-family: 'IBM Plex Mono', monospace;
           font-size: 11px;
           letter-spacing: 0.2em;
-          color: #c8935a;
+          color: #93c5fd;
           text-transform: uppercase;
           margin-bottom: 12px;
         }
@@ -743,14 +743,14 @@ export default function SubmitPage() {
           font-size: clamp(44px, 8vw, 82px);
           font-weight: 700;
           line-height: 0.94;
-          color: #f0ece4;
+          color: #eef4ff;
           margin: 0;
         }
 
         .subtitle {
           font-size: 16px;
           font-weight: 300;
-          color: #aaa096;
+          color: #cbd5e1;
           margin-top: 16px;
           max-width: 760px;
           line-height: 1.65;
@@ -780,12 +780,12 @@ export default function SubmitPage() {
           font-size: 30px;
           font-weight: 700;
           line-height: 1;
-          color: #f0ece4;
+          color: #eef4ff;
           margin-bottom: 8px;
         }
 
         .panel-note {
-          color: #8f867b;
+          color: #cbd5e1;
           font-size: 13px;
           line-height: 1.55;
           font-weight: 300;
@@ -806,9 +806,9 @@ export default function SubmitPage() {
           display: flex;
           align-items: center;
           justify-content: center;
-          background: #18140f;
+          background: #1e293b;
           border: 1px solid #332a1c;
-          color: #c8935a;
+          color: #93c5fd;
           font-family: 'IBM Plex Mono', monospace;
           font-size: 11px;
           font-weight: 700;
@@ -818,13 +818,13 @@ export default function SubmitPage() {
           font-family: 'IBM Plex Mono', monospace;
           font-size: 11px;
           letter-spacing: 0.14em;
-          color: #c8935a;
+          color: #93c5fd;
           text-transform: uppercase;
           margin-bottom: 5px;
         }
 
         .step-text {
-          color: #8f867b;
+          color: #cbd5e1;
           font-size: 13px;
           line-height: 1.55;
         }
@@ -835,7 +835,7 @@ export default function SubmitPage() {
           font-size: 10px;
           font-weight: 700;
           letter-spacing: 0.12em;
-          color: #7b7168;
+          color: #94a3b8;
           text-transform: uppercase;
           margin-bottom: 7px;
         }
@@ -845,9 +845,9 @@ export default function SubmitPage() {
         .concern-input,
         .textarea {
           width: 100%;
-          background: #11100e;
+          background: #0f172a;
           border: 1px solid #302a24;
-          color: #f0ece4;
+          color: #eef4ff;
           outline: none;
           transition: border-color 0.2s, background 0.2s;
           border-radius: 16px;
@@ -887,7 +887,7 @@ export default function SubmitPage() {
         .select-input:focus,
         .concern-input:focus,
         .textarea:focus {
-          border-color: #c8935a;
+          border-color: #93c5fd;
           background: #15120f;
         }
 
@@ -899,7 +899,7 @@ export default function SubmitPage() {
         }
 
         .textarea::placeholder {
-          color: #5a5448;
+          color: #94a3b8;
         }
 
         .form-grid {
@@ -937,7 +937,7 @@ export default function SubmitPage() {
           justify-content: center;
           border: 1px solid #302a24;
           background: #16120e;
-          color: #c8935a;
+          color: #93c5fd;
           border-radius: 14px;
           padding: 12px 14px;
           cursor: pointer;
@@ -949,11 +949,11 @@ export default function SubmitPage() {
         }
 
         .file-label:hover {
-          border-color: #c8935a;
+          border-color: #93c5fd;
         }
 
         .file-name {
-          color: #8f867b;
+          color: #cbd5e1;
           font-size: 13px;
         }
 
@@ -966,7 +966,7 @@ export default function SubmitPage() {
 
         .meter-card {
           border: 1px solid #26211c;
-          background: #11100e;
+          background: #0f172a;
           border-radius: 18px;
           padding: 18px;
           margin-top: 16px;
@@ -980,7 +980,7 @@ export default function SubmitPage() {
           font-size: 10px;
           letter-spacing: 0.1em;
           text-transform: uppercase;
-          color: #7b7168;
+          color: #94a3b8;
           margin-bottom: 10px;
         }
 
@@ -993,13 +993,13 @@ export default function SubmitPage() {
 
         .meter-fill {
           height: 100%;
-          background: #c8935a;
+          background: #93c5fd;
           border-radius: 999px;
           transition: width 0.2s;
         }
 
         .meter-help {
-          color: #8f867b;
+          color: #cbd5e1;
           font-size: 12px;
           line-height: 1.5;
           margin-top: 11px;
@@ -1028,9 +1028,9 @@ export default function SubmitPage() {
         }
 
         .run-btn {
-          background: #c8935a;
-          color: #0e0d0b;
-          border: 1px solid #c8935a;
+          background: #93c5fd;
+          color: #060b16;
+          border: 1px solid #93c5fd;
         }
 
         .run-btn:hover:not(:disabled) {
@@ -1045,15 +1045,15 @@ export default function SubmitPage() {
 
         .reset-btn,
         .dashboard-btn {
-          background: #11100e;
-          color: #8f867b;
+          background: #0f172a;
+          color: #cbd5e1;
           border: 1px solid #302a24;
         }
 
         .reset-btn:hover,
         .dashboard-btn:hover {
-          color: #c8935a;
-          border-color: #c8935a;
+          color: #93c5fd;
+          border-color: #93c5fd;
         }
 
         .error-msg {
@@ -1098,7 +1098,7 @@ export default function SubmitPage() {
           height: 46px;
           border-radius: 50%;
           border: 4px solid #302a24;
-          border-top-color: #c8935a;
+          border-top-color: #93c5fd;
           animation: spin 0.9s linear infinite;
           margin-bottom: 16px;
         }
@@ -1111,7 +1111,7 @@ export default function SubmitPage() {
 
         .status-subtext {
           margin-top: 10px;
-          color: #8f867b;
+          color: #cbd5e1;
           font-size: 13px;
           line-height: 1.5;
         }
@@ -1129,16 +1129,16 @@ export default function SubmitPage() {
         .status-bar {
           margin-top: 22px;
           padding: 18px;
-          background: #11100e;
+          background: #0f172a;
           border: 1px solid #302a24;
-          border-left: 3px solid #c8935a;
+          border-left: 3px solid #93c5fd;
           border-radius: 16px;
         }
 
         .status-text {
           font-family: 'IBM Plex Mono', monospace;
           font-size: 12px;
-          color: #c8935a;
+          color: #93c5fd;
           letter-spacing: 0.1em;
           text-transform: uppercase;
         }
@@ -1147,7 +1147,7 @@ export default function SubmitPage() {
           font-family: 'IBM Plex Mono', monospace;
           font-size: 10px;
           letter-spacing: 0.15em;
-          color: #5a5448;
+          color: #94a3b8;
           text-transform: uppercase;
           margin-top: 18px;
           margin-bottom: 8px;
@@ -1164,7 +1164,7 @@ export default function SubmitPage() {
           text-align: center;
           border: 1px solid #2a2520;
           border-radius: 14px;
-          background: #11100e;
+          background: #0f172a;
         }
 
         .persona-progress.done {
@@ -1186,7 +1186,7 @@ export default function SubmitPage() {
           font-family: 'IBM Plex Mono', monospace;
           font-size: 9px;
           letter-spacing: 0.1em;
-          color: #9a9186;
+          color: #cbd5e1;
           text-transform: uppercase;
         }
 
@@ -1212,7 +1212,7 @@ export default function SubmitPage() {
         }
 
         .saved-link a {
-          color: #c8935a;
+          color: #93c5fd;
           font-weight: 700;
         }
 
@@ -1231,13 +1231,13 @@ export default function SubmitPage() {
           font-weight: 700;
           letter-spacing: 0.12em;
           text-transform: uppercase;
-          background: #11100e;
+          background: #0f172a;
           border: 1px solid #302a24;
           border-radius: 13px;
           cursor: pointer;
           white-space: nowrap;
           transition: all 0.2s;
-          color: #6f665f;
+          color: #94a3b8;
         }
 
         .tab-btn.active {
@@ -1247,7 +1247,7 @@ export default function SubmitPage() {
         }
 
         .tab-btn:hover:not(.active):not(.locked) {
-          color: #9a9186;
+          color: #cbd5e1;
         }
 
         .tab-btn.locked {
@@ -1296,7 +1296,7 @@ export default function SubmitPage() {
         .persona-tagline {
           font-size: 13px;
           font-weight: 300;
-          color: #9a9186;
+          color: #cbd5e1;
           margin-top: 8px;
         }
 
@@ -1304,14 +1304,14 @@ export default function SubmitPage() {
           font-size: 15px;
           font-weight: 300;
           line-height: 1.8;
-          color: #d4cfc7;
+          color: #dbeafe;
         }
 
         .report-title {
           font-family: 'Cormorant Garamond', serif;
           font-size: 30px;
           font-weight: 700;
-          color: #f0ece4;
+          color: #eef4ff;
           margin: 24px 0 8px;
           line-height: 1.2;
         }
@@ -1320,7 +1320,7 @@ export default function SubmitPage() {
           font-family: 'Cormorant Garamond', serif;
           font-size: 22px;
           font-weight: 600;
-          color: #f0ece4;
+          color: #eef4ff;
           margin: 32px 0 10px;
           letter-spacing: 0.03em;
         }
@@ -1329,7 +1329,7 @@ export default function SubmitPage() {
           font-family: 'Cormorant Garamond', serif;
           font-size: 17px;
           font-weight: 600;
-          color: #9a9186;
+          color: #cbd5e1;
           margin: 20px 0 8px;
         }
 
@@ -1362,7 +1362,7 @@ export default function SubmitPage() {
           font-family: 'IBM Plex Mono', monospace;
           font-size: 11px;
           letter-spacing: 0.15em;
-          color: #5a5448;
+          color: #94a3b8;
           text-transform: uppercase;
           margin-top: 12px;
         }
@@ -1418,7 +1418,7 @@ export default function SubmitPage() {
       <div className="app-wrap">
                 <nav className="top-nav">
           <a className="back-link" href="/dashboard">
-            Back to Dashboard
+            Back to Reports
           </a>
 
           <div className="top-nav-actions">
@@ -1430,7 +1430,7 @@ export default function SubmitPage() {
         </nav>
 
         <header className="masthead">
-          <div className="eyebrow">The Council Manuscript Diagnosis</div>
+          <div className="eyebrow">Check Writing Manuscript Diagnosis</div>
           <h1 className="title">Start a new diagnosis.</h1>
           <p className="subtitle">
             Tell the council what kind of work this is, what you are preparing for, and how sharp the feedback should be. Then paste the manuscript and run the diagnosis.
@@ -1438,7 +1438,7 @@ export default function SubmitPage() {
         </header>
 
         {!hasRun && (
-          <section className="workflow-grid">
+<section className="workflow-grid">
             <aside>
               <div className="panel">
                 <div className="panel-title">How this works</div>
@@ -1620,7 +1620,7 @@ export default function SubmitPage() {
                   </div>
 
                   <div>
-                    <label className="field-label">Audience</label>
+                    <label className="field-label">Who is this for?</label>
                     <select
                       className="select-input"
                       value={audience}
@@ -1685,7 +1685,7 @@ export default function SubmitPage() {
 
                     <div className="upload-box">
                       <div className="tiny-note" style={{ marginTop: 0, marginBottom: "12px" }}>
-                        Optional. HOVEL EDITOR only stores manuscript text when you choose to save a snapshot. The regular report saves either way, but the draft text is only kept if this box is checked.
+                        Optional. Writing Check only stores manuscript text when you choose to save a snapshot. The regular report saves either way, but the draft text is only kept if this box is checked.
                       </div>
 
                       <label className="field-label">Existing project</label>
@@ -1735,7 +1735,7 @@ export default function SubmitPage() {
                           gap: "12px",
                           alignItems: "flex-start",
                           marginTop: "16px",
-                          color: "#d4cfc7",
+                          color: "#dbeafe",
                           lineHeight: 1.55,
                         }}
                       >
@@ -1749,7 +1749,7 @@ export default function SubmitPage() {
                         <span>
                           Save manuscript text as a snapshot for future comparison.
                           <span className="tiny-note" style={{ display: "block" }}>
-                            This stores this draft under your account and project so Council Re-Read can compare it against a later revision. Leave unchecked if you only want the report saved. You can delete snapshots from Projects without deleting the saved report.
+                            This stores this draft under your account and project so Compare Drafts can compare it against a later revision. Leave unchecked if you only want the report saved. You can delete snapshots from Projects without deleting the saved report.
                           </span>
                         </span>
                       </label>
@@ -1893,6 +1893,10 @@ export default function SubmitPage() {
     </main>
   );
 }
+
+
+
+
 
 
 

@@ -8,7 +8,7 @@ export default function ManifestoPage() {
       <style>{`
         body {
           margin: 0;
-          background: #0e0d0b;
+          background: #060b16;
         }
 
         .manifesto-shell {
@@ -16,8 +16,8 @@ export default function ManifestoPage() {
           background:
             radial-gradient(circle at top left, rgba(200,147,90,0.16), transparent 34rem),
             radial-gradient(circle at bottom right, rgba(90,124,200,0.1), transparent 34rem),
-            #0e0d0b;
-          color: #f0ece4;
+            #060b16;
+          color: #eef4ff;
           padding: 48px 24px 110px;
           font-family: Arial, sans-serif;
         }
@@ -36,7 +36,7 @@ export default function ManifestoPage() {
         }
 
         .top-nav a {
-          color: #c8935a;
+          color: #93c5fd;
           text-decoration: none;
         }
 
@@ -68,7 +68,7 @@ export default function ManifestoPage() {
         }
 
         .eyebrow {
-          color: #c8935a;
+          color: #93c5fd;
           font-family: monospace;
           letter-spacing: 0.22em;
           text-transform: uppercase;
@@ -88,7 +88,7 @@ export default function ManifestoPage() {
         }
 
         .subtitle {
-          color: #aaa096;
+          color: #cbd5e1;
           line-height: 1.7;
           max-width: 820px;
           font-size: 18px;
@@ -137,14 +137,14 @@ export default function ManifestoPage() {
         }
 
         .button {
-          background: #c8935a;
-          color: #0e0d0b;
-          border: 1px solid #c8935a;
+          background: #93c5fd;
+          color: #060b16;
+          border: 1px solid #93c5fd;
         }
 
         .button-dark {
-          background: #11100e;
-          color: #c8935a;
+          background: #0f172a;
+          color: #93c5fd;
           border: 1px solid #302a24;
         }
 
@@ -222,4 +222,5 @@ export default function ManifestoPage() {
     </main>
   );
 }
+
 

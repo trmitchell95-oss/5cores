@@ -179,15 +179,15 @@ export default function AdminFeedbackPage() {
   return (
     <main style={{
       minHeight: "100vh",
-      background: "#0e0d0b",
-      color: "#f0ece4",
+      background: "#060b16",
+      color: "#eef4ff",
       padding: "48px 24px",
       fontFamily: "Arial, sans-serif"
     }}>
       <div style={{ maxWidth: 1100, margin: "0 auto" }}>
         <nav style={{ display: "flex", gap: 12, marginBottom: 24, flexWrap: "wrap" }}>
-          <Link href="/admin/usage" style={{ color: "#c8935a" }}>Speedometer</Link>
-          <Link href="/dashboard" style={{ color: "#c8935a" }}>Dashboard</Link>
+          <Link href="/admin/usage" style={{ color: "#93c5fd" }}>Speedometer</Link>
+          <Link href="/dashboard" style={{ color: "#93c5fd" }}>Dashboard</Link>
           <button onClick={() => loadFeedback(true)} disabled={refreshing}>
             {refreshing ? "Refreshing..." : "Refresh"}
           </button>
@@ -200,7 +200,7 @@ export default function AdminFeedbackPage() {
           background: "rgba(18,16,13,0.95)",
           marginBottom: 22
         }}>
-          <div style={{ color: "#c8935a", fontFamily: "monospace", letterSpacing: "0.2em", textTransform: "uppercase" }}>
+          <div style={{ color: "#93c5fd", fontFamily: "monospace", letterSpacing: "0.2em", textTransform: "uppercase" }}>
             Admin Feedback
           </div>
 
@@ -209,7 +209,7 @@ export default function AdminFeedbackPage() {
           </h1>
 
           {data && (
-            <p style={{ color: "#aaa096", lineHeight: 1.7 }}>
+            <p style={{ color: "#cbd5e1", lineHeight: 1.7 }}>
               Total: {data.summary.total} / New: {data.summary.newCount} / Reviewed: {data.summary.reviewedCount} / Fixed: {data.summary.fixedCount} / Ignored: {data.summary.ignoredCount}
             </p>
           )}
@@ -232,7 +232,7 @@ export default function AdminFeedbackPage() {
                 <select
                   value={statusFilter}
                   onChange={(event) => setStatusFilter(event.target.value)}
-                  style={{ padding: 10, borderRadius: 10, background: "#0e0d0b", color: "#f0ece4", border: "1px solid #302a24" }}
+                  style={{ padding: 10, borderRadius: 10, background: "#060b16", color: "#eef4ff", border: "1px solid #302a24" }}
                 >
                   <option value="all">All Statuses</option>
                   {STATUS_OPTIONS.map((status) => (
@@ -243,7 +243,7 @@ export default function AdminFeedbackPage() {
                 <select
                   value={toolFilter}
                   onChange={(event) => setToolFilter(event.target.value)}
-                  style={{ padding: 10, borderRadius: 10, background: "#0e0d0b", color: "#f0ece4", border: "1px solid #302a24" }}
+                  style={{ padding: 10, borderRadius: 10, background: "#060b16", color: "#eef4ff", border: "1px solid #302a24" }}
                 >
                   <option value="all">All Tools</option>
                   {toolOptions.map((tool) => (
@@ -282,19 +282,19 @@ function FeedbackCard({
       border: "1px solid #26211c",
       borderRadius: 18,
       padding: 18,
-      background: "#11100e"
+      background: "#0f172a"
     }}>
       <div style={{ display: "flex", justifyContent: "space-between", gap: 12, flexWrap: "wrap", marginBottom: 10 }}>
-        <div style={{ color: "#c8935a", fontFamily: "monospace", fontWeight: 900 }}>
+        <div style={{ color: "#93c5fd", fontFamily: "monospace", fontWeight: 900 }}>
           {typeLabel(item.feedback_type)} / {item.status}
         </div>
 
-        <div style={{ color: "#8f867b", fontSize: 13 }}>
+        <div style={{ color: "#cbd5e1", fontSize: 13 }}>
           {formatDate(item.created_at)} • {item.email || "No email"} • {toolLabel(item.tool)}
         </div>
       </div>
 
-      <div style={{ color: "#8f867b", fontSize: 13, marginBottom: 12 }}>
+      <div style={{ color: "#cbd5e1", fontSize: 13, marginBottom: 12 }}>
         Page: {item.page_path || "Unknown"}
       </div>
 
@@ -306,7 +306,7 @@ function FeedbackCard({
         <select
           value={status}
           onChange={(event) => setStatus(event.target.value)}
-          style={{ padding: 10, borderRadius: 10, background: "#0e0d0b", color: "#f0ece4", border: "1px solid #302a24" }}
+          style={{ padding: 10, borderRadius: 10, background: "#060b16", color: "#eef4ff", border: "1px solid #302a24" }}
         >
           {STATUS_OPTIONS.map((option) => (
             <option key={option} value={option}>{option}</option>
@@ -317,7 +317,7 @@ function FeedbackCard({
           value={adminNote}
           onChange={(event) => setAdminNote(event.target.value)}
           placeholder="Admin note..."
-          style={{ padding: 10, borderRadius: 10, background: "#0e0d0b", color: "#f0ece4", border: "1px solid #302a24" }}
+          style={{ padding: 10, borderRadius: 10, background: "#060b16", color: "#eef4ff", border: "1px solid #302a24" }}
         />
 
         <button
@@ -327,8 +327,8 @@ function FeedbackCard({
             padding: "10px 14px",
             borderRadius: 10,
             border: "none",
-            background: "#c8935a",
-            color: "#0e0d0b",
+            background: "#93c5fd",
+            color: "#060b16",
             fontFamily: "monospace",
             fontWeight: 900,
             cursor: "pointer"
@@ -340,4 +340,5 @@ function FeedbackCard({
     </article>
   );
 }
+
 

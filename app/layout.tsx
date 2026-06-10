@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+﻿import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import ProductNav from "./components/ProductNav";
 import HelpLink from "./components/HelpLink";
@@ -7,11 +7,11 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: {
-    default: "The Ideanator",
-    template: "%s | The Ideanator",
+    default: "Hovel Ideas Workshop",
+    template: "%s | Hovel Ideas Workshop",
   },
   description:
-    "Test raw ideas. The Ideanator gives you an honest read on what you have, what is strong, what needs work, and what to do next.",
+    "One workshop for rough ideas, reusable rigs, Sphinx cleanup, editorial diagnosis, projects, reports, and revision work.",
 };
 
 export default function RootLayout({

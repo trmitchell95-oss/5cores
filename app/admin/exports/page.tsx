@@ -85,7 +85,7 @@ export default function AdminExportsPage() {
       <style>{`
         body {
           margin: 0;
-          background: #0e0d0b;
+          background: #060b16;
         }
 
         .export-shell {
@@ -93,8 +93,8 @@ export default function AdminExportsPage() {
           background:
             radial-gradient(circle at top left, rgba(200,147,90,0.13), transparent 34rem),
             radial-gradient(circle at bottom right, rgba(90,124,200,0.1), transparent 32rem),
-            #0e0d0b;
-          color: #f0ece4;
+            #060b16;
+          color: #eef4ff;
           padding: 48px 24px 90px;
           font-family: Arial, sans-serif;
         }
@@ -113,7 +113,7 @@ export default function AdminExportsPage() {
         }
 
         .top-nav a {
-          color: #c8935a;
+          color: #93c5fd;
           text-decoration: none;
         }
 
@@ -132,7 +132,7 @@ export default function AdminExportsPage() {
         }
 
         .eyebrow {
-          color: #c8935a;
+          color: #93c5fd;
           font-family: monospace;
           letter-spacing: 0.2em;
           text-transform: uppercase;
@@ -148,7 +148,7 @@ export default function AdminExportsPage() {
         }
 
         .subtitle {
-          color: #aaa096;
+          color: #cbd5e1;
           line-height: 1.7;
           max-width: 780px;
         }
@@ -200,7 +200,7 @@ export default function AdminExportsPage() {
         }
 
         .card-copy {
-          color: #aaa096;
+          color: #cbd5e1;
           line-height: 1.55;
           font-size: 14px;
           margin: 0;
@@ -210,8 +210,8 @@ export default function AdminExportsPage() {
           min-height: 48px;
           border-radius: 12px;
           border: none;
-          background: #c8935a;
-          color: #0e0d0b;
+          background: #93c5fd;
+          color: #060b16;
           font-family: monospace;
           font-weight: 900;
           letter-spacing: 0.12em;
@@ -318,6 +318,7 @@ export default function AdminExportsPage() {
     </main>
   );
 }
+
 
 
 

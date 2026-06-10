@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useEffect, useMemo, useState } from "react";
 import { createClient } from "@supabase/supabase-js";
@@ -63,7 +63,7 @@ function getCanonicalAuthOrigin() {
 }
 
 function getDefaultDestination() {
-  return isIdeanatorHost() ? "/idea" : "/dashboard";
+  return "/workshop";
 }
 
 function getSafeNextPath() {
@@ -90,13 +90,11 @@ function getSafeNextPath() {
 }
 
 function getLoginProductLabel(destination = "") {
-  return isIdeanatorHost() || isIdeanatorDestination(destination)
-    ? "The Ideanator"
-    : "HOVEL Editor";
+  return "Hovel Ideas Workshop";
 }
 
 function getHomeHref(destination = "") {
-  return isIdeanatorHost() || isIdeanatorDestination(destination) ? "/idea" : "/";
+  return "/workshop";
 }
 
 export default function LoginPage() {
@@ -206,9 +204,9 @@ export default function LoginPage() {
       style={{
         minHeight: "100vh",
         background: isIdeanatorLogin
-          ? "linear-gradient(135deg, #332313 0%, #242018 46%, #1c211e 100%)"
-          : "#0e0d0b",
-        color: "#f0ece4",
+          ? "linear-gradient(135deg, #0b1020 0%, #0f172a 46%, #111827 100%)"
+          : "#060b16",
+        color: "#eef4ff",
         fontFamily: "Georgia, serif",
       }}
     >
@@ -234,7 +232,7 @@ export default function LoginPage() {
         .login-card {
           width: 100%;
           max-width: 500px;
-          background: #161410;
+          background: #0f172a;
           border: 1px solid #2a2520;
           border-radius: 24px;
           padding: 36px;
@@ -253,7 +251,7 @@ export default function LoginPage() {
           font-family: 'IBM Plex Mono', monospace;
           font-size: 11px;
           letter-spacing: 0.1em;
-          color: #5a5448;
+          color: #94a3b8;
           text-decoration: none;
           text-transform: uppercase;
           margin-bottom: 28px;
@@ -264,20 +262,20 @@ export default function LoginPage() {
         }
 
         .login-back-link:hover {
-          color: #c8935a;
+          color: #93c5fd;
         }
 
         .login-eyebrow {
           font-family: 'IBM Plex Mono', monospace;
           font-size: 11px;
           letter-spacing: 0.2em;
-          color: #c8935a;
+          color: #93c5fd;
           text-transform: uppercase;
           margin-bottom: 12px;
         }
 
         .idea-login .login-eyebrow {
-          color: #f0b35f;
+          color: #93c5fd;
         }
 
         .login-title {
@@ -285,7 +283,7 @@ export default function LoginPage() {
           font-size: clamp(40px, 8vw, 58px);
           line-height: 1;
           font-weight: 700;
-          color: #f0ece4;
+          color: #eef4ff;
           margin-bottom: 10px;
         }
 
@@ -293,7 +291,7 @@ export default function LoginPage() {
           font-family: 'DM Sans', sans-serif;
           font-size: 15px;
           line-height: 1.65;
-          color: #9a9186;
+          color: #cbd5e1;
           margin-bottom: 26px;
         }
 
@@ -310,7 +308,7 @@ export default function LoginPage() {
           font-family: 'IBM Plex Mono', monospace;
           font-size: 11px;
           letter-spacing: 0.12em;
-          color: #8f867b;
+          color: #cbd5e1;
           text-transform: uppercase;
           margin-bottom: 8px;
           font-weight: 700;
@@ -322,10 +320,10 @@ export default function LoginPage() {
 
         .login-input {
           width: 100%;
-          background: #0e0d0b;
+          background: #060b16;
           border: 1px solid #2a2520;
           border-radius: 12px;
-          color: #f0ece4;
+          color: #eef4ff;
           font-family: 'DM Sans', sans-serif;
           font-size: 16px;
           padding: 15px 16px;
@@ -340,11 +338,11 @@ export default function LoginPage() {
         }
 
         .login-input:focus {
-          border-color: #c8935a;
+          border-color: #93c5fd;
         }
 
         .idea-login .login-input:focus {
-          border-color: #f0b35f;
+          border-color: #93c5fd;
           box-shadow: 0 0 0 4px rgba(240, 179, 95, 0.13);
         }
 
@@ -352,10 +350,10 @@ export default function LoginPage() {
           width: 100%;
           margin-top: 10px;
           padding: 16px 20px;
-          border: 1px solid #c8935a;
+          border: 1px solid #93c5fd;
           border-radius: 14px;
-          background: #c8935a;
-          color: #0e0d0b;
+          background: #93c5fd;
+          color: #060b16;
           font-family: 'IBM Plex Mono', monospace;
           font-size: 13px;
           font-weight: 900;
@@ -367,14 +365,14 @@ export default function LoginPage() {
         }
 
         .login-button:hover:not(:disabled) {
-          background: #e2a96a;
-          border-color: #e2a96a;
+          background: #bfdbfe;
+          border-color: #bfdbfe;
         }
 
         .idea-login .login-button {
           background:
-            radial-gradient(circle at 18px 50%, #fff3c4 0 4px, transparent 5px),
-            linear-gradient(180deg, #ffd27a 0%, #f0b35f 52%, #c98438 100%);
+            radial-gradient(circle at 18px 50%, #dbeafe 0 4px, transparent 5px),
+            linear-gradient(180deg, #dbeafe 0%, #93c5fd 52%, #60a5fa 100%);
           color: #18100a;
           border: 1px solid rgba(255, 241, 190, 0.7);
           border-radius: 999px;
@@ -416,7 +414,7 @@ export default function LoginPage() {
         .login-note {
           font-family: 'DM Sans', sans-serif;
           font-size: 12px;
-          color: #5a5448;
+          color: #94a3b8;
           line-height: 1.5;
           margin-top: 20px;
         }
@@ -428,7 +426,7 @@ export default function LoginPage() {
         .login-terms-link {
           display: inline-block;
           margin-top: 8px;
-          color: #c8935a;
+          color: #93c5fd;
           font-family: 'IBM Plex Mono', monospace;
           font-size: 10px;
           letter-spacing: 0.1em;
@@ -437,7 +435,7 @@ export default function LoginPage() {
         }
 
         .idea-login .login-terms-link {
-          color: #f0b35f;
+          color: #93c5fd;
         }
 
         .login-terms-link:hover {
@@ -495,7 +493,7 @@ export default function LoginPage() {
           {message && <div className="login-message">{message}</div>}
 
           <div className="login-note">
-            No password required. One email account works for both The Ideanator and HOVEL Editor.
+            No password required. One email account opens the whole Hovel Ideas Workshop.
             <br />
             <a className="login-terms-link" href="/beta-terms">Beta Terms / Privacy</a>
           </div>
@@ -504,3 +502,4 @@ export default function LoginPage() {
     </div>
   );
 }
+

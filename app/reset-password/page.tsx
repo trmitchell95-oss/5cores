@@ -109,13 +109,13 @@ export default function ResetPasswordPage() {
 
         body {
           margin: 0;
-          background: #0e0d0b;
+          background: #060b16;
         }
 
         .reset-shell {
           min-height: 100vh;
-          background: #0e0d0b;
-          color: #f0ece4;
+          background: #060b16;
+          color: #eef4ff;
           font-family: Georgia, serif;
           padding: 48px 24px;
         }
@@ -124,7 +124,7 @@ export default function ResetPasswordPage() {
           background:
             radial-gradient(circle at top left, rgba(245, 158, 11, 0.28), transparent 34rem),
             radial-gradient(circle at bottom right, rgba(255, 202, 118, 0.12), transparent 32rem),
-            linear-gradient(135deg, #332313 0%, #242018 46%, #1c211e 100%);
+            linear-gradient(135deg, #0b1020 0%, #0f172a 46%, #111827 100%);
         }
 
         .wrap {
@@ -137,7 +137,7 @@ export default function ResetPasswordPage() {
         .card {
           width: 100%;
           max-width: 480px;
-          background: #161410;
+          background: #0f172a;
           border: 1px solid #2a2520;
           padding: 36px;
           box-shadow: 0 24px 80px rgba(0, 0, 0, 0.34);
@@ -161,20 +161,20 @@ export default function ResetPasswordPage() {
         }
 
         .back-link:hover {
-          color: #f0b35f;
+          color: #93c5fd;
         }
 
         .eyebrow {
           font-family: 'IBM Plex Mono', monospace;
           font-size: 11px;
           letter-spacing: 0.2em;
-          color: #c8935a;
+          color: #93c5fd;
           text-transform: uppercase;
           margin-bottom: 12px;
         }
 
         .idea-reset .eyebrow {
-          color: #f0b35f;
+          color: #93c5fd;
         }
 
         .title {
@@ -182,7 +182,7 @@ export default function ResetPasswordPage() {
           font-size: 52px;
           line-height: 1;
           font-weight: 700;
-          color: #f0ece4;
+          color: #eef4ff;
           margin-bottom: 10px;
         }
 
@@ -213,7 +213,7 @@ export default function ResetPasswordPage() {
           background: rgba(0, 0, 0, 0.24);
           border: 1px solid rgba(255, 221, 159, 0.18);
           border-radius: 14px;
-          color: #f0ece4;
+          color: #eef4ff;
           font-family: 'DM Sans', sans-serif;
           font-size: 15px;
           padding: 13px 14px;
@@ -221,7 +221,7 @@ export default function ResetPasswordPage() {
         }
 
         .input:focus {
-          border-color: #f0b35f;
+          border-color: #93c5fd;
           box-shadow: 0 0 0 4px rgba(240, 179, 95, 0.13);
         }
 
@@ -240,7 +240,7 @@ export default function ResetPasswordPage() {
           transform: translateY(-50%);
           border: 1px solid rgba(255, 221, 159, 0.2);
           background: rgba(255, 255, 255, 0.04);
-          color: #f0b35f;
+          color: #93c5fd;
           border-radius: 10px;
           font-family: 'IBM Plex Mono', monospace;
           font-size: 10px;
@@ -257,8 +257,8 @@ export default function ResetPasswordPage() {
           border: 1px solid rgba(255, 241, 190, 0.7);
           border-radius: 999px;
           background:
-            radial-gradient(circle at 18px 50%, #fff3c4 0 4px, transparent 5px),
-            linear-gradient(180deg, #ffd27a 0%, #f0b35f 52%, #c98438 100%);
+            radial-gradient(circle at 18px 50%, #dbeafe 0 4px, transparent 5px),
+            linear-gradient(180deg, #dbeafe 0%, #93c5fd 52%, #60a5fa 100%);
           color: #18100a;
           font-family: 'IBM Plex Mono', monospace;
           font-size: 12px;
@@ -375,3 +375,4 @@ export default function ResetPasswordPage() {
     </main>
   );
 }
+

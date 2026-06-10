@@ -105,7 +105,7 @@ export default function AdminHealthPage() {
       <style>{`
         body {
           margin: 0;
-          background: #0e0d0b;
+          background: #060b16;
         }
 
         .health-shell {
@@ -113,8 +113,8 @@ export default function AdminHealthPage() {
           background:
             radial-gradient(circle at top left, rgba(200,147,90,0.13), transparent 34rem),
             radial-gradient(circle at bottom right, rgba(90,124,200,0.1), transparent 32rem),
-            #0e0d0b;
-          color: #f0ece4;
+            #060b16;
+          color: #eef4ff;
           padding: 48px 24px 90px;
           font-family: Arial, sans-serif;
         }
@@ -134,7 +134,7 @@ export default function AdminHealthPage() {
 
         .top-nav a,
         .text-button {
-          color: #c8935a;
+          color: #93c5fd;
           background: none;
           border: none;
           padding: 0;
@@ -159,7 +159,7 @@ export default function AdminHealthPage() {
         }
 
         .eyebrow {
-          color: #c8935a;
+          color: #93c5fd;
           font-family: monospace;
           letter-spacing: 0.2em;
           text-transform: uppercase;
@@ -175,7 +175,7 @@ export default function AdminHealthPage() {
         }
 
         .subtitle {
-          color: #aaa096;
+          color: #cbd5e1;
           line-height: 1.7;
           max-width: 820px;
         }
@@ -225,7 +225,7 @@ export default function AdminHealthPage() {
 
         .check-name {
           font-family: monospace;
-          color: #f0ece4;
+          color: #eef4ff;
           font-weight: 900;
           letter-spacing: 0.06em;
           text-transform: uppercase;
@@ -256,7 +256,7 @@ export default function AdminHealthPage() {
 
         .detail,
         .meta {
-          color: #aaa096;
+          color: #cbd5e1;
           line-height: 1.6;
           font-size: 14px;
         }
@@ -283,7 +283,7 @@ export default function AdminHealthPage() {
 
         .latest-box {
           border: 1px solid #302a24;
-          background: #0e0d0b;
+          background: #060b16;
           border-radius: 14px;
           padding: 14px;
           margin-top: 12px;
@@ -303,13 +303,13 @@ export default function AdminHealthPage() {
         }
 
         .key {
-          color: #8f867b;
+          color: #cbd5e1;
           font-family: monospace;
           font-size: 12px;
         }
 
         .value {
-          color: #f0ece4;
+          color: #eef4ff;
           white-space: pre-wrap;
           word-break: break-word;
           font-size: 13px;
@@ -448,3 +448,4 @@ function TableCard({ table, title }: { table: TableHealth; title: string }) {
     </article>
   );
 }
+

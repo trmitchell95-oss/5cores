@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { FormEvent, useEffect, useMemo, useState } from "react";
 import { createClient } from "@supabase/supabase-js";
@@ -960,7 +960,7 @@ export default function IdeanatorPage() {
  background:
  radial-gradient(circle at top left, rgba(245, 158, 11, 0.34), transparent 36rem),
  radial-gradient(circle at bottom right, rgba(255, 202, 118, 0.13), transparent 32rem),
- linear-gradient(135deg, #332313 0%, #242018 46%, #1c211e 100%);
+ linear-gradient(135deg, #0b1020 0%, #0f172a 46%, #111827 100%);
  color: #f5f1e8;
  padding: 120px 28px 28px;
  font-family:
@@ -987,7 +987,7 @@ export default function IdeanatorPage() {
 
  .eyebrow {
  margin: 0 0 8px;
- color: #f0b35f;
+ color: #93c5fd;
  font-size: 0.75rem;
  letter-spacing: 0.16em;
  text-transform: uppercase;
@@ -1021,7 +1021,7 @@ export default function IdeanatorPage() {
  }
 
  strong {
- color: #fff7ea;
+ color: #ffffff;
  }
 
  .hero-card,
@@ -1063,7 +1063,7 @@ export default function IdeanatorPage() {
  .kicker {
  display: inline-flex;
  width: fit-content;
- background: #f0b35f;
+ background: #93c5fd;
  color: #17120b;
  border-radius: 999px;
  padding: 8px 14px;
@@ -1082,7 +1082,7 @@ export default function IdeanatorPage() {
 
  .refusal-box {
  max-width: 840px;
- border-left: 5px solid #f0b35f;
+ border-left: 5px solid #93c5fd;
  background: rgba(255, 255, 255, 0.06);
  padding: 22px 24px;
  border-radius: 18px;
@@ -1111,7 +1111,7 @@ export default function IdeanatorPage() {
  .intake-preview span,
  .error-box span {
  display: block;
- color: #fff7ea;
+ color: #ffffff;
  font-size: 1rem;
  font-weight: 900;
  margin-bottom: 8px;
@@ -1177,8 +1177,8 @@ export default function IdeanatorPage() {
 
  .primary-button {
  background:
- radial-gradient(circle at 18px 50%, #fff3c4 0 4px, transparent 5px),
- linear-gradient(180deg, #ffd27a 0%, #f0b35f 52%, #c98438 100%);
+ radial-gradient(circle at 18px 50%, #dbeafe 0 4px, transparent 5px),
+ linear-gradient(180deg, #dbeafe 0%, #93c5fd 52%, #60a5fa 100%);
  color: #18100a;
  padding: 14px 22px 14px 34px;
  border: 1px solid rgba(255, 241, 190, 0.7);
@@ -1201,7 +1201,7 @@ export default function IdeanatorPage() {
  background:
  radial-gradient(circle at 18px 50%, rgba(255, 220, 143, 0.8) 0 3px, transparent 4px),
  rgba(255, 255, 255, 0.09);
- color: #fff7ea;
+ color: #ffffff;
  padding: 14px 22px 14px 34px;
  border: 1px solid rgba(255, 221, 159, 0.22);
  box-shadow:
@@ -1249,7 +1249,7 @@ export default function IdeanatorPage() {
  }
 
  label span {
- color: #fff7ea;
+ color: #ffffff;
  font-weight: 900;
  }
 
@@ -1266,7 +1266,7 @@ export default function IdeanatorPage() {
  width: 100%;
  border: 1px solid rgba(255, 255, 255, 0.15);
  background: rgba(0, 0, 0, 0.22);
- color: #fff7ea;
+ color: #ffffff;
  border-radius: 16px;
  padding: 14px 15px;
  outline: none;
@@ -1278,11 +1278,11 @@ export default function IdeanatorPage() {
 
  .ideanator-page select option {
  background: #14120f;
- color: #fff7ea;
+ color: #ffffff;
  }
 
  .ideanator-page select option:checked {
- background: #f0b35f;
+ background: #93c5fd;
  color: #18100a;
  }
 
@@ -1307,7 +1307,7 @@ export default function IdeanatorPage() {
 
  .idea-limit-note strong {
  display: block;
- color: #f0b35f;
+ color: #93c5fd;
  font-size: 0.86rem;
  margin-bottom: 6px;
  }
@@ -1355,7 +1355,7 @@ export default function IdeanatorPage() {
 
  .first-idea-card span {
  display: block;
- color: #fff7ea;
+ color: #ffffff;
  font-size: 1rem;
  font-weight: 900;
  margin-bottom: 8px;
@@ -1385,7 +1385,7 @@ export default function IdeanatorPage() {
 
  .long-doc-note span {
  display: block;
- color: #fff7ea;
+ color: #ffffff;
  font-size: 1rem;
  font-weight: 900;
  margin-bottom: 8px;
@@ -1432,7 +1432,7 @@ export default function IdeanatorPage() {
  }
 
  .save-box a {
- color: #f0b35f;
+ color: #93c5fd;
  font-weight: 900;
  }
 
@@ -1446,7 +1446,7 @@ export default function IdeanatorPage() {
 
  .report-actions span {
  display: block;
- color: #fff7ea;
+ color: #ffffff;
  font-size: 1rem;
  font-weight: 900;
  margin-bottom: 6px;
@@ -1497,7 +1497,7 @@ export default function IdeanatorPage() {
  height: 74px;
  border-radius: 999px;
  border: 7px solid rgba(255, 255, 255, 0.12);
- border-top-color: #f0b35f;
+ border-top-color: #93c5fd;
  animation: spin 900ms linear infinite;
  margin-bottom: 24px;
  }
@@ -1571,7 +1571,7 @@ export default function IdeanatorPage() {
  .verdict-row .active-verdict {
  border-color: rgba(240, 179, 95, 0.8);
  color: #18100a;
- background: #f0b35f;
+ background: #93c5fd;
  }
 
  @media (max-width: 860px) {
@@ -1641,6 +1641,7 @@ function ResultCard({ title, body }: { title: string; body: string }) {
  </article>
  );
 }
+
 
 
 

@@ -137,9 +137,9 @@ export default function FeedbackPage() {
       style={{
         minHeight: "100vh",
         background: isIdeanator
-          ? "linear-gradient(135deg, #332313 0%, #242018 46%, #1c211e 100%)"
-          : "#0e0d0b",
-        color: "#f0ece4",
+          ? "linear-gradient(135deg, #0b1020 0%, #0f172a 46%, #111827 100%)"
+          : "#060b16",
+        color: "#eef4ff",
         padding: "48px 24px",
         fontFamily: "Arial, sans-serif",
       }}
@@ -148,18 +148,18 @@ export default function FeedbackPage() {
         .feedback-shell {
           background:
             radial-gradient(circle at top left, rgba(200,147,90,0.13), transparent 34rem),
-            #0e0d0b;
+            #060b16;
         }
 
         .idea-feedback {
           background:
             radial-gradient(circle at top left, rgba(245, 158, 11, 0.26), transparent 36rem),
             radial-gradient(circle at bottom right, rgba(255, 202, 118, 0.12), transparent 32rem),
-            linear-gradient(135deg, #332313 0%, #242018 46%, #1c211e 100%) !important;
+            linear-gradient(135deg, #0b1020 0%, #0f172a 46%, #111827 100%) !important;
         }
 
         .feedback-card {
-          border: 1px solid #15324f;
+          border: 1px solid #26211c;
           border-radius: 28px;
           padding: 32px;
           background: rgba(18,16,13,0.95);
@@ -167,22 +167,22 @@ export default function FeedbackPage() {
 
         .idea-feedback .feedback-card,
         .idea-feedback .form-card {
-          border-color: rgba(87, 232, 255, 0.22) !important;
-          background: rgba(5, 12, 24, 0.92) !important;
+          border-color: rgba(255, 221, 159, 0.2) !important;
+          background: rgba(43, 38, 30, 0.92) !important;
         }
 
         .top-link {
-          color: #c8935a;
+          color: #93c5fd;
           text-decoration: none;
           font-family: monospace;
         }
 
         .idea-feedback .top-link {
-          color: #22d3ee;
+          color: #93c5fd;
         }
 
         .eyebrow {
-          color: #c8935a;
+          color: #93c5fd;
           font-family: monospace;
           letter-spacing: 0.22em;
           text-transform: uppercase;
@@ -191,7 +191,7 @@ export default function FeedbackPage() {
         }
 
         .idea-feedback .eyebrow {
-          color: #22d3ee;
+          color: #93c5fd;
         }
 
         .title {
@@ -202,19 +202,19 @@ export default function FeedbackPage() {
         }
 
         .subtitle {
-          color: #a8c7d8;
+          color: #cbd5e1;
           line-height: 1.7;
           margin-top: 18px;
         }
 
         .idea-feedback .subtitle {
-          color: #dbeafe;
+          color: #ddd5c7;
         }
 
         .field-label {
           display: block;
           margin-bottom: 8px;
-          color: #8f867b;
+          color: #cbd5e1;
           font-family: monospace;
         }
 
@@ -227,9 +227,9 @@ export default function FeedbackPage() {
           padding: 14px;
           margin-bottom: 16px;
           border-radius: 12px;
-          background: #0e0d0b;
-          color: #f0ece4;
-          border: 1px solid #183a5f;
+          background: #060b16;
+          color: #eef4ff;
+          border: 1px solid #302a24;
           box-sizing: border-box;
         }
 
@@ -244,8 +244,8 @@ export default function FeedbackPage() {
           min-height: 52px;
           border-radius: 14px;
           border: none;
-          background: #c8935a;
-          color: #0e0d0b;
+          background: #93c5fd;
+          color: #060b16;
           font-family: monospace;
           font-weight: 900;
           letter-spacing: 0.14em;
@@ -254,8 +254,8 @@ export default function FeedbackPage() {
 
         .idea-feedback .submit-button {
           background:
-            radial-gradient(circle at 18px 50%, #cffafe 0 4px, transparent 5px),
-            linear-gradient(180deg, #ffd27a 0%, #22d3ee 52%, #0ea5e9 100%);
+            radial-gradient(circle at 18px 50%, #dbeafe 0 4px, transparent 5px),
+            linear-gradient(180deg, #dbeafe 0%, #93c5fd 52%, #60a5fa 100%);
           border-radius: 999px;
           color: #18100a;
         }
@@ -275,7 +275,7 @@ export default function FeedbackPage() {
             {backLabel}
           </Link>
 
-          <span style={{ color: "#8f867b", fontSize: 13 }}>
+          <span style={{ color: "#cbd5e1", fontSize: 13 }}>
             {email || "Not signed in"}
           </span>
         </nav>
@@ -297,7 +297,7 @@ export default function FeedbackPage() {
         {!hasSession ? (
           <section
             style={{
-              border: "1px solid #1f4f73",
+              border: "1px solid #4a3520",
               borderRadius: 22,
               padding: 24,
               marginTop: 22,
@@ -307,7 +307,7 @@ export default function FeedbackPage() {
           >
             You need to sign in before sending feedback.
             <br />
-            <Link href={loginHref} style={{ display: "inline-block", marginTop: 14, color: "#22d3ee" }}>
+            <Link href={loginHref} style={{ display: "inline-block", marginTop: 14, color: "#93c5fd" }}>
               Sign In
             </Link>
           </section>
@@ -315,7 +315,7 @@ export default function FeedbackPage() {
           <section
             className="form-card"
             style={{
-              border: "1px solid #15324f",
+              border: "1px solid #26211c",
               borderRadius: 24,
               padding: 26,
               marginTop: 22,
@@ -415,7 +415,6 @@ export default function FeedbackPage() {
     </main>
   );
 }
-
 
 
 

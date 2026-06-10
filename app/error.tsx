@@ -19,7 +19,7 @@ export default function ErrorPage({
       <style>{`
         body {
           margin: 0;
-          background: #0e0d0b;
+          background: #060b16;
         }
 
         .error-shell {
@@ -27,8 +27,8 @@ export default function ErrorPage({
           background:
             radial-gradient(circle at top left, rgba(200,147,90,0.15), transparent 34rem),
             radial-gradient(circle at bottom right, rgba(140,40,40,0.13), transparent 34rem),
-            #0e0d0b;
-          color: #f0ece4;
+            #060b16;
+          color: #eef4ff;
           padding: 48px 24px;
           font-family: Arial, sans-serif;
           display: grid;
@@ -45,7 +45,7 @@ export default function ErrorPage({
         }
 
         .eyebrow {
-          color: #c8935a;
+          color: #93c5fd;
           font-family: monospace;
           letter-spacing: 0.22em;
           text-transform: uppercase;
@@ -61,7 +61,7 @@ export default function ErrorPage({
         }
 
         p {
-          color: #aaa096;
+          color: #cbd5e1;
           line-height: 1.7;
           font-size: 17px;
           max-width: 760px;
@@ -102,14 +102,14 @@ export default function ErrorPage({
         }
 
         .button {
-          background: #c8935a;
-          color: #0e0d0b;
-          border: 1px solid #c8935a;
+          background: #93c5fd;
+          color: #060b16;
+          border: 1px solid #93c5fd;
         }
 
         .button-dark {
-          background: #11100e;
-          color: #c8935a;
+          background: #0f172a;
+          color: #93c5fd;
           border: 1px solid #302a24;
         }
 
@@ -160,4 +160,5 @@ export default function ErrorPage({
     </main>
   );
 }
+
 

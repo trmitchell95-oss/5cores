@@ -507,7 +507,7 @@ export default function SavedIdeasPage() {
 
  body {
  margin: 0;
- background: #0e0d0b;
+ background: #060b16;
  }
 
  .saved-ideas-shell {
@@ -515,8 +515,8 @@ export default function SavedIdeasPage() {
  background:
  radial-gradient(circle at top left, rgba(200, 169, 110, 0.15), transparent 34rem),
  radial-gradient(circle at bottom right, rgba(90, 124, 200, 0.08), transparent 30rem),
- #0e0d0b;
- color: #f0ece4;
+ #060b16;
+ color: #eef4ff;
  font-family: 'DM Sans', sans-serif;
  padding: 34px 24px 90px;
  }
@@ -544,8 +544,8 @@ export default function SavedIdeasPage() {
  .nav a,
  .ghost-btn {
  border: 1px solid #302a24;
- background: #11100e;
- color: #d8d0c5;
+ background: #0f172a;
+ color: #dbeafe;
  text-decoration: none;
  border-radius: 14px;
  padding: 12px 14px;
@@ -559,8 +559,8 @@ export default function SavedIdeasPage() {
 
  .nav a:hover,
  .ghost-btn:hover {
- border-color: #c8a96e;
- color: #c8a96e;
+ border-color: #93c5fd;
+ color: #93c5fd;
  }
 
  .hero,
@@ -581,7 +581,7 @@ export default function SavedIdeasPage() {
  font-family: 'IBM Plex Mono', monospace;
  font-size: 11px;
  letter-spacing: 0.24em;
- color: #c8a96e;
+ color: #93c5fd;
  text-transform: uppercase;
  margin-bottom: 12px;
  font-weight: 900;
@@ -596,7 +596,7 @@ export default function SavedIdeasPage() {
  }
 
  .subtitle {
- color: #aaa096;
+ color: #cbd5e1;
  line-height: 1.7;
  max-width: 760px;
  font-size: 16px;
@@ -638,15 +638,15 @@ export default function SavedIdeasPage() {
  min-height: 50px;
  border-radius: 14px;
  border: 1px solid #302a24;
- background: #0e0d0b;
- color: #f0ece4;
+ background: #060b16;
+ color: #eef4ff;
  padding: 12px 14px;
  font-size: 15px;
  outline: none;
  }
 
  .search:focus {
- border-color: #c8a96e;
+ border-color: #93c5fd;
  }
 
  .rig-list {
@@ -673,11 +673,11 @@ export default function SavedIdeasPage() {
  line-height: 1;
  font-weight: 700;
  margin: 0;
- color: #f0ece4;
+ color: #eef4ff;
  }
 
  .rig-meta {
- color: #7b7168;
+ color: #94a3b8;
  font-family: 'IBM Plex Mono', monospace;
  font-size: 11px;
  letter-spacing: 0.08em;
@@ -686,7 +686,7 @@ export default function SavedIdeasPage() {
  }
 
  .rig-copy {
- color: #aaa096;
+ color: #cbd5e1;
  line-height: 1.6;
  margin-top: 12px;
  max-width: 820px;
@@ -700,8 +700,8 @@ export default function SavedIdeasPage() {
  border-radius: 999px;
  padding: 8px 11px;
  border: 1px solid #302a24;
- background: #11100e;
- color: #d8d0c5;
+ background: #0f172a;
+ color: #dbeafe;
  font-family: 'IBM Plex Mono', monospace;
  font-size: 10px;
  font-weight: 900;
@@ -717,7 +717,7 @@ export default function SavedIdeasPage() {
 
  .status-lift {
  border-color: #7a5522;
- color: #f0b35f;
+ color: #93c5fd;
  background: #1f1609;
  }
 
@@ -748,20 +748,20 @@ export default function SavedIdeasPage() {
  }
 
  .primary-btn {
- border: 1px solid #c8a96e;
- background: #c8a96e;
- color: #0e0d0b;
+ border: 1px solid #93c5fd;
+ background: #93c5fd;
+ color: #060b16;
  }
 
  .small-btn {
  border: 1px solid #302a24;
- background: #11100e;
- color: #d8d0c5;
+ background: #0f172a;
+ color: #dbeafe;
  }
 
  .small-btn:hover {
- border-color: #c8a96e;
- color: #c8a96e;
+ border-color: #93c5fd;
+ color: #93c5fd;
  }
 
  .danger-btn {
@@ -776,10 +776,10 @@ export default function SavedIdeasPage() {
 
  .empty {
  border: 1px solid #26211c;
- background: #11100e;
+ background: #0f172a;
  border-radius: 20px;
  padding: 30px;
- color: #8f867b;
+ color: #cbd5e1;
  text-align: center;
  line-height: 1.6;
  }
@@ -962,6 +962,7 @@ export default function SavedIdeasPage() {
  </main>
  );
 }
+
 
 
 

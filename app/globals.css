@@ -1,4 +1,4 @@
-@import "tailwindcss";
+﻿@import "tailwindcss";
 
 :root {
   --background: #ffffff;
@@ -33,7 +33,7 @@ html,
 body {
   background:
     radial-gradient(circle at top left, rgba(245, 158, 11, 0.14), transparent 34rem),
-    linear-gradient(135deg, #332313 0%, #242018 46%, #1c211e 100%);
+    linear-gradient(135deg, #0b1020 0%, #0f172a 46%, #111827 100%);
   color: #f5f1e8;
   overflow-x: hidden;
 }
@@ -201,7 +201,7 @@ article li {
 }
 
 .hovel-global-nav-ideanator .hovel-global-nav-mark {
-  background: #f0b35f;
+  background: #93c5fd;
 }
 
 .hovel-global-nav-ideanator .hovel-global-nav-link {
@@ -219,8 +219,8 @@ article li {
 
 .hovel-global-nav-ideanator .hovel-global-nav-primary {
   background:
-    radial-gradient(circle at 13px 50%, #fff3c4 0 3px, transparent 4px),
-    linear-gradient(180deg, #ffd27a 0%, #f0b35f 56%, #c98438 100%);
+    radial-gradient(circle at 13px 50%, #dbeafe 0 3px, transparent 4px),
+    linear-gradient(180deg, #dbeafe 0%, #93c5fd 56%, #60a5fa 100%);
   color: #18100a;
   border-color: rgba(255, 241, 190, 0.62);
   box-shadow:
@@ -252,7 +252,7 @@ article li {
 }
 
 .hovel-beta-terms-link:hover {
-  color: #c8935a;
+  color: #93c5fd;
   text-decoration: underline;
 }
 
@@ -262,8 +262,8 @@ article li {
   bottom: 22px;
   z-index: 9999;
   border: 1px solid #4b3a1f;
-  background: #c8935a;
-  color: #0e0d0b;
+  background: #93c5fd;
+  color: #060b16;
   border-radius: 999px;
   padding: 13px 18px;
   font-family: monospace;
@@ -287,9 +287,9 @@ article li {
   left: 22px;
   bottom: 84px;
   z-index: 9999;
-  border: 1px solid #c8935a;
-  background: #c8935a;
-  color: #0e0d0b;
+  border: 1px solid #93c5fd;
+  background: #93c5fd;
+  color: #060b16;
   border-radius: 999px;
   padding: 14px 22px;
   font-family: monospace;
@@ -435,7 +435,7 @@ article li {
     border: 1px solid #4b3a1f;
     border-radius: 13px;
     background: #17120d;
-    color: #d8d0c5;
+    color: #dbeafe;
     padding: 10px 13px;
     font-size: 10px;
     letter-spacing: 0.08em;
@@ -458,7 +458,7 @@ article li {
   }
 
   .hovel-beta-terms-link:hover {
-    color: #c8935a;
+    color: #93c5fd;
     text-decoration: none;
   }
 
@@ -932,3 +932,1494 @@ article li {
     min-height: 260px !important;
   }
 }
+
+/* HOVEL BLUE EASY OVERRIDE START */
+
+:root {
+  --hi-bg: #060b16;
+  --hi-bg-2: #0b1020;
+  --hi-panel: rgba(15, 23, 42, 0.94);
+  --hi-panel-2: rgba(30, 41, 59, 0.92);
+  --hi-line: rgba(147, 197, 253, 0.28);
+  --hi-line-bright: rgba(147, 197, 253, 0.62);
+  --hi-text: #eef4ff;
+  --hi-muted: #cbd5e1;
+  --hi-blue: #93c5fd;
+  --hi-blue-2: #60a5fa;
+  --hi-button-text: #07111f;
+}
+
+html {
+  background: var(--hi-bg) !important;
+}
+
+body {
+  background:
+    radial-gradient(circle at top left, rgba(59, 130, 246, 0.22), transparent 34rem),
+    radial-gradient(circle at bottom right, rgba(148, 163, 184, 0.18), transparent 30rem),
+    linear-gradient(135deg, var(--hi-bg) 0%, var(--hi-bg-2) 52%, #111827 100%) !important;
+  color: var(--hi-text) !important;
+  font-family: Arial, Helvetica, sans-serif !important;
+}
+
+main,
+[class$="-shell"],
+[class*="shell"],
+[class*="page"],
+.projects-shell,
+.dashboard-shell,
+.sphinx-shell,
+.submit-shell,
+.reread-shell,
+.login-shell {
+  background:
+    radial-gradient(circle at top left, rgba(59, 130, 246, 0.22), transparent 34rem),
+    radial-gradient(circle at bottom right, rgba(148, 163, 184, 0.18), transparent 30rem),
+    linear-gradient(135deg, var(--hi-bg) 0%, var(--hi-bg-2) 52%, #111827 100%) !important;
+  color: var(--hi-text) !important;
+  font-family: Arial, Helvetica, sans-serif !important;
+}
+
+.masthead,
+.panel,
+.card,
+.hero-card,
+.side-card,
+.tool-card,
+.proof-card,
+.privacy-card,
+.how-card,
+.cta-card,
+.login-card,
+.project-btn,
+.item,
+.empty,
+[class*="card"],
+[class*="panel"],
+[class*="box"] {
+  background: var(--hi-panel) !important;
+  border-color: var(--hi-line) !important;
+  color: var(--hi-text) !important;
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.30) !important;
+}
+
+h1,
+h2,
+h3,
+.title,
+.heading,
+.panel-title,
+.card-title,
+.side-title,
+.project-title,
+.item-title,
+.login-title {
+  color: #ffffff !important;
+  font-family: Arial, Helvetica, sans-serif !important;
+  letter-spacing: -0.04em !important;
+}
+
+p,
+.subtitle,
+.subheading,
+.panel-note,
+.card-text,
+.side-text,
+.project-meta,
+.item-meta,
+.empty,
+label,
+span,
+div {
+  color: inherit;
+}
+
+.subtitle,
+.subheading,
+.panel-note,
+.card-text,
+.side-text,
+.login-subtitle,
+.project-meta,
+.item-meta,
+.empty {
+  color: var(--hi-muted) !important;
+  font-size: 1.08rem !important;
+  line-height: 1.65 !important;
+}
+
+.eyebrow,
+.field-label,
+.side-label,
+.start-here-label,
+.login-eyebrow,
+.project-meta,
+.item-meta {
+  color: var(--hi-blue) !important;
+  font-family: Arial, Helvetica, sans-serif !important;
+  font-size: 0.95rem !important;
+  letter-spacing: 0.08em !important;
+}
+
+button,
+a,
+.nav-link,
+.small-btn,
+.primary-btn,
+.secondary-btn,
+.tool-link,
+.item-link,
+.login-button,
+.project-btn,
+.danger-btn,
+input,
+textarea,
+select,
+.input,
+.textarea,
+.select,
+.login-input {
+  font-size: 1rem !important;
+}
+
+button,
+.nav-link,
+.small-btn,
+.primary-btn,
+.secondary-btn,
+.tool-link,
+.login-button,
+.he-nav-link,
+.hovel-global-nav-link,
+.hi-link,
+a[class*="btn"],
+a[class*="button"] {
+  min-height: 54px !important;
+  border-radius: 999px !important;
+  font-family: Arial, Helvetica, sans-serif !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.04em !important;
+  text-transform: none !important;
+}
+
+.primary-btn,
+.login-button,
+.he-nav-link-primary,
+.hovel-global-nav-primary,
+.nav-link:hover,
+.small-btn:hover,
+.tool-link:hover,
+.project-btn.active {
+  background: linear-gradient(180deg, #dbeafe 0%, var(--hi-blue) 55%, var(--hi-blue-2) 100%) !important;
+  border-color: var(--hi-line-bright) !important;
+  color: var(--hi-button-text) !important;
+}
+
+.secondary-btn,
+.nav-link,
+.small-btn,
+.tool-link,
+.item-link,
+.danger-btn {
+  background: var(--hi-panel-2) !important;
+  border-color: var(--hi-line) !important;
+  color: var(--hi-text) !important;
+}
+
+input,
+textarea,
+select,
+.input,
+.textarea,
+.select,
+.login-input {
+  min-height: 56px !important;
+  background: #0f172a !important;
+  border: 1px solid var(--hi-line) !important;
+  color: var(--hi-text) !important;
+  border-radius: 18px !important;
+  font-family: Arial, Helvetica, sans-serif !important;
+}
+
+textarea,
+.textarea {
+  min-height: 130px !important;
+}
+
+input:focus,
+textarea:focus,
+select:focus,
+.input:focus,
+.textarea:focus,
+.select:focus,
+.login-input:focus {
+  border-color: var(--hi-blue) !important;
+  box-shadow: 0 0 0 4px rgba(147, 197, 253, 0.16) !important;
+}
+
+.he-nav,
+.hovel-global-nav,
+.top-nav {
+  background: rgba(7, 11, 31, 0.96) !important;
+  border-color: var(--hi-line) !important;
+}
+
+.he-nav-mark,
+.hovel-global-nav-mark {
+  background: linear-gradient(180deg, #dbeafe 0%, var(--hi-blue) 100%) !important;
+  color: var(--hi-button-text) !important;
+}
+
+.he-nav-brand-text,
+.hovel-global-nav-link,
+.he-nav-link {
+  color: var(--hi-text) !important;
+}
+
+.hovel-help-link,
+.hovel-feedback-link,
+.hovel-beta-terms-link {
+  background: var(--hi-panel-2) !important;
+  border-color: var(--hi-line) !important;
+  color: var(--hi-text) !important;
+}
+
+.hovel-help-link:hover,
+.hovel-feedback-link:hover,
+.hovel-beta-terms-link:hover {
+  background: var(--hi-blue) !important;
+  color: var(--hi-button-text) !important;
+}
+
+.hovel-easy-mode body,
+body.hovel-easy-mode {
+  font-size: 19px !important;
+}
+
+body.hovel-easy-mode button,
+body.hovel-easy-mode a,
+body.hovel-easy-mode input,
+body.hovel-easy-mode textarea,
+body.hovel-easy-mode select {
+  font-size: 1.08rem !important;
+}
+
+body.hovel-easy-mode button,
+body.hovel-easy-mode .nav-link,
+body.hovel-easy-mode .small-btn,
+body.hovel-easy-mode .primary-btn,
+body.hovel-easy-mode .secondary-btn,
+body.hovel-easy-mode .tool-link,
+body.hovel-easy-mode .login-button,
+body.hovel-easy-mode .hi-link {
+  min-height: 66px !important;
+}
+
+body.hovel-easy-mode p,
+body.hovel-easy-mode .subtitle,
+body.hovel-easy-mode .subheading,
+body.hovel-easy-mode .panel-note,
+body.hovel-easy-mode .card-text,
+body.hovel-easy-mode .side-text {
+  font-size: 1.22rem !important;
+}
+
+@media (max-width: 760px) {
+  .top-nav,
+  .nav-actions {
+    flex-direction: column !important;
+    align-items: stretch !important;
+  }
+
+  .nav-link,
+  .small-btn,
+  .primary-btn,
+  .secondary-btn,
+  .tool-link,
+  .login-button {
+    width: 100% !important;
+  }
+}
+
+/* HOVEL BLUE EASY OVERRIDE END */
+
+/* CLEAN WORDS EASY START */
+
+.sphinx-shell {
+  background:
+    radial-gradient(circle at top left, rgba(59, 130, 246, 0.24), transparent 34rem),
+    radial-gradient(circle at bottom right, rgba(148, 163, 184, 0.18), transparent 30rem),
+    linear-gradient(135deg, #060b16 0%, #0b1020 52%, #111827 100%) !important;
+  color: #eef4ff !important;
+  font-family: Arial, Helvetica, sans-serif !important;
+}
+
+/* Hide the old internal mini-nav. The main app nav already exists. */
+.sphinx-shell > div > nav:first-child {
+  display: none !important;
+}
+
+.sphinx-shell section,
+.sphinx-shell .simple-sphinx-guide,
+.sphinx-shell .rounded-3xl {
+  border-color: rgba(147, 197, 253, 0.28) !important;
+  background: rgba(15, 23, 42, 0.92) !important;
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.28) !important;
+}
+
+.sphinx-shell .simple-sphinx-guide {
+  border: 1px solid rgba(147, 197, 253, 0.28);
+  border-radius: 28px;
+  padding: 26px;
+  margin-bottom: 24px;
+}
+
+.sphinx-shell .simple-sphinx-guide h2 {
+  margin: 0 0 18px;
+  color: #ffffff !important;
+  font-size: clamp(2rem, 4vw, 3rem) !important;
+  line-height: 1 !important;
+  font-family: Arial, Helvetica, sans-serif !important;
+}
+
+.sphinx-shell .simple-sphinx-steps {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.sphinx-shell .simple-sphinx-steps div {
+  border: 1px solid rgba(147, 197, 253, 0.22);
+  background: rgba(255, 255, 255, 0.045);
+  border-radius: 18px;
+  padding: 16px;
+}
+
+.sphinx-shell .simple-sphinx-steps strong {
+  display: block;
+  color: #ffffff;
+  font-size: 1.15rem;
+}
+
+.sphinx-shell .simple-sphinx-steps span {
+  display: block;
+  margin-top: 8px;
+  color: #cbd5e1;
+  line-height: 1.5;
+}
+
+.sphinx-shell h1,
+.sphinx-shell h2,
+.sphinx-shell h3 {
+  color: #ffffff !important;
+  font-family: Arial, Helvetica, sans-serif !important;
+  letter-spacing: -0.04em !important;
+}
+
+.sphinx-shell h1 {
+  font-size: clamp(3rem, 7vw, 5.8rem) !important;
+  line-height: 0.95 !important;
+}
+
+.sphinx-shell p,
+.sphinx-shell li,
+.sphinx-shell span,
+.sphinx-shell label {
+  color: #cbd5e1 !important;
+  font-family: Arial, Helvetica, sans-serif !important;
+}
+
+.sphinx-shell textarea,
+.sphinx-shell input,
+.sphinx-shell select {
+  background: #0f172a !important;
+  border: 1px solid rgba(147, 197, 253, 0.34) !important;
+  color: #eef4ff !important;
+  border-radius: 18px !important;
+  font-size: 1.08rem !important;
+  line-height: 1.65 !important;
+  font-family: Arial, Helvetica, sans-serif !important;
+}
+
+.sphinx-shell textarea {
+  min-height: 360px !important;
+}
+
+.sphinx-shell button,
+.sphinx-shell a,
+.sphinx-shell label.inline-flex {
+  min-height: 58px !important;
+  border-radius: 999px !important;
+  font-family: Arial, Helvetica, sans-serif !important;
+  font-weight: 900 !important;
+  text-transform: none !important;
+  letter-spacing: 0.02em !important;
+}
+
+.sphinx-shell button,
+.sphinx-shell label.inline-flex,
+.sphinx-shell a {
+  border-color: rgba(147, 197, 253, 0.34) !important;
+  background: rgba(30, 41, 59, 0.92) !important;
+  color: #eef4ff !important;
+}
+
+.sphinx-shell button:last-child,
+.sphinx-shell .bg-amber-400 {
+  background: linear-gradient(180deg, #dbeafe 0%, #93c5fd 55%, #60a5fa 100%) !important;
+  color: #07111f !important;
+  border-color: rgba(219, 234, 254, 0.75) !important;
+}
+
+.sphinx-shell button:disabled {
+  opacity: 0.5 !important;
+  cursor: not-allowed !important;
+}
+
+.sphinx-rendered-report {
+  font-family: Arial, Helvetica, sans-serif !important;
+}
+
+.sphinx-rendered-report p,
+.sphinx-rendered-report li {
+  font-size: 1.1rem !important;
+  line-height: 1.75 !important;
+  color: #eef4ff !important;
+}
+
+@media (max-width: 900px) {
+  .sphinx-shell .simple-sphinx-steps {
+    grid-template-columns: 1fr;
+  }
+
+  .sphinx-shell button,
+  .sphinx-shell a,
+  .sphinx-shell label.inline-flex {
+    width: 100% !important;
+  }
+}
+
+/* CLEAN WORDS EASY END */
+
+/* CHECK WRITING EASY START */
+
+.submit-shell {
+  background:
+    radial-gradient(circle at top left, rgba(59, 130, 246, 0.24), transparent 34rem),
+    radial-gradient(circle at bottom right, rgba(148, 163, 184, 0.18), transparent 30rem),
+    linear-gradient(135deg, #060b16 0%, #0b1020 52%, #111827 100%) !important;
+  color: #eef4ff !important;
+  font-family: Arial, Helvetica, sans-serif !important;
+}
+
+.submit-shell .top-nav {
+  display: none !important;
+}
+
+.submit-shell .masthead,
+.submit-shell .panel,
+.submit-shell .simple-submit-guide,
+.submit-shell .report-card,
+.submit-shell .status-card,
+.submit-shell .tool-note,
+.submit-shell .saved-card,
+.submit-shell .persona-card {
+  border-color: rgba(147, 197, 253, 0.28) !important;
+  background: rgba(15, 23, 42, 0.92) !important;
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.28) !important;
+}
+
+.submit-shell .simple-submit-guide {
+  border: 1px solid rgba(147, 197, 253, 0.28);
+  border-radius: 28px;
+  padding: 26px;
+  margin-bottom: 24px;
+}
+
+.submit-shell .simple-submit-guide h2 {
+  margin: 0 0 18px;
+  color: #ffffff !important;
+  font-size: clamp(2rem, 4vw, 3rem) !important;
+  line-height: 1 !important;
+  font-family: Arial, Helvetica, sans-serif !important;
+}
+
+.submit-shell .simple-submit-steps {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.submit-shell .simple-submit-steps div {
+  border: 1px solid rgba(147, 197, 253, 0.22);
+  background: rgba(255, 255, 255, 0.045);
+  border-radius: 18px;
+  padding: 16px;
+}
+
+.submit-shell .simple-submit-steps strong {
+  display: block;
+  color: #ffffff;
+  font-size: 1.12rem;
+}
+
+.submit-shell .simple-submit-steps span {
+  display: block;
+  margin-top: 8px;
+  color: #cbd5e1;
+  line-height: 1.5;
+}
+
+.submit-shell h1,
+.submit-shell h2,
+.submit-shell h3,
+.submit-shell .title,
+.submit-shell .panel-title,
+.submit-shell .report-title,
+.submit-shell .section-head,
+.submit-shell .section-subhead {
+  color: #ffffff !important;
+  font-family: Arial, Helvetica, sans-serif !important;
+  letter-spacing: -0.04em !important;
+}
+
+.submit-shell .title {
+  font-size: clamp(3rem, 7vw, 5.8rem) !important;
+  line-height: 0.95 !important;
+}
+
+.submit-shell p,
+.submit-shell li,
+.submit-shell span,
+.submit-shell label,
+.submit-shell .subtitle,
+.submit-shell .panel-note,
+.submit-shell .step-text,
+.submit-shell .meter-help,
+.submit-shell .tiny-note,
+.submit-shell .file-name,
+.submit-shell .status-subtext {
+  color: #cbd5e1 !important;
+  font-family: Arial, Helvetica, sans-serif !important;
+  font-size: 1.05rem !important;
+  line-height: 1.65 !important;
+}
+
+.submit-shell .eyebrow,
+.submit-shell .field-label,
+.submit-shell .step-title,
+.submit-shell .meter-row,
+.submit-shell .status-text,
+.submit-shell .council-label,
+.submit-shell .persona-name-sm {
+  color: #93c5fd !important;
+  font-family: Arial, Helvetica, sans-serif !important;
+  font-size: 0.95rem !important;
+  letter-spacing: 0.06em !important;
+  text-transform: uppercase !important;
+}
+
+.submit-shell .step-number {
+  background: linear-gradient(180deg, #dbeafe 0%, #93c5fd 55%, #60a5fa 100%) !important;
+  color: #07111f !important;
+  border-color: rgba(219, 234, 254, 0.75) !important;
+}
+
+.submit-shell input,
+.submit-shell textarea,
+.submit-shell select,
+.submit-shell .title-input,
+.submit-shell .select-input,
+.submit-shell .concern-input,
+.submit-shell .textarea {
+  background: #0f172a !important;
+  border: 1px solid rgba(147, 197, 253, 0.34) !important;
+  color: #eef4ff !important;
+  border-radius: 18px !important;
+  font-size: 1.08rem !important;
+  line-height: 1.65 !important;
+  font-family: Arial, Helvetica, sans-serif !important;
+}
+
+.submit-shell .textarea {
+  min-height: 360px !important;
+}
+
+.submit-shell input:focus,
+.submit-shell textarea:focus,
+.submit-shell select:focus,
+.submit-shell .title-input:focus,
+.submit-shell .select-input:focus,
+.submit-shell .concern-input:focus,
+.submit-shell .textarea:focus {
+  border-color: #93c5fd !important;
+  box-shadow: 0 0 0 4px rgba(147, 197, 253, 0.16) !important;
+}
+
+.submit-shell button,
+.submit-shell a,
+.submit-shell .run-btn,
+.submit-shell .reset-btn,
+.submit-shell .dashboard-btn,
+.submit-shell .file-label,
+.submit-shell .back-link {
+  min-height: 58px !important;
+  border-radius: 999px !important;
+  font-family: Arial, Helvetica, sans-serif !important;
+  font-weight: 900 !important;
+  text-transform: none !important;
+  letter-spacing: 0.02em !important;
+}
+
+.submit-shell button,
+.submit-shell a,
+.submit-shell .reset-btn,
+.submit-shell .dashboard-btn,
+.submit-shell .file-label {
+  border-color: rgba(147, 197, 253, 0.34) !important;
+  background: rgba(30, 41, 59, 0.92) !important;
+  color: #eef4ff !important;
+}
+
+.submit-shell .run-btn,
+.submit-shell button[type="submit"],
+.submit-shell button:not(:disabled).run-btn {
+  background: linear-gradient(180deg, #dbeafe 0%, #93c5fd 55%, #60a5fa 100%) !important;
+  color: #07111f !important;
+  border-color: rgba(219, 234, 254, 0.75) !important;
+}
+
+.submit-shell button:disabled {
+  opacity: 0.5 !important;
+  cursor: not-allowed !important;
+}
+
+.submit-shell .persona-grid,
+.submit-shell .council-grid {
+  display: none !important;
+}
+
+.submit-shell .para,
+.submit-shell .report-list li {
+  font-size: 1.1rem !important;
+  line-height: 1.75 !important;
+  color: #eef4ff !important;
+}
+
+@media (max-width: 1000px) {
+  .submit-shell .workflow-grid,
+  .submit-shell .simple-submit-steps,
+  .submit-shell .form-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .submit-shell button,
+  .submit-shell a,
+  .submit-shell .file-label,
+  .submit-shell .run-btn,
+  .submit-shell .reset-btn,
+  .submit-shell .dashboard-btn {
+    width: 100% !important;
+  }
+}
+
+/* CHECK WRITING EASY END */
+
+/* COMPARE DRAFTS EASY START */
+
+.reread-shell {
+  background:
+    radial-gradient(circle at top left, rgba(59, 130, 246, 0.24), transparent 34rem),
+    radial-gradient(circle at bottom right, rgba(148, 163, 184, 0.18), transparent 30rem),
+    linear-gradient(135deg, #060b16 0%, #0b1020 52%, #111827 100%) !important;
+  color: #eef4ff !important;
+  font-family: Arial, Helvetica, sans-serif !important;
+}
+
+/* Main app nav already exists. Hide old page nav. */
+.reread-shell .top-nav {
+  display: none !important;
+}
+
+.reread-shell .masthead,
+.reread-shell .panel,
+.reread-shell .report-card,
+.reread-shell .saved,
+.reread-shell .error,
+.reread-shell .upload-box {
+  border-color: rgba(147, 197, 253, 0.28) !important;
+  background: rgba(15, 23, 42, 0.92) !important;
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.28) !important;
+}
+
+.reread-shell h1,
+.reread-shell h2,
+.reread-shell h3,
+.reread-shell .title,
+.reread-shell .panel-title,
+.reread-shell .report-title,
+.reread-shell .section-head,
+.reread-shell .section-subhead {
+  color: #ffffff !important;
+  font-family: Arial, Helvetica, sans-serif !important;
+  letter-spacing: -0.04em !important;
+}
+
+.reread-shell .title {
+  font-size: clamp(3rem, 7vw, 5.8rem) !important;
+  line-height: 0.95 !important;
+}
+
+.reread-shell p,
+.reread-shell li,
+.reread-shell span,
+.reread-shell label,
+.reread-shell .subtitle,
+.reread-shell .panel-note,
+.reread-shell .tiny-note,
+.reread-shell .meta {
+  color: #cbd5e1 !important;
+  font-family: Arial, Helvetica, sans-serif !important;
+  font-size: 1.05rem !important;
+  line-height: 1.65 !important;
+}
+
+.reread-shell .eyebrow,
+.reread-shell .field-label,
+.reread-shell .section-subhead {
+  color: #93c5fd !important;
+  font-family: Arial, Helvetica, sans-serif !important;
+  font-size: 0.95rem !important;
+  letter-spacing: 0.06em !important;
+  text-transform: uppercase !important;
+}
+
+.reread-shell input,
+.reread-shell textarea,
+.reread-shell select,
+.reread-shell .input,
+.reread-shell .textarea,
+.reread-shell .select {
+  background: #0f172a !important;
+  border: 1px solid rgba(147, 197, 253, 0.34) !important;
+  color: #eef4ff !important;
+  border-radius: 18px !important;
+  font-size: 1.08rem !important;
+  line-height: 1.65 !important;
+  font-family: Arial, Helvetica, sans-serif !important;
+}
+
+.reread-shell .textarea {
+  min-height: 260px !important;
+}
+
+.reread-shell .draft-textarea {
+  min-height: 420px !important;
+}
+
+.reread-shell input:focus,
+.reread-shell textarea:focus,
+.reread-shell select:focus,
+.reread-shell .input:focus,
+.reread-shell .textarea:focus,
+.reread-shell .select:focus {
+  border-color: #93c5fd !important;
+  box-shadow: 0 0 0 4px rgba(147, 197, 253, 0.16) !important;
+}
+
+.reread-shell button,
+.reread-shell a,
+.reread-shell .primary-btn,
+.reread-shell .file-label,
+.reread-shell .nav-link {
+  min-height: 58px !important;
+  border-radius: 999px !important;
+  font-family: Arial, Helvetica, sans-serif !important;
+  font-weight: 900 !important;
+  text-transform: none !important;
+  letter-spacing: 0.02em !important;
+}
+
+.reread-shell button,
+.reread-shell a,
+.reread-shell .file-label,
+.reread-shell .nav-link {
+  border-color: rgba(147, 197, 253, 0.34) !important;
+  background: rgba(30, 41, 59, 0.92) !important;
+  color: #eef4ff !important;
+}
+
+.reread-shell .primary-btn {
+  background: linear-gradient(180deg, #dbeafe 0%, #93c5fd 55%, #60a5fa 100%) !important;
+  color: #07111f !important;
+  border-color: rgba(219, 234, 254, 0.75) !important;
+}
+
+.reread-shell button:disabled,
+.reread-shell .primary-btn:disabled {
+  opacity: 0.5 !important;
+  cursor: not-allowed !important;
+}
+
+.reread-shell .para,
+.reread-shell .report-list li {
+  font-size: 1.1rem !important;
+  line-height: 1.75 !important;
+  color: #eef4ff !important;
+}
+
+.reread-shell .saved {
+  border-color: rgba(74, 222, 128, 0.35) !important;
+  background: rgba(20, 83, 45, 0.35) !important;
+  color: #bbf7d0 !important;
+}
+
+.reread-shell .error {
+  border-color: rgba(248, 113, 113, 0.4) !important;
+  background: rgba(127, 29, 29, 0.35) !important;
+  color: #fecaca !important;
+}
+
+@media (max-width: 900px) {
+  .reread-shell .grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .reread-shell button,
+  .reread-shell a,
+  .reread-shell .file-label,
+  .reread-shell .primary-btn {
+    width: 100% !important;
+  }
+}
+
+/* COMPARE DRAFTS EASY END */
+
+/* REPORTS DASHBOARD EASY START */
+
+.dashboard-shell,
+.report-shell,
+.reports-shell,
+.admin-shell,
+[class*="dashboard"],
+[class*="report-page"],
+[class*="reports-page"] {
+  background:
+    radial-gradient(circle at top left, rgba(59, 130, 246, 0.24), transparent 34rem),
+    radial-gradient(circle at bottom right, rgba(148, 163, 184, 0.18), transparent 30rem),
+    linear-gradient(135deg, #060b16 0%, #0b1020 52%, #111827 100%) !important;
+  color: #eef4ff !important;
+  font-family: Arial, Helvetica, sans-serif !important;
+}
+
+/* The app already has the main top nav now. Hide old page mini-navs when present. */
+.dashboard-shell .top-nav,
+.report-shell .top-nav,
+.reports-shell .top-nav,
+[class*="dashboard"] .top-nav,
+[class*="report"] .top-nav {
+  display: none !important;
+}
+
+.dashboard-shell .masthead,
+.dashboard-shell .panel,
+.dashboard-shell .card,
+.dashboard-shell .report-card,
+.dashboard-shell .stat-card,
+.dashboard-shell .empty,
+.report-shell .masthead,
+.report-shell .panel,
+.report-shell .card,
+.report-shell .report-card,
+.report-shell .empty,
+.reports-shell .masthead,
+.reports-shell .panel,
+.reports-shell .card,
+.reports-shell .report-card,
+.reports-shell .empty,
+[class*="dashboard"] .masthead,
+[class*="dashboard"] .panel,
+[class*="dashboard"] .card,
+[class*="dashboard"] .report-card,
+[class*="dashboard"] .empty,
+[class*="report"] .masthead,
+[class*="report"] .panel,
+[class*="report"] .card,
+[class*="report"] .report-card,
+[class*="report"] .empty {
+  border-color: rgba(147, 197, 253, 0.28) !important;
+  background: rgba(15, 23, 42, 0.92) !important;
+  color: #eef4ff !important;
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.28) !important;
+}
+
+.dashboard-shell h1,
+.dashboard-shell h2,
+.dashboard-shell h3,
+.dashboard-shell .title,
+.dashboard-shell .panel-title,
+.dashboard-shell .report-title,
+.report-shell h1,
+.report-shell h2,
+.report-shell h3,
+.report-shell .title,
+.report-shell .panel-title,
+.report-shell .report-title,
+.reports-shell h1,
+.reports-shell h2,
+.reports-shell h3,
+.reports-shell .title,
+.reports-shell .panel-title,
+.reports-shell .report-title,
+[class*="dashboard"] h1,
+[class*="dashboard"] h2,
+[class*="dashboard"] h3,
+[class*="dashboard"] .title,
+[class*="dashboard"] .panel-title,
+[class*="dashboard"] .report-title,
+[class*="report"] h1,
+[class*="report"] h2,
+[class*="report"] h3,
+[class*="report"] .title,
+[class*="report"] .panel-title,
+[class*="report"] .report-title {
+  color: #ffffff !important;
+  font-family: Arial, Helvetica, sans-serif !important;
+  letter-spacing: -0.04em !important;
+}
+
+.dashboard-shell .title,
+.report-shell .title,
+.reports-shell .title,
+[class*="dashboard"] .title,
+[class*="report"] .title {
+  font-size: clamp(3rem, 7vw, 5.8rem) !important;
+  line-height: 0.95 !important;
+}
+
+.dashboard-shell p,
+.dashboard-shell li,
+.dashboard-shell span,
+.dashboard-shell label,
+.dashboard-shell .subtitle,
+.dashboard-shell .panel-note,
+.dashboard-shell .meta,
+.dashboard-shell .empty,
+.report-shell p,
+.report-shell li,
+.report-shell span,
+.report-shell label,
+.report-shell .subtitle,
+.report-shell .panel-note,
+.report-shell .meta,
+.report-shell .empty,
+.reports-shell p,
+.reports-shell li,
+.reports-shell span,
+.reports-shell label,
+.reports-shell .subtitle,
+.reports-shell .panel-note,
+.reports-shell .meta,
+.reports-shell .empty,
+[class*="dashboard"] p,
+[class*="dashboard"] li,
+[class*="dashboard"] span,
+[class*="dashboard"] label,
+[class*="dashboard"] .subtitle,
+[class*="dashboard"] .panel-note,
+[class*="dashboard"] .meta,
+[class*="dashboard"] .empty,
+[class*="report"] p,
+[class*="report"] li,
+[class*="report"] span,
+[class*="report"] label,
+[class*="report"] .subtitle,
+[class*="report"] .panel-note,
+[class*="report"] .meta,
+[class*="report"] .empty {
+  color: #cbd5e1 !important;
+  font-family: Arial, Helvetica, sans-serif !important;
+  font-size: 1.05rem !important;
+  line-height: 1.65 !important;
+}
+
+.dashboard-shell .eyebrow,
+.dashboard-shell .field-label,
+.dashboard-shell .section-subhead,
+.report-shell .eyebrow,
+.report-shell .field-label,
+.report-shell .section-subhead,
+.reports-shell .eyebrow,
+.reports-shell .field-label,
+.reports-shell .section-subhead,
+[class*="dashboard"] .eyebrow,
+[class*="dashboard"] .field-label,
+[class*="dashboard"] .section-subhead,
+[class*="report"] .eyebrow,
+[class*="report"] .field-label,
+[class*="report"] .section-subhead {
+  color: #93c5fd !important;
+  font-family: Arial, Helvetica, sans-serif !important;
+  font-size: 0.95rem !important;
+  letter-spacing: 0.06em !important;
+  text-transform: uppercase !important;
+}
+
+.dashboard-shell input,
+.dashboard-shell textarea,
+.dashboard-shell select,
+.report-shell input,
+.report-shell textarea,
+.report-shell select,
+.reports-shell input,
+.reports-shell textarea,
+.reports-shell select,
+[class*="dashboard"] input,
+[class*="dashboard"] textarea,
+[class*="dashboard"] select,
+[class*="report"] input,
+[class*="report"] textarea,
+[class*="report"] select {
+  background: #0f172a !important;
+  border: 1px solid rgba(147, 197, 253, 0.34) !important;
+  color: #eef4ff !important;
+  border-radius: 18px !important;
+  font-size: 1.08rem !important;
+  line-height: 1.65 !important;
+  font-family: Arial, Helvetica, sans-serif !important;
+}
+
+.dashboard-shell button,
+.dashboard-shell a,
+.dashboard-shell .nav-link,
+.dashboard-shell .primary-btn,
+.dashboard-shell .secondary-btn,
+.dashboard-shell .small-btn,
+.report-shell button,
+.report-shell a,
+.report-shell .nav-link,
+.report-shell .primary-btn,
+.report-shell .secondary-btn,
+.report-shell .small-btn,
+.reports-shell button,
+.reports-shell a,
+.reports-shell .nav-link,
+.reports-shell .primary-btn,
+.reports-shell .secondary-btn,
+.reports-shell .small-btn,
+[class*="dashboard"] button,
+[class*="dashboard"] a,
+[class*="dashboard"] .nav-link,
+[class*="dashboard"] .primary-btn,
+[class*="dashboard"] .secondary-btn,
+[class*="dashboard"] .small-btn,
+[class*="report"] button,
+[class*="report"] a,
+[class*="report"] .nav-link,
+[class*="report"] .primary-btn,
+[class*="report"] .secondary-btn,
+[class*="report"] .small-btn {
+  min-height: 58px !important;
+  border-radius: 999px !important;
+  font-family: Arial, Helvetica, sans-serif !important;
+  font-weight: 900 !important;
+  text-transform: none !important;
+  letter-spacing: 0.02em !important;
+}
+
+.dashboard-shell button,
+.dashboard-shell a,
+.dashboard-shell .nav-link,
+.dashboard-shell .secondary-btn,
+.dashboard-shell .small-btn,
+.report-shell button,
+.report-shell a,
+.report-shell .nav-link,
+.report-shell .secondary-btn,
+.report-shell .small-btn,
+.reports-shell button,
+.reports-shell a,
+.reports-shell .nav-link,
+.reports-shell .secondary-btn,
+.reports-shell .small-btn,
+[class*="dashboard"] button,
+[class*="dashboard"] a,
+[class*="dashboard"] .nav-link,
+[class*="dashboard"] .secondary-btn,
+[class*="dashboard"] .small-btn,
+[class*="report"] button,
+[class*="report"] a,
+[class*="report"] .nav-link,
+[class*="report"] .secondary-btn,
+[class*="report"] .small-btn {
+  border-color: rgba(147, 197, 253, 0.34) !important;
+  background: rgba(30, 41, 59, 0.92) !important;
+  color: #eef4ff !important;
+}
+
+.dashboard-shell .primary-btn,
+.dashboard-shell button[type="submit"],
+.report-shell .primary-btn,
+.report-shell button[type="submit"],
+.reports-shell .primary-btn,
+.reports-shell button[type="submit"],
+[class*="dashboard"] .primary-btn,
+[class*="dashboard"] button[type="submit"],
+[class*="report"] .primary-btn,
+[class*="report"] button[type="submit"] {
+  background: linear-gradient(180deg, #dbeafe 0%, #93c5fd 55%, #60a5fa 100%) !important;
+  color: #07111f !important;
+  border-color: rgba(219, 234, 254, 0.75) !important;
+}
+
+.dashboard-shell button:disabled,
+.report-shell button:disabled,
+.reports-shell button:disabled,
+[class*="dashboard"] button:disabled,
+[class*="report"] button:disabled {
+  opacity: 0.5 !important;
+  cursor: not-allowed !important;
+}
+
+/* Make report text easier to actually read. */
+.report-rendered,
+.rendered-report,
+.report-body,
+.sphinx-rendered-report,
+[class*="rendered"] {
+  max-width: 920px !important;
+}
+
+.report-rendered p,
+.rendered-report p,
+.report-body p,
+.report-rendered li,
+.rendered-report li,
+.report-body li,
+[class*="rendered"] p,
+[class*="rendered"] li {
+  font-size: 1.12rem !important;
+  line-height: 1.8 !important;
+  color: #eef4ff !important;
+}
+
+.report-rendered h1,
+.rendered-report h1,
+.report-body h1,
+[class*="rendered"] h1 {
+  font-size: clamp(2.4rem, 5vw, 4rem) !important;
+  color: #ffffff !important;
+}
+
+.report-rendered h2,
+.rendered-report h2,
+.report-body h2,
+[class*="rendered"] h2 {
+  margin-top: 2rem !important;
+  padding-bottom: 0.6rem !important;
+  border-bottom: 1px solid rgba(147, 197, 253, 0.22) !important;
+  font-size: clamp(1.8rem, 3vw, 2.5rem) !important;
+  color: #ffffff !important;
+}
+
+@media (max-width: 900px) {
+  .dashboard-shell button,
+  .dashboard-shell a,
+  .dashboard-shell .nav-link,
+  .dashboard-shell .primary-btn,
+  .dashboard-shell .secondary-btn,
+  .report-shell button,
+  .report-shell a,
+  .report-shell .nav-link,
+  .report-shell .primary-btn,
+  .report-shell .secondary-btn,
+  .reports-shell button,
+  .reports-shell a,
+  .reports-shell .nav-link,
+  .reports-shell .primary-btn,
+  .reports-shell .secondary-btn,
+  [class*="dashboard"] button,
+  [class*="dashboard"] a,
+  [class*="report"] button,
+  [class*="report"] a {
+    width: 100% !important;
+  }
+}
+
+/* REPORTS DASHBOARD EASY END */
+
+/* SUPPORT EASY START */
+
+.support-page,
+.login-shell,
+.feedback-shell,
+.beta-shell,
+.settings-shell,
+.feedback-page,
+.login-page,
+.beta-page,
+[class*="login"],
+[class*="feedback"],
+[class*="beta"],
+[class*="settings"] {
+  background:
+    radial-gradient(circle at top left, rgba(59, 130, 246, 0.24), transparent 34rem),
+    radial-gradient(circle at bottom right, rgba(148, 163, 184, 0.18), transparent 30rem),
+    linear-gradient(135deg, #060b16 0%, #0b1020 52%, #111827 100%) !important;
+  color: #eef4ff !important;
+  font-family: Arial, Helvetica, sans-serif !important;
+}
+
+.support-wrap {
+  width: min(1120px, 100%);
+  margin: 0 auto;
+  padding: 34px 20px 110px;
+}
+
+.support-hero,
+.support-card,
+.login-card,
+.feedback-card,
+.beta-card,
+.settings-card,
+[class*="login"] .card,
+[class*="feedback"] .card,
+[class*="beta"] .card,
+[class*="settings"] .card,
+[class*="login"] section,
+[class*="feedback"] section,
+[class*="beta"] section,
+[class*="settings"] section {
+  border: 1px solid rgba(147, 197, 253, 0.28) !important;
+  background: rgba(15, 23, 42, 0.92) !important;
+  color: #eef4ff !important;
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.28) !important;
+}
+
+.support-hero {
+  border-radius: 34px;
+  padding: clamp(28px, 5vw, 56px);
+  margin-bottom: 16px;
+}
+
+.support-eyebrow {
+  margin: 0 0 12px;
+  color: #93c5fd !important;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  font-size: 0.9rem;
+}
+
+.support-hero h1,
+.support-card h2,
+.login-shell h1,
+.login-shell h2,
+.feedback-shell h1,
+.feedback-shell h2,
+.beta-shell h1,
+.beta-shell h2,
+.settings-shell h1,
+.settings-shell h2,
+[class*="login"] h1,
+[class*="login"] h2,
+[class*="feedback"] h1,
+[class*="feedback"] h2,
+[class*="beta"] h1,
+[class*="beta"] h2,
+[class*="settings"] h1,
+[class*="settings"] h2 {
+  color: #ffffff !important;
+  font-family: Arial, Helvetica, sans-serif !important;
+  letter-spacing: -0.04em !important;
+}
+
+.support-hero h1 {
+  max-width: 900px;
+  margin: 0;
+  font-size: clamp(3.2rem, 8vw, 6.4rem);
+  line-height: 0.92;
+}
+
+.support-hero p,
+.support-card p,
+.support-card li,
+.login-shell p,
+.feedback-shell p,
+.beta-shell p,
+.settings-shell p,
+[class*="login"] p,
+[class*="feedback"] p,
+[class*="beta"] p,
+[class*="settings"] p {
+  color: #cbd5e1 !important;
+  font-size: 1.12rem !important;
+  line-height: 1.65 !important;
+  font-family: Arial, Helvetica, sans-serif !important;
+}
+
+.support-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+  margin-bottom: 16px;
+}
+
+.support-grid.two {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.support-card {
+  border-radius: 28px;
+  padding: 24px;
+  text-decoration: none;
+}
+
+.support-card h2 {
+  margin: 0;
+  font-size: clamp(1.8rem, 3vw, 2.6rem);
+  line-height: 1;
+}
+
+.support-card strong {
+  color: #ffffff;
+}
+
+.support-card > strong,
+.support-card a,
+.support-actions a,
+.support-actions button,
+.support-card button,
+.login-shell button,
+.feedback-shell button,
+.beta-shell button,
+.settings-shell button,
+.login-shell a,
+.feedback-shell a,
+.beta-shell a,
+.settings-shell a,
+[class*="login"] button,
+[class*="feedback"] button,
+[class*="beta"] button,
+[class*="settings"] button,
+[class*="login"] a,
+[class*="feedback"] a,
+[class*="beta"] a,
+[class*="settings"] a {
+  min-height: 58px !important;
+  border-radius: 999px !important;
+  border: 1px solid rgba(147, 197, 253, 0.34) !important;
+  background: rgba(30, 41, 59, 0.92) !important;
+  color: #eef4ff !important;
+  padding: 0 22px !important;
+  text-decoration: none !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-family: Arial, Helvetica, sans-serif !important;
+  font-weight: 900 !important;
+  text-transform: none !important;
+  letter-spacing: 0.02em !important;
+  cursor: pointer;
+}
+
+.support-card > strong,
+.support-primary,
+.login-shell button[type="submit"],
+.feedback-shell button[type="submit"],
+[class*="login"] button[type="submit"],
+[class*="feedback"] button[type="submit"] {
+  background: linear-gradient(180deg, #dbeafe 0%, #93c5fd 55%, #60a5fa 100%) !important;
+  color: #07111f !important;
+  border-color: rgba(219, 234, 254, 0.75) !important;
+}
+
+.support-wide {
+  margin-top: 16px;
+}
+
+.support-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 22px;
+}
+
+.support-list {
+  display: grid;
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.support-list p {
+  margin: 0;
+  border: 1px solid rgba(147, 197, 253, 0.22);
+  background: rgba(255, 255, 255, 0.045);
+  border-radius: 18px;
+  padding: 16px;
+}
+
+.login-shell input,
+.feedback-shell input,
+.feedback-shell textarea,
+.settings-shell input,
+.settings-shell textarea,
+[class*="login"] input,
+[class*="feedback"] input,
+[class*="feedback"] textarea,
+[class*="settings"] input,
+[class*="settings"] textarea {
+  background: #0f172a !important;
+  border: 1px solid rgba(147, 197, 253, 0.34) !important;
+  color: #eef4ff !important;
+  border-radius: 18px !important;
+  font-size: 1.08rem !important;
+  line-height: 1.65 !important;
+  font-family: Arial, Helvetica, sans-serif !important;
+  min-height: 56px !important;
+}
+
+.feedback-shell textarea,
+[class*="feedback"] textarea {
+  min-height: 160px !important;
+}
+
+.hovel-support-dock {
+  z-index: 10001 !important;
+}
+
+.hovel-help-link,
+.hovel-feedback-link,
+.hovel-beta-terms-link {
+  border-color: rgba(147, 197, 253, 0.34) !important;
+  background: rgba(30, 41, 59, 0.95) !important;
+  color: #eef4ff !important;
+}
+
+.hovel-help-link:hover,
+.hovel-feedback-link:hover,
+.hovel-beta-terms-link:hover {
+  background: #93c5fd !important;
+  color: #07111f !important;
+}
+
+@media (max-width: 900px) {
+  .support-grid,
+  .support-grid.two {
+    grid-template-columns: 1fr;
+  }
+
+  .support-actions,
+  .support-card > strong,
+  .support-actions a,
+  .support-actions button,
+  .support-card button {
+    width: 100%;
+  }
+
+  .support-wrap {
+    padding: 20px 12px 110px;
+  }
+}
+
+/* SUPPORT EASY END */

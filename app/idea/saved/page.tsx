@@ -196,7 +196,7 @@ export default function SavedIdeasPage() {
 
  .eyebrow {
  margin: 0 0 10px;
- color: #f0b35f;
+ color: #93c5fd;
  font-size: 0.75rem;
  letter-spacing: 0.16em;
  text-transform: uppercase;
@@ -254,9 +254,9 @@ export default function SavedIdeasPage() {
  }
 
  .primary-link {
- background: #f0b35f;
+ background: #93c5fd;
  color: #18100a;
- border: 1px solid #f0b35f;
+ border: 1px solid #93c5fd;
  }
 
  .secondary-link,
@@ -268,8 +268,8 @@ export default function SavedIdeasPage() {
 
  .secondary-link:hover,
  .refresh-button:hover {
- border-color: #f0b35f;
- color: #f0b35f;
+ border-color: #93c5fd;
+ color: #93c5fd;
  }
 
  .refresh-button:disabled {
@@ -296,7 +296,7 @@ export default function SavedIdeasPage() {
 
  .big-stat {
  display: block;
- color: #fff7ea;
+ color: #ffffff;
  font-size: clamp(2rem, 5vw, 4rem);
  line-height: 1;
  font-weight: 1000;
@@ -304,7 +304,7 @@ export default function SavedIdeasPage() {
  }
 
  .latest-title {
- color: #fff7ea;
+ color: #ffffff;
  font-size: 1.4rem;
  line-height: 1.1;
  font-weight: 1000;
@@ -330,7 +330,7 @@ export default function SavedIdeasPage() {
  min-height: 52px;
  border: 1px solid rgba(255, 255, 255, 0.16);
  background: rgba(0, 0, 0, 0.22);
- color: #fff7ea;
+ color: #ffffff;
  border-radius: 16px;
  padding: 14px 15px;
  font-size: 16px;
@@ -361,7 +361,7 @@ export default function SavedIdeasPage() {
  }
 
  .idea-title {
- color: #fff7ea;
+ color: #ffffff;
  font-size: 1.45rem;
  line-height: 1.1;
  font-weight: 1000;
@@ -396,7 +396,7 @@ export default function SavedIdeasPage() {
  .chip.gold {
  border-color: rgba(240, 179, 95, 0.52);
  background: rgba(240, 179, 95, 0.1);
- color: #f0b35f;
+ color: #93c5fd;
  }
 
  .idea-actions {
@@ -425,8 +425,8 @@ export default function SavedIdeasPage() {
  }
 
  .small-link:hover {
- border-color: #f0b35f;
- color: #f0b35f;
+ border-color: #93c5fd;
+ color: #93c5fd;
  }
 
  .error-box {
@@ -450,7 +450,7 @@ export default function SavedIdeasPage() {
  }
 
  .backdoor-link a:hover {
- color: #f0b35f;
+ color: #93c5fd;
  text-decoration: underline;
  }
 
@@ -653,6 +653,7 @@ export default function SavedIdeasPage() {
  </main>
  );
 }
+
 
 
 

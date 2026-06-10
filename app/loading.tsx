@@ -1,80 +1,42 @@
-export default function LoadingPage() {
+﻿export default function Loading() {
   return (
-    <main className="loading-shell">
-      <style>{`
-        body {
-          margin: 0;
-          background: #0e0d0b;
-        }
+    <main style={{
+      minHeight: "100vh",
+      display: "grid",
+      placeItems: "center",
+      background: "#07111f",
+      color: "#eef4ff",
+      fontFamily: "Arial, sans-serif",
+      padding: 24
+    }}>
+      <section style={{
+        width: "100%",
+        maxWidth: 560,
+        border: "1px solid rgba(147, 197, 253, 0.35)",
+        background: "rgba(15, 23, 42, 0.96)",
+        borderRadius: 28,
+        padding: 36,
+        boxShadow: "0 24px 70px rgba(0,0,0,0.35)"
+      }}>
+        <div style={{
+          color: "#93c5fd",
+          fontFamily: "monospace",
+          letterSpacing: "0.18em",
+          textTransform: "uppercase",
+          fontSize: 12,
+          fontWeight: 900,
+          marginBottom: 12
+        }}>
+          Loading
+        </div>
 
-        .loading-shell {
-          min-height: 100vh;
-          background:
-            radial-gradient(circle at top left, rgba(200,147,90,0.13), transparent 34rem),
-            radial-gradient(circle at bottom right, rgba(90,124,200,0.1), transparent 34rem),
-            #0e0d0b;
-          color: #f0ece4;
-          display: grid;
-          place-items: center;
-          padding: 48px 24px;
-          font-family: Arial, sans-serif;
-        }
+        <h1 style={{ margin: 0, fontSize: 42, lineHeight: 1 }}>
+          Opening the workshop...
+        </h1>
 
-        .card {
-          border: 1px solid #26211c;
-          background: rgba(18,16,13,0.95);
-          border-radius: 28px;
-          padding: 32px;
-          width: min(620px, 100%);
-          box-shadow: 0 24px 80px rgba(0,0,0,0.35);
-          text-align: center;
-        }
-
-        .spinner {
-          width: 54px;
-          height: 54px;
-          border-radius: 999px;
-          border: 4px solid #302a24;
-          border-top-color: #c8935a;
-          margin: 0 auto 20px;
-          animation: spin 0.9s linear infinite;
-        }
-
-        .eyebrow {
-          color: #c8935a;
-          font-family: monospace;
-          letter-spacing: 0.22em;
-          text-transform: uppercase;
-          font-size: 12px;
-          font-weight: 900;
-          margin-bottom: 12px;
-        }
-
-        h1 {
-          font-family: Georgia, serif;
-          font-size: clamp(38px, 6vw, 62px);
-          line-height: 0.95;
-          margin: 0;
-        }
-
-        p {
-          color: #aaa096;
-          line-height: 1.7;
-          margin-top: 16px;
-        }
-
-        @keyframes spin {
-          to {
-            transform: rotate(360deg);
-          }
-        }
-      `}</style>
-
-      <section className="card">
-        <div className="spinner" />
-        <div className="eyebrow">Loading</div>
-        <h1>Loading The Ideanatorâ€¦</h1>
-        <p>This should only take a moment.</p>
+        <p style={{ color: "#cbd5e1", lineHeight: 1.6, marginTop: 16, fontSize: 18 }}>
+          Give us one second. The workshop is getting ready.
+        </p>
       </section>
     </main>
   );

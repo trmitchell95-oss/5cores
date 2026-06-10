@@ -185,7 +185,7 @@ export default function AdminUsagePage() {
 
         body {
           margin: 0;
-          background: #0e0d0b;
+          background: #060b16;
         }
 
         .admin-shell {
@@ -193,8 +193,8 @@ export default function AdminUsagePage() {
           background:
             radial-gradient(circle at top left, rgba(200, 147, 90, 0.13), transparent 34rem),
             radial-gradient(circle at bottom right, rgba(90, 124, 200, 0.1), transparent 32rem),
-            #0e0d0b;
-          color: #f0ece4;
+            #060b16;
+          color: #eef4ff;
           font-family: 'DM Sans', sans-serif;
         }
 
@@ -226,8 +226,8 @@ export default function AdminUsagePage() {
           width: 42px;
           height: 42px;
           border-radius: 15px;
-          background: #c8935a;
-          color: #0e0d0b;
+          background: #93c5fd;
+          color: #060b16;
           display: flex;
           align-items: center;
           justify-content: center;
@@ -245,7 +245,7 @@ export default function AdminUsagePage() {
         }
 
         .brand-sub {
-          color: #7b7168;
+          color: #94a3b8;
           font-size: 12px;
           margin-top: 3px;
         }
@@ -261,8 +261,8 @@ export default function AdminUsagePage() {
           min-height: 42px;
           border-radius: 14px;
           border: 1px solid #302a24;
-          background: #11100e;
-          color: #9a9186;
+          background: #0f172a;
+          color: #cbd5e1;
           text-decoration: none;
           padding: 12px 14px;
           font-family: 'IBM Plex Mono', monospace;
@@ -275,8 +275,8 @@ export default function AdminUsagePage() {
 
         .nav-link:hover,
         .refresh-btn:hover {
-          color: #c8935a;
-          border-color: #c8935a;
+          color: #93c5fd;
+          border-color: #93c5fd;
         }
 
         .hero {
@@ -293,7 +293,7 @@ export default function AdminUsagePage() {
           font-size: 11px;
           font-weight: 800;
           letter-spacing: 0.24em;
-          color: #c8935a;
+          color: #93c5fd;
           text-transform: uppercase;
           margin-bottom: 12px;
         }
@@ -307,7 +307,7 @@ export default function AdminUsagePage() {
         }
 
         .subtitle {
-          color: #aaa096;
+          color: #cbd5e1;
           line-height: 1.7;
           max-width: 780px;
           margin-top: 18px;
@@ -334,7 +334,7 @@ export default function AdminUsagePage() {
           font-weight: 800;
           letter-spacing: 0.16em;
           text-transform: uppercase;
-          color: #7b7168;
+          color: #94a3b8;
           margin-bottom: 10px;
         }
 
@@ -347,7 +347,7 @@ export default function AdminUsagePage() {
 
         .card-note {
           margin-top: 10px;
-          color: #8f867b;
+          color: #cbd5e1;
           font-size: 12px;
           line-height: 1.45;
         }
@@ -378,7 +378,7 @@ export default function AdminUsagePage() {
         }
 
         .panel-note {
-          color: #8f867b;
+          color: #cbd5e1;
           font-size: 13px;
           margin-top: 6px;
         }
@@ -400,7 +400,7 @@ export default function AdminUsagePage() {
           font-size: 10px;
           letter-spacing: 0.12em;
           text-transform: uppercase;
-          color: #7b7168;
+          color: #94a3b8;
           border-bottom: 1px solid #2a2520;
         }
 
@@ -419,7 +419,7 @@ export default function AdminUsagePage() {
         }
 
         .email-cell {
-          color: #f0ece4;
+          color: #eef4ff;
           font-weight: 700;
         }
 
@@ -456,12 +456,12 @@ export default function AdminUsagePage() {
 
         .status-neutral {
           border: 1px solid #302a24;
-          background: #11100e;
-          color: #9a9186;
+          background: #0f172a;
+          color: #cbd5e1;
         }
 
         .report-link {
-          color: #c8935a;
+          color: #93c5fd;
           font-weight: 800;
           text-decoration: none;
         }
@@ -482,7 +482,7 @@ export default function AdminUsagePage() {
         .loading-box {
           border: 1px solid #26211c;
           background: rgba(18, 16, 13, 0.9);
-          color: #9a9186;
+          color: #cbd5e1;
           border-radius: 18px;
           padding: 18px;
           margin-bottom: 22px;
@@ -758,6 +758,7 @@ export default function AdminUsagePage() {
     </main>
   );
 }
+
 
 
 

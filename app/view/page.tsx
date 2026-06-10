@@ -5,7 +5,7 @@ import MarkdownReport from "@/components/MarkdownReport";
 import { useState, useRef } from "react";
 
 const PERSONAS = [
-  { key: "brad", name: "Brad", role: "Voice Guardian", color: "#c8935a", tagline: "Protects what is alive in the manuscript." },
+  { key: "brad", name: "Brad", role: "Voice Guardian", color: "#93c5fd", tagline: "Protects what is alive in the manuscript." },
   { key: "greg", name: "Greg", role: "Brutal Editor", color: "#b84040", tagline: "Finds what is costing the manuscript power." },
   { key: "vonClaude", name: "Von Clausen", role: "Architect", color: "#5a7cc8", tagline: "Structure, consistency, blueprint discipline." },
   { key: "juniper", name: "Juniper", role: "Reader Lens", color: "#4a9c6a", tagline: "Represents the intelligent outside reader." },
@@ -95,49 +95,49 @@ export default function Home() {
   const activeReport = reports[activeTab];
 
   return (
-    <div style={{ minHeight: "100vh", background: "#0e0d0b", color: "#f0ece4", fontFamily: "Georgia, serif" }}>
+    <div style={{ minHeight: "100vh", background: "#060b16", color: "#eef4ff", fontFamily: "Georgia, serif" }}>
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@300;400;500&family=IBM+Plex+Mono:wght@400;500&display=swap');
         * { box-sizing: border-box; margin: 0; padding: 0; }
         .app-wrap { max-width: 960px; margin: 0 auto; padding: 48px 32px 100px; }
         .masthead { border-bottom: 1px solid #2a2520; padding-bottom: 32px; margin-bottom: 48px; }
-        .eyebrow { font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.2em; color: #c8935a; text-transform: uppercase; margin-bottom: 12px; }
-        .title { font-family: 'Cormorant Garamond', serif; font-size: clamp(40px, 7vw, 72px); font-weight: 700; line-height: 1; color: #f0ece4; }
-        .subtitle { font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 300; color: #9a9186; margin-top: 12px; }
-        .textarea { width: 100%; background: #161410; border: 1px solid #2a2520; color: #f0ece4; font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 300; padding: 20px; resize: vertical; outline: none; min-height: 220px; line-height: 1.7; transition: border-color 0.2s; }
-        .textarea:focus { border-color: #c8935a; }
-        .textarea::placeholder { color: #5a5448; }
-        .run-btn { margin-top: 16px; padding: 14px 36px; background: #c8935a; color: #0e0d0b; font-family: 'IBM Plex Mono', monospace; font-size: 12px; letter-spacing: 0.15em; text-transform: uppercase; border: none; cursor: pointer; transition: background 0.2s; }
+        .eyebrow { font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.2em; color: #93c5fd; text-transform: uppercase; margin-bottom: 12px; }
+        .title { font-family: 'Cormorant Garamond', serif; font-size: clamp(40px, 7vw, 72px); font-weight: 700; line-height: 1; color: #eef4ff; }
+        .subtitle { font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 300; color: #cbd5e1; margin-top: 12px; }
+        .textarea { width: 100%; background: #0f172a; border: 1px solid #2a2520; color: #eef4ff; font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 300; padding: 20px; resize: vertical; outline: none; min-height: 220px; line-height: 1.7; transition: border-color 0.2s; }
+        .textarea:focus { border-color: #93c5fd; }
+        .textarea::placeholder { color: #94a3b8; }
+        .run-btn { margin-top: 16px; padding: 14px 36px; background: #93c5fd; color: #060b16; font-family: 'IBM Plex Mono', monospace; font-size: 12px; letter-spacing: 0.15em; text-transform: uppercase; border: none; cursor: pointer; transition: background 0.2s; }
         .run-btn:hover:not(:disabled) { background: #e0aa70; }
         .run-btn:disabled { opacity: 0.45; cursor: not-allowed; }
-        .reset-btn { margin-left: 12px; padding: 14px 24px; background: transparent; color: #5a5448; font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; border: 1px solid #2a2520; cursor: pointer; }
-        .reset-btn:hover { border-color: #5a5448; color: #9a9186; }
-        .status-bar { margin-top: 32px; padding: 16px 20px; background: #161410; border-left: 2px solid #c8935a; }
-        .status-text { font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #c8935a; letter-spacing: 0.1em; }
+        .reset-btn { margin-left: 12px; padding: 14px 24px; background: transparent; color: #94a3b8; font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; border: 1px solid #2a2520; cursor: pointer; }
+        .reset-btn:hover { border-color: #94a3b8; color: #cbd5e1; }
+        .status-bar { margin-top: 32px; padding: 16px 20px; background: #0f172a; border-left: 2px solid #93c5fd; }
+        .status-text { font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #93c5fd; letter-spacing: 0.1em; }
         .council-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 0; margin-top: 16px; border: 1px solid #2a2520; }
         .persona-progress { padding: 12px 8px; text-align: center; border-right: 1px solid #2a2520; }
         .persona-progress:last-child { border-right: none; }
-        .persona-progress.done { background: #161410; }
+        .persona-progress.done { background: #0f172a; }
         .persona-progress.pending { opacity: 0.35; }
         .persona-dot { width: 6px; height: 6px; border-radius: 50%; margin: 0 auto 6px; }
-        .persona-name-sm { font-family: 'IBM Plex Mono', monospace; font-size: 9px; letter-spacing: 0.1em; color: #9a9186; text-transform: uppercase; }
+        .persona-name-sm { font-family: 'IBM Plex Mono', monospace; font-size: 9px; letter-spacing: 0.1em; color: #cbd5e1; text-transform: uppercase; }
         .tabs-wrap { display: flex; border-bottom: 1px solid #2a2520; margin-top: 48px; overflow-x: auto; }
-        .tab-btn { padding: 14px 20px; font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; background: none; border: none; border-bottom: 2px solid transparent; cursor: pointer; white-space: nowrap; transition: all 0.2s; color: #5a5448; }
+        .tab-btn { padding: 14px 20px; font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; background: none; border: none; border-bottom: 2px solid transparent; cursor: pointer; white-space: nowrap; transition: all 0.2s; color: #94a3b8; }
         .tab-btn.active { border-bottom-color: var(--tab-color); color: var(--tab-color); }
-        .tab-btn:hover:not(.active):not(.locked) { color: #9a9186; }
+        .tab-btn:hover:not(.active):not(.locked) { color: #cbd5e1; }
         .tab-btn.locked { opacity: 0.3; cursor: default; }
         .persona-header { padding: 28px 0 20px; border-bottom: 1px solid #2a2520; margin-bottom: 28px; display: flex; align-items: flex-start; gap: 20px; }
         .persona-badge { width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: 'Cormorant Garamond', serif; font-size: 18px; font-weight: 700; flex-shrink: 0; }
         .persona-name { font-family: 'Cormorant Garamond', serif; font-size: 26px; font-weight: 700; line-height: 1; }
         .persona-role { font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; margin-top: 4px; }
-        .persona-tagline { font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 300; color: #9a9186; margin-top: 8px; }
-        .report-content { font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 300; line-height: 1.8; color: #d4cfc7; }
-        .section-head { font-family: 'Cormorant Garamond', serif; font-size: 18px; font-weight: 600; color: #f0ece4; margin: 28px 0 10px; }
+        .persona-tagline { font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 300; color: #cbd5e1; margin-top: 8px; }
+        .report-content { font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 300; line-height: 1.8; color: #dbeafe; }
+        .section-head { font-family: 'Cormorant Garamond', serif; font-size: 18px; font-weight: 600; color: #eef4ff; margin: 28px 0 10px; }
         .para { margin-bottom: 12px; }
-        .word-count { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #5a5448; margin-top: 8px; }
-        .council-label { font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.15em; color: #5a5448; text-transform: uppercase; margin-top: 32px; margin-bottom: 8px; }
+        .word-count { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #94a3b8; margin-top: 8px; }
+        .council-label { font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.15em; color: #94a3b8; text-transform: uppercase; margin-top: 32px; margin-bottom: 8px; }
         .empty-state { padding: 48px 0; text-align: center; }
-        .empty-label { font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.15em; color: #5a5448; text-transform: uppercase; margin-top: 12px; }
+        .empty-label { font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.15em; color: #94a3b8; text-transform: uppercase; margin-top: 12px; }
         .error-msg { margin-top: 20px; padding: 16px 20px; background: #2a1010; border-left: 2px solid #b84040; font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #b84040; }
       `}</style>
 
@@ -243,5 +243,6 @@ export default function Home() {
     </div>
   );
 }
+
 
 

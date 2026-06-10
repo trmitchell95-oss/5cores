@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useEffect, useState } from "react";
 import { createClient } from "@supabase/supabase-js";
@@ -248,7 +248,7 @@ export default function Dashboard() {
 
         body {
           margin: 0;
-          background: #0e0d0b;
+          background: #060b16;
         }
 
         .dashboard-shell {
@@ -256,8 +256,8 @@ export default function Dashboard() {
           background:
             radial-gradient(circle at top left, rgba(200, 169, 110, 0.16), transparent 34rem),
             radial-gradient(circle at bottom right, rgba(90, 124, 200, 0.1), transparent 30rem),
-            #0e0d0b;
-          color: #f0ece4;
+            #060b16;
+          color: #eef4ff;
           font-family: 'DM Sans', sans-serif;
         }
 
@@ -308,7 +308,7 @@ export default function Dashboard() {
           font-family: 'IBM Plex Mono', monospace;
           font-size: 11px;
           letter-spacing: 0.2em;
-          color: #c8a96e;
+          color: #93c5fd;
           text-transform: uppercase;
           margin-bottom: 14px;
         }
@@ -319,14 +319,14 @@ export default function Dashboard() {
           line-height: 0.94;
           font-weight: 700;
           margin: 0;
-          color: #f0ece4;
+          color: #eef4ff;
           max-width: 760px;
         }
 
         .subheading {
           font-size: 16px;
           font-weight: 300;
-          color: #aaa096;
+          color: #cbd5e1;
           margin-top: 18px;
           max-width: 680px;
           line-height: 1.65;
@@ -363,26 +363,26 @@ export default function Dashboard() {
         }
 
         .primary-btn {
-          background: #c8a96e;
-          color: #0e0d0b;
-          border: 1px solid #c8a96e;
+          background: #93c5fd;
+          color: #060b16;
+          border: 1px solid #93c5fd;
           box-shadow: 0 16px 38px rgba(200, 169, 110, 0.18);
         }
 
         .primary-btn:hover {
-          background: #e2bf7e;
-          border-color: #e2bf7e;
+          background: #bfdbfe;
+          border-color: #bfdbfe;
         }
 
         .secondary-btn {
-          background: #11100e;
-          color: #d8d0c5;
+          background: #0f172a;
+          color: #dbeafe;
           border: 1px solid #302a24;
         }
 
         .secondary-btn:hover {
-          border-color: #c8a96e;
-          color: #c8a96e;
+          border-color: #93c5fd;
+          color: #93c5fd;
         }
 
         .status-card {
@@ -397,7 +397,7 @@ export default function Dashboard() {
           font-family: 'IBM Plex Mono', monospace;
           font-size: 10px;
           letter-spacing: 0.18em;
-          color: #6f665f;
+          color: #94a3b8;
           text-transform: uppercase;
           margin-bottom: 10px;
         }
@@ -406,12 +406,12 @@ export default function Dashboard() {
           font-family: 'Cormorant Garamond', serif;
           font-size: 38px;
           font-weight: 700;
-          color: #f0ece4;
+          color: #eef4ff;
           line-height: 1;
         }
 
         .status-muted {
-          color: #8f867b;
+          color: #cbd5e1;
           font-size: 13px;
           line-height: 1.55;
           margin-top: 10px;
@@ -427,7 +427,7 @@ export default function Dashboard() {
           font-family: 'Cormorant Garamond', serif;
           font-size: 24px;
           font-weight: 700;
-          color: #f0ece4;
+          color: #eef4ff;
           line-height: 1.15;
           overflow-wrap: anywhere;
         }
@@ -438,7 +438,7 @@ export default function Dashboard() {
           font-family: 'IBM Plex Mono', monospace;
           font-size: 10px;
           letter-spacing: 0.12em;
-          color: #c8a96e;
+          color: #93c5fd;
           text-decoration: none;
           text-transform: uppercase;
         }
@@ -466,7 +466,7 @@ export default function Dashboard() {
           border-color: rgba(200, 169, 110, 0.52);
           background:
             linear-gradient(135deg, rgba(200, 169, 110, 0.13), rgba(18, 16, 13, 0.86)),
-            #12100d;
+            #0f172a;
         }
 
         .tool-number {
@@ -476,9 +476,9 @@ export default function Dashboard() {
           display: flex;
           align-items: center;
           justify-content: center;
-          background: #18140f;
+          background: #1e293b;
           border: 1px solid #332a1c;
-          color: #c8a96e;
+          color: #93c5fd;
           font-family: 'IBM Plex Mono', monospace;
           font-size: 11px;
           font-weight: 700;
@@ -488,7 +488,7 @@ export default function Dashboard() {
         .tool-title {
           font-family: 'Cormorant Garamond', serif;
           font-size: 28px;
-          color: #f0ece4;
+          color: #eef4ff;
           line-height: 1;
           font-weight: 700;
           margin-bottom: 10px;
@@ -507,8 +507,8 @@ export default function Dashboard() {
           align-items: center;
           justify-content: center;
           border: 1px solid #302a24;
-          background: #11100e;
-          color: #d8d0c5;
+          background: #0f172a;
+          color: #dbeafe;
           border-radius: 13px;
           padding: 12px 14px;
           text-decoration: none;
@@ -520,8 +520,8 @@ export default function Dashboard() {
         }
 
         .tool-link:hover {
-          border-color: #c8a96e;
-          color: #c8a96e;
+          border-color: #93c5fd;
+          color: #93c5fd;
         }
 
         .how-grid {
@@ -537,7 +537,7 @@ export default function Dashboard() {
 
         .how-title {
           font-family: 'IBM Plex Mono', monospace;
-          color: #c8a96e;
+          color: #93c5fd;
           font-size: 11px;
           letter-spacing: 0.14em;
           text-transform: uppercase;
@@ -545,7 +545,7 @@ export default function Dashboard() {
         }
 
         .how-text {
-          color: #8f867b;
+          color: #cbd5e1;
           font-size: 13px;
           line-height: 1.55;
           font-weight: 300;
@@ -571,12 +571,12 @@ export default function Dashboard() {
           line-height: 1;
           font-weight: 700;
           margin: 0;
-          color: #f0ece4;
+          color: #eef4ff;
         }
 
         .section-note {
           margin-top: 8px;
-          color: #8f867b;
+          color: #cbd5e1;
           font-size: 14px;
           line-height: 1.5;
         }
@@ -585,7 +585,7 @@ export default function Dashboard() {
           font-family: 'IBM Plex Mono', monospace;
           font-size: 11px;
           letter-spacing: 0.12em;
-          color: #6f665f;
+          color: #94a3b8;
           text-transform: uppercase;
           white-space: nowrap;
         }
@@ -611,8 +611,8 @@ export default function Dashboard() {
           width: 100%;
           min-height: 46px;
           border: 1px solid #302a24;
-          background: #11100e;
-          color: #f0ece4;
+          background: #0f172a;
+          color: #eef4ff;
           border-radius: 14px;
           padding: 12px 14px;
           outline: none;
@@ -626,7 +626,7 @@ export default function Dashboard() {
 
         .library-input:focus,
         .library-select:focus {
-          border-color: #c8a96e;
+          border-color: #93c5fd;
         }
 
         .library-btn,
@@ -634,8 +634,8 @@ export default function Dashboard() {
           min-height: 46px;
           border-radius: 14px;
           border: 1px solid #302a24;
-          background: #11100e;
-          color: #9a9186;
+          background: #0f172a;
+          color: #cbd5e1;
           font-family: 'IBM Plex Mono', monospace;
           font-size: 10px;
           font-weight: 700;
@@ -647,8 +647,8 @@ export default function Dashboard() {
 
         .library-btn:hover,
         .show-more-btn:hover {
-          color: #c8a96e;
-          border-color: #c8a96e;
+          color: #93c5fd;
+          border-color: #93c5fd;
         }
 
         .library-btn:disabled {
@@ -684,7 +684,7 @@ export default function Dashboard() {
         .empty-title {
           font-family: 'Cormorant Garamond', serif;
           font-size: 30px;
-          color: #f0ece4;
+          color: #eef4ff;
           margin-bottom: 10px;
         }
 
@@ -719,7 +719,7 @@ export default function Dashboard() {
         .report-title {
           font-family: 'Cormorant Garamond', serif;
           font-size: 28px;
-          color: #f0ece4;
+          color: #eef4ff;
           font-weight: 700;
           margin-bottom: 6px;
           overflow-wrap: anywhere;
@@ -743,7 +743,7 @@ export default function Dashboard() {
           font-family: 'IBM Plex Mono', monospace;
           font-size: 10px;
           letter-spacing: 0.08em;
-          color: #9a9186;
+          color: #cbd5e1;
           border: 1px solid #2a2520;
           background: #100f0d;
           padding: 6px 10px;
@@ -752,7 +752,7 @@ export default function Dashboard() {
         }
 
         .chip.gold {
-          color: #c8a96e;
+          color: #93c5fd;
           border-color: #3a3020;
           background: #17130d;
         }
@@ -762,11 +762,11 @@ export default function Dashboard() {
           font-family: 'IBM Plex Mono', monospace;
           font-size: 11px;
           letter-spacing: 0.12em;
-          color: #c8a96e;
+          color: #93c5fd;
           text-decoration: none;
           text-transform: uppercase;
           border: 1px solid #302a24;
-          background: #11100e;
+          background: #0f172a;
           border-radius: 13px;
           padding: 13px 16px;
           min-height: 48px;
@@ -777,7 +777,7 @@ export default function Dashboard() {
         }
 
         .view-link:hover {
-          border-color: #c8a96e;
+          border-color: #93c5fd;
           background: #1c1710;
         }
 
@@ -793,7 +793,7 @@ export default function Dashboard() {
         .section-note {
           font-size: 15px !important;
           line-height: 1.65 !important;
-          color: #bdb4aa !important;
+          color: #cbd5e1 !important;
         }
 
         .eyebrow,
@@ -1279,6 +1279,7 @@ export default function Dashboard() {
     </main>
   );
 }
+
 
 
 

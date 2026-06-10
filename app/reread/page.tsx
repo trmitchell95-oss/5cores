@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useEffect, useState, type ChangeEvent } from "react";
 import Link from "next/link";
@@ -425,7 +425,7 @@ export default function CouncilReReadPage() {
 
         body {
           margin: 0;
-          background: #0e0d0b;
+          background: #060b16;
         }
 
         .reread-shell {
@@ -433,8 +433,8 @@ export default function CouncilReReadPage() {
           background:
             radial-gradient(circle at top left, rgba(200, 147, 90, 0.14), transparent 34rem),
             radial-gradient(circle at bottom right, rgba(90, 124, 200, 0.1), transparent 30rem),
-            #0e0d0b;
-          color: #f0ece4;
+            #060b16;
+          color: #eef4ff;
           font-family: 'DM Sans', sans-serif;
           padding: 34px 24px 90px;
         }
@@ -467,7 +467,7 @@ export default function CouncilReReadPage() {
           justify-content: center;
           border: 1px solid #302a24;
           background: rgba(18, 16, 13, 0.82);
-          color: #9a9186;
+          color: #cbd5e1;
           text-decoration: none;
           border-radius: 14px;
           font-family: 'IBM Plex Mono', monospace;
@@ -481,8 +481,8 @@ export default function CouncilReReadPage() {
 
         .nav-link:hover,
         .small-btn:hover {
-          color: #c8935a;
-          border-color: #c8935a;
+          color: #93c5fd;
+          border-color: #93c5fd;
         }
 
         .masthead {
@@ -498,7 +498,7 @@ export default function CouncilReReadPage() {
           font-family: 'IBM Plex Mono', monospace;
           font-size: 11px;
           letter-spacing: 0.2em;
-          color: #c8935a;
+          color: #93c5fd;
           text-transform: uppercase;
           margin-bottom: 12px;
         }
@@ -513,7 +513,7 @@ export default function CouncilReReadPage() {
 
         .subtitle {
           margin-top: 16px;
-          color: #aaa096;
+          color: #cbd5e1;
           line-height: 1.7;
           max-width: 820px;
           font-size: 17px;
@@ -547,7 +547,7 @@ export default function CouncilReReadPage() {
         }
 
         .panel-note {
-          color: #9a9186;
+          color: #cbd5e1;
           font-size: 15px;
           line-height: 1.65;
           margin-bottom: 18px;
@@ -559,7 +559,7 @@ export default function CouncilReReadPage() {
           font-size: 11px;
           font-weight: 700;
           letter-spacing: 0.13em;
-          color: #7b7168;
+          color: #94a3b8;
           text-transform: uppercase;
           margin-bottom: 8px;
         }
@@ -568,9 +568,9 @@ export default function CouncilReReadPage() {
         .textarea,
         .select {
           width: 100%;
-          background: #11100e;
+          background: #0f172a;
           border: 1px solid #302a24;
-          color: #f0ece4;
+          color: #eef4ff;
           outline: none;
           border-radius: 16px;
           padding: 14px 16px;
@@ -591,7 +591,7 @@ export default function CouncilReReadPage() {
         .input:focus,
         .textarea:focus,
         .select:focus {
-          border-color: #c8935a;
+          border-color: #93c5fd;
         }
 
         .primary-btn {
@@ -599,9 +599,9 @@ export default function CouncilReReadPage() {
           min-height: 54px;
           margin-top: 14px;
           border-radius: 15px;
-          border: 1px solid #c8935a;
-          background: #c8935a;
-          color: #0e0d0b;
+          border: 1px solid #93c5fd;
+          background: #93c5fd;
+          color: #060b16;
           font-family: 'IBM Plex Mono', monospace;
           font-size: 11px;
           font-weight: 900;
@@ -634,7 +634,7 @@ export default function CouncilReReadPage() {
           justify-content: center;
           border: 1px solid #302a24;
           background: #16120e;
-          color: #c8935a;
+          color: #93c5fd;
           border-radius: 14px;
           padding: 12px 14px;
           cursor: pointer;
@@ -646,7 +646,7 @@ export default function CouncilReReadPage() {
         }
 
         .tiny-note {
-          color: #8f867b;
+          color: #cbd5e1;
           font-size: 13px;
           line-height: 1.5;
           margin-top: 10px;
@@ -673,7 +673,7 @@ export default function CouncilReReadPage() {
         }
 
         .saved a {
-          color: #c8935a;
+          color: #93c5fd;
           font-weight: 700;
         }
 
@@ -681,14 +681,14 @@ export default function CouncilReReadPage() {
           font-family: 'IBM Plex Mono', monospace;
           font-size: 11px;
           letter-spacing: 0.08em;
-          color: #7b7168;
+          color: #94a3b8;
           text-transform: uppercase;
           margin-top: 6px;
         }
 
         .report-card {
           border: 1px solid #26211c;
-          background: #11100e;
+          background: #0f172a;
           border-radius: 24px;
           padding: 24px;
           margin-top: 18px;
@@ -705,7 +705,7 @@ export default function CouncilReReadPage() {
           font-family: 'Cormorant Garamond', serif;
           font-size: 25px;
           font-weight: 700;
-          color: #f0ece4;
+          color: #eef4ff;
           border-bottom: 1px solid #2a2520;
           padding-bottom: 10px;
           margin: 30px 0 14px;
@@ -715,14 +715,14 @@ export default function CouncilReReadPage() {
           font-family: 'IBM Plex Mono', monospace;
           font-size: 12px;
           letter-spacing: 0.12em;
-          color: #c8935a;
+          color: #93c5fd;
           text-transform: uppercase;
           margin-top: 22px;
         }
 
         .para,
         .report-list li {
-          color: #d4cfc7;
+          color: #dbeafe;
           font-size: 16px;
           font-weight: 300;
           line-height: 1.8;
@@ -747,23 +747,23 @@ export default function CouncilReReadPage() {
       <div className="wrap">
         <nav className="top-nav">
           <Link className="nav-link" href="/projects">
-            Back to Projects
+            Back to My Work
           </Link>
 
           <div className="nav-actions">
             <Link className="nav-link" href="/submit">
-              Run The Council
+              Check Writing
             </Link>
 
             <Link className="nav-link" href="/dashboard">
-              Dashboard
+              Reports
             </Link>
           </div>
         </nav>
 
         <header className="masthead">
-          <div className="eyebrow">HOVEL EDITOR MEMORY</div>
-          <h1 className="title">Council Re-Read.</h1>
+          <div className="eyebrow">Compare Drafts</div>
+          <h1 className="title">Compare Drafts</h1>
           <p className="subtitle">
             Compare a revised draft against an earlier saved manuscript snapshot.
             Re-Read only works when you have chosen to save draft text inside a project.
@@ -775,15 +775,15 @@ export default function CouncilReReadPage() {
 
         {reportId && (
           <div className="saved">
-            Council Re-Read saved.{" "}
-            <Link href={`/reports/${reportId}`}>Open saved Re-Read report</Link>
+            Compare Drafts report saved.{" "}
+            <Link href={`/reports/${reportId}`}>Open Saved Report</Link>
           </div>
         )}
 
         <section className="grid">
           <aside>
             <div className="panel">
-              <div className="panel-title">1. Choose the old draft</div>
+              <div className="panel-title">1. Pick the old draft</div>
               <p className="panel-note">
                 Pick the saved manuscript snapshot you want the revised draft compared against.
               </p>
@@ -812,7 +812,7 @@ export default function CouncilReReadPage() {
 
               <div style={{ height: "16px" }} />
 
-              <label className="field-label">Earlier saved version</label>
+              <label className="field-label">Old saved draft</label>
               <select
                 className="select"
                 value={baseVersionId}
@@ -824,7 +824,7 @@ export default function CouncilReReadPage() {
                     ? "Loading versions..."
                     : versions.length === 0
                       ? "No saved versions in this project"
-                      : "Select earlier draft"}
+                      : "Pick old draft"}
                 </option>
                 {versions.map((version) => (
                   <option key={version.id} value={version.id}>
@@ -844,7 +844,7 @@ export default function CouncilReReadPage() {
             <div className="panel">
               <div className="panel-title">2. Name the new draft</div>
 
-              <label className="field-label">Re-Read report title</label>
+              <label className="field-label">Name this comparison</label>
               <input
                 className="input"
                 value={title}
@@ -855,7 +855,7 @@ export default function CouncilReReadPage() {
 
               <div style={{ height: "16px" }} />
 
-              <label className="field-label">New version label</label>
+              <label className="field-label">New draft label</label>
               <input
                 className="input"
                 value={versionLabel}
@@ -870,7 +870,7 @@ export default function CouncilReReadPage() {
                   gap: "12px",
                   alignItems: "flex-start",
                   marginTop: "16px",
-                  color: "#d4cfc7",
+                  color: "#dbeafe",
                   lineHeight: 1.55,
                 }}
               >
@@ -891,7 +891,7 @@ export default function CouncilReReadPage() {
             </div>
 
             <div className="panel">
-              <div className="panel-title">3. Revision notes</div>
+              <div className="panel-title">3. What did you try to fix?</div>
               <p className="panel-note">
                 Optional, but useful. Tell The Council what you tried to fix.
               </p>
@@ -910,7 +910,7 @@ export default function CouncilReReadPage() {
                 disabled={!readyToRun}
                 onClick={runReRead}
               >
-                {loading ? "Running Re-Read..." : "Run Council Re-Read"}
+                {loading ? "Comparing Drafts..." : "Run Council Re-Read"}
               </button>
 
               {tooLong && (
@@ -974,3 +974,5 @@ export default function CouncilReReadPage() {
     </main>
   );
 }
+
+

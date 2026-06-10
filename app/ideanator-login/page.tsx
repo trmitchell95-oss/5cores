@@ -14,8 +14,8 @@ export default function IdeanatorLoginRedirectPage() {
         minHeight: "100vh",
         display: "grid",
         placeItems: "center",
-        background: "#0e0d0b",
-        color: "#f0ece4",
+        background: "#060b16",
+        color: "#eef4ff",
         padding: 24,
         fontFamily: "Georgia, serif",
       }}
@@ -25,7 +25,7 @@ export default function IdeanatorLoginRedirectPage() {
           width: "100%",
           maxWidth: 520,
           border: "1px solid #2a2520",
-          background: "#161410",
+          background: "#0f172a",
           borderRadius: 28,
           padding: 34,
           boxShadow: "0 24px 70px rgba(0,0,0,0.4)",
@@ -33,7 +33,7 @@ export default function IdeanatorLoginRedirectPage() {
       >
         <div
           style={{
-            color: "#c8935a",
+            color: "#93c5fd",
             fontFamily: "monospace",
             letterSpacing: "0.18em",
             textTransform: "uppercase",
@@ -49,10 +49,11 @@ export default function IdeanatorLoginRedirectPage() {
           Opening sign-in...
         </h1>
 
-        <p style={{ color: "#aaa096", lineHeight: 1.6, marginTop: 16 }}>
+        <p style={{ color: "#cbd5e1", lineHeight: 1.6, marginTop: 16 }}>
           Sending you to the new magic-link login.
         </p>
       </section>
     </main>
   );
 }
+
