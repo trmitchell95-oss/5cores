@@ -706,60 +706,11 @@ export default function IdeanatorPage() {
  <section className="intake-card">
  <div className="section-heading">
  <p className="eyebrow">STEP 1</p>
- <h2>What is your idea?</h2>
+ <h2>Tell us your idea.</h2>
  <p>
- Do not worry about sounding professional. Just type the idea, rough notes,
- half-built plan, product sketch, story seed, invention detail, or confused ramble.
- We will help make sense of it one plain step at a time.
- </p>
- </div>
- <section className="council-flow" aria-label="Council workbench path">
- <div className="council-flow-header">
- <span>What happens next</span>
- <strong>No computer words. No guessing.</strong>
- </div>
-
- <div className="council-flow-grid">
- {councilFlow.map((step, index) => (
- <article key={step.name} className="council-flow-card">
- <span>{index + 1}</span>
- <strong>{step.name}</strong>
- <h3>{step.title}</h3>
- <p>{step.body}</p>
- </article>
- ))}
- </div>
- </section>
- <div className="first-idea-card">
- <span>First time in the shop?</span>
- <p>
- Do not overthink it. This is built for the first messy version of an idea.
- Paste the messy thing that keeps circling your head.
- </p>
-
- <ol>
- <li>Name it if it has a name. Leave it blank if it does not.</li>
- <li>Pick the closest kind of idea. Guessing is fine.</li>
- <li>Tell us what kind of help you want, then type the raw idea in the big box.</li>
- </ol>
- </div>
-
- <div className="long-doc-note">
- <span>Messy is allowed.</span>
- <p>
- This bay can handle serious concept notes, invention details,
- diagram explanations, market thoughts, feature lists, and messy
- working documents up to 60,000 characters. Do not paste anything
- you are not comfortable submitting for analysis.
- </p>
- </div>
-
- <div className="beta-run-note">
- <span>Beta limit</span>
- <p>
- You can explore the page, but sign-in is required to run an idea check. Beta users
- currently get 5 Ideanator runs per day so the app does not get fed
- a dump truck full of tokens before it can pay for its own gas.
+ Type it like you would explain it to a friend. A few sentences are enough.
+ You can add rough notes, examples, or questions if you have them.
+ You do not need a business plan, a perfect name, or fancy words.
  </p>
  </div>
 
