@@ -1858,6 +1858,123 @@ export default function IdeanatorPage() {
  }
  }
 
+
+ /* =========================================================
+    MANUSCRIPT READABILITY OVERRIDES
+    Make the intake look like a readable working page.
+    ========================================================= */
+
+ .intake-card {
+ background:
+ linear-gradient(90deg, rgba(185, 28, 28, 0.22) 0 2px, transparent 2px 100%),
+ repeating-linear-gradient(
+ 180deg,
+ #fffaf0 0,
+ #fffaf0 31px,
+ #d9e8ff 32px,
+ #fffaf0 33px
+ ) !important;
+ color: #20150a !important;
+ border: 1px solid rgba(120, 53, 15, 0.34) !important;
+ box-shadow:
+ 0 28px 90px rgba(0, 0, 0, 0.34),
+ inset 58px 0 0 rgba(185, 28, 28, 0.08) !important;
+ }
+
+ .intake-card .section-heading,
+ .intake-card .idea-form {
+ padding-left: clamp(18px, 5vw, 64px) !important;
+ }
+
+ .intake-card .eyebrow,
+ .intake-card h2,
+ .intake-card p,
+ .intake-card label span,
+ .intake-card summary,
+ .intake-card strong {
+ color: #20150a !important;
+ }
+
+ .intake-card h2 {
+ font-family: Georgia, "Times New Roman", serif !important;
+ font-weight: 800 !important;
+ letter-spacing: -0.04em !important;
+ }
+
+ .intake-card .section-heading p {
+ max-width: 760px !important;
+ color: #3f2a16 !important;
+ font-size: 1.18rem !important;
+ }
+
+ .intake-card textarea {
+ min-height: 330px !important;
+ background:
+ repeating-linear-gradient(
+ 180deg,
+ rgba(255, 255, 255, 0.84) 0,
+ rgba(255, 255, 255, 0.84) 31px,
+ rgba(147, 197, 253, 0.5) 32px,
+ rgba(255, 255, 255, 0.84) 33px
+ ) !important;
+ color: #111827 !important;
+ border: 2px solid rgba(120, 53, 15, 0.38) !important;
+ border-radius: 14px !important;
+ font-family: Georgia, "Times New Roman", serif !important;
+ font-size: 1.2rem !important;
+ line-height: 1.65 !important;
+ box-shadow:
+ inset 0 2px 14px rgba(120, 53, 15, 0.1),
+ 0 12px 32px rgba(120, 53, 15, 0.12) !important;
+ }
+
+ .intake-card textarea::placeholder {
+ color: rgba(31, 41, 55, 0.5) !important;
+ }
+
+ .intake-card .idea-limit-note {
+ background: rgba(255, 250, 240, 0.86) !important;
+ border: 1px solid rgba(120, 53, 15, 0.22) !important;
+ }
+
+ .intake-card .idea-limit-note p,
+ .intake-card .idea-limit-note strong {
+ color: #3f2a16 !important;
+ }
+
+ .intake-card .optional-details {
+ background: rgba(255, 250, 240, 0.78) !important;
+ border: 1px dashed rgba(120, 53, 15, 0.4) !important;
+ }
+
+ .intake-card input,
+ .intake-card select {
+ background: #fffaf0 !important;
+ color: #111827 !important;
+ border: 1px solid rgba(120, 53, 15, 0.38) !important;
+ }
+
+ .intake-card input::placeholder {
+ color: rgba(31, 41, 55, 0.52) !important;
+ }
+
+ .intake-card .field-help {
+ color: #4b3420 !important;
+ }
+
+ .intake-card .primary-button {
+ background: linear-gradient(180deg, #2563eb, #1d4ed8) !important;
+ color: #ffffff !important;
+ border-color: rgba(30, 64, 175, 0.7) !important;
+ box-shadow: 0 16px 38px rgba(37, 99, 235, 0.28) !important;
+ }
+
+ .intake-card .secondary-button {
+ background: rgba(255, 250, 240, 0.86) !important;
+ color: #1f1309 !important;
+ border-color: rgba(120, 53, 15, 0.38) !important;
+ }
+
 `}</style>
  </main>
  );
