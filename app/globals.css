@@ -1,4 +1,4 @@
-﻿@import "tailwindcss";
+@import "tailwindcss";
 
 :root {
   --background: #ffffff;
@@ -2423,3 +2423,34 @@ body.hovel-easy-mode .side-text {
 }
 
 /* SUPPORT EASY END */
+
+/* =========================================================
+   HOVEL IDEANATOR DESKTOP DOCK CLEANUP
+   Keep Beta Terms out of the center of the workbench.
+   Phone layout still uses the existing bottom dock.
+   ========================================================= */
+
+@media (min-width: 521px) {
+  .hovel-beta-terms-link {
+    position: fixed !important;
+    left: 22px !important;
+    bottom: 22px !important;
+    transform: none !important;
+    z-index: 9998;
+    border: 1px solid rgba(147, 197, 253, 0.32);
+    background: rgba(15, 23, 42, 0.86);
+    color: rgba(240, 236, 228, 0.7);
+    border-radius: 999px;
+    padding: 10px 14px;
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    font-family: monospace;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    text-decoration: none;
+    box-shadow: 0 18px 55px rgba(0, 0, 0, 0.28);
+  }
+}

@@ -206,12 +206,12 @@ export default function WorkshopPage() {
             radial-gradient(circle at bottom right, rgba(148, 163, 184, 0.22), transparent 30rem),
             linear-gradient(135deg, #060b16 0%, #0b1020 52%, #111827 100%);
           color: #eef4ff;
-          padding: 28px 20px 110px;
+          padding: 18px 20px 96px;
           font-family: Arial, Helvetica, sans-serif;
         }
 
         .wrap {
-          width: min(1120px, 100%);
+          width: min(1180px, 100%);
           margin: 0 auto;
         }
 
@@ -228,7 +228,7 @@ export default function WorkshopPage() {
 
         .hero {
           border-radius: 34px;
-          padding: clamp(28px, 5vw, 54px);
+          padding: clamp(22px, 3.4vw, 38px);
           margin-bottom: 16px;
         }
 
@@ -251,19 +251,19 @@ export default function WorkshopPage() {
         }
 
         .hero h1 {
-          margin: 24px 0 0;
+          margin: 16px 0 0;
           max-width: 900px;
-          font-size: clamp(3.2rem, 8vw, 6.8rem);
-          line-height: 0.92;
+          font-size: clamp(2.75rem, 6vw, 5.15rem);
+          line-height: 0.94;
           letter-spacing: -0.06em;
         }
 
         .subhead {
           max-width: 760px;
           color: #dbeafe;
-          font-size: clamp(1.25rem, 2.4vw, 1.6rem);
+          font-size: clamp(1.12rem, 1.9vw, 1.35rem);
           line-height: 1.55;
-          margin: 22px 0 0;
+          margin: 14px 0 0;
         }
 
         .easyButton,
@@ -288,11 +288,11 @@ export default function WorkshopPage() {
         }
 
         .startHelp {
-          margin-top: 22px;
+          margin-top: 14px;
           border-left: 6px solid #93c5fd;
           background: rgba(255, 255, 255, 0.07);
           border-radius: 18px;
-          padding: 18px;
+          padding: 14px 16px;
           color: #dbeafe;
           font-size: 1.2rem;
           line-height: 1.55;
@@ -313,13 +313,13 @@ export default function WorkshopPage() {
 
         .choice {
           display: grid;
-          grid-template-columns: 72px minmax(0, 1fr);
-          gap: 20px;
-          border-radius: 28px;
-          padding: 24px;
+          grid-template-columns: 58px minmax(0, 1fr);
+          gap: 16px;
+          border-radius: 24px;
+          padding: 18px;
           color: inherit;
           text-decoration: none;
-          min-height: 245px;
+          min-height: 188px;
         }
 
         .choiceBest {
@@ -335,14 +335,14 @@ export default function WorkshopPage() {
         }
 
         .number {
-          width: 64px;
-          height: 64px;
-          border-radius: 22px;
+          width: 52px;
+          height: 52px;
+          border-radius: 18px;
           display: grid;
           place-items: center;
           background: #dbeafe;
           color: #07111f;
-          font-size: 2rem;
+          font-size: 1.55rem;
           font-weight: 900;
           font-family: monospace;
         }
@@ -350,15 +350,15 @@ export default function WorkshopPage() {
         .choice h2 {
           margin: 0;
           color: #ffffff;
-          font-size: clamp(2rem, 4vw, 3.1rem);
+          font-size: clamp(1.6rem, 3vw, 2.35rem);
           line-height: 1;
         }
 
         .choice p {
-          margin: 14px 0 20px;
+          margin: 10px 0 14px;
           color: #cbd5e1;
-          font-size: 1.18rem;
-          line-height: 1.55;
+          font-size: 1.04rem;
+          line-height: 1.5;
         }
 
         .choice strong {
