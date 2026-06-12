@@ -102,7 +102,7 @@ const councilFlow = [
  body: "Hovel Editor can turn the strongest version into a serious document when you are ready.",
  },
 ];
-const IDEANATOR_MAX_CHARS = 60000;
+const IDEANATOR_MAX_CHARS = 42000;
 
 function normalizeIdeaName(value: string) {
  const cleaned = value.trim().replace(/\s+/g, " ");
@@ -410,7 +410,7 @@ export default function IdeanatorPage() {
 
  if (ideaTooLong) {
  setErrorMessage(
- "This idea dump is over 60,000 characters. Trim it down to the useful chaos before we put it on the lift."
+ "This idea dump is over 42,000 characters. Trim it down to the useful chaos before we put it on the lift."
  );
  setStage("intake");
  return;
