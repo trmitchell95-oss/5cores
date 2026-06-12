@@ -1,4 +1,4 @@
-﻿import Link from "next/link";
+import Link from "next/link";
 
 export default function NotFoundPage() {
   return (
@@ -6,7 +6,7 @@ export default function NotFoundPage() {
       <style>{`
         body {
           margin: 0;
-          background: #060b16;
+          background: #11100c;
         }
 
         .not-found-shell {
@@ -14,7 +14,7 @@ export default function NotFoundPage() {
           background:
             radial-gradient(circle at top left, rgba(200,147,90,0.15), transparent 34rem),
             radial-gradient(circle at bottom right, rgba(90,124,200,0.1), transparent 34rem),
-            #060b16;
+            #11100c;
           color: #eef4ff;
           padding: 48px 24px;
           font-family: Arial, sans-serif;
@@ -32,7 +32,7 @@ export default function NotFoundPage() {
         }
 
         .eyebrow {
-          color: #93c5fd;
+          color: #d88a1f;
           font-family: monospace;
           letter-spacing: 0.22em;
           text-transform: uppercase;
@@ -74,14 +74,14 @@ export default function NotFoundPage() {
         }
 
         .button {
-          background: #93c5fd;
-          color: #060b16;
-          border: 1px solid #93c5fd;
+          background: #d88a1f;
+          color: #11100c;
+          border: 1px solid #d88a1f;
         }
 
         .button-dark {
-          background: #0f172a;
-          color: #93c5fd;
+          background: #332115;
+          color: #d88a1f;
           border: 1px solid #302a24;
         }
 
@@ -104,7 +104,41 @@ export default function NotFoundPage() {
             text-align: center;
           }
         }
-      `}</style>
+      
+          /* =========================================================
+             NOT FOUND RETRO FINAL OVERRIDES
+             Directly fixes old blue 404 page classes.
+             ========================================================= */
+
+          .not-found-shell {
+            background:
+              radial-gradient(circle at 14% 0%, rgba(181, 90, 28, 0.25), transparent 32rem),
+              radial-gradient(circle at 88% 8%, rgba(91, 117, 55, 0.16), transparent 28rem),
+              linear-gradient(135deg, #28180d 0%, #11100c 48%, #2b1a0f 100%) !important;
+            color: #f8ecd2 !important;
+          }
+
+          .not-found-shell .card {
+            background:
+              linear-gradient(180deg, rgba(51, 33, 21, 0.97), rgba(24, 19, 14, 0.97)) !important;
+            color: #f8ecd2 !important;
+            border-color: rgba(222, 176, 96, 0.42) !important;
+          }
+
+          .not-found-shell h1 {
+            color: #fff1cf !important;
+            font-family: Georgia, "Times New Roman", serif !important;
+          }
+
+          .not-found-shell .button,
+          .not-found-shell .button-dark {
+            background:
+              linear-gradient(180deg, #d88a1f, #8c4e11) !important;
+            color: #fff8e7 !important;
+            border-color: rgba(255, 220, 145, 0.68) !important;
+          }
+
+`}</style>
 
       <section className="card">
         <div className="eyebrow">404</div>
@@ -125,4 +159,3 @@ export default function NotFoundPage() {
     </main>
   );
 }
-

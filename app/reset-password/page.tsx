@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useEffect, useMemo, useState } from "react";
 import { createClient } from "@supabase/supabase-js";
@@ -17,7 +17,7 @@ function isIdeanatorHost() {
 }
 
 function getProductLabel(isIdeanator: boolean) {
-  return isIdeanator ? "The Ideanator" : "HOVEL Editor";
+  return isIdeanator ? "The Ideanator" : "HOVEL Ideanator";
 }
 
 function getDestination(isIdeanator: boolean) {
@@ -109,12 +109,12 @@ export default function ResetPasswordPage() {
 
         body {
           margin: 0;
-          background: #060b16;
+          background: #11100c;
         }
 
         .reset-shell {
           min-height: 100vh;
-          background: #060b16;
+          background: #11100c;
           color: #eef4ff;
           font-family: Georgia, serif;
           padding: 48px 24px;
@@ -124,7 +124,7 @@ export default function ResetPasswordPage() {
           background:
             radial-gradient(circle at top left, rgba(245, 158, 11, 0.28), transparent 34rem),
             radial-gradient(circle at bottom right, rgba(255, 202, 118, 0.12), transparent 32rem),
-            linear-gradient(135deg, #0b1020 0%, #0f172a 46%, #111827 100%);
+            linear-gradient(135deg, #28180d 0%, #332115 46%, #11100c 100%);
         }
 
         .wrap {
@@ -137,7 +137,7 @@ export default function ResetPasswordPage() {
         .card {
           width: 100%;
           max-width: 480px;
-          background: #0f172a;
+          background: #332115;
           border: 1px solid #2a2520;
           padding: 36px;
           box-shadow: 0 24px 80px rgba(0, 0, 0, 0.34);
@@ -161,20 +161,20 @@ export default function ResetPasswordPage() {
         }
 
         .back-link:hover {
-          color: #93c5fd;
+          color: #d88a1f;
         }
 
         .eyebrow {
           font-family: 'IBM Plex Mono', monospace;
           font-size: 11px;
           letter-spacing: 0.2em;
-          color: #93c5fd;
+          color: #d88a1f;
           text-transform: uppercase;
           margin-bottom: 12px;
         }
 
         .idea-reset .eyebrow {
-          color: #93c5fd;
+          color: #d88a1f;
         }
 
         .title {
@@ -221,7 +221,7 @@ export default function ResetPasswordPage() {
         }
 
         .input:focus {
-          border-color: #93c5fd;
+          border-color: #d88a1f;
           box-shadow: 0 0 0 4px rgba(240, 179, 95, 0.13);
         }
 
@@ -240,7 +240,7 @@ export default function ResetPasswordPage() {
           transform: translateY(-50%);
           border: 1px solid rgba(255, 221, 159, 0.2);
           background: rgba(255, 255, 255, 0.04);
-          color: #93c5fd;
+          color: #d88a1f;
           border-radius: 10px;
           font-family: 'IBM Plex Mono', monospace;
           font-size: 10px;
@@ -257,8 +257,8 @@ export default function ResetPasswordPage() {
           border: 1px solid rgba(255, 241, 190, 0.7);
           border-radius: 999px;
           background:
-            radial-gradient(circle at 18px 50%, #dbeafe 0 4px, transparent 5px),
-            linear-gradient(180deg, #dbeafe 0%, #93c5fd 52%, #60a5fa 100%);
+            radial-gradient(circle at 18px 50%, #fff1cf 0 4px, transparent 5px),
+            linear-gradient(180deg, #fff1cf 0%, #d88a1f 52%, #8c4e11 100%);
           color: #18100a;
           font-family: 'IBM Plex Mono', monospace;
           font-size: 12px;
@@ -293,7 +293,48 @@ export default function ResetPasswordPage() {
           border-left: 2px solid #4a9c6a;
           color: #8bc99d;
         }
-      `}</style>
+      
+          /* =========================================================
+             RESET RETRO FINAL OVERRIDES
+             Directly fixes old blue reset-password page classes.
+             ========================================================= */
+
+          .reset-shell {
+            background:
+              radial-gradient(circle at 14% 0%, rgba(181, 90, 28, 0.25), transparent 32rem),
+              radial-gradient(circle at 88% 8%, rgba(91, 117, 55, 0.16), transparent 28rem),
+              linear-gradient(135deg, #28180d 0%, #11100c 48%, #2b1a0f 100%) !important;
+            color: #f8ecd2 !important;
+          }
+
+          .card {
+            background:
+              linear-gradient(180deg, rgba(51, 33, 21, 0.97), rgba(24, 19, 14, 0.97)) !important;
+            color: #f8ecd2 !important;
+            border-color: rgba(222, 176, 96, 0.42) !important;
+          }
+
+          .title {
+            color: #fff1cf !important;
+            font-family: Georgia, "Times New Roman", serif !important;
+          }
+
+          .input {
+            background: #fff8e7 !important;
+            color: #11110d !important;
+            border-color: rgba(83, 52, 26, 0.58) !important;
+          }
+
+          .button,
+          .back-link,
+          .password-toggle {
+            background:
+              linear-gradient(180deg, #d88a1f, #8c4e11) !important;
+            color: #fff8e7 !important;
+            border-color: rgba(255, 220, 145, 0.68) !important;
+          }
+
+`}</style>
 
       <div className="wrap">
         <section className="card">
@@ -375,4 +416,3 @@ export default function ResetPasswordPage() {
     </main>
   );
 }
-

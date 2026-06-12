@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useEffect, useMemo, useState } from "react";
 import { createClient } from "@supabase/supabase-js";
@@ -104,7 +104,7 @@ export default function LoginPage() {
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
   const [destination, setDestination] = useState("/dashboard");
-  const [productLabel, setProductLabel] = useState("HOVEL Editor");
+  const [productLabel, setProductLabel] = useState("HOVEL Ideanator");
   const [homeHref, setHomeHref] = useState("/");
 
   useEffect(() => {
@@ -204,8 +204,8 @@ export default function LoginPage() {
       style={{
         minHeight: "100vh",
         background: isIdeanatorLogin
-          ? "linear-gradient(135deg, #0b1020 0%, #0f172a 46%, #111827 100%)"
-          : "#060b16",
+          ? "linear-gradient(135deg, #28180d 0%, #332115 46%, #11100c 100%)"
+          : "#11100c",
         color: "#eef4ff",
         fontFamily: "Georgia, serif",
       }}
@@ -232,7 +232,7 @@ export default function LoginPage() {
         .login-card {
           width: 100%;
           max-width: 500px;
-          background: #0f172a;
+          background: #332115;
           border: 1px solid #2a2520;
           border-radius: 24px;
           padding: 36px;
@@ -262,20 +262,20 @@ export default function LoginPage() {
         }
 
         .login-back-link:hover {
-          color: #93c5fd;
+          color: #d88a1f;
         }
 
         .login-eyebrow {
           font-family: 'IBM Plex Mono', monospace;
           font-size: 11px;
           letter-spacing: 0.2em;
-          color: #93c5fd;
+          color: #d88a1f;
           text-transform: uppercase;
           margin-bottom: 12px;
         }
 
         .idea-login .login-eyebrow {
-          color: #93c5fd;
+          color: #d88a1f;
         }
 
         .login-title {
@@ -320,7 +320,7 @@ export default function LoginPage() {
 
         .login-input {
           width: 100%;
-          background: #060b16;
+          background: #11100c;
           border: 1px solid #2a2520;
           border-radius: 12px;
           color: #eef4ff;
@@ -338,11 +338,11 @@ export default function LoginPage() {
         }
 
         .login-input:focus {
-          border-color: #93c5fd;
+          border-color: #d88a1f;
         }
 
         .idea-login .login-input:focus {
-          border-color: #93c5fd;
+          border-color: #d88a1f;
           box-shadow: 0 0 0 4px rgba(240, 179, 95, 0.13);
         }
 
@@ -350,10 +350,10 @@ export default function LoginPage() {
           width: 100%;
           margin-top: 10px;
           padding: 16px 20px;
-          border: 1px solid #93c5fd;
+          border: 1px solid #d88a1f;
           border-radius: 14px;
-          background: #93c5fd;
-          color: #060b16;
+          background: #d88a1f;
+          color: #11100c;
           font-family: 'IBM Plex Mono', monospace;
           font-size: 13px;
           font-weight: 900;
@@ -365,14 +365,14 @@ export default function LoginPage() {
         }
 
         .login-button:hover:not(:disabled) {
-          background: #bfdbfe;
-          border-color: #bfdbfe;
+          background: #f5dfb4;
+          border-color: #f5dfb4;
         }
 
         .idea-login .login-button {
           background:
-            radial-gradient(circle at 18px 50%, #dbeafe 0 4px, transparent 5px),
-            linear-gradient(180deg, #dbeafe 0%, #93c5fd 52%, #60a5fa 100%);
+            radial-gradient(circle at 18px 50%, #fff1cf 0 4px, transparent 5px),
+            linear-gradient(180deg, #fff1cf 0%, #d88a1f 52%, #8c4e11 100%);
           color: #18100a;
           border: 1px solid rgba(255, 241, 190, 0.7);
           border-radius: 999px;
@@ -426,7 +426,7 @@ export default function LoginPage() {
         .login-terms-link {
           display: inline-block;
           margin-top: 8px;
-          color: #93c5fd;
+          color: #d88a1f;
           font-family: 'IBM Plex Mono', monospace;
           font-size: 10px;
           letter-spacing: 0.1em;
@@ -435,7 +435,7 @@ export default function LoginPage() {
         }
 
         .idea-login .login-terms-link {
-          color: #93c5fd;
+          color: #d88a1f;
         }
 
         .login-terms-link:hover {
@@ -448,7 +448,168 @@ export default function LoginPage() {
             border-radius: 20px;
           }
         }
-      `}</style>
+      
+          /* =========================================================
+             LOGIN RETRO FINAL OVERRIDES
+             Page-level fix because login has its own inline blue CSS.
+             ========================================================= */
+
+          html,
+          body,
+          main,
+          .login-page,
+          .login-shell {
+            background:
+              radial-gradient(circle at 14% 0%, rgba(181, 90, 28, 0.25), transparent 32rem),
+              radial-gradient(circle at 88% 8%, rgba(91, 117, 55, 0.16), transparent 28rem),
+              linear-gradient(135deg, #28180d 0%, #11100c 48%, #2b1a0f 100%) !important;
+            color: #f8ecd2 !important;
+          }
+
+          .login-card,
+          .login-panel,
+          form {
+            background:
+              linear-gradient(180deg, rgba(51, 33, 21, 0.97), rgba(24, 19, 14, 0.97)) !important;
+            color: #f8ecd2 !important;
+            border-color: rgba(222, 176, 96, 0.42) !important;
+            box-shadow:
+              0 24px 70px rgba(0, 0, 0, 0.42),
+              inset 0 1px 0 rgba(255, 238, 190, 0.08) !important;
+          }
+
+          .login-eyebrow,
+          .login-title,
+          .login-subtitle,
+          .login-note,
+          .login-card p,
+          .login-card label,
+          .login-card span {
+            background: transparent !important;
+            background-image: none !important;
+            text-shadow: none !important;
+          }
+
+          .login-eyebrow {
+            color: #d99a2b !important;
+            font-family: "Courier New", ui-monospace, monospace !important;
+            letter-spacing: 0.2em !important;
+          }
+
+          .login-title {
+            color: #fff1cf !important;
+            font-family: Georgia, "Times New Roman", serif !important;
+          }
+
+          .login-subtitle,
+          .login-note,
+          .login-card p {
+            color: #f8ecd2 !important;
+          }
+
+          .login-card input,
+          .login-card select,
+          .login-card textarea,
+          form input,
+          form select,
+          form textarea {
+            background: #fff8e7 !important;
+            color: #11110d !important;
+            border-color: rgba(83, 52, 26, 0.58) !important;
+            box-shadow: inset 0 2px 12px rgba(83, 52, 26, 0.12) !important;
+          }
+
+          .login-card input::placeholder,
+          form input::placeholder {
+            color: rgba(31, 28, 20, 0.48) !important;
+            opacity: 1 !important;
+          }
+
+          .login-card button,
+          .login-card a,
+          form button,
+          button[type="submit"] {
+            background:
+              linear-gradient(180deg, #d88a1f, #8c4e11) !important;
+            background-image:
+              linear-gradient(180deg, #d88a1f, #8c4e11) !important;
+            color: #fff8e7 !important;
+            border-color: rgba(255, 220, 145, 0.68) !important;
+            box-shadow:
+              inset 0 1px 0 rgba(255, 255, 255, 0.18),
+              0 12px 28px rgba(0, 0, 0, 0.28) !important;
+          }
+
+          .login-card button *,
+          .login-card a *,
+          form button * {
+            color: #fff8e7 !important;
+          }
+
+
+          /* =========================================================
+             LOGIN HARD BLUE KILL FINAL
+             Directly overrides the old Hovel Editor login classes.
+             ========================================================= */
+
+          .login-shell,
+          .idea-login {
+            background:
+              radial-gradient(circle at 14% 0%, rgba(181, 90, 28, 0.25), transparent 32rem),
+              radial-gradient(circle at 88% 8%, rgba(91, 117, 55, 0.16), transparent 28rem),
+              linear-gradient(135deg, #28180d 0%, #11100c 48%, #2b1a0f 100%) !important;
+          }
+
+          .login-card {
+            background:
+              linear-gradient(180deg, rgba(51, 33, 21, 0.97), rgba(24, 19, 14, 0.97)) !important;
+            border-color: rgba(222, 176, 96, 0.42) !important;
+          }
+
+          .login-eyebrow,
+          .login-title,
+          .login-subtitle,
+          .login-note {
+            background: transparent !important;
+            background-image: none !important;
+          }
+
+          .login-title {
+            color: #fff1cf !important;
+            font-family: Georgia, "Times New Roman", serif !important;
+          }
+
+          .login-eyebrow,
+          .login-label,
+          .login-terms-link {
+            color: #d88a1f !important;
+          }
+
+          .login-subtitle,
+          .login-note {
+            color: #f8ecd2 !important;
+          }
+
+          .login-input,
+          .idea-login .login-input {
+            background: #fff8e7 !important;
+            color: #11110d !important;
+            border-color: rgba(83, 52, 26, 0.58) !important;
+          }
+
+          .login-button,
+          .idea-login .login-button,
+          .login-back-link,
+          .idea-login .login-back-link {
+            background:
+              linear-gradient(180deg, #d88a1f, #8c4e11) !important;
+            background-image:
+              linear-gradient(180deg, #d88a1f, #8c4e11) !important;
+            color: #fff8e7 !important;
+            border-color: rgba(255, 220, 145, 0.68) !important;
+          }
+
+`}</style>
 
       <div className="login-wrap">
         <div className="login-card">
@@ -457,7 +618,7 @@ export default function LoginPage() {
           </a>
 
           <div className="login-eyebrow">
-            {isIdeanatorLogin ? "The Ideanator" : "HOVEL Editor"}
+            {isIdeanatorLogin ? "The Ideanator" : "HOVEL Ideanator"}
           </div>
 
           <div className="login-title">
@@ -467,7 +628,7 @@ export default function LoginPage() {
           <div className="login-subtitle">
             {isIdeanatorLogin
               ? "Enter your email. We will send you a secure link - no password needed. Click it and you are in."
-              : "Enter your email and we will send you a secure link. Click it and you are inside HOVEL Editor."}
+              : "Enter your email and we will send you a secure link. Click it and you are inside HOVEL Ideanator."}
           </div>
 
           <form onSubmit={handleSubmit}>
@@ -502,4 +663,3 @@ export default function LoginPage() {
     </div>
   );
 }
-

@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
@@ -137,8 +137,8 @@ export default function FeedbackPage() {
       style={{
         minHeight: "100vh",
         background: isIdeanator
-          ? "linear-gradient(135deg, #0b1020 0%, #0f172a 46%, #111827 100%)"
-          : "#060b16",
+          ? "linear-gradient(135deg, #28180d 0%, #332115 46%, #11100c 100%)"
+          : "#11100c",
         color: "#eef4ff",
         padding: "48px 24px",
         fontFamily: "Arial, sans-serif",
@@ -148,14 +148,14 @@ export default function FeedbackPage() {
         .feedback-shell {
           background:
             radial-gradient(circle at top left, rgba(200,147,90,0.13), transparent 34rem),
-            #060b16;
+            #11100c;
         }
 
         .idea-feedback {
           background:
             radial-gradient(circle at top left, rgba(245, 158, 11, 0.26), transparent 36rem),
             radial-gradient(circle at bottom right, rgba(255, 202, 118, 0.12), transparent 32rem),
-            linear-gradient(135deg, #0b1020 0%, #0f172a 46%, #111827 100%) !important;
+            linear-gradient(135deg, #28180d 0%, #332115 46%, #11100c 100%) !important;
         }
 
         .feedback-card {
@@ -172,17 +172,17 @@ export default function FeedbackPage() {
         }
 
         .top-link {
-          color: #93c5fd;
+          color: #d88a1f;
           text-decoration: none;
           font-family: monospace;
         }
 
         .idea-feedback .top-link {
-          color: #93c5fd;
+          color: #d88a1f;
         }
 
         .eyebrow {
-          color: #93c5fd;
+          color: #d88a1f;
           font-family: monospace;
           letter-spacing: 0.22em;
           text-transform: uppercase;
@@ -191,7 +191,7 @@ export default function FeedbackPage() {
         }
 
         .idea-feedback .eyebrow {
-          color: #93c5fd;
+          color: #d88a1f;
         }
 
         .title {
@@ -227,7 +227,7 @@ export default function FeedbackPage() {
           padding: 14px;
           margin-bottom: 16px;
           border-radius: 12px;
-          background: #060b16;
+          background: #11100c;
           color: #eef4ff;
           border: 1px solid #302a24;
           box-sizing: border-box;
@@ -244,8 +244,8 @@ export default function FeedbackPage() {
           min-height: 52px;
           border-radius: 14px;
           border: none;
-          background: #93c5fd;
-          color: #060b16;
+          background: #d88a1f;
+          color: #11100c;
           font-family: monospace;
           font-weight: 900;
           letter-spacing: 0.14em;
@@ -254,12 +254,58 @@ export default function FeedbackPage() {
 
         .idea-feedback .submit-button {
           background:
-            radial-gradient(circle at 18px 50%, #dbeafe 0 4px, transparent 5px),
-            linear-gradient(180deg, #dbeafe 0%, #93c5fd 52%, #60a5fa 100%);
+            radial-gradient(circle at 18px 50%, #fff1cf 0 4px, transparent 5px),
+            linear-gradient(180deg, #fff1cf 0%, #d88a1f 52%, #8c4e11 100%);
           border-radius: 999px;
           color: #18100a;
         }
-      `}</style>
+      
+          /* =========================================================
+             FEEDBACK RETRO FINAL OVERRIDES
+             Directly fixes old blue feedback page classes.
+             ========================================================= */
+
+          .feedback-shell {
+            background:
+              radial-gradient(circle at 14% 0%, rgba(181, 90, 28, 0.25), transparent 32rem),
+              radial-gradient(circle at 88% 8%, rgba(91, 117, 55, 0.16), transparent 28rem),
+              linear-gradient(135deg, #28180d 0%, #11100c 48%, #2b1a0f 100%) !important;
+            color: #f8ecd2 !important;
+          }
+
+          .feedback-card,
+          .form-card {
+            background:
+              linear-gradient(180deg, rgba(51, 33, 21, 0.97), rgba(24, 19, 14, 0.97)) !important;
+            color: #f8ecd2 !important;
+            border-color: rgba(222, 176, 96, 0.42) !important;
+          }
+
+          .title {
+            color: #fff1cf !important;
+            font-family: Georgia, "Times New Roman", serif !important;
+          }
+
+          .subtitle,
+          .field-label {
+            color: #f5dfb4 !important;
+          }
+
+          .field {
+            background: #fff8e7 !important;
+            color: #11110d !important;
+            border-color: rgba(83, 52, 26, 0.58) !important;
+          }
+
+          .submit-button,
+          .top-link {
+            background:
+              linear-gradient(180deg, #d88a1f, #8c4e11) !important;
+            color: #fff8e7 !important;
+            border-color: rgba(255, 220, 145, 0.68) !important;
+          }
+
+`}</style>
 
       <div style={{ maxWidth: 860, margin: "0 auto" }}>
         <nav
@@ -307,7 +353,7 @@ export default function FeedbackPage() {
           >
             You need to sign in before sending feedback.
             <br />
-            <Link href={loginHref} style={{ display: "inline-block", marginTop: 14, color: "#93c5fd" }}>
+            <Link href={loginHref} style={{ display: "inline-block", marginTop: 14, color: "#d88a1f" }}>
               Sign In
             </Link>
           </section>
@@ -415,6 +461,3 @@ export default function FeedbackPage() {
     </main>
   );
 }
-
-
-

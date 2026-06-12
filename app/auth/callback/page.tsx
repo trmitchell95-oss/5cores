@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useEffect, useState } from "react";
 import { createClient } from "@supabase/supabase-js";
@@ -143,7 +143,7 @@ export default function AuthCallbackPage() {
         minHeight: "100vh",
         display: "grid",
         placeItems: "center",
-        background: "#060b16",
+        background: "#11100c",
         color: "#eef4ff",
         padding: 24,
         fontFamily: "Georgia, serif",
@@ -154,7 +154,7 @@ export default function AuthCallbackPage() {
           width: "100%",
           maxWidth: 520,
           border: "1px solid #2a2520",
-          background: "#0f172a",
+          background: "#332115",
           borderRadius: 28,
           padding: 34,
           boxShadow: "0 24px 70px rgba(0,0,0,0.4)",
@@ -162,7 +162,7 @@ export default function AuthCallbackPage() {
       >
         <div
           style={{
-            color: "#93c5fd",
+            color: "#d88a1f",
             fontFamily: "monospace",
             letterSpacing: "0.18em",
             textTransform: "uppercase",
@@ -200,5 +200,3 @@ export default function AuthCallbackPage() {
     </main>
   );
 }
-
-

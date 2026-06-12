@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
@@ -461,7 +461,7 @@ export default function ProjectsPage() {
           background:
             radial-gradient(circle at top left, rgba(59, 130, 246, 0.24), transparent 34rem),
             radial-gradient(circle at bottom right, rgba(148, 163, 184, 0.18), transparent 30rem),
-            linear-gradient(135deg, #060b16 0%, #0b1020 52%, #111827 100%);
+            linear-gradient(135deg, #060b16 0%, #28180d 52%, #11100c 100%);
           color: #eef4ff;
           padding: 30px 20px 110px;
           font-family: Arial, Helvetica, sans-serif;
@@ -491,7 +491,7 @@ export default function ProjectsPage() {
 
         .eyebrow {
           margin: 0 0 12px;
-          color: #93c5fd;
+          color: #d88a1f;
           font-weight: 900;
           letter-spacing: 0.12em;
           text-transform: uppercase;
@@ -548,7 +548,7 @@ export default function ProjectsPage() {
         .quick-row a:first-child,
         .next-grid a:first-child,
         .panel button:not(.danger) {
-          background: linear-gradient(180deg, #dbeafe 0%, #93c5fd 55%, #60a5fa 100%);
+          background: linear-gradient(180deg, #fff1cf 0%, #d88a1f 55%, #8c4e11 100%);
           color: #07111f;
           border-color: rgba(219, 234, 254, 0.75);
         }
@@ -619,7 +619,7 @@ export default function ProjectsPage() {
         label {
           display: block;
           margin: 18px 0 8px;
-          color: #dbeafe;
+          color: #fff1cf;
           font-weight: 900;
           font-size: 1rem;
         }
@@ -627,7 +627,7 @@ export default function ProjectsPage() {
         input,
         textarea {
           width: 100%;
-          background: #0f172a;
+          background: #332115;
           color: #eef4ff;
           border: 1px solid rgba(147, 197, 253, 0.28);
           border-radius: 18px;
@@ -645,7 +645,7 @@ export default function ProjectsPage() {
 
         input:focus,
         textarea:focus {
-          border-color: #93c5fd;
+          border-color: #d88a1f;
           box-shadow: 0 0 0 4px rgba(147, 197, 253, 0.16);
         }
 
@@ -676,7 +676,7 @@ export default function ProjectsPage() {
         }
 
         .project-button.active {
-          background: linear-gradient(180deg, #dbeafe 0%, #93c5fd 55%, #60a5fa 100%);
+          background: linear-gradient(180deg, #fff1cf 0%, #d88a1f 55%, #8c4e11 100%);
           color: #07111f;
         }
 
@@ -737,7 +737,68 @@ export default function ProjectsPage() {
             width: 100%;
           }
         }
-      `}</style>
+      
+          /* =========================================================
+             MY WORK RETRO FINAL OVERRIDES
+             Directly fixes old blue My Work page classes.
+             ========================================================= */
+
+          .mywork-page {
+            background:
+              radial-gradient(circle at 14% 0%, rgba(181, 90, 28, 0.25), transparent 32rem),
+              radial-gradient(circle at 88% 8%, rgba(91, 117, 55, 0.16), transparent 28rem),
+              linear-gradient(135deg, #28180d 0%, #11100c 48%, #2b1a0f 100%) !important;
+            color: #f8ecd2 !important;
+          }
+
+          .mywork-hero,
+          .panel,
+          .detail-panel {
+            background:
+              linear-gradient(180deg, rgba(51, 33, 21, 0.97), rgba(24, 19, 14, 0.97)) !important;
+            color: #f8ecd2 !important;
+            border-color: rgba(222, 176, 96, 0.42) !important;
+          }
+
+          .mywork-hero h1,
+          .panel h2,
+          .detail-panel h2 {
+            color: #fff1cf !important;
+            font-family: Georgia, "Times New Roman", serif !important;
+          }
+
+          .quick-row a,
+          .project-button,
+          .project-button.active,
+          .item-actions a,
+          .item-actions button,
+          .danger {
+            background:
+              linear-gradient(180deg, #d88a1f, #8c4e11) !important;
+            background-image:
+              linear-gradient(180deg, #d88a1f, #8c4e11) !important;
+            color: #fff8e7 !important;
+            border-color: rgba(255, 220, 145, 0.68) !important;
+          }
+
+          .simple-next,
+          .saved-item,
+          .empty-box,
+          .section-block {
+            background:
+              linear-gradient(180deg, #f8e7c1 0%, #d7ad68 100%) !important;
+            color: #211408 !important;
+            border-color: rgba(83, 52, 26, 0.58) !important;
+          }
+
+          .simple-next *,
+          .saved-item *,
+          .empty-box *,
+          .section-block * {
+            color: #211408 !important;
+          }
+
+`}</style>
     </main>
   );
 }

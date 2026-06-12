@@ -862,6 +862,175 @@ export default function SphinxPage() {
             color: #fff3d3 !important;
           }
 
+
+          /* =========================================================
+             CLEAN WORDS BLACK BOX FIX V2
+             Use attribute selectors so Tailwind bracket classes match.
+             ========================================================= */
+
+          .sphinx-shell div[class*="border-dashed"],
+          .sphinx-shell label[class*="border-dashed"] {
+            background:
+              linear-gradient(180deg, #f8e7c1 0%, #d7ad68 100%) !important;
+            color: #211408 !important;
+            border-color: rgba(83, 52, 26, 0.58) !important;
+          }
+
+          .sphinx-shell div[class*="border-dashed"] *,
+          .sphinx-shell label[class*="border-dashed"] * {
+            color: #211408 !important;
+          }
+
+          .sphinx-shell label.inline-flex,
+          .sphinx-shell label.inline-flex * {
+            background:
+              linear-gradient(180deg, #d88a1f, #8c4e11) !important;
+            color: #fff8e7 !important;
+            border-color: rgba(255, 220, 145, 0.68) !important;
+          }
+
+          .sphinx-shell div[class*="min-h-[540px]"],
+          .sphinx-shell div[class*="min-h-[500px]"] {
+            background: #fff8e7 !important;
+            color: #11110d !important;
+            border-color: rgba(83, 52, 26, 0.58) !important;
+          }
+
+          .sphinx-shell div[class*="min-h-[540px]"] *,
+          .sphinx-shell div[class*="min-h-[500px]"] * {
+            color: #11110d !important;
+          }
+
+          .sphinx-shell div[class*="min-h-[540px]"] .animate-spin,
+          .sphinx-shell div[class*="min-h-[500px]"] .animate-spin {
+            border-color: rgba(83, 52, 26, 0.24) !important;
+            border-top-color: #d88a1f !important;
+          }
+
+          .sphinx-shell button:disabled,
+          .sphinx-shell button:disabled *,
+          .sphinx-shell a[aria-disabled="true"],
+          .sphinx-shell a[aria-disabled="true"] * {
+            opacity: 0.72 !important;
+          }
+
+
+          /* =========================================================
+             CLEAN WORDS FINAL READABILITY HAMMER V3
+             Any old black result/upload box becomes readable.
+             ========================================================= */
+
+          .sphinx-shell div[class*="bg-zinc"],
+          .sphinx-shell div[class*="bg-slate"],
+          .sphinx-shell div[class*="bg-gray"],
+          .sphinx-shell div[class*="border-dashed"],
+          .sphinx-shell div[class*="min-h-"] {
+            background: #fff8e7 !important;
+            color: #11110d !important;
+            border-color: rgba(83, 52, 26, 0.58) !important;
+          }
+
+          .sphinx-shell div[class*="bg-zinc"] *,
+          .sphinx-shell div[class*="bg-slate"] *,
+          .sphinx-shell div[class*="bg-gray"] *,
+          .sphinx-shell div[class*="border-dashed"] *,
+          .sphinx-shell div[class*="min-h-"] * {
+            color: #11110d !important;
+          }
+
+          .sphinx-shell label.inline-flex,
+          .sphinx-shell label.inline-flex * {
+            background:
+              linear-gradient(180deg, #d88a1f, #8c4e11) !important;
+            color: #fff8e7 !important;
+            border-color: rgba(255, 220, 145, 0.68) !important;
+          }
+
+          .sphinx-shell .animate-spin {
+            border-color: rgba(83, 52, 26, 0.24) !important;
+            border-top-color: #d88a1f !important;
+          }
+
+
+          /* =========================================================
+             CLEAN WORDS PAGE-LEVEL READABILITY FINAL
+             Page-level fix beats the inline old dark boxes.
+             ========================================================= */
+
+          .sphinx-shell section.mb-8 {
+            background:
+              linear-gradient(180deg, #332115 0%, #18130e 100%) !important;
+            color: #f8ecd2 !important;
+            border-color: rgba(222, 176, 96, 0.42) !important;
+          }
+
+          .sphinx-shell section.mb-8 h1 {
+            color: #fff1cf !important;
+            font-family: Georgia, "Times New Roman", serif !important;
+            text-shadow: none !important;
+          }
+
+          .sphinx-shell section.mb-8 p {
+            color: #f5dfb4 !important;
+          }
+
+          .sphinx-shell div[class*="bg-zinc"],
+          .sphinx-shell div[class*="bg-slate"],
+          .sphinx-shell div[class*="bg-gray"],
+          .sphinx-shell div[class*="border-dashed"],
+          .sphinx-shell div[class*="min-h"],
+          .sphinx-shell div[class*="rounded-2xl"][class*="border"] {
+            background: #fff8e7 !important;
+            background-image: none !important;
+            color: #11110d !important;
+            border-color: rgba(83, 52, 26, 0.58) !important;
+          }
+
+          .sphinx-shell div[class*="bg-zinc"] *,
+          .sphinx-shell div[class*="bg-slate"] *,
+          .sphinx-shell div[class*="bg-gray"] *,
+          .sphinx-shell div[class*="border-dashed"] *,
+          .sphinx-shell div[class*="min-h"] *,
+          .sphinx-shell div[class*="rounded-2xl"][class*="border"] * {
+            color: #11110d !important;
+          }
+
+          .sphinx-shell textarea,
+          .sphinx-shell input,
+          .sphinx-shell select {
+            background: #fff8e7 !important;
+            color: #11110d !important;
+            border-color: rgba(83, 52, 26, 0.58) !important;
+          }
+
+          .sphinx-shell textarea {
+            background:
+              repeating-linear-gradient(
+                180deg,
+                #fffaf0 0,
+                #fffaf0 30px,
+                rgba(74, 111, 128, 0.34) 31px,
+                #fffaf0 32px
+              ) !important;
+          }
+
+          .sphinx-shell button,
+          .sphinx-shell a[class*="rounded"],
+          .sphinx-shell label.inline-flex {
+            background:
+              linear-gradient(180deg, #d88a1f, #8c4e11) !important;
+            background-image:
+              linear-gradient(180deg, #d88a1f, #8c4e11) !important;
+            color: #fff8e7 !important;
+            border-color: rgba(255, 220, 145, 0.68) !important;
+          }
+
+          .sphinx-shell button *,
+          .sphinx-shell a[class*="rounded"] *,
+          .sphinx-shell label.inline-flex * {
+            color: #fff8e7 !important;
+          }
+
 `}</style>
       <div className="mx-auto max-w-6xl">
         <nav className="mb-6 flex flex-col gap-3 rounded-3xl border border-zinc-800 bg-zinc-900/80 p-4 shadow-xl md:flex-row md:items-center md:justify-between">
