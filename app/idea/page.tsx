@@ -1975,6 +1975,158 @@ export default function IdeanatorPage() {
  border-color: rgba(120, 53, 15, 0.38) !important;
  }
 
+
+ /* =========================================================
+    HARD READABLE PAPER OVERRIDES
+    Force the noob intake to be readable.
+    ========================================================= */
+
+ .ideanator-page {
+ padding-top: 96px !important;
+ background:
+ radial-gradient(circle at top left, rgba(180, 83, 9, 0.18), transparent 34rem),
+ linear-gradient(135deg, #111827 0%, #0f172a 46%, #111827 100%) !important;
+ }
+
+ .topbar {
+ margin-bottom: 14px !important;
+ }
+
+ .topbar h1 {
+ font-size: clamp(2.2rem, 5vw, 4.8rem) !important;
+ line-height: 0.95 !important;
+ }
+
+ .ideanator-page .shell .intake-card {
+ background: #fff7df !important;
+ color: #1f1309 !important;
+ border: 1px solid rgba(120, 53, 15, 0.42) !important;
+ border-radius: 18px !important;
+ box-shadow:
+ 0 26px 80px rgba(0, 0, 0, 0.38),
+ inset 48px 0 0 rgba(185, 28, 28, 0.08) !important;
+ padding: clamp(20px, 3vw, 34px) !important;
+ }
+
+ .ideanator-page .shell .intake-card,
+ .ideanator-page .shell .intake-card * {
+ text-shadow: none !important;
+ }
+
+ .ideanator-page .shell .intake-card .section-heading {
+ padding-left: clamp(14px, 4vw, 52px) !important;
+ margin-bottom: 14px !important;
+ }
+
+ .ideanator-page .shell .intake-card .eyebrow {
+ color: #92400e !important;
+ margin-bottom: 6px !important;
+ }
+
+ .ideanator-page .shell .intake-card h2 {
+ color: #1f1309 !important;
+ font-family: Georgia, "Times New Roman", serif !important;
+ font-size: clamp(2rem, 5vw, 3.8rem) !important;
+ line-height: 0.98 !important;
+ margin-bottom: 8px !important;
+ }
+
+ .ideanator-page .shell .intake-card p {
+ color: #3f2a16 !important;
+ font-size: clamp(1rem, 1.4vw, 1.14rem) !important;
+ line-height: 1.45 !important;
+ }
+
+ .ideanator-page .shell .intake-card .idea-form {
+ padding-left: clamp(14px, 4vw, 52px) !important;
+ gap: 12px !important;
+ }
+
+ .ideanator-page .shell .intake-card label span {
+ color: #1f1309 !important;
+ font-size: 1.08rem !important;
+ margin-bottom: 8px !important;
+ }
+
+ .ideanator-page .shell .intake-card textarea {
+ min-height: 300px !important;
+ background:
+ repeating-linear-gradient(
+ 180deg,
+ #fffdf7 0,
+ #fffdf7 30px,
+ rgba(96, 165, 250, 0.38) 31px,
+ #fffdf7 32px
+ ) !important;
+ color: #111827 !important;
+ border: 2px solid rgba(120, 53, 15, 0.45) !important;
+ border-radius: 12px !important;
+ font-family: Georgia, "Times New Roman", serif !important;
+ font-size: 1.18rem !important;
+ line-height: 1.6 !important;
+ padding: 18px 20px !important;
+ }
+
+ .ideanator-page .shell .intake-card textarea::placeholder {
+ color: rgba(31, 41, 55, 0.42) !important;
+ opacity: 1 !important;
+ }
+
+ .ideanator-page .shell .intake-card .idea-limit-note {
+ background: #fff1c7 !important;
+ border: 1px solid rgba(120, 53, 15, 0.25) !important;
+ border-radius: 12px !important;
+ padding: 12px 14px !important;
+ }
+
+ .ideanator-page .shell .intake-card .idea-limit-note strong,
+ .ideanator-page .shell .intake-card .idea-limit-note p {
+ color: #3f2a16 !important;
+ font-size: 0.95rem !important;
+ }
+
+ .ideanator-page .shell .intake-card .optional-details {
+ background: #fff4d6 !important;
+ border: 1px dashed rgba(120, 53, 15, 0.44) !important;
+ border-radius: 12px !important;
+ }
+
+ .ideanator-page .shell .intake-card .optional-details summary {
+ color: #1f1309 !important;
+ font-size: 1rem !important;
+ padding: 14px 16px !important;
+ }
+
+ .ideanator-page .shell .intake-card input,
+ .ideanator-page .shell .intake-card select {
+ background: #fffdf7 !important;
+ color: #111827 !important;
+ border: 1px solid rgba(120, 53, 15, 0.45) !important;
+ }
+
+ .ideanator-page .shell .intake-card input::placeholder {
+ color: rgba(31, 41, 55, 0.44) !important;
+ opacity: 1 !important;
+ }
+
+ .ideanator-page .shell .intake-card .form-actions {
+ margin-top: 4px !important;
+ justify-content: flex-end !important;
+ }
+
+ .ideanator-page .shell .intake-card .primary-button {
+ background: linear-gradient(180deg, #2563eb, #1d4ed8) !important;
+ color: #ffffff !important;
+ border: 1px solid rgba(30, 64, 175, 0.8) !important;
+ box-shadow: 0 16px 36px rgba(37, 99, 235, 0.28) !important;
+ }
+
+ .ideanator-page .shell .intake-card .secondary-button {
+ background: #fffdf7 !important;
+ color: #1f1309 !important;
+ border: 1px solid rgba(120, 53, 15, 0.38) !important;
+ }
+
 `}</style>
  </main>
  );
