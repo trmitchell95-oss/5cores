@@ -578,7 +578,176 @@ export default function WorkshopPage() {
             width: 100%;
           }
         }
-      `}</style>
+      
+        /* =========================================================
+           TARGETED 80S WORKSHOP OVERRIDES
+           Old library basement, microfiche machine, Spielberg garage.
+           Uses real workshop class names only.
+           ========================================================= */
+
+        .page {
+          background:
+            radial-gradient(circle at 12% 0%, rgba(181, 90, 28, 0.26), transparent 32rem),
+            radial-gradient(circle at 88% 8%, rgba(91, 117, 55, 0.18), transparent 28rem),
+            linear-gradient(135deg, #28180d 0%, #11100c 48%, #2b1a0f 100%) !important;
+          color: #f8ecd2 !important;
+        }
+
+        .page::before {
+          content: "";
+          position: fixed;
+          inset: 0;
+          pointer-events: none;
+          background:
+            repeating-linear-gradient(
+              90deg,
+              rgba(255, 230, 174, 0.025) 0,
+              rgba(255, 230, 174, 0.025) 1px,
+              transparent 1px,
+              transparent 5px
+            ),
+            radial-gradient(circle at center, transparent 0%, rgba(0, 0, 0, 0.34) 76%);
+          opacity: 0.9;
+        }
+
+        .wrap {
+          position: relative;
+          z-index: 1;
+        }
+
+        .hero {
+          background:
+            linear-gradient(90deg, rgba(128, 55, 22, 0.18) 0 54px, transparent 54px),
+            radial-gradient(circle at 82% 16%, rgba(216, 138, 31, 0.16), transparent 18rem),
+            linear-gradient(180deg, #332115 0%, #18130e 100%) !important;
+          border: 1px solid rgba(222, 176, 96, 0.42) !important;
+          border-radius: 14px !important;
+          box-shadow:
+            0 28px 90px rgba(0, 0, 0, 0.46),
+            inset 0 1px 0 rgba(255, 238, 190, 0.08) !important;
+        }
+
+        .hero h1 {
+          color: #fff1cf !important;
+          font-family: Georgia, "Times New Roman", serif !important;
+          letter-spacing: -0.055em !important;
+          text-shadow: 0 3px 18px rgba(0, 0, 0, 0.36) !important;
+        }
+
+        .eyebrow {
+          color: #d99a2b !important;
+          font-family: "Courier New", ui-monospace, monospace !important;
+          letter-spacing: 0.22em !important;
+          text-shadow: none !important;
+        }
+
+        .subhead {
+          color: #f5dfb4 !important;
+          text-shadow: none !important;
+        }
+
+        .startHelp {
+          background: #263b24 !important;
+          color: #fff3d3 !important;
+          border-left: 8px solid #d99a2b !important;
+          border-radius: 10px !important;
+          box-shadow:
+            inset 0 1px 0 rgba(255, 255, 255, 0.08),
+            0 14px 34px rgba(0, 0, 0, 0.3) !important;
+        }
+
+        .startHelp strong,
+        .startHelp span {
+          color: #fff3d3 !important;
+        }
+
+        .choice,
+        .councilWorkbench,
+        .simpleGuide,
+        .smallTool {
+          background:
+            linear-gradient(180deg, #f8e7c1 0%, #d7ad68 100%) !important;
+          color: #211408 !important;
+          border: 1px solid rgba(83, 52, 26, 0.58) !important;
+          border-radius: 10px !important;
+          box-shadow:
+            0 22px 70px rgba(0, 0, 0, 0.36),
+            inset 0 1px 0 rgba(255, 255, 255, 0.45) !important;
+        }
+
+        .choiceBest {
+          background:
+            linear-gradient(90deg, rgba(128, 55, 22, 0.12) 0 50px, transparent 50px),
+            linear-gradient(180deg, #fff0c9 0%, #e4bd7b 100%) !important;
+          border-color: rgba(216, 138, 31, 0.72) !important;
+        }
+
+        .choice h2,
+        .councilIntro h2,
+        .simpleGuide h2,
+        .smallTool h3 {
+          color: #1d1208 !important;
+          font-family: Georgia, "Times New Roman", serif !important;
+          text-shadow: none !important;
+        }
+
+        .choice p,
+        .councilIntro p:last-child,
+        .councilStep p,
+        .guideList p,
+        .smallTool p {
+          color: #2b1a0c !important;
+          text-shadow: none !important;
+        }
+
+        .number {
+          background:
+            linear-gradient(180deg, #f7e6bc, #bf8431) !important;
+          color: #211408 !important;
+          border: 1px solid rgba(83, 52, 26, 0.5) !important;
+          border-radius: 8px !important;
+          box-shadow:
+            inset 0 1px 0 rgba(255, 255, 255, 0.45),
+            0 8px 18px rgba(0, 0, 0, 0.22) !important;
+        }
+
+        .choice strong,
+        .easyButton,
+        .bottomHelp a {
+          background:
+            linear-gradient(180deg, #d88a1f, #8c4e11) !important;
+          color: #fff8e7 !important;
+          border: 1px solid rgba(255, 220, 145, 0.68) !important;
+          border-radius: 8px !important;
+          box-shadow:
+            inset 0 1px 0 rgba(255, 255, 255, 0.18),
+            0 12px 28px rgba(0, 0, 0, 0.28) !important;
+        }
+
+        .councilStep {
+          background:
+            linear-gradient(180deg, #2f3f2a 0%, #1d2a1a 100%) !important;
+          color: #fff3d3 !important;
+          border: 1px solid rgba(210, 168, 103, 0.45) !important;
+          border-radius: 10px !important;
+        }
+
+        .councilStep span,
+        .councilStep strong,
+        .councilStep h3,
+        .councilStep p {
+          color: #fff3d3 !important;
+        }
+
+        .guideList strong {
+          color: #8c4e11 !important;
+        }
+
+        .bottomHelp {
+          color: #f8ecd2 !important;
+        }
+
+`}</style>
     </main>
   );
 }
