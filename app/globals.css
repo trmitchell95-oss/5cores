@@ -2454,3 +2454,93 @@ body.hovel-easy-mode .side-text {
     box-shadow: 0 18px 55px rgba(0, 0, 0, 0.28);
   }
 }
+
+/* =========================================================
+   HOVEL 80S FILM / MICROFICHE GLOBAL SKIN
+   Warm black, amber, manila, card catalog, old AV room.
+   ========================================================= */
+
+:root {
+  --hovel-80s-ink: #1d1208;
+  --hovel-80s-paper: #f4dfb7;
+  --hovel-80s-paper-light: #fff1cd;
+  --hovel-80s-amber: #d88a1f;
+  --hovel-80s-amber-dark: #8c4e11;
+  --hovel-80s-brown: #2a1b10;
+  --hovel-80s-green: #263b24;
+  --hovel-80s-cream: #f8ecd2;
+}
+
+html,
+body {
+  background:
+    radial-gradient(circle at 18% 0%, rgba(139, 53, 35, 0.26), transparent 32rem),
+    radial-gradient(circle at 86% 8%, rgba(214, 137, 34, 0.18), transparent 28rem),
+    linear-gradient(135deg, #24160e 0%, #10100d 46%, #2b1a0f 100%) !important;
+  color: var(--hovel-80s-cream) !important;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    repeating-linear-gradient(
+      90deg,
+      rgba(255, 231, 176, 0.022) 0,
+      rgba(255, 231, 176, 0.022) 1px,
+      transparent 1px,
+      transparent 5px
+    ),
+    repeating-linear-gradient(
+      0deg,
+      rgba(255, 231, 176, 0.018) 0,
+      rgba(255, 231, 176, 0.018) 1px,
+      transparent 1px,
+      transparent 6px
+    ),
+    radial-gradient(circle at center, transparent 0%, rgba(0, 0, 0, 0.26) 78%);
+  opacity: 0.68;
+}
+
+body > * {
+  position: relative;
+  z-index: 1;
+}
+
+::selection {
+  background: rgba(216, 138, 31, 0.45);
+  color: #fff6df;
+}
+
+a {
+  color: #f0b14a;
+}
+
+button,
+input,
+textarea,
+select {
+  accent-color: var(--hovel-80s-amber);
+}
+
+input,
+textarea,
+select {
+  caret-color: var(--hovel-80s-amber-dark);
+}
+
+/* Kill stray blue utility buttons where possible without touching logic. */
+a[href="/help"],
+a[href="/feedback"],
+a[href="/beta-terms"],
+button[aria-label*="Help"],
+button[aria-label*="Feedback"] {
+  background:
+    linear-gradient(180deg, #2f3f2a, #1d2a1a) !important;
+  color: #f8edd5 !important;
+  border-color: rgba(210, 168, 103, 0.42) !important;
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.32) !important;
+}

@@ -578,7 +578,128 @@ export default function WorkshopPage() {
             width: 100%;
           }
         }
-      `}</style>
+      
+ /* =========================================================
+    WORKSHOP 80S ADVENTURE / CARD CATALOG OVERRIDES
+    Front door: less blue SaaS, more old library basement.
+    ========================================================= */
+
+ .workshop-page,
+ .workshop-shell,
+ .workshop-main {
+ background:
+ radial-gradient(circle at 15% 0%, rgba(139, 53, 35, 0.24), transparent 30rem),
+ radial-gradient(circle at 88% 5%, rgba(216, 138, 31, 0.18), transparent 26rem),
+ linear-gradient(135deg, #24160e 0%, #10100d 48%, #2b1a0f 100%) !important;
+ color: #f8ecd2 !important;
+ }
+
+ .workshop-page::before {
+ content: "";
+ position: fixed;
+ inset: 0;
+ pointer-events: none;
+ background:
+ repeating-linear-gradient(
+ 90deg,
+ rgba(255, 231, 176, 0.025) 0,
+ rgba(255, 231, 176, 0.025) 1px,
+ transparent 1px,
+ transparent 5px
+ ),
+ radial-gradient(circle at center, transparent 0, rgba(0, 0, 0, 0.28) 76%);
+ opacity: 0.7;
+ }
+
+ .workshop-page .hero-card,
+ .workshop-page .choice-card,
+ .workshop-page .choiceBest,
+ .workshop-page .panel,
+ .workshop-page .card {
+ background:
+ linear-gradient(180deg, rgba(255, 239, 199, 0.96), rgba(224, 185, 116, 0.94)) !important;
+ color: #211408 !important;
+ border: 1px solid rgba(83, 52, 26, 0.58) !important;
+ border-radius: 10px !important;
+ box-shadow:
+ 0 26px 80px rgba(0, 0, 0, 0.42),
+ inset 0 1px 0 rgba(255, 255, 255, 0.45) !important;
+ }
+
+ .workshop-page .hero-card {
+ background:
+ linear-gradient(90deg, rgba(121, 45, 22, 0.12) 0 50px, transparent 50px),
+ linear-gradient(180deg, #fff0c9, #e7c184) !important;
+ }
+
+ .workshop-page .hero-card h1,
+ .workshop-page .choice-card h2,
+ .workshop-page h1,
+ .workshop-page h2 {
+ color: #1d1208 !important;
+ font-family: Georgia, "Times New Roman", serif !important;
+ text-shadow: none !important;
+ }
+
+ .workshop-page .hero-card p,
+ .workshop-page .choice-card p,
+ .workshop-page p,
+ .workshop-page li {
+ color: #2b1a0c !important;
+ text-shadow: none !important;
+ }
+
+ .workshop-page .eyebrow,
+ .workshop-page .kicker,
+ .workshop-page .label {
+ color: #8b4513 !important;
+ font-family: "Courier New", ui-monospace, monospace !important;
+ letter-spacing: 0.22em !important;
+ }
+
+ .workshop-page .safe-note,
+ .workshop-page .notice,
+ .workshop-page .callout {
+ background: #2f3f2a !important;
+ color: #f8ecd2 !important;
+ border: 1px solid rgba(210, 168, 103, 0.45) !important;
+ border-radius: 8px !important;
+ box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08) !important;
+ }
+
+ .workshop-page .choice-number,
+ .workshop-page .number-badge,
+ .workshop-page .badge {
+ background:
+ linear-gradient(180deg, #f7e7bf, #c69a55) !important;
+ color: #211408 !important;
+ border: 1px solid rgba(83, 52, 26, 0.48) !important;
+ border-radius: 8px !important;
+ }
+
+ .workshop-page a.button,
+ .workshop-page button,
+ .workshop-page .primary-button,
+ .workshop-page .choice-button,
+ .workshop-page .easy-mode-button {
+ background:
+ linear-gradient(180deg, #d88a1f, #8c4e11) !important;
+ color: #fff8e7 !important;
+ border: 1px solid rgba(255, 220, 145, 0.68) !important;
+ border-radius: 8px !important;
+ box-shadow:
+ inset 0 1px 0 rgba(255, 255, 255, 0.18),
+ 0 12px 28px rgba(0, 0, 0, 0.28) !important;
+ }
+
+ .workshop-page a.button:hover,
+ .workshop-page button:hover,
+ .workshop-page .primary-button:hover,
+ .workshop-page .choice-button:hover {
+ filter: brightness(1.08);
+ }
+
+`}</style>
     </main>
   );
 }
