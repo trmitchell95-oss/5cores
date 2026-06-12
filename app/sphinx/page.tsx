@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useEffect, useState, type ChangeEvent } from "react";
 import Link from "next/link";
@@ -16,7 +16,7 @@ const modes = [
 
 const SPHINX_MAX_CHARS = 10000;
 const SPHINX_STATUS_MESSAGES = [
-  "Sphinx is sniffing for robot perfume...",
+  "Clean Words is sniffing for robot perfume...",
   "Checking for fake polish...",
   "Looking for corporate filler...",
   "Testing whether the voice still has a pulse...",
@@ -347,7 +347,7 @@ export default function SphinxPage() {
     setSaving(true);
 
     if (options.automatic) {
-      setSaveMessage("Sphinx finished. Auto-saving to your dashboard...");
+      setSaveMessage("Clean Words finished. Auto-saving to your dashboard...");
     } else {
       setError("");
       setSaveMessage("");
@@ -402,8 +402,8 @@ export default function SphinxPage() {
 
       if (!response.ok) {
         const saveErrorMessage = data.details
-          ? `${data.error || "Could not save Sphinx report."} Details: ${data.details}`
-          : data.error || "Could not save Sphinx report.";
+          ? `${data.error || "Could not save Clean Words report."} Details: ${data.details}`
+          : data.error || "Could not save Clean Words report.";
 
         throw new Error(saveErrorMessage);
       }
@@ -453,7 +453,7 @@ export default function SphinxPage() {
 
       if (!session?.access_token) {
         setIsLoggedIn(false);
-        throw new Error("You must be logged in to use Sphinx. Click Log In above, then come back.");
+        throw new Error("You must be logged in to use Clean Words. Click Log In above, then come back.");
       }
 
       setIsLoggedIn(true);
@@ -470,7 +470,7 @@ export default function SphinxPage() {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.error || "Sphinx failed.");
+        throw new Error(data.error || "Clean Words failed.");
       }
 
       const nextReport = data.report || "";
@@ -539,7 +539,7 @@ export default function SphinxPage() {
   }
 
   function loadSampleText() {
-    setTitle("Make my words sound human Sample Text");
+    setTitle("Clean Words Sample Text");
     setText(SPHINX_SAMPLE_TEXT);
     setMode("GENERAL");
     setStrictness("BRUTAL");
@@ -621,7 +621,186 @@ export default function SphinxPage() {
           font-size: 16px !important;
           line-height: 1.6 !important;
         }
-      `}</style>
+      
+          /* =========================================================
+             CLEAN WORDS 80S / HUMANIZER OVERRIDES
+             User-facing Sphinx page becomes Clean Words.
+             ========================================================= */
+
+          .sphinx-shell {
+            background:
+              radial-gradient(circle at 12% 0%, rgba(181, 90, 28, 0.25), transparent 32rem),
+              radial-gradient(circle at 88% 8%, rgba(91, 117, 55, 0.16), transparent 28rem),
+              linear-gradient(135deg, #28180d 0%, #11100c 48%, #2b1a0f 100%) !important;
+            color: #f8ecd2 !important;
+          }
+
+          .sphinx-shell::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            background:
+              repeating-linear-gradient(
+                90deg,
+                rgba(255, 230, 174, 0.025) 0,
+                rgba(255, 230, 174, 0.025) 1px,
+                transparent 1px,
+                transparent 5px
+              ),
+              radial-gradient(circle at center, transparent 0%, rgba(0, 0, 0, 0.34) 76%);
+            opacity: 0.88;
+          }
+
+          .sphinx-shell > div {
+            position: relative;
+            z-index: 1;
+          }
+
+          .sphinx-shell nav,
+          .sphinx-shell section,
+          .sphinx-shell [class*="bg-zinc-900"],
+          .sphinx-shell [class*="bg-zinc-950"] {
+            background:
+              linear-gradient(180deg, #332115 0%, #18130e 100%) !important;
+            border-color: rgba(222, 176, 96, 0.42) !important;
+            box-shadow:
+              0 24px 70px rgba(0, 0, 0, 0.42),
+              inset 0 1px 0 rgba(255, 238, 190, 0.08) !important;
+          }
+
+          .sphinx-shell section.grid > div,
+          .sphinx-shell .simple-sphinx-guide {
+            background:
+              linear-gradient(180deg, #f8e7c1 0%, #d7ad68 100%) !important;
+            color: #211408 !important;
+            border-color: rgba(83, 52, 26, 0.58) !important;
+            border-radius: 10px !important;
+            box-shadow:
+              0 22px 70px rgba(0, 0, 0, 0.36),
+              inset 0 1px 0 rgba(255, 255, 255, 0.45) !important;
+          }
+
+          .sphinx-shell h1,
+          .sphinx-shell h2,
+          .sphinx-shell h3 {
+            font-family: Georgia, "Times New Roman", serif !important;
+            text-shadow: none !important;
+          }
+
+          .sphinx-shell h1 {
+            color: #fff1cf !important;
+            letter-spacing: -0.055em !important;
+          }
+
+          .sphinx-shell section.grid h2,
+          .sphinx-shell .simple-sphinx-guide h2 {
+            color: #1d1208 !important;
+          }
+
+          .sphinx-shell p,
+          .sphinx-shell li,
+          .sphinx-shell label,
+          .sphinx-shell span {
+            text-shadow: none !important;
+          }
+
+          .sphinx-shell [class*="text-zinc-300"],
+          .sphinx-shell [class*="text-zinc-400"],
+          .sphinx-shell [class*="text-zinc-500"],
+          .sphinx-shell [class*="text-zinc-600"] {
+            color: #f5dfb4 !important;
+          }
+
+          .sphinx-shell section.grid [class*="text-zinc-"],
+          .sphinx-shell .simple-sphinx-guide [class*="text-zinc-"] {
+            color: #2b1a0c !important;
+          }
+
+          .sphinx-shell [class*="text-amber"] {
+            color: #d99a2b !important;
+          }
+
+          .sphinx-shell textarea {
+            background:
+              repeating-linear-gradient(
+                180deg,
+                #fffaf0 0,
+                #fffaf0 30px,
+                rgba(74, 111, 128, 0.34) 31px,
+                #fffaf0 32px
+              ) !important;
+            color: #11110d !important;
+            border-color: rgba(83, 52, 26, 0.62) !important;
+            border-radius: 8px !important;
+            font-family: Georgia, "Times New Roman", serif !important;
+            box-shadow:
+              inset 0 2px 14px rgba(83, 52, 26, 0.14),
+              0 10px 26px rgba(83, 52, 26, 0.14) !important;
+          }
+
+          .sphinx-shell textarea::placeholder {
+            color: rgba(31, 28, 20, 0.42) !important;
+          }
+
+          .sphinx-shell input,
+          .sphinx-shell select {
+            background: #fff8e7 !important;
+            color: #11110d !important;
+            border-color: rgba(83, 52, 26, 0.52) !important;
+            border-radius: 8px !important;
+          }
+
+          .sphinx-shell button,
+          .sphinx-shell a[class*="rounded"] {
+            background:
+              linear-gradient(180deg, #d88a1f, #8c4e11) !important;
+            color: #fff8e7 !important;
+            border-color: rgba(255, 220, 145, 0.68) !important;
+            border-radius: 8px !important;
+            box-shadow:
+              inset 0 1px 0 rgba(255, 255, 255, 0.18),
+              0 12px 28px rgba(0, 0, 0, 0.28) !important;
+          }
+
+          .sphinx-shell label[for],
+          .sphinx-shell label.inline-flex {
+            background:
+              linear-gradient(180deg, #2f3f2a 0%, #1d2a1a 100%) !important;
+            color: #fff3d3 !important;
+            border-color: rgba(210, 168, 103, 0.45) !important;
+          }
+
+          .sphinx-shell .simple-sphinx-steps > div {
+            background:
+              linear-gradient(180deg, #2f3f2a 0%, #1d2a1a 100%) !important;
+            color: #fff3d3 !important;
+            border-color: rgba(210, 168, 103, 0.45) !important;
+            border-radius: 10px !important;
+          }
+
+          .sphinx-shell .simple-sphinx-steps strong,
+          .sphinx-shell .simple-sphinx-steps p {
+            color: #fff3d3 !important;
+          }
+
+          .sphinx-shell .sphinx-rendered-report {
+            background: #fff8e7 !important;
+            color: #1d1208 !important;
+            border-radius: 10px !important;
+          }
+
+          .sphinx-shell .sphinx-rendered-report h1,
+          .sphinx-shell .sphinx-rendered-report h2,
+          .sphinx-shell .sphinx-rendered-report h3,
+          .sphinx-shell .sphinx-rendered-report p,
+          .sphinx-shell .sphinx-rendered-report li,
+          .sphinx-shell .sphinx-rendered-report strong,
+          .sphinx-shell .sphinx-rendered-report em {
+            color: #1d1208 !important;
+          }
+
+`}</style>
       <div className="mx-auto max-w-6xl">
         <nav className="mb-6 flex flex-col gap-3 rounded-3xl border border-zinc-800 bg-zinc-900/80 p-4 shadow-xl md:flex-row md:items-center md:justify-between">
           <div>
@@ -675,9 +854,9 @@ export default function SphinxPage() {
           </h1>
 
           <p className="max-w-3xl text-lg leading-8 text-zinc-300">
-            The AI Stink Preventer. Paste writing that sounds too polished,
+            Paste writing that sounds too polished,
             too generic, too corporate, or too much like a robot wearing a
-            conference badge. Sphinx will diagnose it and rewrite it like a
+            conference badge. We will diagnose it and rewrite it like a
             human being.
           </p>
         </section>
@@ -832,7 +1011,7 @@ export default function SphinxPage() {
 
             {tooLong && (
               <div className="mt-4 rounded-2xl border border-red-900 bg-red-950/50 p-4 text-sm text-red-200">
-                Sphinx beta limit is 10,000 characters. Use it for blurbs, posts, emails, application answers, and short passages, not whole manuscripts. Don&apos;t feed the little bastard a whale.
+                Clean Words beta limit is 10,000 characters. Use it for blurbs, posts, emails, application answers, and short passages, not whole manuscripts. Don&apos;t feed the little bastard a whale.
               </div>
             )}
 
@@ -915,7 +1094,7 @@ export default function SphinxPage() {
                       No report yet.
                     </p>
                     <p className="mt-2 max-w-md text-sm leading-6">
-                      Paste something on the left and let Sphinx sniff out the
+                      Paste something on the left and let Clean Words sniff out the
                       robot perfume.
                     </p>
                   </div>
@@ -926,7 +1105,7 @@ export default function SphinxPage() {
                 <div className="flex h-full min-h-[500px] items-center justify-center text-center text-zinc-400">
                   <div>
                     <div className="mx-auto mb-4 h-10 w-10 animate-spin rounded-full border-4 border-zinc-700 border-t-amber-400" />
-                    <p className="text-lg font-semibold">Sphinx is reading.</p>
+                    <p className="text-lg font-semibold">Clean Words is reading.</p>
                     <p className="mt-2 text-sm text-zinc-500">
                       It is judging the stink.
                     </p>
@@ -947,23 +1126,3 @@ export default function SphinxPage() {
     </main>
   );
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
