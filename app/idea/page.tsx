@@ -1717,7 +1717,148 @@ export default function IdeanatorPage() {
  padding-top: 146px !important;
  }
  }
- `}</style>
+ 
+ /* =========================================================
+    PAPER WORKBENCH INTAKE OVERRIDES
+    Visual layer only. No form logic changed.
+    ========================================================= */
+
+ .intake-card {
+ background:
+ linear-gradient(90deg, rgba(120, 53, 15, 0.16) 0 2px, transparent 2px 100%),
+ repeating-linear-gradient(
+ 180deg,
+ #fff8e7 0,
+ #fff8e7 34px,
+ #eadfc7 35px
+ );
+ color: #24180d;
+ border: 1px solid rgba(120, 53, 15, 0.28);
+ box-shadow:
+ 0 28px 90px rgba(0, 0, 0, 0.34),
+ inset 54px 0 0 rgba(180, 83, 9, 0.08);
+ padding: clamp(22px, 4vw, 42px);
+ }
+
+ .intake-card .section-heading {
+ max-width: 760px;
+ margin-bottom: 22px;
+ padding-left: clamp(0px, 3vw, 34px);
+ }
+
+ .intake-card .eyebrow {
+ color: #92400e;
+ }
+
+ .intake-card h2 {
+ color: #1f1309;
+ font-size: clamp(2.35rem, 6vw, 4.7rem);
+ letter-spacing: -0.06em;
+ margin-bottom: 10px;
+ }
+
+ .intake-card p {
+ color: #4b3420;
+ }
+
+ .intake-card .idea-form {
+ grid-template-columns: 1fr;
+ gap: 16px;
+ padding-left: clamp(0px, 3vw, 34px);
+ }
+
+ .intake-card label span {
+ color: #1f1309;
+ }
+
+ .intake-card textarea {
+ min-height: 280px;
+ resize: vertical;
+ background: rgba(255, 253, 244, 0.9);
+ color: #1f1309;
+ border: 2px solid rgba(120, 53, 15, 0.24);
+ border-radius: 18px;
+ font-size: clamp(1.08rem, 1.8vw, 1.3rem);
+ line-height: 1.55;
+ box-shadow: inset 0 2px 16px rgba(120, 53, 15, 0.08);
+ }
+
+ .intake-card textarea::placeholder,
+ .intake-card input::placeholder {
+ color: rgba(75, 52, 32, 0.56);
+ }
+
+ .intake-card input,
+ .intake-card select {
+ background: rgba(255, 253, 244, 0.92);
+ color: #1f1309;
+ border: 1px solid rgba(120, 53, 15, 0.24);
+ }
+
+ .intake-card .idea-limit-note {
+ background: rgba(255, 251, 235, 0.72);
+ border: 1px solid rgba(120, 53, 15, 0.18);
+ }
+
+ .intake-card .idea-limit-note strong,
+ .intake-card .idea-limit-note p {
+ color: #3a2818;
+ }
+
+ .intake-card .optional-details {
+ border: 1px dashed rgba(120, 53, 15, 0.36);
+ border-radius: 18px;
+ background: rgba(255, 251, 235, 0.68);
+ overflow: hidden;
+ }
+
+ .intake-card .optional-details summary {
+ color: #1f1309;
+ padding: 18px 20px;
+ }
+
+ .intake-card .optional-grid {
+ grid-template-columns: repeat(3, minmax(0, 1fr));
+ gap: 14px;
+ padding: 0 20px 20px;
+ }
+
+ .intake-card .field-help {
+ color: #5f4630;
+ }
+
+ .intake-card .form-actions {
+ justify-content: flex-end;
+ }
+
+ .intake-card .secondary-button {
+ color: #1f1309;
+ border-color: rgba(120, 53, 15, 0.32);
+ background: rgba(255, 251, 235, 0.72);
+ }
+
+ .intake-card .primary-button {
+ min-width: min(100%, 260px);
+ font-size: 1.05rem;
+ }
+
+ @media (max-width: 820px) {
+ .intake-card .optional-grid {
+ grid-template-columns: 1fr;
+ }
+
+ .intake-card .form-actions {
+ flex-direction: column-reverse;
+ align-items: stretch;
+ }
+
+ .intake-card .primary-button,
+ .intake-card .secondary-button {
+ width: 100%;
+ }
+ }
+
+`}</style>
  </main>
  );
 }
