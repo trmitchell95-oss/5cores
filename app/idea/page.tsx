@@ -722,15 +722,37 @@ export default function IdeanatorPage() {
  )}
 
  <form onSubmit={handleSubmit} className="idea-form">
+ <label className="full-width">
+ <span>Type your idea here.</span>
+ <textarea
+ value={ideaText}
+ onChange={(event) => setIdeaText(event.target.value)}
+ placeholder="Example: I have an idea for a retirement savings adjuster that helps people know how much they can safely spend each month. It is still messy, but here is what I mean..."
+ />
+
+ <div className={`idea-limit-note ${ideaTooLong ? "over-limit" : ""}`}>
+ <strong>
+ {ideaCharCount.toLocaleString()} / {IDEANATOR_MAX_CHARS.toLocaleString()} characters
+ </strong>
+ <p>
+ Short ideas work. Messy documents work. Notes, examples, questions, and half-finished thoughts are welcome. Do not paste anything private you would not want submitted for analysis.
+ </p>
+ </div>
+ </label>
+
+ <details className="optional-details full-width">
+ <summary>Optional details</summary>
+
+ <div className="optional-grid">
  <label>
- <span>What should we call this thing?</span>
+ <span>Name this idea</span>
  <input
  value={ideaName}
  onChange={(event) => setIdeaName(event.target.value)}
- placeholder="Optional. A nickname is enough. Wrist light. School token. Weird dog book."
+ placeholder="Optional nickname"
  />
  <p className="field-help">
- No official name needed. This is just so you can find the report later. Leave it blank if the idea is still fog.
+ Leave this blank if the idea does not have a name yet.
  </p>
  </label>
 
@@ -761,33 +783,12 @@ export default function IdeanatorPage() {
  ))}
  </select>
  </label>
-
- <label className="full-width">
- <span>Type your idea here.</span>
- <textarea
- value={ideaText}
- onChange={(event) => setIdeaText(event.target.value)}
- placeholder="Example: I have an idea for a retirement savings adjuster that helps people know how much they can safely spend each month. It is still messy, but here is what I mean..."
- />
-
- <div className={`idea-limit-note ${ideaTooLong ? "over-limit" : ""}`}>
- <strong>
- {ideaCharCount.toLocaleString()} / {IDEANATOR_MAX_CHARS.toLocaleString()} characters
- </strong>
- <p>
- Short ideas work. Messy documents work. Notes, examples, questions, and half-finished thoughts are welcome. Do not paste a full manuscript or anything you are not comfortable submitting for analysis.
- </p>
  </div>
- </label>
-
- <div className="intake-preview full-width">
- <span>Working title</span>
- <strong>{liveDisplayName}</strong>
- </div>
+ </details>
 
  <div className="form-actions full-width">
  <button className="secondary-button" type="button" onClick={returnToLanding}>
- Clear / Start Over
+ Clear
  </button>
 
  <button
