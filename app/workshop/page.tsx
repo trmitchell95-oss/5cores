@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
@@ -7,7 +7,7 @@ const mainChoices = [
   {
     label: "1",
     title: "I have an idea",
-    plain: "Use this when the thing is still messy in your head.",
+    plain: "Start here when the idea is still messy, half-built, or hard to explain.",
     href: "/idea?start=intake",
     button: "Start Here",
     best: true,
@@ -15,7 +15,7 @@ const mainChoices = [
   {
     label: "2",
     title: "I already wrote something",
-    plain: "Use this for a chapter, scene, story, essay, proposal, or serious draft.",
+    plain: "Send writing through the Hovel Editor report engine.",
     href: "/submit",
     button: "Check My Writing",
     best: false,
@@ -23,7 +23,7 @@ const mainChoices = [
   {
     label: "3",
     title: "Make my words sound human",
-    plain: "Use this when text sounds stiff, fake, corporate, or too much like AI.",
+    plain: "Clean stiff, fake, corporate, or AI-sounding text without sanding off the human voice.",
     href: "/sphinx",
     button: "Clean My Words",
     best: false,
@@ -31,7 +31,7 @@ const mainChoices = [
   {
     label: "4",
     title: "Find my saved work",
-    plain: "Use this to reopen projects, reports, drafts, and things you already started.",
+    plain: "Reopen ideas, projects, reports, drafts, rigs, and unfinished work.",
     href: "/projects",
     button: "Open My Work",
     best: false,
@@ -41,7 +41,7 @@ const mainChoices = [
 const smallTools = [
   {
     title: "Build a plan",
-    body: "Turn an idea into a checklist, pitch, grant answer, proposal, or project plan.",
+    body: "Turn a tested idea into a reusable prompt, checklist, pitch, grant answer, proposal, or project plan.",
     href: "/ideanator",
   },
   {
@@ -51,7 +51,7 @@ const smallTools = [
   },
   {
     title: "Reports",
-    body: "Open saved feedback and old diagnosis reports.",
+    body: "Open saved Hovel Editor reports and diagnosis work.",
     href: "/dashboard",
   },
   {
@@ -82,17 +82,17 @@ export default function WorkshopPage() {
       <section className="wrap">
         <header className="hero">
           <div className="topline">
-            <p className="eyebrow">Hovel Ideas Workshop</p>
+            <p className="eyebrow">Hovel Ideanator</p>
 
             <button type="button" className="easyButton" onClick={toggleEasyMode}>
               {easyMode ? "Easy Mode On" : "Make Text Bigger"}
             </button>
           </div>
 
-          <h1>What do you need help with?</h1>
+          <h1>What are we building today?</h1>
 
           <p className="subhead">
-            Pick one button. You do not need to know the tool names.
+            Start with the mess. The workshop will route you to the right tool.
           </p>
 
           <div className="startHelp">

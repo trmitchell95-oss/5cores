@@ -1,10 +1,10 @@
-﻿import type { Metadata } from "next";
+import type { Metadata } from "next";
 import Link from "next/link";
 
 export const metadata: Metadata = {
-  title: "The Ideanator",
+  title: "Hovel Ideanator",
   description:
-    "Test raw ideas. The Ideanator gives you an honest read on what you have, what is strong, what needs work, and what to do next.",
+    "Test raw ideas, build reusable rigs, and move rough concepts into the Hovel Editor workshop.",
 };
 
 const actions = [
@@ -48,9 +48,9 @@ export default function IdeanatorSwitchboardPage() {
  <section className="switch-wrap">
  <header className="switch-hero">
  <p className="switch-eyebrow">Beta</p>
- <h1>The Ideanator</h1>
+ <h1>Hovel Ideanator</h1>
  <p className="switch-subhead">
- Start here when an idea is still messy. Test the idea, save the report, build a reusable rig, or reopen one you already made.
+ Start here when an idea is still messy. Test it, save it, build a reusable rig, or move it into the wider Hovel Editor workshop.
  </p>
 
  <div className="switch-note">
@@ -361,4 +361,3 @@ export default function IdeanatorSwitchboardPage() {
  </main>
  );
 }
-

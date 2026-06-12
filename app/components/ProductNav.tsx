@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useEffect, useState, type MouseEvent } from "react";
 import { usePathname } from "next/navigation";
@@ -242,11 +242,11 @@ export default function ProductNav() {
 
       <nav className="hi-nav" aria-label="Main navigation">
         <div className="hi-nav-inner">
-          <a href="/workshop" className="hi-brand" aria-label="Hovel Ideas Workshop home">
+          <a href="/workshop" className="hi-brand" aria-label="Hovel Ideanator home">
             <div className="hi-mark">HI</div>
             <span className="hi-name">
-              <strong>Hovel Ideas</strong>
-              <span>Workshop</span>
+              <strong>Hovel Ideanator</strong>
+              <span>by Hovel Ideas</span>
             </span>
           </a>
 
