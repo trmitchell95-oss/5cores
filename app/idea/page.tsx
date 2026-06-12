@@ -1,6 +1,7 @@
 "use client";
 
-import { FormEvent, useEffect, useMemo, useState } from "react";
+import { ChangeEvent, FormEvent, useEffect, useMemo, useState } from "react";
+import JSZip from "jszip";
 import { createClient } from "@supabase/supabase-js";
 
 type Stage = "landing" | "intake" | "loading" | "results";
@@ -194,6 +195,49 @@ NEXT THREE MOVES
 ${moves}`;
 }
 
+
+function extractIdeaDocxParagraphText(paragraph: Element) {
+  return Array.from(paragraph.getElementsByTagName("w:t"))
+    .map((node) => node.textContent || "")
+    .join("");
+}
+
+async function readIdeaDocxFile(file: File) {
+  const arrayBuffer = await file.arrayBuffer();
+  const zip = await JSZip.loadAsync(arrayBuffer);
+  const documentFile = zip.file("word/document.xml");
+
+  if (!documentFile) {
+    throw new Error("Could not find readable document text inside the Word file.");
+  }
+
+  const xmlText = await documentFile.async("string");
+  const parsed = new DOMParser().parseFromString(xmlText, "application/xml");
+
+  const paragraphs = Array.from(parsed.getElementsByTagName("w:p"))
+    .map(extractIdeaDocxParagraphText)
+    .map((paragraph) => paragraph.trim())
+    .filter(Boolean);
+
+  return paragraphs.join("\n\n");
+}
+
+async function readUploadedIdeaFile(file: File) {
+  const lowerName = file.name.toLowerCase();
+
+  if (lowerName.endsWith(".docx")) {
+    return readIdeaDocxFile(file);
+  }
+
+  return file.text();
+}
+
+function titleFromUploadFileName(fileName: string) {
+  return fileName
+    .replace(/\.(txt|md|docx)$/i, "")
+    .replace(/[-_]+/g, " ")
+    .trim();
+}
 function safeFileName(value: string) {
  const cleaned = value
  .toLowerCase()
@@ -262,6 +306,7 @@ export default function IdeanatorPage() {
  const [stage, setStage] = useState<Stage>("intake");
  const [ideaName, setIdeaName] = useState("");
  const [ideaText, setIdeaText] = useState("");
+  const [uploadedIdeaFileName, setUploadedIdeaFileName] = useState("");
  const [ideaKind, setIdeaKind] = useState(ideaKinds[0]);
  const [primaryNeed, setPrimaryNeed] = useState(needs[0]);
  const [currentRun, setCurrentRun] = useState<IdeaRun | null>(null);
@@ -523,6 +568,57 @@ export default function IdeanatorPage() {
  window.scrollTo({ top: 0, behavior: "smooth" });
  }
 
+  async function handleIdeaFileUpload(event: ChangeEvent<HTMLInputElement>) {
+    const file = event.target.files?.[0];
+
+    if (!file) return;
+
+    setErrorMessage("");
+    setCurrentRun(null);
+    setCopied(false);
+    setSavedId("");
+    setSaveMessage("");
+
+    const lowerName = file.name.toLowerCase();
+    const isSupported =
+      file.type === "text/plain" ||
+      file.type === "text/markdown" ||
+      file.type === "application/vnd.openxmlformats-officedocument.wordprocessingml.document" ||
+      lowerName.endsWith(".txt") ||
+      lowerName.endsWith(".md") ||
+      lowerName.endsWith(".docx");
+
+    if (!isSupported) {
+      setErrorMessage("For now, upload a .txt, .md, or .docx file, or paste directly into the box. Old .doc files and PDFs are not supported yet.");
+      event.target.value = "";
+      return;
+    }
+
+    try {
+      const nextText = await readUploadedIdeaFile(file);
+
+      if (!nextText.trim()) {
+        throw new Error("That file did not contain readable text.");
+      }
+
+      setIdeaText(nextText);
+      setUploadedIdeaFileName(file.name);
+
+      if (!ideaName.trim()) {
+        const nextTitle = titleFromUploadFileName(file.name);
+        if (nextTitle) {
+          setIdeaName(nextTitle);
+        }
+      }
+
+      setStage("intake");
+    } catch (err) {
+      setErrorMessage(err instanceof Error ? err.message : "Could not read that file. Paste the text into the box instead.");
+    } finally {
+      event.target.value = "";
+    }
+  }
+
  async function copyDiagnosis() {
  if (!currentRun) return;
 
@@ -729,6 +825,21 @@ export default function IdeanatorPage() {
  onChange={(event) => setIdeaText(event.target.value)}
  placeholder="Example: I have an idea for a retirement savings adjuster that helps people know how much they can safely spend each month. It is still messy, but here is what I mean..."
  />
+                  <div className="idea-upload-row">
+                    <label className="idea-upload-button">
+                      Upload Word / Text File
+                      <input
+                        type="file"
+                        accept=".txt,.md,.docx,text/plain,text/markdown,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                        onChange={handleIdeaFileUpload}
+                      />
+                    </label>
+                    <span>
+                      {uploadedIdeaFileName
+                        ? "Loaded: " + uploadedIdeaFileName
+                        : "Optional. Paste, type, or upload a .docx/.txt file."}
+                    </span>
+                  </div>
 
  <div className={`idea-limit-note ${ideaTooLong ? "over-limit" : ""}`}>
  <strong>
@@ -862,7 +973,7 @@ export default function IdeanatorPage() {
  <div>
  <span>Your next move</span>
  <p>
- Save this if it is worth keeping. Change it if the report gave you a better version. When you are ready, you can turn it into a plan or send it to Hovel Editor for the serious final pass.
+ Save this if it is worth keeping. Change it if the report gave you a better version. When you are ready, you can turn it into a plan or send it through Clean Words for the serious final pass.
  </p>
  </div>
 
@@ -2277,6 +2388,173 @@ export default function IdeanatorPage() {
  border: 1px solid rgba(83, 52, 26, 0.48) !important;
  border-radius: 8px !important;
  }
+
+
+          /* =========================================================
+             IDEA UPLOAD BUTTON FINAL
+             Adds Word/Text upload beside the big intake box.
+             ========================================================= */
+
+          .idea-upload-row {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 12px;
+            margin: 14px 0 10px;
+          }
+
+          .idea-upload-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 44px;
+            padding: 0 18px;
+            border-radius: 999px;
+            border: 1px solid rgba(255, 220, 145, 0.68);
+            background:
+              linear-gradient(180deg, #d88a1f, #8c4e11);
+            color: #fff8e7 !important;
+            font-family: "Courier New", ui-monospace, monospace;
+            font-size: 0.78rem;
+            font-weight: 900;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            cursor: pointer;
+            box-shadow:
+              inset 0 1px 0 rgba(255, 255, 255, 0.18),
+              0 12px 28px rgba(0, 0, 0, 0.28);
+          }
+
+          .idea-upload-button input {
+            display: none;
+          }
+
+          .idea-upload-row span {
+            color: #f5dfb4 !important;
+            font-family: "Courier New", ui-monospace, monospace;
+            font-size: 0.82rem;
+          }
+
+
+          /* =========================================================
+             IDEA RESULTS RETRO FINAL OVERRIDES
+             Kills old blue result/report cards after upload/run.
+             ========================================================= */
+
+          .ideanator-page .results-card,
+          .results-card {
+            background:
+              radial-gradient(circle at 14% 0%, rgba(181, 90, 28, 0.20), transparent 30rem),
+              linear-gradient(180deg, rgba(51, 33, 21, 0.98), rgba(18, 15, 11, 0.98)) !important;
+            border-color: rgba(222, 176, 96, 0.42) !important;
+            color: #f8ecd2 !important;
+            box-shadow:
+              0 24px 70px rgba(0, 0, 0, 0.42),
+              inset 0 1px 0 rgba(255, 238, 190, 0.08) !important;
+          }
+
+          .ideanator-page .result-header,
+          .ideanator-page .report-actions,
+          .result-header,
+          .report-actions {
+            background:
+              linear-gradient(180deg, rgba(31, 23, 16, 0.96), rgba(16, 13, 10, 0.96)) !important;
+            border-color: rgba(222, 176, 96, 0.36) !important;
+            color: #f8ecd2 !important;
+          }
+
+          .ideanator-page .result-header h2,
+          .result-header h2 {
+            color: #fff1cf !important;
+            font-family: Georgia, "Times New Roman", serif !important;
+          }
+
+          .ideanator-page .result-header p,
+          .ideanator-page .result-header strong,
+          .ideanator-page .report-actions p,
+          .ideanator-page .report-actions span,
+          .result-header p,
+          .result-header strong,
+          .report-actions p,
+          .report-actions span {
+            color: #f5dfb4 !important;
+          }
+
+          .ideanator-page .result-card,
+          .result-card {
+            background:
+              linear-gradient(180deg, #f8e7c1 0%, #d7ad68 100%) !important;
+            color: #211408 !important;
+            border-color: rgba(83, 52, 26, 0.58) !important;
+          }
+
+          .ideanator-page .result-card h3,
+          .ideanator-page .result-card p,
+          .ideanator-page .result-card strong,
+          .result-card h3,
+          .result-card p,
+          .result-card strong {
+            color: #211408 !important;
+          }
+
+          .ideanator-page .verdict-badge,
+          .verdict-badge {
+            background:
+              linear-gradient(180deg, rgba(31, 23, 16, 0.96), rgba(16, 13, 10, 0.96)) !important;
+            border-color: rgba(216, 138, 31, 0.75) !important;
+            color: #f8ecd2 !important;
+          }
+
+          .ideanator-page .verdict-badge span,
+          .ideanator-page .verdict-badge strong,
+          .verdict-badge span,
+          .verdict-badge strong {
+            color: #f5dfb4 !important;
+          }
+
+          .ideanator-page .verdict-badge strong,
+          .verdict-badge strong {
+            color: #d88a1f !important;
+          }
+
+          .ideanator-page .verdict-row span,
+          .verdict-row span {
+            background: rgba(24, 19, 14, 0.9) !important;
+            color: #f5dfb4 !important;
+            border-color: rgba(222, 176, 96, 0.34) !important;
+          }
+
+          .ideanator-page .verdict-row .active-verdict,
+          .verdict-row .active-verdict {
+            background:
+              linear-gradient(180deg, #d88a1f, #8c4e11) !important;
+            color: #fff8e7 !important;
+            border-color: rgba(255, 220, 145, 0.68) !important;
+          }
+
+          .ideanator-page .secondary-button,
+          .results-card .secondary-button,
+          .report-actions .secondary-button {
+            background:
+              linear-gradient(180deg, #d88a1f, #8c4e11) !important;
+            background-image:
+              linear-gradient(180deg, #d88a1f, #8c4e11) !important;
+            color: #fff8e7 !important;
+            border-color: rgba(255, 220, 145, 0.68) !important;
+          }
+
+          .ideanator-page .save-box,
+          .results-card .save-box {
+            background:
+              linear-gradient(180deg, #f8e7c1 0%, #d7ad68 100%) !important;
+            color: #211408 !important;
+            border-color: rgba(83, 52, 26, 0.58) !important;
+          }
+
+          .ideanator-page .save-box *,
+          .results-card .save-box * {
+            color: #211408 !important;
+          }
 
 `}</style>
  </main>

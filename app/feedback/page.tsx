@@ -28,7 +28,7 @@ function guessTool(value: string, isIdeanator: boolean) {
   const lower = value.toLowerCase();
 
   if (isIdeanator || lower.includes("/idea") || lower.includes("/ideanator")) return "ideanator";
-  if (lower.includes("/sphinx")) return "sphinx";
+  if (lower.includes("/sphinx")) return "Clean Words";
   if (lower.includes("/submit")) return "5core";
   if (lower.includes("/reports/")) return "saved_report";
   if (lower.includes("/dashboard")) return "dashboard";

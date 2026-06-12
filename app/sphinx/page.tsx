@@ -504,6 +504,45 @@ export default function SphinxPage() {
       automatic: false,
     });
   }
+
+  function safeSphinxDownloadFileName(value: string) {
+    const cleaned = (value || "clean-words")
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-+|-+$/g, "")
+      .slice(0, 80);
+
+    return cleaned || "clean-words";
+  }
+
+  function downloadSphinxTextFile(label: string, filename: string, value: string) {
+    if (!value) {
+      setError(`Nothing to download yet for ${label}.`);
+      return;
+    }
+
+    const blob = new Blob([value], { type: "text/plain;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+
+    link.href = url;
+    link.download = filename;
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+
+    URL.revokeObjectURL(url);
+  }
+
+  function downloadStrongerText() {
+    const baseName = safeSphinxDownloadFileName(title || uploadedFileName || "clean-words-stronger");
+    downloadSphinxTextFile("the stronger version", `${baseName}-stronger.txt`, strongerVersion);
+  }
+
+  function downloadReportText() {
+    const baseName = safeSphinxDownloadFileName(title || uploadedFileName || "clean-words-notes");
+    downloadSphinxTextFile("the notes", `${baseName}-notes.txt`, report);
+  }
   async function copyReport() {
     if (!report) return;
 
@@ -1305,6 +1344,13 @@ export default function SphinxPage() {
                 >
                   {copied === "stronger" ? "Copied Stronger" : "Copy Stronger"}
                 </button>
+                  <button
+                    type="button"
+                    onClick={downloadStrongerText}
+                    disabled={!strongerVersion}
+                  >
+                    Download Stronger
+                  </button>
 
                 <button
                   onClick={copyReport}
@@ -1314,6 +1360,13 @@ export default function SphinxPage() {
                 >
                   {copied === "report" ? "Copied Report" : "Copy Notes"}
                 </button>
+                  <button
+                    type="button"
+                    onClick={downloadReportText}
+                    disabled={!report}
+                  >
+                    Download Notes
+                  </button>
               </div>
             </div>
 
