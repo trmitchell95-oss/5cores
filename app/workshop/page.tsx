@@ -60,6 +60,38 @@ const smallTools = [
     href: "/settings",
   },
 ];
+const councilSteps = [
+  {
+    name: "You",
+    title: "Dump the mess",
+    body: "Say the idea badly. Paste the rough draft. Drop the fog. No polish required.",
+  },
+  {
+    name: "Brad",
+    title: "Clarify it",
+    body: "Brad turns the mess into plain English and finds the actual thing we are building.",
+  },
+  {
+    name: "Greg",
+    title: "Challenge it",
+    body: "Greg kicks the tires, finds weak spots, calls out confusion, and protects you from fooling yourself.",
+  },
+  {
+    name: "Juniper",
+    title: "Humanize it",
+    body: "Juniper looks for the emotional core, audience, story, use case, and soul of the work.",
+  },
+  {
+    name: "Von Claussen",
+    title: "Structure it",
+    body: "Von Claussen turns the idea into architecture: steps, systems, prompts, plans, and next moves.",
+  },
+  {
+    name: "Hovel Editor",
+    title: "Finish it",
+    body: "The final editor pass turns the work into a serious report, draft, proposal, launch plan, or manuscript path.",
+  },
+];
 
 export default function WorkshopPage() {
   const [easyMode, setEasyMode] = useState(false);
@@ -92,11 +124,11 @@ export default function WorkshopPage() {
           <h1>What are we building today?</h1>
 
           <p className="subhead">
-            Start with the mess. The workshop will route you to the right tool.
+            One button at a time. The council helps turn the mess into a plan, then Hovel Editor takes the final pass.
           </p>
 
           <div className="startHelp">
-            <strong>Not sure?</strong> Press <span>I have an idea</span>. That is the safest place to start.
+            <strong>Not sure?</strong> Press <span>I have an idea</span>. The council will walk it forward one plain step at a time.
           </div>
         </header>
 
@@ -116,6 +148,28 @@ export default function WorkshopPage() {
             </Link>
           ))}
         </section>
+        <section className="councilWorkbench" aria-label="Council workflow">
+          <div className="councilIntro">
+            <p className="eyebrow">Council Workbench</p>
+            <h2>Six steps. No tool-name guessing.</h2>
+            <p>
+              Hovel Ideanator is built like an old workbench notebook: drop the rough thing,
+              let the council mark it up, then send the strongest version into the final editor.
+            </p>
+          </div>
+
+          <div className="councilSteps">
+            {councilSteps.map((step, index) => (
+              <article key={step.name} className="councilStep">
+                <span>{index + 1}</span>
+                <strong>{step.name}</strong>
+                <h3>{step.title}</h3>
+                <p>{step.body}</p>
+              </article>
+            ))}
+          </div>
+        </section>
+
 
         <section className="simpleGuide">
           <h2>Plain English guide</h2>
@@ -163,6 +217,8 @@ export default function WorkshopPage() {
 
         .hero,
         .choice,
+        .councilWorkbench,
+        .councilStep,
         .simpleGuide,
         .smallTool {
           border: 1px solid rgba(147, 197, 253, 0.28);
@@ -308,6 +364,92 @@ export default function WorkshopPage() {
         .choice strong {
           width: fit-content;
         }
+        .councilWorkbench {
+          border-radius: 30px;
+          padding: clamp(24px, 4vw, 38px);
+          margin-bottom: 16px;
+          background:
+            linear-gradient(180deg, rgba(248, 237, 210, 0.10), rgba(15, 23, 42, 0.94)),
+            repeating-linear-gradient(
+              0deg,
+              transparent,
+              transparent 34px,
+              rgba(248, 237, 210, 0.045) 35px
+            );
+        }
+
+        .councilIntro {
+          max-width: 900px;
+          margin-bottom: 22px;
+        }
+
+        .councilIntro h2 {
+          margin: 0;
+          color: #ffffff;
+          font-size: clamp(2.4rem, 5vw, 4.4rem);
+          line-height: 0.95;
+          letter-spacing: -0.045em;
+        }
+
+        .councilIntro p:last-child {
+          color: #d8c7ad;
+          font-size: clamp(1.1rem, 2vw, 1.35rem);
+          line-height: 1.58;
+          margin: 16px 0 0;
+        }
+
+        .councilSteps {
+          display: grid;
+          grid-template-columns: repeat(3, minmax(0, 1fr));
+          gap: 12px;
+        }
+
+        .councilStep {
+          position: relative;
+          border-radius: 22px;
+          padding: 18px;
+          min-height: 210px;
+          background:
+            linear-gradient(180deg, rgba(255, 248, 226, 0.08), rgba(15, 23, 42, 0.88));
+        }
+
+        .councilStep span {
+          width: 42px;
+          height: 42px;
+          border-radius: 999px;
+          display: grid;
+          place-items: center;
+          background: #f8e7bd;
+          color: #111827;
+          font-family: monospace;
+          font-weight: 900;
+          margin-bottom: 14px;
+        }
+
+        .councilStep strong {
+          display: block;
+          color: #93c5fd;
+          font-family: monospace;
+          font-size: 0.78rem;
+          letter-spacing: 0.14em;
+          text-transform: uppercase;
+          margin-bottom: 8px;
+        }
+
+        .councilStep h3 {
+          margin: 0;
+          color: #ffffff;
+          font-size: 1.45rem;
+          line-height: 1.08;
+        }
+
+        .councilStep p {
+          margin: 12px 0 0;
+          color: #d8c7ad;
+          font-size: 1.02rem;
+          line-height: 1.55;
+        }
+
 
         .simpleGuide {
           border-radius: 28px;
@@ -385,6 +527,8 @@ export default function WorkshopPage() {
 
         .easy .choice p,
         .easy .guideList p,
+        .easy .councilIntro p:last-child,
+        .easy .councilStep p,
         .easy .smallTool p,
         .easy .startHelp,
         .easy .subhead {
@@ -403,6 +547,7 @@ export default function WorkshopPage() {
         @media (max-width: 900px) {
           .choiceGrid,
           .guideList,
+          .councilSteps,
           .toolStrip {
             grid-template-columns: 1fr;
           }
@@ -415,6 +560,7 @@ export default function WorkshopPage() {
 
           .hero,
           .choice,
+          .councilWorkbench,
           .simpleGuide {
             border-radius: 22px;
           }
