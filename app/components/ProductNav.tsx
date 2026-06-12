@@ -234,7 +234,72 @@ export default function ProductNav() {
             padding: 0 11px;
           }
         }
-      `}</style>
+      
+        /* =========================================================
+           1980s CARD CATALOG NAV OVERRIDES
+           Brown machine trim, manila buttons, amber active state.
+           ========================================================= */
+
+        .hi-nav {
+          background:
+            linear-gradient(180deg, rgba(42, 28, 16, 0.98), rgba(28, 21, 14, 0.98)) !important;
+          border-bottom: 2px solid rgba(214, 174, 108, 0.55) !important;
+          box-shadow: 0 8px 28px rgba(0, 0, 0, 0.36) !important;
+          backdrop-filter: none !important;
+        }
+
+        .hi-brand {
+          color: #f5ead2 !important;
+        }
+
+        .hi-mark {
+          background:
+            linear-gradient(180deg, #f3dfb8, #c99f5b) !important;
+          color: #24180d !important;
+          border: 1px solid rgba(80, 45, 20, 0.45) !important;
+          border-radius: 8px !important;
+          box-shadow:
+            inset 0 1px 0 rgba(255, 255, 255, 0.42),
+            0 4px 12px rgba(0, 0, 0, 0.28) !important;
+        }
+
+        .hi-name strong {
+          color: #f6e7c7 !important;
+          letter-spacing: 0.16em !important;
+        }
+
+        .hi-name span {
+          color: #c9a66b !important;
+        }
+
+        .hi-link {
+          background:
+            linear-gradient(180deg, #f5e6c8, #cfaa6d) !important;
+          color: #24180d !important;
+          border: 1px solid rgba(80, 45, 20, 0.42) !important;
+          border-radius: 8px !important;
+          box-shadow:
+            inset 0 1px 0 rgba(255, 255, 255, 0.42),
+            0 4px 10px rgba(0, 0, 0, 0.22) !important;
+          text-transform: none !important;
+          letter-spacing: 0.04em !important;
+        }
+
+        .hi-link:hover {
+          background:
+            linear-gradient(180deg, #fff1cf, #ddb66f) !important;
+          color: #1a1108 !important;
+          border-color: rgba(92, 54, 24, 0.72) !important;
+        }
+
+        .hi-active {
+          background:
+            linear-gradient(180deg, #d99a2b, #9a5b16) !important;
+          color: #fff8e7 !important;
+          border-color: rgba(255, 220, 145, 0.75) !important;
+        }
+
+`}</style>
 
       <nav className="hi-nav" aria-label="Main navigation">
         <div className="hi-nav-inner">

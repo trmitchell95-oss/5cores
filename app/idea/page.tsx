@@ -2127,6 +2127,157 @@ export default function IdeanatorPage() {
  border: 1px solid rgba(120, 53, 15, 0.38) !important;
  }
 
+
+ /* =========================================================
+    1980s LIBRARY CATALOG / MICROFICHE OVERRIDES
+    Kill the blue-gray dashboard. Keep the simple intake.
+    ========================================================= */
+
+ .ideanator-page {
+ background:
+ radial-gradient(circle at 20% 0%, rgba(160, 102, 35, 0.28), transparent 30rem),
+ linear-gradient(135deg, #2b2118 0%, #181610 48%, #302316 100%) !important;
+ color: #f8edd5 !important;
+ }
+
+ .ideanator-page::before {
+ content: "";
+ position: fixed;
+ inset: 0;
+ pointer-events: none;
+ z-index: 0;
+ background:
+ repeating-linear-gradient(
+ 90deg,
+ rgba(255, 244, 214, 0.025) 0,
+ rgba(255, 244, 214, 0.025) 1px,
+ transparent 1px,
+ transparent 4px
+ ),
+ radial-gradient(circle at center, transparent 0, rgba(0, 0, 0, 0.22) 72%);
+ opacity: 0.7;
+ }
+
+ .ideanator-page .shell {
+ position: relative;
+ z-index: 1;
+ }
+
+ .topbar {
+ background:
+ linear-gradient(180deg, rgba(59, 40, 23, 0.82), rgba(29, 24, 17, 0.82)) !important;
+ border: 1px solid rgba(210, 168, 103, 0.28) !important;
+ border-radius: 12px !important;
+ padding: 18px 20px !important;
+ box-shadow: 0 18px 48px rgba(0, 0, 0, 0.28) !important;
+ }
+
+ .topbar .eyebrow {
+ color: #d9a441 !important;
+ }
+
+ .topbar h1 {
+ color: #f7ead0 !important;
+ font-family: Georgia, "Times New Roman", serif !important;
+ letter-spacing: -0.05em !important;
+ }
+
+ .ghost-button {
+ background:
+ linear-gradient(180deg, #2f3f2a, #1d2a1a) !important;
+ color: #f8edd5 !important;
+ border: 1px solid rgba(210, 168, 103, 0.42) !important;
+ border-radius: 8px !important;
+ box-shadow:
+ inset 0 1px 0 rgba(255, 255, 255, 0.1),
+ 0 8px 18px rgba(0, 0, 0, 0.26) !important;
+ }
+
+ .ideanator-page .shell .intake-card {
+ background:
+ linear-gradient(90deg, rgba(130, 47, 22, 0.13) 0 48px, transparent 48px),
+ linear-gradient(180deg, #fff3cf, #f3dfb6) !important;
+ border: 1px solid rgba(83, 52, 26, 0.55) !important;
+ border-radius: 8px !important;
+ box-shadow:
+ 0 24px 80px rgba(0, 0, 0, 0.42),
+ 0 0 0 8px rgba(68, 43, 23, 0.22),
+ inset 48px 0 0 rgba(135, 55, 22, 0.08) !important;
+ }
+
+ .ideanator-page .shell .intake-card .eyebrow {
+ color: #8b4513 !important;
+ font-family: "Courier New", ui-monospace, monospace !important;
+ letter-spacing: 0.28em !important;
+ }
+
+ .ideanator-page .shell .intake-card h2 {
+ color: #211408 !important;
+ font-family: Georgia, "Times New Roman", serif !important;
+ }
+
+ .ideanator-page .shell .intake-card p,
+ .ideanator-page .shell .intake-card label span,
+ .ideanator-page .shell .intake-card summary,
+ .ideanator-page .shell .intake-card strong {
+ color: #2b1a0c !important;
+ }
+
+ .ideanator-page .shell .intake-card textarea {
+ background:
+ repeating-linear-gradient(
+ 180deg,
+ #fffaf0 0,
+ #fffaf0 30px,
+ rgba(74, 111, 128, 0.34) 31px,
+ #fffaf0 32px
+ ) !important;
+ color: #11110d !important;
+ border: 1px solid rgba(83, 52, 26, 0.62) !important;
+ border-radius: 6px !important;
+ font-family: Georgia, "Times New Roman", serif !important;
+ box-shadow:
+ inset 0 2px 14px rgba(83, 52, 26, 0.14),
+ 0 10px 26px rgba(83, 52, 26, 0.14) !important;
+ }
+
+ .ideanator-page .shell .intake-card textarea::placeholder {
+ color: rgba(31, 28, 20, 0.42) !important;
+ }
+
+ .ideanator-page .shell .intake-card .idea-limit-note,
+ .ideanator-page .shell .intake-card .optional-details {
+ background: #e9d2a7 !important;
+ border: 1px solid rgba(83, 52, 26, 0.42) !important;
+ border-radius: 6px !important;
+ }
+
+ .ideanator-page .shell .intake-card input,
+ .ideanator-page .shell .intake-card select {
+ background: #fff8e7 !important;
+ color: #11110d !important;
+ border: 1px solid rgba(83, 52, 26, 0.52) !important;
+ border-radius: 6px !important;
+ }
+
+ .ideanator-page .shell .intake-card .primary-button {
+ background:
+ linear-gradient(180deg, #3f5f2d, #263e1f) !important;
+ color: #fff8e7 !important;
+ border: 1px solid rgba(227, 189, 111, 0.7) !important;
+ border-radius: 8px !important;
+ box-shadow:
+ inset 0 1px 0 rgba(255, 255, 255, 0.14),
+ 0 14px 30px rgba(38, 62, 31, 0.32) !important;
+ }
+
+ .ideanator-page .shell .intake-card .secondary-button {
+ background: #e6c792 !important;
+ color: #211408 !important;
+ border: 1px solid rgba(83, 52, 26, 0.48) !important;
+ border-radius: 8px !important;
+ }
+
 `}</style>
  </main>
  );
