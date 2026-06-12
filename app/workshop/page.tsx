@@ -6,32 +6,32 @@ import Link from "next/link";
 const mainChoices = [
   {
     label: "1",
-    title: "I have an idea",
-    plain: "Start here when the idea is still messy, half-built, or hard to explain.",
+    title: "Start Here",
+    plain: "Tell us your idea in normal words. We will help you sort it out.",
     href: "/idea?start=intake",
     button: "Start Here",
     best: true,
   },
   {
     label: "2",
-    title: "I already wrote something",
-    plain: "Send writing through the Hovel Editor report engine.",
+    title: "I wrote something",
+    plain: "Paste a draft, chapter, proposal, letter, or notes you want help with.",
     href: "/submit",
-    button: "Check My Writing",
+    button: "Help With Writing",
     best: false,
   },
   {
     label: "3",
-    title: "Make my words sound human",
-    plain: "Clean stiff, fake, corporate, or AI-sounding text without sanding off the human voice.",
+    title: "Clean up my words",
+    plain: "Use this when something sounds stiff, awkward, fake, or too much like a robot.",
     href: "/sphinx",
     button: "Clean My Words",
     best: false,
   },
   {
     label: "4",
-    title: "Find my saved work",
-    plain: "Reopen ideas, projects, reports, drafts, rigs, and unfinished work.",
+    title: "Open my saved work",
+    plain: "Find things you already saved and keep working on them.",
     href: "/projects",
     button: "Open My Work",
     best: false,
@@ -62,34 +62,34 @@ const smallTools = [
 ];
 const councilSteps = [
   {
-    name: "You",
-    title: "Dump the mess",
-    body: "Say the idea badly. Paste the rough draft. Drop the fog. No polish required.",
+    name: "Step 1",
+    title: "Tell us the idea",
+    body: "Type it the way you would explain it to a friend. Messy is fine.",
   },
   {
-    name: "Brad",
-    title: "Clarify it",
-    body: "Brad turns the mess into plain English and finds the actual thing we are building.",
+    name: "Step 2",
+    title: "We make it clearer",
+    body: "Brad helps turn the fog into plain English.",
   },
   {
-    name: "Greg",
-    title: "Challenge it",
-    body: "Greg kicks the tires, finds weak spots, calls out confusion, and protects you from fooling yourself.",
+    name: "Step 3",
+    title: "We look for problems",
+    body: "Greg checks the weak spots before they surprise you later.",
   },
   {
-    name: "Juniper",
-    title: "Humanize it",
-    body: "Juniper looks for the emotional core, audience, story, use case, and soul of the work.",
+    name: "Step 4",
+    title: "We find who it helps",
+    body: "Juniper looks for the people, purpose, and human reason it matters.",
   },
   {
-    name: "Von Claussen",
-    title: "Structure it",
-    body: "Von Claussen turns the idea into architecture: steps, systems, prompts, plans, and next moves.",
+    name: "Step 5",
+    title: "We make a simple plan",
+    body: "Von Claussen turns it into practical next steps.",
   },
   {
-    name: "Hovel Editor",
-    title: "Finish it",
-    body: "The final editor pass turns the work into a serious report, draft, proposal, launch plan, or manuscript path.",
+    name: "Step 6",
+    title: "We help finish it",
+    body: "Hovel Editor can later turn the strongest version into a serious document.",
   },
 ];
 
@@ -121,14 +121,14 @@ export default function WorkshopPage() {
             </button>
           </div>
 
-          <h1>What are we building today?</h1>
+          <h1>Tell us your idea. We will help you sort it out.</h1>
 
           <p className="subhead">
-            One button at a time. The council helps turn the mess into a plan, then Hovel Editor takes the final pass.
+            Start with the big button. You do not need to know which tool to use.
           </p>
 
           <div className="startHelp">
-            <strong>Not sure?</strong> Press <span>I have an idea</span>. The council will walk it forward one plain step at a time.
+            <strong>Not sure?</strong> Press <span>Start Here</span>. That is the safest place to begin.
           </div>
         </header>
 
@@ -150,11 +150,11 @@ export default function WorkshopPage() {
         </section>
         <section className="councilWorkbench" aria-label="Council workflow">
           <div className="councilIntro">
-            <p className="eyebrow">Council Workbench</p>
-            <h2>Six steps. No tool-name guessing.</h2>
+            <p className="eyebrow">What happens next</p>
+            <h2>We walk the idea forward one step at a time.</h2>
             <p>
-              Hovel Ideanator is built like an old workbench notebook: drop the rough thing,
-              let the council mark it up, then send the strongest version into the final editor.
+              Hovel Ideanator works like a plain notebook and a helpful workbench: tell us the rough thing,
+              we make it clearer, look for weak spots, and show you what to do next.
             </p>
           </div>
 
@@ -175,10 +175,10 @@ export default function WorkshopPage() {
           <h2>Plain English guide</h2>
 
           <div className="guideList">
-            <p><strong>Idea in your head?</strong> Press I have an idea.</p>
-            <p><strong>Words already written?</strong> Press I already wrote something.</p>
-            <p><strong>Sounds weird or fake?</strong> Press Make my words sound human.</p>
-            <p><strong>Looking for old stuff?</strong> Press Find my saved work.</p>
+            <p><strong>Idea in your head?</strong> Press Start Here.</p>
+            <p><strong>Words already written?</strong> Press I wrote something.</p>
+            <p><strong>Sounds weird or fake?</strong> Press Clean up my words.</p>
+            <p><strong>Looking for old stuff?</strong> Press Open my saved work.</p>
           </div>
         </section>
 
@@ -323,6 +323,8 @@ export default function WorkshopPage() {
         }
 
         .choiceBest {
+          grid-column: 1 / -1;
+          min-height: 160px;
           background:
             radial-gradient(circle at top left, rgba(147, 197, 253, 0.2), transparent 18rem),
             rgba(30, 41, 59, 0.98);

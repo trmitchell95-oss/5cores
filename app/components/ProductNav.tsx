@@ -6,12 +6,8 @@ import { createClient } from "@supabase/supabase-js";
 
 const navItems = [
   { href: "/workshop", label: "Home" },
-  { href: "/idea?start=intake", label: "Start Idea" },
-  { href: "/sphinx", label: "Clean Words" },
-  { href: "/submit", label: "Check Writing" },
+  { href: "/idea?start=intake", label: "Start Here" },
   { href: "/projects", label: "My Work" },
-  { href: "/reread", label: "Compare Drafts" },
-  { href: "/settings", label: "Settings" },
   { href: "/idea/help", label: "Help" },
 ];
 

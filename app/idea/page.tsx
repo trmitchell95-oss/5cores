@@ -55,11 +55,11 @@ const ideaKinds = [
 const needs = [
  "Is this worth pursuing?",
  "What is the strongest version?",
- "What are the holes?",
+ "What problems could this have?",
  "Who would use it?",
- "How could it make money?",
- "How do I explain it clearly?",
- "Find the weak spots",
+ "Can this make or save money?",
+ "Help me explain it clearly",
+ "Find weak spots",
 ];
 
 const verdicts: Verdict[] = [
@@ -72,34 +72,34 @@ const verdicts: Verdict[] = [
 
 const councilFlow = [
  {
- name: "You",
- title: "Dump the mess",
- body: "Write it badly. Paste the notes. No pitch voice required.",
+ name: "Step 1",
+ title: "Tell us the idea",
+ body: "Type it like you would say it out loud. Messy is okay.",
  },
  {
- name: "Brad",
- title: "Clarify",
- body: "Turns the fog into plain English and names what you are really building.",
+ name: "Step 2",
+ title: "We make it clear",
+ body: "Brad helps put the idea into plain English.",
  },
  {
- name: "Greg",
- title: "Challenge",
- body: "Finds holes, weak logic, fake confidence, and parts that might break.",
+ name: "Step 3",
+ title: "We check weak spots",
+ body: "Greg looks for confusing parts, risks, and holes.",
  },
  {
- name: "Juniper",
- title: "Humanize",
- body: "Looks for the soul, audience, emotional core, and real use case.",
+ name: "Step 4",
+ title: "We find who it helps",
+ body: "Juniper looks for the people, purpose, and human reason it matters.",
  },
  {
- name: "Von Claussen",
- title: "Structure",
- body: "Turns the idea into steps, systems, prompts, plans, and next moves.",
+ name: "Step 5",
+ title: "We make next steps",
+ body: "Von Claussen turns it into a simple practical path.",
  },
  {
- name: "Hovel Editor",
- title: "Finalize",
- body: "The later high-gear pass turns the strongest version into serious working output.",
+ name: "Step 6",
+ title: "We help finish it later",
+ body: "Hovel Editor can turn the strongest version into a serious document when you are ready.",
  },
 ];
 const IDEANATOR_MAX_CHARS = 60000;
@@ -619,8 +619,8 @@ export default function IdeanatorPage() {
  <section className="shell">
  <header className="topbar">
  <div>
- <p className="eyebrow">COUNCIL WORKBENCH</p>
- <h1>HOVEL IDEANATOR</h1>
+ <p className="eyebrow">START HERE</p>
+ <h1>Tell us your idea.</h1>
  </div>
 
  <button className="ghost-button" type="button" onClick={returnToLanding}>
@@ -705,18 +705,18 @@ export default function IdeanatorPage() {
  {stage === "intake" && (
  <section className="intake-card">
  <div className="section-heading">
- <p className="eyebrow">STEP 1 / DUMP THE MESS</p>
- <h2>Start with the ugly version.</h2>
+ <p className="eyebrow">STEP 1</p>
+ <h2>What is your idea?</h2>
  <p>
- Do not dress it up. Do not pitch. Drop the raw idea, rough notes,
+ Do not worry about sounding professional. Just type the idea, rough notes,
  half-built plan, product sketch, story seed, invention detail, or confused ramble.
- The council will walk it forward one plain step at a time.
+ We will help make sense of it one plain step at a time.
  </p>
  </div>
  <section className="council-flow" aria-label="Council workbench path">
  <div className="council-flow-header">
- <span>Council path</span>
- <strong>One plain step at a time.</strong>
+ <span>What happens next</span>
+ <strong>No computer words. No guessing.</strong>
  </div>
 
  <div className="council-flow-grid">
@@ -733,14 +733,14 @@ export default function IdeanatorPage() {
  <div className="first-idea-card">
  <span>First time in the shop?</span>
  <p>
- Do not overthink it. Hovel Ideanator is built for the ugly first version of an idea.
+ Do not overthink it. This is built for the first messy version of an idea.
  Paste the messy thing that keeps circling your head.
  </p>
 
  <ol>
  <li>Name it if it has a name. Leave it blank if it does not.</li>
  <li>Pick the closest kind of idea. Guessing is fine.</li>
- <li>Tell us what you want to know, then dump the raw idea in the big box. The council takes it from there.</li>
+ <li>Tell us what kind of help you want, then type the raw idea in the big box.</li>
  </ol>
  </div>
 
@@ -798,7 +798,7 @@ export default function IdeanatorPage() {
  </label>
 
  <label>
- <span>What do you want to know?</span>
+ <span>What kind of help do you want?</span>
  <select
  value={primaryNeed}
  onChange={(event) => setPrimaryNeed(event.target.value)}
@@ -812,11 +812,11 @@ export default function IdeanatorPage() {
  </label>
 
  <label className="full-width">
- <span>Dump the messy version here.</span>
+ <span>Type your idea here.</span>
  <textarea
  value={ideaText}
  onChange={(event) => setIdeaText(event.target.value)}
- placeholder="Paste the messy version here. Half-thoughts, notes, product ideas, story seeds, invention details, and confused rambling are all allowed."
+ placeholder="Example: I have an idea for a retirement savings adjuster that helps people know how much they can safely spend each month. It is still messy, but here is what I mean..."
  />
 
  <div className={`idea-limit-note ${ideaTooLong ? "over-limit" : ""}`}>
@@ -824,7 +824,7 @@ export default function IdeanatorPage() {
  {ideaCharCount.toLocaleString()} / {IDEANATOR_MAX_CHARS.toLocaleString()} characters
  </strong>
  <p>
- Short ideas work. Messy documents work. Product notes, invention notes, diagrams explained in text, feature maps, and strategy dumps are welcome. Do not paste a full manuscript or anything you are not comfortable submitting for analysis.
+ Short ideas work. Messy documents work. Notes, examples, questions, and half-finished thoughts are welcome. Do not paste a full manuscript or anything you are not comfortable submitting for analysis.
  </p>
  </div>
  </label>
@@ -844,7 +844,7 @@ export default function IdeanatorPage() {
  type="submit"
  disabled={!ideaText.trim() || ideaTooLong}
  >
- Start Council Pass
+ Check My Idea
  </button>
  </div>
  </form>
@@ -855,12 +855,12 @@ export default function IdeanatorPage() {
  <section className="loading-card">
  <div className="spinner" />
 
- <h2>The council is reading the mess.</h2>
+ <h2>We are checking your idea.</h2>
 
  <p>
- Brad clarifies it. Greg challenges it. Juniper looks for the human core.
- Von Claussen structures the next moves. Then the report comes back with
- the strongest usable path.
+ First we make it clearer. Then we look for weak spots and who it could help.
+ Then we turn it into simple next steps and bring back
+ the clearest usable path.
  </p>
  </section>
  )}
@@ -869,7 +869,7 @@ export default function IdeanatorPage() {
  <section className="results-card">
  <div className="result-header">
  <div>
- <p className="eyebrow">COUNCIL PASS COMPLETE</p>
+ <p className="eyebrow">IDEA CHECK COMPLETE</p>
  <h2>{currentRun.report.ideaName}</h2>
  <p>
  Type: <strong>{currentRun.report.ideaKind}</strong>
@@ -910,7 +910,7 @@ export default function IdeanatorPage() {
  <div>
  <span>Your next move</span>
  <p>
- Save this if it is worth keeping. Revise it if the council exposed a better version. Build a rig when you want a reusable prompt or working structure. Send it to Hovel Editor later when it needs the serious final pass.
+ Save this if it is worth keeping. Change it if the report gave you a better version. When you are ready, you can turn it into a plan or send it to Hovel Editor for the serious final pass.
  </p>
  </div>
 
