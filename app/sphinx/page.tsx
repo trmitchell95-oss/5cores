@@ -800,6 +800,68 @@ export default function SphinxPage() {
             color: #1d1208 !important;
           }
 
+
+          /* =========================================================
+             CLEAN WORDS HARD READABILITY PATCH
+             Stop dark input/report boxes from eating the text.
+             ========================================================= */
+
+          .sphinx-shell input[class*="bg-zinc"],
+          .sphinx-shell select[class*="bg-zinc"],
+          .sphinx-shell textarea[class*="bg-zinc"],
+          .sphinx-shell input,
+          .sphinx-shell select,
+          .sphinx-shell textarea {
+            background: #fff8e7 !important;
+            color: #11110d !important;
+            border-color: rgba(83, 52, 26, 0.58) !important;
+            box-shadow: inset 0 2px 12px rgba(83, 52, 26, 0.12) !important;
+          }
+
+          .sphinx-shell textarea {
+            background:
+              repeating-linear-gradient(
+                180deg,
+                #fffaf0 0,
+                #fffaf0 30px,
+                rgba(74, 111, 128, 0.34) 31px,
+                #fffaf0 32px
+              ) !important;
+          }
+
+          .sphinx-shell input::placeholder,
+          .sphinx-shell textarea::placeholder {
+            color: rgba(31, 28, 20, 0.48) !important;
+            opacity: 1 !important;
+          }
+
+          .sphinx-shell .min-h-\[540px\],
+          .sphinx-shell .min-h-\[500px\],
+          .sphinx-shell .sphinx-rendered-report {
+            background: #fff8e7 !important;
+            color: #11110d !important;
+            border-color: rgba(83, 52, 26, 0.58) !important;
+          }
+
+          .sphinx-shell .min-h-\[540px\] *,
+          .sphinx-shell .min-h-\[500px\] *,
+          .sphinx-shell .sphinx-rendered-report * {
+            color: #11110d !important;
+          }
+
+          .sphinx-shell label.inline-flex,
+          .sphinx-shell [class*="border-dashed"] {
+            background:
+              linear-gradient(180deg, #2f3f2a 0%, #1d2a1a 100%) !important;
+            color: #fff3d3 !important;
+            border-color: rgba(210, 168, 103, 0.45) !important;
+          }
+
+          .sphinx-shell label.inline-flex *,
+          .sphinx-shell [class*="border-dashed"] * {
+            color: #fff3d3 !important;
+          }
+
 `}</style>
       <div className="mx-auto max-w-6xl">
         <nav className="mb-6 flex flex-col gap-3 rounded-3xl border border-zinc-800 bg-zinc-900/80 p-4 shadow-xl md:flex-row md:items-center md:justify-between">
