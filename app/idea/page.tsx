@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { FormEvent, useEffect, useMemo, useState } from "react";
 import { createClient } from "@supabase/supabase-js";
@@ -70,6 +70,38 @@ const verdicts: Verdict[] = [
  "Dangerously Good",
 ];
 
+const councilFlow = [
+ {
+ name: "You",
+ title: "Dump the mess",
+ body: "Write it badly. Paste the notes. No pitch voice required.",
+ },
+ {
+ name: "Brad",
+ title: "Clarify",
+ body: "Turns the fog into plain English and names what you are really building.",
+ },
+ {
+ name: "Greg",
+ title: "Challenge",
+ body: "Finds holes, weak logic, fake confidence, and parts that might break.",
+ },
+ {
+ name: "Juniper",
+ title: "Humanize",
+ body: "Looks for the soul, audience, emotional core, and real use case.",
+ },
+ {
+ name: "Von Claussen",
+ title: "Structure",
+ body: "Turns the idea into steps, systems, prompts, plans, and next moves.",
+ },
+ {
+ name: "Hovel Editor",
+ title: "Finalize",
+ body: "The later high-gear pass turns the strongest version into serious working output.",
+ },
+];
 const IDEANATOR_MAX_CHARS = 60000;
 
 function normalizeIdeaName(value: string) {
@@ -587,8 +619,8 @@ export default function IdeanatorPage() {
  <section className="shell">
  <header className="topbar">
  <div>
- <p className="eyebrow">RAW IDEA IN. CLEARER PATH OUT.</p>
- <h1>THE IDEANATOR</h1>
+ <p className="eyebrow">COUNCIL WORKBENCH</p>
+ <h1>HOVEL IDEANATOR</h1>
  </div>
 
  <button className="ghost-button" type="button" onClick={returnToLanding}>
@@ -673,27 +705,42 @@ export default function IdeanatorPage() {
  {stage === "intake" && (
  <section className="intake-card">
  <div className="section-heading">
- <p className="eyebrow">IDEA INTAKE</p>
- <h2>Throw the messy version in here.</h2>
+ <p className="eyebrow">STEP 1 / DUMP THE MESS</p>
+ <h2>Start with the ugly version.</h2>
  <p>
- No pitch-deck voice. No founder fog. Paste the napkin sketch,
- the messy concept doc, the product notes, the flow map, or the
- whole idea dump. Short is fine. Detailed is fine. A full novel is
- not what this bay is built for.
+ Do not dress it up. Do not pitch. Drop the raw idea, rough notes,
+ half-built plan, product sketch, story seed, invention detail, or confused ramble.
+ The council will walk it forward one plain step at a time.
  </p>
  </div>
+ <section className="council-flow" aria-label="Council workbench path">
+ <div className="council-flow-header">
+ <span>Council path</span>
+ <strong>One plain step at a time.</strong>
+ </div>
 
+ <div className="council-flow-grid">
+ {councilFlow.map((step, index) => (
+ <article key={step.name} className="council-flow-card">
+ <span>{index + 1}</span>
+ <strong>{step.name}</strong>
+ <h3>{step.title}</h3>
+ <p>{step.body}</p>
+ </article>
+ ))}
+ </div>
+ </section>
  <div className="first-idea-card">
  <span>First time in the shop?</span>
  <p>
- Do not overthink it. The Ideanator is built for the ugly first version of an idea.
+ Do not overthink it. Hovel Ideanator is built for the ugly first version of an idea.
  Paste the messy thing that keeps circling your head.
  </p>
 
  <ol>
  <li>Name it if it has a name. Leave it blank if it does not.</li>
  <li>Pick the closest kind of idea. Guessing is fine.</li>
- <li>Tell us what you want to know, then dump the raw idea in the big box.</li>
+ <li>Tell us what you want to know, then dump the raw idea in the big box. The council takes it from there.</li>
  </ol>
  </div>
 
@@ -765,7 +812,7 @@ export default function IdeanatorPage() {
  </label>
 
  <label className="full-width">
- <span>Throw your raw idea in here.</span>
+ <span>Dump the messy version here.</span>
  <textarea
  value={ideaText}
  onChange={(event) => setIdeaText(event.target.value)}
@@ -797,7 +844,7 @@ export default function IdeanatorPage() {
  type="submit"
  disabled={!ideaText.trim() || ideaTooLong}
  >
- Test This Idea
+ Start Council Pass
  </button>
  </div>
  </form>
@@ -808,12 +855,12 @@ export default function IdeanatorPage() {
  <section className="loading-card">
  <div className="spinner" />
 
- <h2>The spark is in the chamber.</h2>
+ <h2>The council is reading the mess.</h2>
 
  <p>
- We are sending it through the shop now. Frame, spark, tires,
- obvious leaks, hidden rot, weird noises, and whether this thing
- explodes at highway speed.
+ Brad clarifies it. Greg challenges it. Juniper looks for the human core.
+ Von Claussen structures the next moves. Then the report comes back with
+ the strongest usable path.
  </p>
  </section>
  )}
@@ -822,7 +869,7 @@ export default function IdeanatorPage() {
  <section className="results-card">
  <div className="result-header">
  <div>
- <p className="eyebrow">IDEA CHECK COMPLETE</p>
+ <p className="eyebrow">COUNCIL PASS COMPLETE</p>
  <h2>{currentRun.report.ideaName}</h2>
  <p>
  Type: <strong>{currentRun.report.ideaKind}</strong>
@@ -863,8 +910,7 @@ export default function IdeanatorPage() {
  <div>
  <span>Your next move</span>
  <p>
- Save this if it is worth keeping. Revise it if the read exposed a better version.
- Build a rig later when you want to turn the idea into a reusable prompt or working structure.
+ Save this if it is worth keeping. Revise it if the council exposed a better version. Build a rig when you want a reusable prompt or working structure. Send it to Hovel Editor later when it needs the serious final pass.
  </p>
  </div>
 
@@ -1346,6 +1392,97 @@ export default function IdeanatorPage() {
  padding: 16px 18px;
  }
 
+ .council-flow {
+ border: 1px solid rgba(147, 197, 253, 0.24);
+ border-radius: 28px;
+ padding: 20px;
+ margin: 20px 0;
+ background:
+ linear-gradient(180deg, rgba(248, 237, 210, 0.08), rgba(15, 23, 42, 0.88)),
+ repeating-linear-gradient(
+ 0deg,
+ transparent,
+ transparent 32px,
+ rgba(248, 237, 210, 0.04) 33px
+ );
+ box-shadow: 0 22px 70px rgba(0, 0, 0, 0.26);
+ }
+
+ .council-flow-header {
+ display: flex;
+ align-items: baseline;
+ justify-content: space-between;
+ gap: 12px;
+ flex-wrap: wrap;
+ margin-bottom: 14px;
+ }
+
+ .council-flow-header span {
+ color: #93c5fd;
+ font-family: monospace;
+ font-size: 0.78rem;
+ font-weight: 900;
+ letter-spacing: 0.16em;
+ text-transform: uppercase;
+ }
+
+ .council-flow-header strong {
+ color: #f5f1e8;
+ font-size: 1.05rem;
+ }
+
+ .council-flow-grid {
+ display: grid;
+ grid-template-columns: repeat(3, minmax(0, 1fr));
+ gap: 10px;
+ }
+
+ .council-flow-card {
+ border: 1px solid rgba(147, 197, 253, 0.18);
+ border-radius: 20px;
+ padding: 14px;
+ background: rgba(2, 6, 23, 0.34);
+ }
+
+ .council-flow-card span {
+ width: 34px;
+ height: 34px;
+ border-radius: 999px;
+ display: grid;
+ place-items: center;
+ background: #dbeafe;
+ color: #07111f;
+ font-family: monospace;
+ font-weight: 900;
+ margin-bottom: 10px;
+ }
+
+ .council-flow-card strong {
+ display: block;
+ color: #93c5fd;
+ font-family: monospace;
+ font-size: 0.74rem;
+ letter-spacing: 0.12em;
+ text-transform: uppercase;
+ margin-bottom: 6px;
+ }
+
+ .council-flow-card h3 {
+ margin: 0;
+ color: #ffffff;
+ font-size: 1.08rem;
+ line-height: 1.1;
+ }
+
+ .council-flow-card p {
+ margin: 8px 0 0;
+ color: #d8c7ad;
+ font-size: 0.94rem;
+ line-height: 1.45;
+ }
+
+
+
  .first-idea-card {
  margin-bottom: 24px;
  border-color: rgba(240, 179, 95, 0.34);
@@ -1641,30 +1778,3 @@ function ResultCard({ title, body }: { title: string; body: string }) {
  </article>
  );
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
